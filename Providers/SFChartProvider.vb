@@ -6,10 +6,12 @@
 '************************************************************************************
 
 Imports System.Text
+Imports System.Reflection
 Imports System.Globalization
 Imports SyncroSim.Core
 Imports SyncroSim.StochasticTime.Forms
 
+<ObfuscationAttribute(Exclude:=True, ApplyToMembers:=False)>
 Class SFChartProvider
     Inherits ChartProvider
 

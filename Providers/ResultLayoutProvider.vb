@@ -7,7 +7,9 @@
 
 Imports SyncroSim.Core
 Imports SyncroSim.Core.Forms
+Imports System.Reflection
 
+<ObfuscationAttribute(Exclude:=True, ApplyToMembers:=False)>
 Class ResultLayoutProvider
     Inherits LayoutProvider
 
