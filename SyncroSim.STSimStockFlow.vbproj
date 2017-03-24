@@ -85,6 +85,8 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -103,6 +105,112 @@
     <Import Include="System.Threading.Tasks" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AddOnTransformer\StockFlowAddOn.vb" />
+    <Compile Include="Assembly.vb" />
+    <Compile Include="Console\SFConsole.CreateReport.vb" />
+    <Compile Include="Console\SFConsole.ListReports.vb" />
+    <Compile Include="Console\SFConsole.vb" />
+    <Compile Include="CoreTransformer\FlowGroup.vb" />
+    <Compile Include="CoreTransformer\FlowGroupCollection.vb" />
+    <Compile Include="CoreTransformer\FlowMultiplier.vb" />
+    <Compile Include="CoreTransformer\FlowMultiplierCollection.vb" />
+    <Compile Include="CoreTransformer\FlowMultiplierMap.vb" />
+    <Compile Include="CoreTransformer\FlowOrder.vb" />
+    <Compile Include="CoreTransformer\FlowOrderCollection.vb" />
+    <Compile Include="CoreTransformer\FlowOrderMap.vb" />
+    <Compile Include="CoreTransformer\FlowPathway.vb" />
+    <Compile Include="CoreTransformer\FlowPathwayCollection.vb" />
+    <Compile Include="CoreTransformer\FlowPathwayMap.vb" />
+    <Compile Include="CoreTransformer\FlowSpatialMultiplier.vb" />
+    <Compile Include="CoreTransformer\FlowSpatialMultiplierCollection.vb" />
+    <Compile Include="CoreTransformer\FlowSpatialMultiplierMap.vb" />
+    <Compile Include="CoreTransformer\FlowType.vb" />
+    <Compile Include="CoreTransformer\InitialStockNonSpatial.vb" />
+    <Compile Include="CoreTransformer\InitialStockNonSpatialCollection.vb" />
+    <Compile Include="CoreTransformer\InitialStockSpatial.vb" />
+    <Compile Include="CoreTransformer\InitialStockSpatialCollection.vb" />
+    <Compile Include="CoreTransformer\InitialStockSpatialMap.vb" />
+    <Compile Include="CoreTransformer\OutputFlow.vb" />
+    <Compile Include="CoreTransformer\OutputFlowCollection.vb" />
+    <Compile Include="CoreTransformer\OutputStock.vb" />
+    <Compile Include="CoreTransformer\OutputStockCollection.vb" />
+    <Compile Include="CoreTransformer\StockFlowMapBase.vb" />
+    <Compile Include="CoreTransformer\StockFlowMapBase1.vb" />
+    <Compile Include="CoreTransformer\StockFlowMapBase4.vb" />
+    <Compile Include="CoreTransformer\StockFlowTransformer.Collections.vb" />
+    <Compile Include="CoreTransformer\StockFlowTransformer.Initialize.vb" />
+    <Compile Include="CoreTransformer\StockFlowTransformer.Maps.vb" />
+    <Compile Include="CoreTransformer\StockFlowTransformer.Normalize.vb" />
+    <Compile Include="CoreTransformer\StockFlowTransformer.Output.vb" />
+    <Compile Include="CoreTransformer\StockFlowTransformer.Utilities.vb" />
+    <Compile Include="CoreTransformer\StockFlowTransformer.vb" />
+    <Compile Include="CoreTransformer\StockFlowType.vb" />
+    <Compile Include="CoreTransformer\StockLimit.vb" />
+    <Compile Include="CoreTransformer\StockLimitCollection.vb" />
+    <Compile Include="CoreTransformer\StockLimitMap.vb" />
+    <Compile Include="CoreTransformer\StockType.vb" />
+    <Compile Include="CoreTransformer\StockTypeCollection.vb" />
+    <Compile Include="DataFeedViews\FlowOrderDataFeedView.Designer.vb">
+      <DependentUpon>FlowOrderDataFeedView.vb</DependentUpon>
+    </Compile>
+    <Compile Include="DataFeedViews\FlowOrderDataFeedView.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="DataFeedViews\FlowPathwayDataFeedView.Designer.vb">
+      <DependentUpon>FlowPathwayDataFeedView.vb</DependentUpon>
+    </Compile>
+    <Compile Include="DataFeedViews\FlowPathwayDataFeedView.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="DataFeedViews\InitialStocksDataFeedView.Designer.vb">
+      <DependentUpon>InitialStocksDataFeedView.vb</DependentUpon>
+    </Compile>
+    <Compile Include="DataFeedViews\InitialStocksDataFeedView.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="DataFeedViews\OutputOptionsDataFeedView.Designer.vb">
+      <DependentUpon>OutputOptionsDataFeedView.vb</DependentUpon>
+    </Compile>
+    <Compile Include="DataFeedViews\OutputOptionsDataFeedView.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="DataFeedViews\SpatialMultiplierDataFeedView.Designer.vb">
+      <DependentUpon>SpatialMultiplierDataFeedView.vb</DependentUpon>
+    </Compile>
+    <Compile Include="DataFeedViews\SpatialMultiplierDataFeedView.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="DataFeedViews\StockTypeQuickView.Designer.vb">
+      <DependentUpon>StockTypeQuickView.vb</DependentUpon>
+    </Compile>
+    <Compile Include="DataFeedViews\StockTypeQuickView.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="DataSheets\FlowPathwayDataSheet.vb" />
+    <Compile Include="DataSheets\FlowPathwayDiagramDataSheet.vb" />
+    <Compile Include="DataSheets\OutputFlowDataSheet.vb" />
+    <Compile Include="FlowPathwayDiagram\DiagramFilterCriteria.vb" />
+    <Compile Include="FlowPathwayDiagram\FlowPathwayDiagram.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="FlowPathwayDiagram\FlowPathwayLine.vb" />
+    <Compile Include="FlowPathwayDiagram\StockTypeShape.vb" />
+    <Compile Include="Forms\ChooseStockTypeForm.Designer.vb">
+      <DependentUpon>ChooseStockTypeForm.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\ChooseStockTypeForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\FilterFlowTypesForm.Designer.vb">
+      <DependentUpon>FilterFlowTypesForm.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\FilterFlowTypesForm.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MapTransformers\FlowGroupRasterMap.vb" />
+    <Compile Include="MapTransformers\FlowRasterMap.vb" />
+    <Compile Include="MapTransformers\StockGroupRasterMap.vb" />
+    <Compile Include="MapTransformers\StockRasterMap.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="My Project\Application.Designer.vb">
       <AutoGen>True</AutoGen>
@@ -118,8 +226,45 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Compile Include="ReportTransformers\SummaryFlowReport.vb" />
+    <Compile Include="ReportTransformers\SummaryStockReport.vb" />
+    <Compile Include="Shared\BaseValueDisplayListItem.vb" />
+    <Compile Include="Shared\Constants.vb" />
+    <Compile Include="Shared\DataTableUtilities.vb" />
+    <Compile Include="Shared\Exceptions.vb" />
+    <Compile Include="Shared\ExceptionUtils.vb" />
+    <Compile Include="Shared\FormsUtilities.vb" />
+    <Compile Include="Shared\LookupKeyUtilities.vb" />
+    <Compile Include="Shared\MathUtils.vb" />
+    <Compile Include="Shared\RasterUtilities.vb" />
+    <Compile Include="Shared\TerminologyUtilities.vb" />
+    <Compile Include="Updates\SFUpdates.vb" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="DataFeedViews\FlowOrderDataFeedView.resx">
+      <DependentUpon>FlowOrderDataFeedView.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DataFeedViews\FlowPathwayDataFeedView.resx">
+      <DependentUpon>FlowPathwayDataFeedView.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DataFeedViews\InitialStocksDataFeedView.resx">
+      <DependentUpon>InitialStocksDataFeedView.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DataFeedViews\OutputOptionsDataFeedView.resx">
+      <DependentUpon>OutputOptionsDataFeedView.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DataFeedViews\SpatialMultiplierDataFeedView.resx">
+      <DependentUpon>SpatialMultiplierDataFeedView.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DataFeedViews\StockTypeQuickView.resx">
+      <DependentUpon>StockTypeQuickView.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\ChooseStockTypeForm.resx">
+      <DependentUpon>ChooseStockTypeForm.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FilterFlowTypesForm.resx">
+      <DependentUpon>FilterFlowTypesForm.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="My Project\Resources.resx">
       <Generator>VbMyResourcesResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.vb</LastGenOutput>
@@ -138,6 +283,42 @@
       <CustomToolNamespace>My</CustomToolNamespace>
       <LastGenOutput>Settings.Designer.vb</LastGenOutput>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Images\Delete16x16.png" />
+    <Content Include="Images\Filter16x16.png" />
+    <Content Include="Images\Minus16x16.png" />
+    <Content Include="Images\Plus16x16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\CommonForms\SyncroSim.Common.Forms.csproj">
+      <Project>{13919907-3117-49c5-bb13-2a5d4ccefa57}</Project>
+      <Name>SyncroSim.Common.Forms</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Common\SyncroSim.Common.csproj">
+      <Project>{1376529f-fc5a-43e8-8554-8341b4fe2496}</Project>
+      <Name>SyncroSim.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\CoreForms\SyncroSim.Core.Forms.csproj">
+      <Project>{ea3a4b6e-d4db-466d-b510-6a38918f2dd8}</Project>
+      <Name>SyncroSim.Core.Forms</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Core\SyncroSim.Core.csproj">
+      <Project>{af51a2a0-349a-4a3c-bec2-906e605db6d7}</Project>
+      <Name>SyncroSim.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\StochasticTimeForms\SyncroSim.StochasticTime.Forms.csproj">
+      <Project>{577b7bdd-e5fa-41af-887a-e4a12b691ff8}</Project>
+      <Name>SyncroSim.StochasticTime.Forms</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\StochasticTime\SyncroSim.StochasticTime.csproj">
+      <Project>{ac26a679-5fb6-4cae-9b08-e0ea8027c628}</Project>
+      <Name>SyncroSim.StochasticTime</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\STSim\SyncroSim.STSim.vbproj">
+      <Project>{33774e89-6247-4162-8c3f-09b7470202ca}</Project>
+      <Name>SyncroSim.STSim</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

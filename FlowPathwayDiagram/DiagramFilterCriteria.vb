@@ -1,0 +1,18 @@
+﻿'************************************************************************************
+' STSimStockFlow: A .NET library for simulating stocks and flows
+'
+' Copyright © 2009-2015 ApexRMS.
+'
+'************************************************************************************
+
+Class DiagramFilterCriteria
+
+    Private m_FlowTypes As New Dictionary(Of Integer, Boolean)
+
+    Public ReadOnly Property FlowTypes As Dictionary(Of Integer, Boolean)
+        Get
+            Return Me.m_FlowTypes
+        End Get
+    End Property
+
+End Class
