@@ -7,7 +7,9 @@
 
 Imports SyncroSim.Core
 Imports System.Globalization
+Imports System.Reflection
 
+<ObfuscationAttribute(Exclude:=True, ApplyToMembers:=False)>
 Class SFUpdates
     Inherits UpdateProvider
 
@@ -252,7 +254,7 @@ Class SFUpdates
 
             Dim ScenarioId As Integer = CInt(ScenarioRow("ScenarioID"))
             Dim FlowPathways As DataTable = store.CreateDataTable("SF_FlowPathway", "ScenarioID", ScenarioId)
- 
+
             If (FlowPathways.Rows.Count = 0) Then
                 Continue For
             End If

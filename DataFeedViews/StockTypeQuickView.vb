@@ -11,7 +11,9 @@ Imports System.Windows.Forms
 Imports System.Globalization
 Imports SyncroSim.Core
 Imports SyncroSim.Core.Forms
+Imports System.Reflection
 
+<ObfuscationAttribute(Exclude:=True, ApplyToMembers:=False)>
 Class StockTypeQuickView
 
     Private m_DataFeed As DataFeed

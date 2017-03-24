@@ -5,9 +5,11 @@
 '
 '************************************************************************************
 
+Imports System.Reflection
 Imports SyncroSim.Core
 Imports SyncroSim.Core.Forms
 
+<ObfuscationAttribute(Exclude:=True, ApplyToMembers:=False)>
 Class FlowOrderDataFeedView
 
     Protected Overrides Sub InitializeView()

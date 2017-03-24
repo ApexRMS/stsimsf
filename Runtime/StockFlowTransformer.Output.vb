@@ -140,7 +140,7 @@ Partial Class StockFlowTransformer
 
         For Each s As StockType In Me.m_StockTypes
 
-            Dim rastOutput As New ApexRaster
+            Dim rastOutput As New StochasticTimeRaster
             ' Fetch the raster metadata from the InpRasters object
             Me.STSimTransformer.InputRasters.GetMetadata(rastOutput)
             rastOutput.InitDblCells()
@@ -159,7 +159,7 @@ Partial Class StockFlowTransformer
     ''' <param name="rastStockType">An object of type ApexRaster, where we will write the Stock Type values. The raster should be initialized with metadata and appropriate
     ''' array sizing.</param>
     ''' <remarks></remarks>
-    Private Sub GetStockValues(stockTypeId As Integer, rastStockType As ApexRaster)
+    Private Sub GetStockValues(stockTypeId As Integer, rastStockType As StochasticTimeRaster)
 
         Dim AmountPerCell As Double = Me.m_STSimTransformer.AmountPerCell
 
@@ -194,7 +194,7 @@ Partial Class StockFlowTransformer
                 Dim sgId = CInt(dr(dsGrp.ValidationTable.ValueMember))
                 Dim sgName = dr(dsGrp.ValidationTable.DisplayMember)
 
-                Dim rastOutput As New ApexRaster
+                Dim rastOutput As New StochasticTimeRaster
                 ' Fetch the raster metadata from the InpRasters object
                 Me.STSimTransformer.InputRasters.GetMetadata(rastOutput)
                 rastOutput.InitDblCells()
@@ -215,7 +215,7 @@ Partial Class StockFlowTransformer
                         End If
                         Dim stockTypeId As Integer = CInt(drGrpType(STOCK_TYPE_ID_COLUMN_NAME))
                         Debug.Print(String.Format(CultureInfo.CurrentCulture, "Group Name {0}, Group ID:{3}, Type:{1}, Amount:{2}", sgName, stockTypeId, amt, sgId))
-                        Dim rastStockType As New ApexRaster
+                        Dim rastStockType As New StochasticTimeRaster
                         ' Fetch the raster metadata from the InpRasters object
                         Me.STSimTransformer.InputRasters.GetMetadata(rastStockType)
                         rastStockType.InitDblCells()
@@ -240,7 +240,7 @@ Partial Class StockFlowTransformer
     ''' <param name="timestep">The timestep</param>
     ''' <param name="stockTypeId">The Stock Type ID</param>
     ''' <remarks></remarks>    
-    Public Shared Sub SaveSpatialStockTypeOutputToRasterFile(raster As ApexRaster, scenario As Scenario, iteration As Integer, timestep As Integer, stockTypeId As Integer)
+    Public Shared Sub SaveSpatialStockTypeOutputToRasterFile(raster As StochasticTimeRaster, scenario As Scenario, iteration As Integer, timestep As Integer, stockTypeId As Integer)
 
         Dim fileName As String
         '        Name template = Itx-Tsy-stk-z.tif
@@ -264,7 +264,7 @@ Partial Class StockFlowTransformer
     ''' <param name="timestep">The timestep</param>
     ''' <param name="stockGroupId">The Stock Group ID</param>
     ''' <remarks></remarks>    
-    Public Shared Sub SaveSpatialStockGroupOutputToRasterFile(raster As ApexRaster, scenario As Scenario, iteration As Integer, timestep As Integer, stockGroupId As Integer)
+    Public Shared Sub SaveSpatialStockGroupOutputToRasterFile(raster As StochasticTimeRaster, scenario As Scenario, iteration As Integer, timestep As Integer, stockGroupId As Integer)
 
         Dim fileName As String
         '        Name template = Itx-Tsy-stkg-z.tif
@@ -287,7 +287,7 @@ Partial Class StockFlowTransformer
 
         Debug.Assert(Me.m_IsSpatial)
 
-        Dim rastOutput As New ApexRaster
+        Dim rastOutput As New StochasticTimeRaster
         ' Fetch the raster metadata from the InpRasters object
         Me.STSimTransformer.InputRasters.GetMetadata(rastOutput)
 
@@ -317,7 +317,7 @@ Partial Class StockFlowTransformer
                 Dim fgId = CInt(dr(dsGrp.ValidationTable.ValueMember))
                 Dim fgName = dr(dsGrp.ValidationTable.DisplayMember)
 
-                Dim rastOutput As New ApexRaster
+                Dim rastOutput As New StochasticTimeRaster
                 ' Fetch the raster metadata from the InpRasters object
                 Me.STSimTransformer.InputRasters.GetMetadata(rastOutput)
                 rastOutput.InitDblCells()
@@ -338,7 +338,7 @@ Partial Class StockFlowTransformer
 
                         Dim flowTypeId As Integer = CInt(drGrpType(FLOW_TYPE_ID_COLUMN_NAME))
                         Debug.Print(String.Format(CultureInfo.CurrentCulture, "Group Name {0}, Group ID:{3}, Type:{1}, Amount:{2}", fgName, flowTypeId, amt, fgId))
-                        Dim rastFlowType As New ApexRaster
+                        Dim rastFlowType As New StochasticTimeRaster
                         ' Fetch the raster metadata from the InpRasters object
                         Me.STSimTransformer.InputRasters.GetMetadata(rastFlowType)
                         rastFlowType.InitDblCells()
@@ -366,7 +366,7 @@ Partial Class StockFlowTransformer
     ''' <param name="timestep">The timestep</param>
     ''' <param name="flowTypeId">The Flow Type ID</param>
     ''' <remarks></remarks>    
-    Public Shared Sub SaveSpatialFlowTypeOutputToRasterFile(raster As ApexRaster, scenario As Scenario, iteration As Integer, timestep As Integer, flowTypeId As Integer)
+    Public Shared Sub SaveSpatialFlowTypeOutputToRasterFile(raster As StochasticTimeRaster, scenario As Scenario, iteration As Integer, timestep As Integer, flowTypeId As Integer)
 
         Dim fileName As String
         '        Name template = Itx-Tsy-flo-z.tif
@@ -390,7 +390,7 @@ Partial Class StockFlowTransformer
     ''' <param name="timestep">The timestep</param>
     ''' <param name="flowGroupId">The Flow Group ID</param>
     ''' <remarks></remarks>    
-    Public Shared Sub SaveSpatialFlowGroupOutputToRasterFile(raster As ApexRaster, scenario As Scenario, iteration As Integer, timestep As Integer, flowGroupId As Integer)
+    Public Shared Sub SaveSpatialFlowGroupOutputToRasterFile(raster As StochasticTimeRaster, scenario As Scenario, iteration As Integer, timestep As Integer, flowGroupId As Integer)
 
         Dim fileName As String
         '        Name template = Itx-Tsy-flo-z.tif
@@ -545,7 +545,7 @@ Partial Class StockFlowTransformer
 
                 Dim amt As Double = GetOutputFlowDictionary()(flowTypeId)(cell.CellId)
 
-                If amt.Equals(ApexRaster.DEFAULT_NO_DATA_VALUE) Then
+                If amt.Equals(StochasticTimeRaster.DefaultNoDataValue) Then
                     amt = 0
                 End If
 

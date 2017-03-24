@@ -10,7 +10,9 @@ Imports SyncroSim.STSim
 Imports SyncroSim.StochasticTime
 Imports System.Globalization
 Imports SyncroSim.Common
+Imports System.Reflection
 
+<ObfuscationAttribute(Exclude:=True, ApplyToMembers:=False)>
 Class StockFlowTransformer
     Inherits Transformer
 
@@ -139,7 +141,7 @@ Class StockFlowTransformer
                 Dim cmpRes = Me.STSimTransformer.InputRasters.CompareMetadata(Me.m_FlowSpatialMultiplierRasters(r.FileName), cmpMsg)
                 Dim FullFilename As String = RasterFiles.GetInputFileName(ds, r.FileName, False)
 
-                If (cmpRes = STSim.InputRasters.CompareMetadataResult.ImportantDifferences) Then
+                If (cmpRes = STSim.CompareMetadataResult.ImportantDifferences) Then
 
                     Dim msg As String = String.Format(CultureInfo.CurrentCulture, SPATIAL_METADATA_WARNING, FullFilename)
                     AddStatusRecord(StatusRecordType.Warning, msg)
@@ -148,7 +150,7 @@ Class StockFlowTransformer
 
                 Else
 
-                    If (cmpRes = STSim.InputRasters.CompareMetadataResult.UnimportantDifferences) Then
+                    If (cmpRes = STSim.CompareMetadataResult.UnimportantDifferences) Then
 
                         Dim msg As String = String.Format(CultureInfo.CurrentCulture, SPATIAL_METADATA_INFO, FullFilename, cmpMsg)
                         AddStatusRecord(StatusRecordType.Information, msg)
@@ -191,14 +193,14 @@ Class StockFlowTransformer
                     Dim arr As Double() = GetOutputFlowDictionary().Item(ft.Id)
 
                     For i = 0 To arr.GetUpperBound(0)
-                        arr(i) = ApexRaster.DEFAULT_NO_DATA_VALUE
+                        arr(i) = StochasticTimeRaster.DefaultNoDataValue
                     Next
 
 #If DEBUG Then
                     If (arr.Length > 0) Then
 
-                        Debug.Assert(arr(0) = ApexRaster.DEFAULT_NO_DATA_VALUE)
-                        Debug.Assert(arr(arr.Length - 1) = ApexRaster.DEFAULT_NO_DATA_VALUE)
+                        Debug.Assert(arr(0) = StochasticTimeRaster.DefaultNoDataValue)
+                        Debug.Assert(arr(arr.Length - 1) = StochasticTimeRaster.DefaultNoDataValue)
 
                     End If
 #End If
@@ -825,7 +827,7 @@ Class StockFlowTransformer
             Return 1.0
         End If
 
-        Dim raster As ApexRaster = Me.m_FlowSpatialMultiplierRasters(m.FileName)
+        Dim raster As StochasticTimeRaster = Me.m_FlowSpatialMultiplierRasters(m.FileName)
         Dim v As Double = raster.DblCells(cellId)
 
         If ((v < 0.0) Or (MathUtils.CompareDoublesEqual(v, raster.NoDataValue, Double.Epsilon))) Then

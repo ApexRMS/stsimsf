@@ -17,12 +17,12 @@ Partial Class StockFlowTransformer
     Private m_StockTypes As New StockTypeCollection()
     Private m_InitialStocksNonSpatial As New InitialStockNonSpatialCollection()
     Private m_InitialStocksSpatial As New InitialStockSpatialCollection()
-    Private m_InitialStockSpatialRasters As New Dictionary(Of String, ApexRaster)
+    Private m_InitialStockSpatialRasters As New Dictionary(Of String, StochasticTimeRaster)
     Private m_StockLimits As New StockLimitCollection()
     Private m_FlowPathways As New FlowPathwayCollection()
     Private m_FlowMultipliers As New FlowMultiplierCollection()
     Private m_FlowSpatialMultipliers As New FlowSpatialMultiplierCollection()
-    Private m_FlowSpatialMultiplierRasters As New Dictionary(Of String, ApexRaster)
+    Private m_FlowSpatialMultiplierRasters As New Dictionary(Of String, StochasticTimeRaster)
     Private m_FlowOrders As New FlowOrderCollection()
 
 #If DEBUG Then
@@ -137,10 +137,10 @@ Partial Class StockFlowTransformer
             End If
 
             'Load Initial Stock raster file
-            Dim raster As New ApexRaster
+            Dim raster As New StochasticTimeRaster
 
             Try
-                RasterFiles.LoadRasterFile(fullFilename, raster, RasterDataType.dtDouble)
+                RasterFiles.LoadRasterFile(fullFilename, raster, RasterDataType.DTDouble)
             Catch ex As Exception
 
                 Dim message As String = String.Format(CultureInfo.CurrentCulture, SPATIAL_FILE_STOCK_LOAD_WARNING, stockFileName)
@@ -152,14 +152,14 @@ Partial Class StockFlowTransformer
             Dim cmpMsg As String = ""
             Dim cmpResult = Me.STSimTransformer.InputRasters.CompareMetadata(raster, cmpMsg)
 
-            If cmpResult = STSim.InputRasters.CompareMetadataResult.ImportantDifferences Then
+            If cmpResult = STSim.CompareMetadataResult.ImportantDifferences Then
 
                 Dim message As String = String.Format(CultureInfo.CurrentCulture, SPATIAL_FILE_STOCK_METADATA_WARNING, stockFileName, cmpMsg)
                 Me.AddStatusRecord(StatusRecordType.Warning, message)
 
             Else
 
-                If cmpResult = STSim.InputRasters.CompareMetadataResult.UnimportantDifferences Then
+                If cmpResult = STSim.CompareMetadataResult.UnimportantDifferences Then
                     Dim message As String = String.Format(CultureInfo.CurrentCulture, SPATIAL_FILE_STOCK_METADATA_INFO, stockFileName, cmpMsg)
                     Me.AddStatusRecord(StatusRecordType.Information, message)
                 End If
@@ -501,10 +501,10 @@ Partial Class StockFlowTransformer
 
             Dim Multiplier As New FlowSpatialMultiplier(FlowGroupId, Iteration, Timestep, FileName)
             Dim FullFilename As String = RasterFiles.GetInputFileName(ds, FileName, False)
-            Dim MultiplierRaster As New ApexRaster
+            Dim MultiplierRaster As New StochasticTimeRaster
 
             Try
-                RasterFiles.LoadRasterFile(FullFilename, MultiplierRaster, RasterDataType.dtDouble)
+                RasterFiles.LoadRasterFile(FullFilename, MultiplierRaster, RasterDataType.DTDouble)
             Catch ex As Exception
 
                 Dim msg As String = String.Format(CultureInfo.CurrentCulture, SPATIAL_PROCESS_WARNING, FullFilename)

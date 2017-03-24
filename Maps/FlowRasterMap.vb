@@ -17,7 +17,7 @@ Class FlowRasterMap
     ReadOnly fileFilterRegex As String = String.Format(CultureInfo.CurrentCulture, FILE_FILTER_ID_REGEX, SPATIAL_MAP_FLOW_TYPE_VARIABLE_PREFIX)
 
     Protected Overrides Sub Export(location As String, exportType As ExportType)
-        Me.CopyRasterFiles(Me.GetActiveResultScenarios(), fileFilterRegex, location, AddressOf CreateExportFilename)
+        StochasticTimeExportTransformer.CopyRasterFiles(Me.GetActiveResultScenarios(), fileFilterRegex, location, AddressOf CreateExportFilename)
     End Sub
 
     ''' <summary>

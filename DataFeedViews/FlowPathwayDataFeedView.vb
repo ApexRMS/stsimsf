@@ -12,7 +12,9 @@ Imports System.Globalization
 Imports SyncroSim.Core
 Imports SyncroSim.Core.Forms
 Imports SyncroSim.Common.Forms
+Imports System.Reflection
 
+<ObfuscationAttribute(Exclude:=True, ApplyToMembers:=False)>
 Class FlowPathwayDataFeedView
 
     Private m_IsEnabled As Boolean
@@ -58,6 +60,10 @@ Class FlowPathwayDataFeedView
             If components IsNot Nothing Then
                 components.Dispose()
             End If
+
+            Me.m_DiagramTab.Dispose()
+            Me.m_StockTab.Dispose()
+            Me.m_FlowTab.Dispose()
 
         End If
 
@@ -736,40 +742,6 @@ Class FlowPathwayDataFeedView
 
         c.Dock = DockStyle.Fill
         c.Parent = Me.PanelControlHost
-
-    End Sub
-
-End Class
-
-Class FlowPathwayTabStripItem
-    Inherits TabStripItem
-
-    Private m_Control As Control
-
-    Public Sub New(ByVal text As String)
-        MyBase.New(text)
-    End Sub
-
-    Public Property Control As Control
-        Get
-            Return Me.m_Control
-        End Get
-        Set(value As Control)
-            Debug.Assert(Me.m_Control Is Nothing)
-            Me.m_Control = value
-        End Set
-    End Property
-
-    Protected Overrides Sub Dispose(disposing As Boolean)
-
-        If (Me.m_Control IsNot Nothing) Then
-
-            Me.m_Control.Dispose()
-            Me.m_Control = Nothing
-
-        End If
-
-        MyBase.Dispose(disposing)
 
     End Sub
 

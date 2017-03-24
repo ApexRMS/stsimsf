@@ -105,51 +105,51 @@
     <Import Include="System.Threading.Tasks" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AddOnTransformer\StockFlowAddOn.vb" />
     <Compile Include="Assembly.vb" />
     <Compile Include="Console\SFConsole.CreateReport.vb" />
     <Compile Include="Console\SFConsole.ListReports.vb" />
     <Compile Include="Console\SFConsole.vb" />
-    <Compile Include="CoreTransformer\FlowGroup.vb" />
-    <Compile Include="CoreTransformer\FlowGroupCollection.vb" />
-    <Compile Include="CoreTransformer\FlowMultiplier.vb" />
-    <Compile Include="CoreTransformer\FlowMultiplierCollection.vb" />
-    <Compile Include="CoreTransformer\FlowMultiplierMap.vb" />
-    <Compile Include="CoreTransformer\FlowOrder.vb" />
-    <Compile Include="CoreTransformer\FlowOrderCollection.vb" />
-    <Compile Include="CoreTransformer\FlowOrderMap.vb" />
-    <Compile Include="CoreTransformer\FlowPathway.vb" />
-    <Compile Include="CoreTransformer\FlowPathwayCollection.vb" />
-    <Compile Include="CoreTransformer\FlowPathwayMap.vb" />
-    <Compile Include="CoreTransformer\FlowSpatialMultiplier.vb" />
-    <Compile Include="CoreTransformer\FlowSpatialMultiplierCollection.vb" />
-    <Compile Include="CoreTransformer\FlowSpatialMultiplierMap.vb" />
-    <Compile Include="CoreTransformer\FlowType.vb" />
-    <Compile Include="CoreTransformer\InitialStockNonSpatial.vb" />
-    <Compile Include="CoreTransformer\InitialStockNonSpatialCollection.vb" />
-    <Compile Include="CoreTransformer\InitialStockSpatial.vb" />
-    <Compile Include="CoreTransformer\InitialStockSpatialCollection.vb" />
-    <Compile Include="CoreTransformer\InitialStockSpatialMap.vb" />
-    <Compile Include="CoreTransformer\OutputFlow.vb" />
-    <Compile Include="CoreTransformer\OutputFlowCollection.vb" />
-    <Compile Include="CoreTransformer\OutputStock.vb" />
-    <Compile Include="CoreTransformer\OutputStockCollection.vb" />
-    <Compile Include="CoreTransformer\StockFlowMapBase.vb" />
-    <Compile Include="CoreTransformer\StockFlowMapBase1.vb" />
-    <Compile Include="CoreTransformer\StockFlowMapBase4.vb" />
-    <Compile Include="CoreTransformer\StockFlowTransformer.Collections.vb" />
-    <Compile Include="CoreTransformer\StockFlowTransformer.Initialize.vb" />
-    <Compile Include="CoreTransformer\StockFlowTransformer.Maps.vb" />
-    <Compile Include="CoreTransformer\StockFlowTransformer.Normalize.vb" />
-    <Compile Include="CoreTransformer\StockFlowTransformer.Output.vb" />
-    <Compile Include="CoreTransformer\StockFlowTransformer.Utilities.vb" />
-    <Compile Include="CoreTransformer\StockFlowTransformer.vb" />
-    <Compile Include="CoreTransformer\StockFlowType.vb" />
-    <Compile Include="CoreTransformer\StockLimit.vb" />
-    <Compile Include="CoreTransformer\StockLimitCollection.vb" />
-    <Compile Include="CoreTransformer\StockLimitMap.vb" />
-    <Compile Include="CoreTransformer\StockType.vb" />
-    <Compile Include="CoreTransformer\StockTypeCollection.vb" />
+    <Compile Include="Diagram\FlowPathwayTabStripItem.vb" />
+    <Compile Include="Runtime\FlowGroup.vb" />
+    <Compile Include="Runtime\FlowGroupCollection.vb" />
+    <Compile Include="Runtime\FlowMultiplier.vb" />
+    <Compile Include="Runtime\FlowMultiplierCollection.vb" />
+    <Compile Include="Runtime\FlowMultiplierMap.vb" />
+    <Compile Include="Runtime\FlowOrder.vb" />
+    <Compile Include="Runtime\FlowOrderCollection.vb" />
+    <Compile Include="Runtime\FlowOrderMap.vb" />
+    <Compile Include="Runtime\FlowPathway.vb" />
+    <Compile Include="Runtime\FlowPathwayCollection.vb" />
+    <Compile Include="Runtime\FlowPathwayMap.vb" />
+    <Compile Include="Runtime\FlowSpatialMultiplier.vb" />
+    <Compile Include="Runtime\FlowSpatialMultiplierCollection.vb" />
+    <Compile Include="Runtime\FlowSpatialMultiplierMap.vb" />
+    <Compile Include="Runtime\FlowType.vb" />
+    <Compile Include="Runtime\InitialStockNonSpatial.vb" />
+    <Compile Include="Runtime\InitialStockNonSpatialCollection.vb" />
+    <Compile Include="Runtime\InitialStockSpatial.vb" />
+    <Compile Include="Runtime\InitialStockSpatialCollection.vb" />
+    <Compile Include="Runtime\InitialStockSpatialMap.vb" />
+    <Compile Include="Runtime\OutputFlow.vb" />
+    <Compile Include="Runtime\OutputFlowCollection.vb" />
+    <Compile Include="Runtime\OutputStock.vb" />
+    <Compile Include="Runtime\OutputStockCollection.vb" />
+    <Compile Include="Runtime\StockFlowMapBase.vb" />
+    <Compile Include="Runtime\StockFlowMapBase1.vb" />
+    <Compile Include="Runtime\StockFlowMapBase4.vb" />
+    <Compile Include="Runtime\StockFlowTransformer.Collections.vb" />
+    <Compile Include="Runtime\StockFlowTransformer.Initialize.vb" />
+    <Compile Include="Runtime\StockFlowTransformer.Maps.vb" />
+    <Compile Include="Runtime\StockFlowTransformer.Normalize.vb" />
+    <Compile Include="Runtime\StockFlowTransformer.Output.vb" />
+    <Compile Include="Runtime\StockFlowTransformer.Utilities.vb" />
+    <Compile Include="Runtime\StockFlowTransformer.vb" />
+    <Compile Include="Runtime\StockFlowType.vb" />
+    <Compile Include="Runtime\StockLimit.vb" />
+    <Compile Include="Runtime\StockLimitCollection.vb" />
+    <Compile Include="Runtime\StockLimitMap.vb" />
+    <Compile Include="Runtime\StockType.vb" />
+    <Compile Include="Runtime\StockTypeCollection.vb" />
     <Compile Include="DataFeedViews\FlowOrderDataFeedView.Designer.vb">
       <DependentUpon>FlowOrderDataFeedView.vb</DependentUpon>
     </Compile>
@@ -189,12 +189,12 @@
     <Compile Include="DataSheets\FlowPathwayDataSheet.vb" />
     <Compile Include="DataSheets\FlowPathwayDiagramDataSheet.vb" />
     <Compile Include="DataSheets\OutputFlowDataSheet.vb" />
-    <Compile Include="FlowPathwayDiagram\DiagramFilterCriteria.vb" />
-    <Compile Include="FlowPathwayDiagram\FlowPathwayDiagram.vb">
+    <Compile Include="Diagram\DiagramFilterCriteria.vb" />
+    <Compile Include="Diagram\FlowPathwayDiagram.vb">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="FlowPathwayDiagram\FlowPathwayLine.vb" />
-    <Compile Include="FlowPathwayDiagram\StockTypeShape.vb" />
+    <Compile Include="Diagram\FlowPathwayLine.vb" />
+    <Compile Include="Diagram\StockTypeShape.vb" />
     <Compile Include="Forms\ChooseStockTypeForm.Designer.vb">
       <DependentUpon>ChooseStockTypeForm.vb</DependentUpon>
     </Compile>
@@ -207,10 +207,10 @@
     <Compile Include="Forms\FilterFlowTypesForm.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="MapTransformers\FlowGroupRasterMap.vb" />
-    <Compile Include="MapTransformers\FlowRasterMap.vb" />
-    <Compile Include="MapTransformers\StockGroupRasterMap.vb" />
-    <Compile Include="MapTransformers\StockRasterMap.vb" />
+    <Compile Include="Maps\FlowGroupRasterMap.vb" />
+    <Compile Include="Maps\FlowRasterMap.vb" />
+    <Compile Include="Maps\StockGroupRasterMap.vb" />
+    <Compile Include="Maps\StockRasterMap.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="My Project\Application.Designer.vb">
       <AutoGen>True</AutoGen>
@@ -226,8 +226,11 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <Compile Include="ReportTransformers\SummaryFlowReport.vb" />
-    <Compile Include="ReportTransformers\SummaryStockReport.vb" />
+    <Compile Include="Providers\ResultLayoutProvider.vb" />
+    <Compile Include="Providers\SFChartProvider.vb" />
+    <Compile Include="Providers\SFMapProvider.vb" />
+    <Compile Include="Reports\SummaryFlowReport.vb" />
+    <Compile Include="Reports\SummaryStockReport.vb" />
     <Compile Include="Shared\BaseValueDisplayListItem.vb" />
     <Compile Include="Shared\Constants.vb" />
     <Compile Include="Shared\DataTableUtilities.vb" />

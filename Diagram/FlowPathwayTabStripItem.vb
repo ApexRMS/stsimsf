@@ -1,0 +1,43 @@
+﻿'************************************************************************************
+' STSimStockFlow: A .NET library for simulating stocks and flows
+'
+' Copyright © 2009-2015 ApexRMS.
+'
+'************************************************************************************
+
+Imports System.Windows.Forms
+Imports SyncroSim.Common.Forms
+
+Class FlowPathwayTabStripItem
+    Inherits TabStripItem
+
+    Private m_Control As Control
+
+    Public Sub New(ByVal text As String)
+        MyBase.New(text)
+    End Sub
+
+    Public Property Control As Control
+        Get
+            Return Me.m_Control
+        End Get
+        Set(value As Control)
+            Debug.Assert(Me.m_Control Is Nothing)
+            Me.m_Control = value
+        End Set
+    End Property
+
+    Protected Overrides Sub Dispose(disposing As Boolean)
+
+        If (Me.m_Control IsNot Nothing) Then
+
+            Me.m_Control.Dispose()
+            Me.m_Control = Nothing
+
+        End If
+
+        MyBase.Dispose(disposing)
+
+    End Sub
+
+End Class
