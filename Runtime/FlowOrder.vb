@@ -5,7 +5,7 @@
 '
 '************************************************************************************
 
-Public Class FlowOrder
+Class FlowOrder
 
     Private m_iteration As Nullable(Of Integer)
     Private m_timestep As Nullable(Of Integer)

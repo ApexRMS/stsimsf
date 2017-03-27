@@ -8,7 +8,7 @@
 Imports SyncroSim.STSim
 Imports SyncroSim.StochasticTime
 
-Public Class FlowMultiplier
+Class FlowMultiplier
     Inherits STSimDistributionBase
 
     Private m_StateClassId As Nullable(Of Integer)
