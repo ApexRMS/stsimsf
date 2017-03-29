@@ -17,7 +17,7 @@ Class SFChartProvider
 
     Const DENSITY_GROUP_NAME As String = "stockflow_density_group"
 
-    Public Overrides Function GetChartData(
+    Public Overrides Function GetData(
         ByVal store As DataStore,
         ByVal descriptor As ChartDescriptor,
         ByVal dataSheet As DataSheet) As DataTable
@@ -47,7 +47,7 @@ Class SFChartProvider
 
     End Function
 
-    Public Overrides Sub RefreshChartCriteria(layout As SyncroSimLayout, project As Project)
+    Public Overrides Sub RefreshCriteria(layout As SyncroSimLayout, project As Project)
 
         'Stock Types
         Dim StockTypesGroup As SyncroSimLayoutItem = New SyncroSimLayoutItem("StockTypes", "Stock Types", True)

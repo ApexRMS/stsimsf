@@ -14,7 +14,7 @@ Imports System.Reflection
 Class SFMapProvider
     Inherits MapProvider
 
-    Public Overrides Sub RefreshMapCriteria(layout As SyncroSimLayout, project As Project)
+    Public Overrides Sub RefreshCriteria(layout As SyncroSimLayout, project As Project)
 
         'Stock Types
         Dim StockTypesGroup As SyncroSimLayoutItem = New SyncroSimLayoutItem("StockTypes", "Stock Types", True)
