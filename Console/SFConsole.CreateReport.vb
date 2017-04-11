@@ -99,7 +99,7 @@ Partial Class SFConsole
             Dim s As Scenario = l.Scenarios(id)
             s.IsActive = True
 
-            p.ResultScenarios.Add(s)
+            p.Results.Add(s)
 
         Next
 
