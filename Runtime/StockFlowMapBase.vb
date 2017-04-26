@@ -62,26 +62,26 @@ MustInherit Class StockFlowMapBase
     End Function
 
     Protected Function GetStratumName(ByVal id As Nullable(Of Integer)) As String
-        Return Me.GetDefinitionName("STSim_Stratum", id)
+        Return Me.GetProjectItemName("STSim_Stratum", id)
     End Function
 
     Protected Function GetSecondaryStratumName(ByVal id As Nullable(Of Integer)) As String
-        Return Me.GetDefinitionName("STSim_SecondaryStratum", id)
+        Return Me.GetProjectItemName("STSim_SecondaryStratum", id)
     End Function
 
     Protected Function GetStateClassName(ByVal id As Nullable(Of Integer)) As String
-        Return Me.GetDefinitionName("STSim_StateClass", id)
+        Return Me.GetProjectItemName("STSim_StateClass", id)
     End Function
 
     Protected Function GetStockTypeName(ByVal id As Nullable(Of Integer)) As String
-        Return Me.GetDefinitionName(DATASHEET_STOCK_TYPE_NAME, id)
+        Return Me.GetProjectItemName(DATASHEET_STOCK_TYPE_NAME, id)
     End Function
 
     Protected Function GetFlowGroupName(ByVal id As Nullable(Of Integer)) As String
-        Return Me.GetDefinitionName(DATASHEET_FLOW_GROUP_NAME, id)
+        Return Me.GetProjectItemName(DATASHEET_FLOW_GROUP_NAME, id)
     End Function
 
-    Protected Function GetDefinitionName(ByVal dataSheetName As String, ByVal id As Nullable(Of Integer)) As String
+    Protected Function GetProjectItemName(ByVal dataSheetName As String, ByVal id As Nullable(Of Integer)) As String
 
         If (Not id.HasValue) Then
             Return "NULL"
