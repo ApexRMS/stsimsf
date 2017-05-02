@@ -25,7 +25,7 @@ Class SFUpdates
     ''' the upgrade will eventually be performed and then things will behave normally for the rest of
     ''' the lifetime of this module.)
     ''' </remarks>
-    Public Overrides Sub Perform(store As DataStore, currentSchemaVersion As Integer)
+    Public Overrides Sub PerformUpdate(store As DataStore, currentSchemaVersion As Integer)
 
         If (currentSchemaVersion < 5) Then
             SF0000005(store)

@@ -25,7 +25,7 @@ Partial Class SFConsole
         Dim n As String = Me.GetReportName()
         Dim f As String = Me.GetOutputFileName()
         Dim l As Library = Me.OpenLibrary()
-        Dim sids As IEnumerable(Of Integer) = Me.GetMultiDBIdArgument("sids")
+        Dim sids As IEnumerable(Of Integer) = Me.GetMultiDatabaseIdArguments("sids")
 
         ValidateScenarios(sids, l)
 

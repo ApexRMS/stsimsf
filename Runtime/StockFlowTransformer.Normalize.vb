@@ -36,7 +36,7 @@ Partial Class StockFlowTransformer
             DataTableUtilities.SetRowValue(droo, DATASHEET_OO_SUMMARY_OUTPUT_ST_TIMESTEPS_COLUMN_NAME, 1)
             DataTableUtilities.SetRowValue(droo, DATASHEET_OO_SUMMARY_OUTPUT_FL_TIMESTEPS_COLUMN_NAME, 1)
 
-            Me.AddStatusRecord(StatusRecordType.Information, NO_SUMMARY_OUTPUT_OPTIONS_INFORMATION)
+            Me.RecordStatus(StatusType.Information, NO_SUMMARY_OUTPUT_OPTIONS_INFORMATION)
 
         End If
 
@@ -76,7 +76,7 @@ Partial Class StockFlowTransformer
             Dim message As String = String.Format(CultureInfo.CurrentCulture,
                     "Stocks and Flows Timestep value for '{0}' is invalid.  Using default.", timestepsColumnHeaderText)
 
-            Me.AddStatusRecord(StatusRecordType.Warning, message)
+            Me.RecordStatus(StatusType.Warning, message)
             dr(timestepsColumnName) = 1
 
             Return
@@ -90,7 +90,7 @@ Partial Class StockFlowTransformer
             Dim message As String = String.Format(CultureInfo.CurrentCulture,
                 "Stocks and Flows Timestep value for '{0}' out of range.  Using default.", timestepsColumnHeaderText)
 
-            Me.AddStatusRecord(StatusRecordType.Warning, message)
+            Me.RecordStatus(StatusType.Warning, message)
             dr(timestepsColumnName) = maxTimestep
 
             Return

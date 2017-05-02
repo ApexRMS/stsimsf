@@ -131,7 +131,7 @@ Class StockFlowTransformer
                 If Not Me.m_FlowSpatialMultiplierRasters.ContainsKey(r.FileName) Then
 
                     Dim msg As String = String.Format(CultureInfo.CurrentCulture, SPATIAL_PROCESS_WARNING, r.FileName)
-                    AddStatusRecord(StatusRecordType.Warning, msg)
+                    RecordStatus(StatusType.Warning, msg)
 
                     Continue For
 
@@ -144,7 +144,7 @@ Class StockFlowTransformer
                 If (cmpRes = STSim.CompareMetadataResult.ImportantDifferences) Then
 
                     Dim msg As String = String.Format(CultureInfo.CurrentCulture, SPATIAL_METADATA_WARNING, FullFilename)
-                    AddStatusRecord(StatusRecordType.Warning, msg)
+                    RecordStatus(StatusType.Warning, msg)
 
                     Me.m_FlowSpatialMultipliers.RemoveAt(i)
 
@@ -153,7 +153,7 @@ Class StockFlowTransformer
                     If (cmpRes = STSim.CompareMetadataResult.UnimportantDifferences) Then
 
                         Dim msg As String = String.Format(CultureInfo.CurrentCulture, SPATIAL_METADATA_INFO, FullFilename, cmpMsg)
-                        AddStatusRecord(StatusRecordType.Information, msg)
+                        RecordStatus(StatusType.Information, msg)
 
                     End If
 

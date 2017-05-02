@@ -150,7 +150,7 @@ Partial Class StockFlowTransformer
         If (Not FlowPathwaysExist) Then
 
             If (ICSpatialRecordsExist Or ICNonSpatialRecordsExist Or OutputOptionsExist) Then
-                Me.AddStatusRecord(StatusRecordType.Information, "Flow pathways not specified.  Not computing stocks and flows.")
+                Me.RecordStatus(StatusType.Information, "Flow pathways not specified.  Not computing stocks and flows.")
             End If
 
             Return False
@@ -158,7 +158,7 @@ Partial Class StockFlowTransformer
         End If
 
         If (Not ICSpatialRecordsExist And Not ICNonSpatialRecordsExist) Then
-            Me.AddStatusRecord(StatusRecordType.Warning, "No initial stocks have been specified.  All stocks will be initialized to zero.")
+            Me.RecordStatus(StatusType.Warning, "No initial stocks have been specified.  All stocks will be initialized to zero.")
         End If
 
         Return True

@@ -155,13 +155,13 @@ Partial Class StockFlowTransformer
             If cmpResult = STSim.CompareMetadataResult.ImportantDifferences Then
 
                 Dim message As String = String.Format(CultureInfo.CurrentCulture, SPATIAL_FILE_STOCK_METADATA_WARNING, stockFileName, cmpMsg)
-                Me.AddStatusRecord(StatusRecordType.Warning, message)
+                Me.RecordStatus(StatusType.Warning, message)
 
             Else
 
                 If cmpResult = STSim.CompareMetadataResult.UnimportantDifferences Then
                     Dim message As String = String.Format(CultureInfo.CurrentCulture, SPATIAL_FILE_STOCK_METADATA_INFO, stockFileName, cmpMsg)
-                    Me.AddStatusRecord(StatusRecordType.Information, message)
+                    Me.RecordStatus(StatusType.Information, message)
                 End If
 
                 Me.m_InitialStocksSpatial.Add(New InitialStockSpatial(
