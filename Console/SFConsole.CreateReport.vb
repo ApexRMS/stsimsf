@@ -118,7 +118,7 @@ Partial Class SFConsole
         System.Console.WriteLine("  --file={name}          The file name for the report")
         System.Console.WriteLine()
         System.Console.WriteLine("Examples:")
-        System.Console.WriteLine("  --create-report --lib=test.ssim --sids=1,2,3 --name=stocks --file=stocks.csv")
+        System.Console.WriteLine("  --create-report --lib=test.ssim --sids=""1,2,3"" --name=stocks --file=stocks.csv")
         System.Console.WriteLine("  --create-report --lib=""my lib.ssim"" --sids=1 --name=flows --file=""my data.csv""")
 
     End Sub
