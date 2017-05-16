@@ -131,6 +131,7 @@ Class SFChartProvider
             ItemNormal.Properties.Add(New MetaDataProperty("column", "Amount"))
             ItemNormal.Properties.Add(New MetaDataProperty("prefixFolderName", "False"))
             ItemNormal.Properties.Add(New MetaDataProperty("customTitle", "Stock Type " & DisplayName))
+            ItemNormal.Properties.Add(New MetaDataProperty("defaultValue", "0.0"))
 
             items.Add(ItemNormal)
 
@@ -142,6 +143,7 @@ Class SFChartProvider
             ItemDensity.Properties.Add(New MetaDataProperty("column", "Amount"))
             ItemDensity.Properties.Add(New MetaDataProperty("prefixFolderName", "False"))
             ItemDensity.Properties.Add(New MetaDataProperty("customTitle", "(Density): Stock Type " & DisplayName))
+            ItemDensity.Properties.Add(New MetaDataProperty("defaultValue", "0.0"))
 
             DensityGroup.Items.Add(ItemDensity)
 
@@ -181,6 +183,7 @@ Class SFChartProvider
             ItemNormal.Properties.Add(New MetaDataProperty("column", "Amount"))
             ItemNormal.Properties.Add(New MetaDataProperty("prefixFolderName", "False"))
             ItemNormal.Properties.Add(New MetaDataProperty("customTitle", "Stock Group " & DisplayName))
+            ItemNormal.Properties.Add(New MetaDataProperty("defaultValue", "0.0"))
 
             items.Add(ItemNormal)
 
@@ -192,6 +195,7 @@ Class SFChartProvider
             ItemDensity.Properties.Add(New MetaDataProperty("column", "Amount"))
             ItemDensity.Properties.Add(New MetaDataProperty("prefixFolderName", "False"))
             ItemDensity.Properties.Add(New MetaDataProperty("customTitle", "(Density): Stock Group " & DisplayName))
+            ItemDensity.Properties.Add(New MetaDataProperty("defaultValue", "0.0"))
 
             DensityGroup.Items.Add(ItemDensity)
 
@@ -232,6 +236,7 @@ Class SFChartProvider
             ItemNormal.Properties.Add(New MetaDataProperty("skipTimestepZero", "True"))
             ItemNormal.Properties.Add(New MetaDataProperty("prefixFolderName", "False"))
             ItemNormal.Properties.Add(New MetaDataProperty("customTitle", "Flow Type " & DisplayName))
+            ItemNormal.Properties.Add(New MetaDataProperty("defaultValue", "0.0"))
 
             items.Add(ItemNormal)
 
@@ -244,6 +249,7 @@ Class SFChartProvider
             ItemDensity.Properties.Add(New MetaDataProperty("skipTimestepZero", "True"))
             ItemDensity.Properties.Add(New MetaDataProperty("prefixFolderName", "False"))
             ItemDensity.Properties.Add(New MetaDataProperty("customTitle", "(Density): Flow Type " & DisplayName))
+            ItemDensity.Properties.Add(New MetaDataProperty("defaultValue", "0.0"))
 
             DensityGroup.Items.Add(ItemDensity)
 
@@ -284,6 +290,7 @@ Class SFChartProvider
             ItemNormal.Properties.Add(New MetaDataProperty("skipTimestepZero", "True"))
             ItemNormal.Properties.Add(New MetaDataProperty("prefixFolderName", "False"))
             ItemNormal.Properties.Add(New MetaDataProperty("customTitle", "Flow Group " & DisplayName))
+            ItemNormal.Properties.Add(New MetaDataProperty("defaultValue", "0.0"))
 
             items.Add(ItemNormal)
 
@@ -296,6 +303,7 @@ Class SFChartProvider
             ItemDensity.Properties.Add(New MetaDataProperty("skipTimestepZero", "True"))
             ItemDensity.Properties.Add(New MetaDataProperty("prefixFolderName", "False"))
             ItemDensity.Properties.Add(New MetaDataProperty("customTitle", "(Density): Flow Group " & DisplayName))
+            ItemDensity.Properties.Add(New MetaDataProperty("defaultValue", "0.0"))
 
             DensityGroup.Items.Add(ItemDensity)
 
