@@ -251,7 +251,7 @@ Partial Class StockFlowTransformer
                                  stockTypeId)
 
         fileName = RasterFiles.SanitizeFileName(fileName)
-        RasterFiles.SaveDoubleOutputRaster(raster, scenario, fileName)
+        RasterFiles.SaveDoubleOutputRasterOld(raster, scenario, fileName)
 
     End Sub
 
@@ -275,7 +275,7 @@ Partial Class StockFlowTransformer
                                  stockGroupId)
 
         fileName = RasterFiles.SanitizeFileName(fileName)
-        RasterFiles.SaveDoubleOutputRaster(raster, scenario, fileName)
+        RasterFiles.SaveDoubleOutputRasterOld(raster, scenario, fileName)
 
     End Sub
 
@@ -377,7 +377,7 @@ Partial Class StockFlowTransformer
                                  flowTypeId)
 
         fileName = RasterFiles.SanitizeFileName(fileName)
-        RasterFiles.SaveDoubleOutputRaster(raster, scenario, fileName)
+        RasterFiles.SaveDoubleOutputRasterOld(raster, scenario, fileName)
 
     End Sub
 
@@ -401,7 +401,7 @@ Partial Class StockFlowTransformer
                                  flowGroupId)
 
         fileName = RasterFiles.SanitizeFileName(fileName)
-        RasterFiles.SaveDoubleOutputRaster(raster, scenario, fileName)
+        RasterFiles.SaveDoubleOutputRasterOld(raster, scenario, fileName)
 
     End Sub
 
