@@ -42,7 +42,7 @@ Partial Class FlowOrderDataFeedView
         'CheckBoxApplyBeforeTransitions
         '
         Me.CheckBoxApplyBeforeTransitions.AutoSize = True
-        Me.CheckBoxApplyBeforeTransitions.Location = New System.Drawing.Point(2, 3)
+        Me.CheckBoxApplyBeforeTransitions.Location = New System.Drawing.Point(2, 6)
         Me.CheckBoxApplyBeforeTransitions.Name = "CheckBoxApplyBeforeTransitions"
         Me.CheckBoxApplyBeforeTransitions.Size = New System.Drawing.Size(135, 17)
         Me.CheckBoxApplyBeforeTransitions.TabIndex = 0

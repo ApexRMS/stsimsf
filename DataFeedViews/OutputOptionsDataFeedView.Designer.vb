@@ -25,7 +25,6 @@ Partial Class OutputOptionsDataFeedView
         Me.LabelSpatialFLTimesteps = New System.Windows.Forms.Label()
         Me.LabelSpatialSTTimesteps = New System.Windows.Forms.Label()
         Me.TextBoxSpatialFLTimesteps = New System.Windows.Forms.TextBox()
-        Me.ButtonClearAll = New System.Windows.Forms.Button()
         Me.TextBoxSpatialSTTimesteps = New System.Windows.Forms.TextBox()
         Me.CheckBoxSpatialFL = New System.Windows.Forms.CheckBox()
         Me.CheckBoxSpatialST = New System.Windows.Forms.CheckBox()
@@ -66,15 +65,6 @@ Partial Class OutputOptionsDataFeedView
         Me.TextBoxSpatialFLTimesteps.Size = New System.Drawing.Size(56, 20)
         Me.TextBoxSpatialFLTimesteps.TabIndex = 4
         Me.TextBoxSpatialFLTimesteps.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
-        '
-        'ButtonClearAll
-        '
-        Me.ButtonClearAll.Location = New System.Drawing.Point(3, 174)
-        Me.ButtonClearAll.Name = "ButtonClearAll"
-        Me.ButtonClearAll.Size = New System.Drawing.Size(75, 23)
-        Me.ButtonClearAll.TabIndex = 5
-        Me.ButtonClearAll.Text = "Clear All"
-        Me.ButtonClearAll.UseVisualStyleBackColor = True
         '
         'TextBoxSpatialSTTimesteps
         '
@@ -192,11 +182,10 @@ Partial Class OutputOptionsDataFeedView
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.Controls.Add(Me.ButtonClearAll)
         Me.Controls.Add(Me.GroupBoxSpatial)
         Me.Controls.Add(Me.GroupBoxSummary)
         Me.Name = "OutputOptionsDataFeedView"
-        Me.Size = New System.Drawing.Size(263, 203)
+        Me.Size = New System.Drawing.Size(263, 170)
         Me.GroupBoxSpatial.ResumeLayout(False)
         Me.GroupBoxSpatial.PerformLayout()
         Me.GroupBoxSummary.ResumeLayout(False)
@@ -207,7 +196,6 @@ Partial Class OutputOptionsDataFeedView
     Friend WithEvents LabelSpatialFLTimesteps As System.Windows.Forms.Label
     Friend WithEvents LabelSpatialSTTimesteps As System.Windows.Forms.Label
     Friend WithEvents TextBoxSpatialFLTimesteps As System.Windows.Forms.TextBox
-    Friend WithEvents ButtonClearAll As System.Windows.Forms.Button
     Friend WithEvents TextBoxSpatialSTTimesteps As System.Windows.Forms.TextBox
     Friend WithEvents CheckBoxSpatialFL As System.Windows.Forms.CheckBox
     Friend WithEvents CheckBoxSpatialST As System.Windows.Forms.CheckBox
