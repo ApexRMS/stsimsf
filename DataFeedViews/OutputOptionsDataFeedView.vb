@@ -27,22 +27,44 @@ Class OutputOptionsDataFeedView
         Me.SetCheckBoxBinding(Me.CheckBoxSpatialFL, DATASHEET_OO_SPATIAL_OUTPUT_FL_COLUMN_NAME)
         Me.SetTextBoxBinding(Me.TextBoxSpatialFLTimesteps, DATASHEET_OO_SPATIAL_OUTPUT_FL_TIMESTEPS_COLUMN_NAME)
 
-        Me.MonitorDataSheet(
-          "STSim_Terminology",
-          AddressOf Me.OnTerminologyChanged,
-          True)
+        Me.MonitorDataSheet("STSim_Terminology", AddressOf Me.OnTerminologyChanged, True)
+        Me.AddStandardCommands()
 
     End Sub
 
-    ''' <summary>
-    ''' A callback for when the terminology changes
-    ''' </summary>
-    ''' <param name="e"></param>
-    ''' <remarks></remarks>
+    Public Overrides Sub EnableView(enable As Boolean)
+
+        MyBase.EnableView(enable)
+
+        If (enable) Then
+            Me.EnableControls()
+        End If
+
+    End Sub
+
+    Protected Overrides Sub OnRowsAdded(sender As Object, e As DataSheetRowEventArgs)
+
+        MyBase.OnRowsAdded(sender, e)
+
+        If (Me.ShouldEnableView()) Then
+            Me.EnableControls()
+        End If
+
+    End Sub
+
+    Protected Overrides Sub OnRowsDeleted(sender As Object, e As DataSheetRowEventArgs)
+
+        MyBase.OnRowsDeleted(sender, e)
+
+        If (Me.ShouldEnableView()) Then
+            Me.EnableControls()
+        End If
+
+    End Sub
+
     Private Sub OnTerminologyChanged(ByVal e As DataSheetMonitorEventArgs)
 
-        Dim t As String = CStr(e.GetValue(
-            "TimestepUnits", "timestep")).ToLower(CultureInfo.CurrentCulture)
+        Dim t As String = CStr(e.GetValue("TimestepUnits", "timestep")).ToLower(CultureInfo.CurrentCulture)
 
         Me.LabelSummarySTTimesteps.Text = t
         Me.LabelSummaryFLTimesteps.Text = t
@@ -51,12 +73,6 @@ Class OutputOptionsDataFeedView
 
     End Sub
 
-    ''' <summary>
-    ''' Overrides OnBoundCheckBoxChanged
-    ''' </summary>
-    ''' <param name="checkBox"></param>
-    ''' <param name="columnName"></param>
-    ''' <remarks></remarks>
     Protected Overrides Sub OnBoundCheckBoxChanged(checkBox As System.Windows.Forms.CheckBox, columnName As String)
 
         MyBase.OnBoundCheckBoxChanged(checkBox, columnName)
@@ -75,25 +91,6 @@ Class OutputOptionsDataFeedView
 
     End Sub
 
-    ''' <summary>
-    ''' Overrides EnableView
-    ''' </summary>
-    ''' <param name="enable"></param>
-    ''' <remarks></remarks>
-    Public Overrides Sub EnableView(enable As Boolean)
-
-        MyBase.EnableView(enable)
-
-        If (enable) Then
-            Me.EnableControls()
-        End If
-
-    End Sub
-
-    ''' <summary>
-    ''' Enables all controls
-    ''' </summary>
-    ''' <remarks></remarks>
     Private Sub EnableControls()
 
         'Text Boxes
@@ -107,20 +104,6 @@ Class OutputOptionsDataFeedView
         Me.LabelSummaryFLTimesteps.Enabled = Me.CheckBoxSummaryFL.Checked
         Me.LabelSpatialSTTimesteps.Enabled = Me.CheckBoxSpatialST.Checked
         Me.LabelSpatialFLTimesteps.Enabled = Me.CheckBoxSpatialFL.Checked
-
-    End Sub
-
-    ''' <summary>
-    ''' Handles the Clicked event for the ClearAll button
-    ''' </summary>
-    ''' <param name="sender"></param>
-    ''' <param name="e"></param>
-    ''' <remarks></remarks>
-    Private Sub ButtonClearAll_Click(sender As System.Object, e As System.EventArgs) Handles ButtonClearAll.Click
-
-        Me.ResetBoundControls()
-        Me.ClearDataSheets()
-        Me.EnableControls()
 
     End Sub
 
