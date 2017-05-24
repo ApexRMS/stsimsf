@@ -43,6 +43,12 @@ Module Constants
     Public Const DATASHEET_OUTPUT_STOCK_NAME As String = "SF_OutputStock"
     Public Const DATASHEET_FLOW_ORDER As String = "SF_FlowOrder"
     Public Const DATASHEET_FLOW_ORDER_OPTIONS As String = "SF_FlowOrderOptions"
+    Public Const DATASHEET_OUTPUT_SPATIAL_FLOW_GROUP="SF_OutputSpatialFlowGroup"
+    Public Const DATASHEET_OUTPUT_SPATIAL_FLOW_TYPE="SF_OutputSpatialFlowType"
+    Public Const DATASHEET_OUTPUT_SPATIAL_STOCK_GROUP="SF_OutputSpatialStockGroup"
+    Public Const DATASHEET_OUTPUT_SPATIAL_STOCK_TYPE="SF_OutputSpatialStockType"
+    Public Const DATASHEET_OUTPUT_SPATIAL_FILENAME_COLUMN = "Filename"
+
 
     'Common column names
     Public Const STOCKFLOW_NAME_COLUMN_NAME As String = "Name"

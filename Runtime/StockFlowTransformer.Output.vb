@@ -146,7 +146,7 @@ Partial Class StockFlowTransformer
             rastOutput.InitDblCells()
 
             GetStockValues(s.Id, rastOutput)
-            SaveSpatialStockTypeOutputToRasterFile(rastOutput, Me.ResultScenario, iteration, timestep, s.Id)
+            RasterFiles.SaveOutputRaster(rastOutput, Me.ResultScenario.GetDataSheet(DATASHEET_OUTPUT_SPATIAL_STOCK_TYPE),RasterDataType.DTDouble,  iteration, timestep, DATASHEET_OUTPUT_SPATIAL_FILENAME_COLUMN,s.Id)
 
         Next
 
@@ -224,60 +224,13 @@ Partial Class StockFlowTransformer
                         rastOutput.AddDbl(rastStockType)
                     Next
 
-                    SaveSpatialStockGroupOutputToRasterFile(rastOutput, Me.ResultScenario, iteration, timestep, sgId)
+                    RasterFiles.SaveOutputRaster(rastOutput, Me.ResultScenario.GetDataSheet(DATASHEET_OUTPUT_SPATIAL_STOCK_GROUP),RasterDataType.DTDouble, iteration, timestep, DATASHEET_OUTPUT_SPATIAL_FILENAME_COLUMN, sgId)
                 End If
             Next
         End Using
 
     End Sub
 
-    ''' <summary>
-    ''' Save the Stock Types values contained in the raster object to a raster output file
-    ''' </summary>
-    ''' <param name="raster">An instance of class ApexRaster containing the Stock Type raster data</param>
-    ''' <param name="scenario">The scenario</param>
-    ''' <param name="iteration">The iteration</param>
-    ''' <param name="timestep">The timestep</param>
-    ''' <param name="stockTypeId">The Stock Type ID</param>
-    ''' <remarks></remarks>    
-    Public Shared Sub SaveSpatialStockTypeOutputToRasterFile(raster As StochasticTimeRaster, scenario As Scenario, iteration As Integer, timestep As Integer, stockTypeId As Integer)
-
-        Dim fileName As String
-        '        Name template = Itx-Tsy-stk-z.tif
-        fileName = String.Format(CultureInfo.InvariantCulture, "It{0}-Ts{1}-{2}-{3}",
-                                 iteration.ToString("0000", CultureInfo.InvariantCulture),
-                                 timestep.ToString("0000", CultureInfo.InvariantCulture),
-                                 SPATIAL_MAP_STOCK_TYPE_VARIABLE_PREFIX,
-                                 stockTypeId)
-
-        fileName = RasterFiles.SanitizeFileName(fileName)
-        RasterFiles.SaveDoubleOutputRasterOld(raster, scenario, fileName)
-
-    End Sub
-
-    ''' <summary>
-    ''' Save the Stock Group values contained in the raster object to a raster output file
-    ''' </summary>
-    ''' <param name="raster">An instance of class ApexRaster containing the Stock Group raster data</param>
-    ''' <param name="scenario">The scenario</param>
-    ''' <param name="iteration">The iteration</param>
-    ''' <param name="timestep">The timestep</param>
-    ''' <param name="stockGroupId">The Stock Group ID</param>
-    ''' <remarks></remarks>    
-    Public Shared Sub SaveSpatialStockGroupOutputToRasterFile(raster As StochasticTimeRaster, scenario As Scenario, iteration As Integer, timestep As Integer, stockGroupId As Integer)
-
-        Dim fileName As String
-        '        Name template = Itx-Tsy-stkg-z.tif
-        fileName = String.Format(CultureInfo.InvariantCulture, "It{0}-Ts{1}-{2}-{3}",
-                                 iteration.ToString("0000", CultureInfo.InvariantCulture),
-                                 timestep.ToString("0000", CultureInfo.InvariantCulture),
-                                 SPATIAL_MAP_STOCK_GROUP_VARIABLE_PREFIX,
-                                 stockGroupId)
-
-        fileName = RasterFiles.SanitizeFileName(fileName)
-        RasterFiles.SaveDoubleOutputRasterOld(raster, scenario, fileName)
-
-    End Sub
 
     ''' <summary>
     ''' Processes the current flow spatial data
@@ -294,7 +247,7 @@ Partial Class StockFlowTransformer
         For Each flowType As FlowType In Me.m_FlowTypes.Values
 
             rastOutput.DblCells = GetOutputFlowDictionary()(flowType.Id)
-            SaveSpatialFlowTypeOutputToRasterFile(rastOutput, Me.ResultScenario, iteration, timestep, flowType.Id)
+            RasterFiles.SaveOutputRaster(rastOutput, Me.ResultScenario.GetDataSheet(DATASHEET_OUTPUT_SPATIAL_FLOW_TYPE), RasterDataType.DTDouble, iteration, timestep, DATASHEET_OUTPUT_SPATIAL_FILENAME_COLUMN, flowType.Id)
 
         Next
 
@@ -348,7 +301,7 @@ Partial Class StockFlowTransformer
                         rastOutput.AddDbl(rastFlowType)
                     Next
 
-                    SaveSpatialFlowGroupOutputToRasterFile(rastOutput, Me.ResultScenario, iteration, timestep, fgId)
+                    RasterFiles.SaveOutputRaster(rastOutput, Me.ResultScenario.GetDataSheet(DATASHEET_OUTPUT_SPATIAL_FLOW_GROUP),RasterDataType.DTDouble, iteration, timestep,DATASHEET_OUTPUT_SPATIAL_FILENAME_COLUMN,  fgId)
                 End If
             Next
         End Using
@@ -357,53 +310,6 @@ Partial Class StockFlowTransformer
 
     End Sub
 
-    ''' <summary>
-    ''' Save the Flow values contained in the raster object to a raster output file
-    ''' </summary>
-    ''' <param name="raster">An instance of class ApexRaster containing the Flow raster data</param>
-    ''' <param name="scenario">The scenario</param>
-    ''' <param name="iteration">The iteration</param>
-    ''' <param name="timestep">The timestep</param>
-    ''' <param name="flowTypeId">The Flow Type ID</param>
-    ''' <remarks></remarks>    
-    Public Shared Sub SaveSpatialFlowTypeOutputToRasterFile(raster As StochasticTimeRaster, scenario As Scenario, iteration As Integer, timestep As Integer, flowTypeId As Integer)
-
-        Dim fileName As String
-        '        Name template = Itx-Tsy-flo-z.tif
-        fileName = String.Format(CultureInfo.InvariantCulture, "It{0}-Ts{1}-{2}-{3}",
-                                 iteration.ToString("0000", CultureInfo.InvariantCulture),
-                                 timestep.ToString("0000", CultureInfo.InvariantCulture),
-                                 SPATIAL_MAP_FLOW_TYPE_VARIABLE_PREFIX,
-                                 flowTypeId)
-
-        fileName = RasterFiles.SanitizeFileName(fileName)
-        RasterFiles.SaveDoubleOutputRasterOld(raster, scenario, fileName)
-
-    End Sub
-
-    ''' <summary>
-    ''' Save the Flow Group values contained in the raster object to a raster output file
-    ''' </summary>
-    ''' <param name="raster">An instance of class ApexRaster containing the Flow raster data</param>
-    ''' <param name="scenario">The scenario</param>
-    ''' <param name="iteration">The iteration</param>
-    ''' <param name="timestep">The timestep</param>
-    ''' <param name="flowGroupId">The Flow Group ID</param>
-    ''' <remarks></remarks>    
-    Public Shared Sub SaveSpatialFlowGroupOutputToRasterFile(raster As StochasticTimeRaster, scenario As Scenario, iteration As Integer, timestep As Integer, flowGroupId As Integer)
-
-        Dim fileName As String
-        '        Name template = Itx-Tsy-flo-z.tif
-        fileName = String.Format(CultureInfo.InvariantCulture, "It{0}-Ts{1}-{2}-{3}",
-                                 iteration.ToString("0000", CultureInfo.InvariantCulture),
-                                 timestep.ToString("0000", CultureInfo.InvariantCulture),
-                                 SPATIAL_MAP_FLOW_GROUP_VARIABLE_PREFIX,
-                                 flowGroupId)
-
-        fileName = RasterFiles.SanitizeFileName(fileName)
-        RasterFiles.SaveDoubleOutputRasterOld(raster, scenario, fileName)
-
-    End Sub
 
     ''' <summary>
     ''' Adds to the stock summary result collection
