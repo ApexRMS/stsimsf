@@ -228,7 +228,6 @@
     </Compile>
     <Compile Include="Providers\ResultLayoutProvider.vb" />
     <Compile Include="Providers\SFChartProvider.vb" />
-    <Compile Include="Providers\SFMapProvider.vb" />
     <Compile Include="Reports\SummaryFlowReport.vb" />
     <Compile Include="Reports\SummaryStockReport.vb" />
     <Compile Include="Shared\BaseValueDisplayListItem.vb" />
