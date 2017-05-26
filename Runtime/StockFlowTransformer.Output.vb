@@ -146,7 +146,7 @@ Partial Class StockFlowTransformer
             rastOutput.InitDblCells()
 
             GetStockValues(s.Id, rastOutput)
-            RasterFiles.SaveOutputRaster(rastOutput, Me.ResultScenario.GetDataSheet(DATASHEET_OUTPUT_SPATIAL_STOCK_TYPE),RasterDataType.DTDouble,  iteration, timestep, DATASHEET_OUTPUT_SPATIAL_FILENAME_COLUMN,s.Id)
+            RasterFiles.SaveOutputRaster(rastOutput, Me.ResultScenario.GetDataSheet(DATASHEET_OUTPUT_SPATIAL_STOCK_TYPE),RasterDataType.DTDouble,  iteration, timestep, SPATIAL_MAP_STOCK_TYPE_VARIABLE_PREFIX,s.Id,DATASHEET_OUTPUT_SPATIAL_FILENAME_COLUMN)
 
         Next
 
@@ -224,7 +224,7 @@ Partial Class StockFlowTransformer
                         rastOutput.AddDbl(rastStockType)
                     Next
 
-                    RasterFiles.SaveOutputRaster(rastOutput, Me.ResultScenario.GetDataSheet(DATASHEET_OUTPUT_SPATIAL_STOCK_GROUP),RasterDataType.DTDouble, iteration, timestep, DATASHEET_OUTPUT_SPATIAL_FILENAME_COLUMN, sgId)
+                    RasterFiles.SaveOutputRaster(rastOutput, Me.ResultScenario.GetDataSheet(DATASHEET_OUTPUT_SPATIAL_STOCK_GROUP),RasterDataType.DTDouble, iteration, timestep, SPATIAL_MAP_STOCK_GROUP_VARIABLE_PREFIX, sgId,DATASHEET_OUTPUT_SPATIAL_FILENAME_COLUMN)
                 End If
             Next
         End Using
@@ -247,7 +247,7 @@ Partial Class StockFlowTransformer
         For Each flowType As FlowType In Me.m_FlowTypes.Values
 
             rastOutput.DblCells = GetOutputFlowDictionary()(flowType.Id)
-            RasterFiles.SaveOutputRaster(rastOutput, Me.ResultScenario.GetDataSheet(DATASHEET_OUTPUT_SPATIAL_FLOW_TYPE), RasterDataType.DTDouble, iteration, timestep, DATASHEET_OUTPUT_SPATIAL_FILENAME_COLUMN, flowType.Id)
+            RasterFiles.SaveOutputRaster(rastOutput, Me.ResultScenario.GetDataSheet(DATASHEET_OUTPUT_SPATIAL_FLOW_TYPE), RasterDataType.DTDouble, iteration, timestep, SPATIAL_MAP_FLOW_TYPE_VARIABLE_PREFIX, flowType.Id,DATASHEET_OUTPUT_SPATIAL_FILENAME_COLUMN)
 
         Next
 
@@ -301,7 +301,7 @@ Partial Class StockFlowTransformer
                         rastOutput.AddDbl(rastFlowType)
                     Next
 
-                    RasterFiles.SaveOutputRaster(rastOutput, Me.ResultScenario.GetDataSheet(DATASHEET_OUTPUT_SPATIAL_FLOW_GROUP),RasterDataType.DTDouble, iteration, timestep,DATASHEET_OUTPUT_SPATIAL_FILENAME_COLUMN,  fgId)
+                    RasterFiles.SaveOutputRaster(rastOutput, Me.ResultScenario.GetDataSheet(DATASHEET_OUTPUT_SPATIAL_FLOW_GROUP),RasterDataType.DTDouble, iteration, timestep,SPATIAL_MAP_FLOW_GROUP_VARIABLE_PREFIX,  fgId,DATASHEET_OUTPUT_SPATIAL_FILENAME_COLUMN)
                 End If
             Next
         End Using
