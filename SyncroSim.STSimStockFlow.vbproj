@@ -207,10 +207,6 @@
     <Compile Include="Forms\FilterFlowTypesForm.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Maps\FlowGroupRasterMap.vb" />
-    <Compile Include="Maps\FlowRasterMap.vb" />
-    <Compile Include="Maps\StockGroupRasterMap.vb" />
-    <Compile Include="Maps\StockRasterMap.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="My Project\Application.Designer.vb">
       <AutoGen>True</AutoGen>
@@ -321,6 +317,9 @@
       <Project>{33774e89-6247-4162-8c3f-09b7470202ca}</Project>
       <Name>SyncroSim.STSim</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Maps\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
