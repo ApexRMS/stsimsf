@@ -22,9 +22,9 @@ Class OutputFlowDataSheet
 
         GetStratumLabelStrings(Me.Project.GetDataSheet("STSim_Terminology"), s, ss)
 
-        Me.Columns(FROM_STRATUM_ID_COLUMN_NAME).DisplayName = String.Format(CultureInfo.CurrentCulture, "From {0}", s)
-        Me.Columns(FROM_SECONDARY_STRATUM_ID_COLUMN_NAME).DisplayName = String.Format(CultureInfo.CurrentCulture, "From {0}", ss)
-        Me.Columns(TO_STRATUM_ID_COLUMN_NAME).DisplayName = String.Format(CultureInfo.CurrentCulture, "To {0}", s)
+        Me.Columns(FROM_STRATUM_ID_COLUMN_NAME).DisplayName = String.Format(CultureInfo.InvariantCulture, "From {0}", s)
+        Me.Columns(FROM_SECONDARY_STRATUM_ID_COLUMN_NAME).DisplayName = String.Format(CultureInfo.InvariantCulture, "From {0}", ss)
+        Me.Columns(TO_STRATUM_ID_COLUMN_NAME).DisplayName = String.Format(CultureInfo.InvariantCulture, "To {0}", s)
 
     End Sub
 

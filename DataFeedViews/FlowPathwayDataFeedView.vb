@@ -566,11 +566,11 @@ Class FlowPathwayDataFeedView
         Dim d As FlowPathwayDiagram = Me.GetFlowDiagram()
         Dim ds As DataSheet = Me.DataFeed.Project.GetDataSheet(DATASHEET_STOCK_TYPE_NAME)
 
-        sb.AppendFormat(CultureInfo.CurrentCulture, "{0} - ", Me.DataFeed.Scenario.DisplayName)
+        sb.AppendFormat(CultureInfo.InvariantCulture, "{0} - ", Me.DataFeed.Scenario.DisplayName)
 
         For Each s As StockTypeShape In d.SelectedShapes
 
-            sb.AppendFormat(CultureInfo.CurrentCulture, "{0},",
+            sb.AppendFormat(CultureInfo.InvariantCulture, "{0},",
                 CStr(DataTableUtilities.GetTableValue(ds.GetData(), ds.ValueMember, s.StockTypeId, ds.DisplayMember)))
 
         Next
@@ -601,7 +601,7 @@ Class FlowPathwayDataFeedView
                     Dim DisplayValue As String = CStr(DataTableUtilities.GetTableValue(
                         ds.GetData(), ds.ValueMember, s.StockTypeId, ds.DisplayMember))
 
-                    sb.AppendFormat(CultureInfo.CurrentCulture, "{0}-{1}:", s.StockTypeId, DisplayValue)
+                    sb.AppendFormat(CultureInfo.InvariantCulture, "{0}-{1}:", s.StockTypeId, DisplayValue)
 
                 End If
 

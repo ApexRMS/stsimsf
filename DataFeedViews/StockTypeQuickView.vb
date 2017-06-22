@@ -155,8 +155,8 @@ Class StockTypeQuickView
         Next
 
         Dim StratumLabel As String = Me.GetStratumLabelTerminology()
-        Dim FromStratum As String = String.Format(CultureInfo.CurrentCulture, "From {0}", StratumLabel)
-        Dim ToStratum As String = String.Format(CultureInfo.CurrentCulture, "To {0}", StratumLabel)
+        Dim FromStratum As String = String.Format(CultureInfo.InvariantCulture, "From {0}", StratumLabel)
+        Dim ToStratum As String = String.Format(CultureInfo.InvariantCulture, "To {0}", StratumLabel)
 
         Me.m_FlowPathwayView.Commands.Add(New Command("Flows To", AddressOf OnExecuteFlowsToCommand, AddressOf OnUpdateFlowsToCommand))
         Me.m_FlowPathwayView.Commands.Add(New Command("Flows From", AddressOf OnExecuteFlowsFromCommand, AddressOf OnUpdateFlowsFromCommand))

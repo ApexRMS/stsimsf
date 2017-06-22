@@ -143,7 +143,7 @@ Partial Class StockFlowTransformer
                 RasterFiles.LoadRasterFile(fullFilename, raster, RasterDataType.DTDouble)
             Catch ex As Exception
 
-                Dim message As String = String.Format(CultureInfo.CurrentCulture, SPATIAL_FILE_STOCK_LOAD_WARNING, stockFileName)
+                Dim message As String = String.Format(CultureInfo.InvariantCulture, SPATIAL_FILE_STOCK_LOAD_WARNING, stockFileName)
                 Throw New ArgumentException(message)
 
             End Try
@@ -154,13 +154,13 @@ Partial Class StockFlowTransformer
 
             If cmpResult = STSim.CompareMetadataResult.ImportantDifferences Then
 
-                Dim message As String = String.Format(CultureInfo.CurrentCulture, SPATIAL_FILE_STOCK_METADATA_WARNING, stockFileName, cmpMsg)
+                Dim message As String = String.Format(CultureInfo.InvariantCulture, SPATIAL_FILE_STOCK_METADATA_WARNING, stockFileName, cmpMsg)
                 Me.RecordStatus(StatusType.Warning, message)
 
             Else
 
                 If cmpResult = STSim.CompareMetadataResult.UnimportantDifferences Then
-                    Dim message As String = String.Format(CultureInfo.CurrentCulture, SPATIAL_FILE_STOCK_METADATA_INFO, stockFileName, cmpMsg)
+                    Dim message As String = String.Format(CultureInfo.InvariantCulture, SPATIAL_FILE_STOCK_METADATA_INFO, stockFileName, cmpMsg)
                     Me.RecordStatus(StatusType.Information, message)
                 End If
 
@@ -507,7 +507,7 @@ Partial Class StockFlowTransformer
                 RasterFiles.LoadRasterFile(FullFilename, MultiplierRaster, RasterDataType.DTDouble)
             Catch ex As Exception
 
-                Dim msg As String = String.Format(CultureInfo.CurrentCulture, SPATIAL_PROCESS_WARNING, FullFilename)
+                Dim msg As String = String.Format(CultureInfo.InvariantCulture, SPATIAL_PROCESS_WARNING, FullFilename)
                 Throw New ArgumentException(msg)
 
             End Try

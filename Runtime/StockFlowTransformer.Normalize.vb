@@ -73,7 +73,7 @@ Partial Class StockFlowTransformer
 
         If (dr(timestepsColumnName) Is DBNull.Value) Then
 
-            Dim message As String = String.Format(CultureInfo.CurrentCulture,
+            Dim message As String = String.Format(CultureInfo.InvariantCulture,
                     "Stocks and Flows Timestep value for '{0}' is invalid.  Using default.", timestepsColumnHeaderText)
 
             Me.RecordStatus(StatusType.Warning, message)
@@ -87,7 +87,7 @@ Partial Class StockFlowTransformer
 
         If (val > maxTimestep) Then
 
-            Dim message As String = String.Format(CultureInfo.CurrentCulture,
+            Dim message As String = String.Format(CultureInfo.InvariantCulture,
                 "Stocks and Flows Timestep value for '{0}' out of range.  Using default.", timestepsColumnHeaderText)
 
             Me.RecordStatus(StatusType.Warning, message)

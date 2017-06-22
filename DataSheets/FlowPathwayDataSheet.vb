@@ -19,8 +19,8 @@ Class FlowPathwayDataSheet
 
         Dim p As String = e.GetValue("PrimaryStratumLabel", "Stratum")
 
-        Me.Columns(FROM_STRATUM_ID_COLUMN_NAME).DisplayName = String.Format(CultureInfo.CurrentCulture, "From {0}", p)
-        Me.Columns(TO_STRATUM_ID_COLUMN_NAME).DisplayName = String.Format(CultureInfo.CurrentCulture, "To {0}", p)
+        Me.Columns(FROM_STRATUM_ID_COLUMN_NAME).DisplayName = String.Format(CultureInfo.InvariantCulture, "From {0}", p)
+        Me.Columns(TO_STRATUM_ID_COLUMN_NAME).DisplayName = String.Format(CultureInfo.InvariantCulture, "To {0}", p)
 
     End Sub
 
@@ -60,7 +60,7 @@ Class FlowPathwayDataSheet
             If (Not StockTypes.ContainsKey(FromStockTypeId)) Then
 
                 Dim StockTypeName As String = CStr(DataTableUtilities.GetTableValue(StockTypeSheet.GetData(), StockTypeSheet.ValueMember, FromStockTypeId, StockTypeSheet.DisplayMember))
-                Throw New DataException(String.Format(CultureInfo.CurrentCulture, "Cannot import flow pathways because the 'From Stock' does not exist in this scenario: {0}", StockTypeName))
+                Throw New DataException(String.Format(CultureInfo.InvariantCulture, "Cannot import flow pathways because the 'From Stock' does not exist in this scenario: {0}", StockTypeName))
 
             End If
 
@@ -69,7 +69,7 @@ Class FlowPathwayDataSheet
             If (Not StockTypes.ContainsKey(ToStockTypeId)) Then
 
                 Dim StockTypeName As String = CStr(DataTableUtilities.GetTableValue(StockTypeSheet.GetData(), StockTypeSheet.ValueMember, ToStockTypeId, StockTypeSheet.DisplayMember))
-                Throw New DataException(String.Format(CultureInfo.CurrentCulture, "Cannot import flow pathways because the 'To Stock' does not exist in this scenario: {0}", StockTypeName))
+                Throw New DataException(String.Format(CultureInfo.InvariantCulture, "Cannot import flow pathways because the 'To Stock' does not exist in this scenario: {0}", StockTypeName))
 
             End If
 

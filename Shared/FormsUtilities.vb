@@ -18,7 +18,7 @@ Module FormsUtilities
     End Function
 
     Function ApplicationMessageBox(text As [String], buttons As MessageBoxButtons, ParamArray args As Object()) As DialogResult
-        Return ApplicationMessageBox([String].Format(CultureInfo.CurrentCulture, text, args), buttons)
+        Return ApplicationMessageBox([String].Format(CultureInfo.InvariantCulture, text, args), buttons)
     End Function
 
     Function InformationMessageBox(text As [String]) As DialogResult

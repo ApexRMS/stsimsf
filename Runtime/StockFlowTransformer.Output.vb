@@ -214,7 +214,7 @@ Partial Class StockFlowTransformer
                             amt = CDbl(drGrpType("Value"))
                         End If
                         Dim stockTypeId As Integer = CInt(drGrpType(STOCK_TYPE_ID_COLUMN_NAME))
-                        Debug.Print(String.Format(CultureInfo.CurrentCulture, "Group Name {0}, Group ID:{3}, Type:{1}, Amount:{2}", sgName, stockTypeId, amt, sgId))
+                        Debug.Print(String.Format(CultureInfo.InvariantCulture, "Group Name {0}, Group ID:{3}, Type:{1}, Amount:{2}", sgName, stockTypeId, amt, sgId))
                         Dim rastStockType As New StochasticTimeRaster
                         ' Fetch the raster metadata from the InpRasters object
                         Me.STSimTransformer.InputRasters.GetMetadata(rastStockType)
@@ -290,7 +290,7 @@ Partial Class StockFlowTransformer
                         End If
 
                         Dim flowTypeId As Integer = CInt(drGrpType(FLOW_TYPE_ID_COLUMN_NAME))
-                        Debug.Print(String.Format(CultureInfo.CurrentCulture, "Group Name {0}, Group ID:{3}, Type:{1}, Amount:{2}", fgName, flowTypeId, amt, fgId))
+                        Debug.Print(String.Format(CultureInfo.InvariantCulture, "Group Name {0}, Group ID:{3}, Type:{1}, Amount:{2}", fgName, flowTypeId, amt, fgId))
                         Dim rastFlowType As New StochasticTimeRaster
                         ' Fetch the raster metadata from the InpRasters object
                         Me.STSimTransformer.InputRasters.GetMetadata(rastFlowType)

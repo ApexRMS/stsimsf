@@ -49,7 +49,7 @@ Class SummaryStockReport
         Dim SecondaryStratumLabel As String = Nothing
 
         GetStratumLabelStrings(dstermSTSim, PrimaryStratumLabel, SecondaryStratumLabel)
-        Dim TotalValue As String = String.Format(CultureInfo.CurrentCulture, "Total Value ({0})", StockUnits)
+        Dim TotalValue As String = String.Format(CultureInfo.InvariantCulture, "Total Value ({0})", StockUnits)
 
         c.Add(New ExportColumn("ScenarioID", "Scenario ID"))
         c.Add(New ExportColumn("ScenarioName", "Scenario"))

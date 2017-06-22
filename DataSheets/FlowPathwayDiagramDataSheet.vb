@@ -93,7 +93,7 @@ Class FlowPathwayDiagramDataSheet
             Return False
         End If
 
-        Dim LocUpper As String = Location.ToUpper(CultureInfo.CurrentCulture).Trim
+        Dim LocUpper As String = Location.ToUpper(CultureInfo.InvariantCulture).Trim
 
         If (String.IsNullOrEmpty(LocUpper)) Then
             Return False
