@@ -71,6 +71,10 @@ Class SFUpdates
             SF0000015(store)
         End If
 
+        If (currentSchemaVersion < 16) Then
+            SF0000016(store)
+        End If
+
     End Sub
 
     ''' <summary>
@@ -459,6 +463,11 @@ Class SFUpdates
 
     End Sub
 
+    ''' <summary>
+    ''' SF0000015
+    ''' </summary>
+    ''' <param name="store"></param>
+    ''' <remarks>New columns for SF_FlowPathway if it exists</remarks>
     Private Shared Sub SF0000015(ByVal store As DataStore)
 
         If (store.TableExists("SF_FlowPathway")) Then
@@ -467,6 +476,24 @@ Class SFUpdates
             store.ExecuteNonQuery("CREATE TABLE SF_FlowPathway(FlowPathwayID INTEGER PRIMARY KEY AUTOINCREMENT, ScenarioID INTEGER, Iteration INTEGER, Timestep INTEGER, FromStratumID INTEGER, FromStateClassID INTEGER, FromAgeMin INTEGER, FromStockTypeID INTEGER, ToStratumID INTEGER, ToStateClassID INTEGER, ToAgeMin INTEGER, ToStockTypeID INTEGER, TransitionGroupID INTEGER, StateAttributeTypeID INTEGER, FlowTypeID INTEGER, Multiplier DOUBLE)")
             store.ExecuteNonQuery("INSERT INTO SF_FlowPathway(ScenarioID, FromStratumID, FromStateClassID, FromAgeMin, FromStockTypeID, ToStratumID, ToStateClassID, ToAgeMin, ToStockTypeID, TransitionGroupID, StateAttributeTypeID, FlowTypeID, Multiplier) SELECT ScenarioID, FromStratumID, FromStateClassID, FromAgeMin, FromStockTypeID, ToStratumID, ToStateClassID, ToAgeMin, ToStockTypeID, TransitionGroupID, StateAttributeTypeID, FlowTypeID, Multiplier FROM TEMP_TABLE")
             store.ExecuteNonQuery("DROP TABLE TEMP_TABLE")
+
+        End If
+
+    End Sub
+
+    ''' <summary>
+    ''' SF0000016
+    ''' </summary>
+    ''' <param name="store"></param>
+    ''' <remarks>
+    ''' Add missing index on SF_FlowPathway if missing
+    ''' drop</remarks>
+    Private Shared Sub SF0000016(ByVal store As DataStore)
+
+        If (store.TableExists("SF_FlowPathway")) Then
+
+            store.ExecuteNonQuery("DROP INDEX IF EXISTS SF_FlowPathway_Index")
+            store.ExecuteNonQuery("CREATE INDEX SF_FlowPathway_Index ON SF_FlowPathway(ScenarioID)")
 
         End If
 
