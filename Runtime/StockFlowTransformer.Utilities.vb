@@ -158,7 +158,7 @@ Partial Class StockFlowTransformer
         End If
 
         If (Not ICSpatialRecordsExist And Not ICNonSpatialRecordsExist) Then
-            Me.RecordStatus(StatusType.Warning, "No initial stocks have been specified.  All stocks will be initialized to zero.")
+            Me.RecordStatus(StatusType.Information, "No initial stocks have been specified.  All stocks will be initialized to zero.")
         End If
 
         Return True
