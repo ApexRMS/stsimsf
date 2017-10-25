@@ -75,6 +75,10 @@ Class SFUpdates
             SF0000016(store)
         End If
 
+        If (currentSchemaVersion < 17) Then
+            SF0000017(store)
+        End If
+
     End Sub
 
     ''' <summary>
@@ -486,14 +490,58 @@ Class SFUpdates
     ''' </summary>
     ''' <param name="store"></param>
     ''' <remarks>
-    ''' Add missing index on SF_FlowPathway if missing
-    ''' drop</remarks>
+    ''' Add missing index on SF_FlowPathway if missing drop</remarks>
     Private Shared Sub SF0000016(ByVal store As DataStore)
 
         If (store.TableExists("SF_FlowPathway")) Then
 
             store.ExecuteNonQuery("DROP INDEX IF EXISTS SF_FlowPathway_Index")
             store.ExecuteNonQuery("CREATE INDEX SF_FlowPathway_Index ON SF_FlowPathway(ScenarioID)")
+
+        End If
+
+    End Sub
+
+    ''' <summary>
+    ''' SF0000017
+    ''' </summary>
+    ''' <param name="store"></param>
+    ''' <remarks>This update adds a tertiary stratum to all applicable tables</remarks>
+    Private Shared Sub SF0000017(ByVal store As DataStore)
+
+        If (store.TableExists("SF_FlowMultiplier")) Then
+
+            store.ExecuteNonQuery("ALTER TABLE SF_FlowMultiplier RENAME TO TEMP_TABLE")
+            store.ExecuteNonQuery("CREATE TABLE SF_FlowMultiplier(FlowMultiplierID INTEGER PRIMARY KEY AUTOINCREMENT, ScenarioID INTEGER, Iteration INTEGER, Timestep INTEGER, StratumID INTEGER, SecondaryStratumID INTEGER, TertiaryStratumID INTEGER, StateClassID INTEGER, FlowGroupID INTEGER, Value DOUBLE, DistributionType INTEGER, DistributionFrequencyID INTEGER, DistributionSD DOUBLE, DistributionMin DOUBLE, DistributionMax DOUBLE)")
+            store.ExecuteNonQuery("INSERT INTO SF_FlowMultiplier(ScenarioID, Iteration, Timestep, StratumID, SecondaryStratumID, StateClassID, FlowGroupID, Value, DistributionType, DistributionFrequencyID, DistributionSD, DistributionMin, DistributionMax) SELECT ScenarioID, Iteration, Timestep, StratumID, SecondaryStratumID, StateClassID, FlowGroupID, Value, DistributionType, DistributionFrequencyID, DistributionSD, DistributionMin, DistributionMax FROM TEMP_TABLE")
+            store.ExecuteNonQuery("DROP TABLE TEMP_TABLE")
+
+        End If
+
+        If (store.TableExists("SF_StockLimit")) Then
+
+            store.ExecuteNonQuery("ALTER TABLE SF_StockLimit RENAME TO TEMP_TABLE")
+            store.ExecuteNonQuery("CREATE TABLE SF_StockLimit(StockLimitID INTEGER PRIMARY KEY AUTOINCREMENT, ScenarioID INTEGER, Iteration INTEGER, Timestep INTEGER, StockTypeID INTEGER, StratumID INTEGER, SecondaryStratumID INTEGER, TertiaryStratumID INTEGER, StateClassID INTEGER, StockMinimum DOUBLE, StockMaximum DOUBLE)")
+            store.ExecuteNonQuery("INSERT INTO SF_StockLimit(ScenarioID, Iteration, Timestep, StockTypeID, StratumID, SecondaryStratumID, StateClassID, StockMinimum, StockMaximum) SELECT ScenarioID, Iteration, Timestep, StockTypeID, StratumID, SecondaryStratumID, StateClassID, StockMinimum, StockMaximum FROM TEMP_TABLE")
+            store.ExecuteNonQuery("DROP TABLE TEMP_TABLE")
+
+        End If
+
+        If (store.TableExists("SF_OutputFlow")) Then
+
+            store.ExecuteNonQuery("ALTER TABLE SF_OutputFlow RENAME TO TEMP_TABLE")
+            store.ExecuteNonQuery("CREATE TABLE SF_OutputFlow(ScenarioID INTEGER, Iteration INTEGER, Timestep INTEGER, FromStratumID INTEGER, FromSecondaryStratumID INTEGER, FromTertiaryStratumID INTEGER, FromStateClassID INTEGER, FromStockTypeID INTEGER, TransitionTypeID INTEGER, ToStratumID INTEGER, ToStateClassID INTEGER, ToStockTypeID INTEGER, FlowTypeID INTEGER, Amount DOUBLE)")
+            store.ExecuteNonQuery("INSERT INTO SF_OutputFlow(ScenarioID, Iteration, Timestep, FromStratumID, FromSecondaryStratumID, FromStateClassID, FromStockTypeID, TransitionTypeID, ToStratumID, ToStateClassID, ToStockTypeID, FlowTypeID, Amount) SELECT ScenarioID, Iteration, Timestep, FromStratumID, FromSecondaryStratumID, FromStateClassID, FromStockTypeID, TransitionTypeID, ToStratumID, ToStateClassID, ToStockTypeID, FlowTypeID, Amount FROM TEMP_TABLE")
+            store.ExecuteNonQuery("DROP TABLE TEMP_TABLE")
+
+        End If
+
+        If (store.TableExists("SF_OutputStock")) Then
+
+            store.ExecuteNonQuery("ALTER TABLE SF_OutputStock RENAME TO TEMP_TABLE")
+            store.ExecuteNonQuery("CREATE TABLE SF_OutputStock(ScenarioID INTEGER, Iteration INTEGER, Timestep INTEGER, StratumID INTEGER, SecondaryStratumID INTEGER, TertiaryStratumID INTEGER, StateClassID INTEGER, StockTypeID INTEGER, Amount DOUBLE)")
+            store.ExecuteNonQuery("INSERT INTO SF_OutputStock(ScenarioID, Iteration, Timestep, StratumID, SecondaryStratumID, StateClassID, StockTypeID, Amount) SELECT ScenarioID, Iteration, Timestep, StratumID, SecondaryStratumID, StateClassID, StockTypeID, Amount FROM TEMP_TABLE")
+            store.ExecuteNonQuery("DROP TABLE TEMP_TABLE")
 
         End If
 
