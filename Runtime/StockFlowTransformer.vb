@@ -331,6 +331,7 @@ Class StockFlowTransformer
                 s.StockTypeId,
                 e.Cell.StratumId,
                 e.Cell.SecondaryStratumId,
+                e.Cell.TertiaryStratumId,
                 e.Cell.StateClassId,
                 e.Iteration,
                 e.Timestep)
@@ -339,6 +340,7 @@ Class StockFlowTransformer
                 s.StateAttributeTypeId,
                 e.Cell.StratumId,
                 e.Cell.SecondaryStratumId,
+                e.Cell.TertiaryStratumId,
                 e.Cell.StateClassId,
                 e.Iteration,
                 e.Timestep,
@@ -363,6 +365,7 @@ Class StockFlowTransformer
                         s.StockTypeId,
                         e.Cell.StratumId,
                         e.Cell.SecondaryStratumId,
+                        e.Cell.TertiaryStratumId,
                         e.Cell.StateClassId,
                         e.Iteration,
                         e.Timestep)
@@ -681,10 +684,10 @@ Class StockFlowTransformer
                 Dim d As Dictionary(Of Integer, Double) = GetStockAmountDictionary(cell)
 
                 Dim limsrc As StockLimit = Me.m_StockLimitMap.GetStockLimit(
-                    fp.FromStockTypeId, cell.StratumId, cell.SecondaryStratumId, cell.StateClassId, iteration, timestep)
+                    fp.FromStockTypeId, cell.StratumId, cell.SecondaryStratumId, cell.TertiaryStratumId, cell.StateClassId, iteration, timestep)
 
                 Dim limdst As StockLimit = Me.m_StockLimitMap.GetStockLimit(
-                    fp.ToStockTypeId, cell.StratumId, cell.SecondaryStratumId, cell.StateClassId, iteration, timestep)
+                    fp.ToStockTypeId, cell.StratumId, cell.SecondaryStratumId, cell.TertiaryStratumId, cell.StateClassId, iteration, timestep)
 
                 If (Not d.ContainsKey(fp.FromStockTypeId)) Then
 
@@ -764,6 +767,7 @@ Class StockFlowTransformer
                 fp.StateAttributeTypeId.Value,
                 cell.StratumId,
                 cell.SecondaryStratumId,
+                cell.TertiaryStratumId,
                 cell.StateClassId,
                 iteration,
                 timestep,

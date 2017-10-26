@@ -9,17 +9,18 @@ Imports SyncroSim.Common
 Imports System.Collections.ObjectModel
 
 Friend Class OutputFlowCollection
-    Inherits KeyedCollection(Of NineIntegerLookupKey, OutputFlow)
+    Inherits KeyedCollection(Of TenIntegerLookupKey, OutputFlow)
 
     Public Sub New()
-        MyBase.New(New NineIntegerLookupKeyEqualityComparer)
+        MyBase.New(New TenIntegerLookupKeyEqualityComparer)
     End Sub
 
-    Protected Overrides Function GetKeyForItem(ByVal item As OutputFlow) As NineIntegerLookupKey
+    Protected Overrides Function GetKeyForItem(ByVal item As OutputFlow) As TenIntegerLookupKey
 
-        Return New NineIntegerLookupKey(
+        Return New TenIntegerLookupKey(
             item.FromStratumId,
             GetNullableKey(item.FromSecondaryStratumId),
+            GetNullableKey(item.FromTertiaryStratumId),
             item.FromStateClassId,
             item.FromStockTypeId,
             GetNullableKey(item.TransitionTypeId),

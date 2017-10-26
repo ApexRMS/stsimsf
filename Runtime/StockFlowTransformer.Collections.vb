@@ -193,6 +193,7 @@ Partial Class StockFlowTransformer
             Dim StockTypeId As Integer = 0
             Dim StratumId As Nullable(Of Integer) = Nothing
             Dim SecondaryStratumId As Nullable(Of Integer) = Nothing
+            Dim TertiaryStratumId As Nullable(Of Integer) = Nothing
             Dim StateClassId As Nullable(Of Integer) = Nothing
             Dim StockMin As Double = Double.MinValue
             Dim StockMax As Double = Double.MaxValue
@@ -215,6 +216,10 @@ Partial Class StockFlowTransformer
                 SecondaryStratumId = CType(dr(SECONDARY_STRATUM_ID_COLUMN_NAME), Integer)
             End If
 
+            If (dr(TERTIARY_STRATUM_ID_COLUMN_NAME) IsNot DBNull.Value) Then
+                TertiaryStratumId = CInt(dr(TERTIARY_STRATUM_ID_COLUMN_NAME))
+            End If
+
             If (dr(STATECLASS_ID_COLUMN_NAME) IsNot DBNull.Value) Then
                 StateClassId = CType(dr(STATECLASS_ID_COLUMN_NAME), Integer)
             End If
@@ -233,6 +238,7 @@ Partial Class StockFlowTransformer
                 StockTypeId,
                 StratumId,
                 SecondaryStratumId,
+                TertiaryStratumId,
                 StateClassId,
                 StockMin,
                 StockMax))
@@ -343,6 +349,7 @@ Partial Class StockFlowTransformer
             Dim Timestep As Nullable(Of Integer) = Nothing
             Dim StratumId As Nullable(Of Integer) = Nothing
             Dim SecondaryStratumId As Nullable(Of Integer) = Nothing
+            Dim TertiaryStratumId As Nullable(Of Integer) = Nothing
             Dim StateClassId As Nullable(Of Integer) = Nothing
             Dim FlowGroupId As Integer
             Dim MultiplierAmount As Nullable(Of Double) = Nothing
@@ -366,6 +373,10 @@ Partial Class StockFlowTransformer
 
             If (dr(SECONDARY_STRATUM_ID_COLUMN_NAME) IsNot DBNull.Value) Then
                 SecondaryStratumId = CInt(dr(SECONDARY_STRATUM_ID_COLUMN_NAME))
+            End If
+
+            If (dr(TERTIARY_STRATUM_ID_COLUMN_NAME) IsNot DBNull.Value) Then
+                TertiaryStratumId = CInt(dr(TERTIARY_STRATUM_ID_COLUMN_NAME))
             End If
 
             If (dr(STATECLASS_ID_COLUMN_NAME) IsNot DBNull.Value) Then
@@ -405,6 +416,7 @@ Partial Class StockFlowTransformer
                     Timestep,
                     StratumId,
                     SecondaryStratumId,
+                    TertiaryStratumId,
                     StateClassId,
                     FlowGroupId,
                     MultiplierAmount,
@@ -457,7 +469,6 @@ Partial Class StockFlowTransformer
                 Order = CDbl(dr(DATASHEET_FLOW_ORDER_ORDER_COLUMN_NAME))
             End If
 
-
             Try
 
                 Dim Item As New FlowOrder(
@@ -475,7 +486,6 @@ Partial Class StockFlowTransformer
         Next
 
     End Sub
-
 
     Private Sub FillFlowSpatialMultipliers()
 

@@ -12,6 +12,7 @@ MustInherit Class StockFlowMapBase
     Private m_Scenario As Scenario
     Private m_PrimaryStratumLabel As String
     Private m_SecondaryStratumLabel As String
+    Private m_TertiaryStratumLabel As String
     Private m_HasItems As Boolean
 
     Protected Sub New(ByVal scenario As Scenario)
@@ -21,7 +22,8 @@ MustInherit Class StockFlowMapBase
         GetStratumLabelStrings(
             scenario.Project.GetDataSheet("STSim_Terminology"),
             Me.m_PrimaryStratumLabel,
-            Me.m_SecondaryStratumLabel)
+            Me.m_SecondaryStratumLabel,
+            Me.m_TertiaryStratumLabel)
 
     End Sub
 
@@ -34,6 +36,12 @@ MustInherit Class StockFlowMapBase
     Protected ReadOnly Property SecondaryStratumLabel As String
         Get
             Return Me.m_SecondaryStratumLabel
+        End Get
+    End Property
+
+    Protected ReadOnly Property TertiaryStratumLabel As String
+        Get
+            Return Me.m_TertiaryStratumLabel
         End Get
     End Property
 
@@ -67,6 +75,10 @@ MustInherit Class StockFlowMapBase
 
     Protected Function GetSecondaryStratumName(ByVal id As Nullable(Of Integer)) As String
         Return Me.GetProjectItemName("STSim_SecondaryStratum", id)
+    End Function
+
+    Protected Function GetTertiaryStratumName(ByVal id As Nullable(Of Integer)) As String
+        Return Me.GetProjectItemName("STSim_TertiaryStratum", id)
     End Function
 
     Protected Function GetStateClassName(ByVal id As Nullable(Of Integer)) As String

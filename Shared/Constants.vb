@@ -57,6 +57,7 @@ Module Constants
     Public Const TIMESTEP_COLUMN_NAME As String = "Timestep"
     Public Const STRATUM_ID_COLUMN_NAME As String = "StratumID"
     Public Const SECONDARY_STRATUM_ID_COLUMN_NAME As String = "SecondaryStratumID"
+    Public Const TERTIARY_STRATUM_ID_COLUMN_NAME As String = "TertiaryStratumID"
     Public Const STATECLASS_ID_COLUMN_NAME As String = "StateClassID"
     Public Const STOCK_TYPE_ID_COLUMN_NAME As String = "StockTypeID"
     Public Const STOCK_GROUP_ID_COLUMN_NAME As String = "StockGroupID"
@@ -80,6 +81,7 @@ Module Constants
 
     Public Const FROM_STRATUM_ID_COLUMN_NAME As String = "FromStratumID"
     Public Const FROM_SECONDARY_STRATUM_ID_COLUMN_NAME As String = "FromSecondaryStratumID"
+    Public Const FROM_TERTIARY_STRATUM_ID_COLUMN_NAME As String = "FromTertiaryStratumID"
     Public Const FROM_STATECLASS_ID_COLUMN_NAME As String = "FromStateClassID"
     Public Const FROM_MIN_AGE_COLUMN_NAME As String = "FromAgeMin"
     Public Const FROM_STOCK_TYPE_ID_COLUMN_NAME As String = "FromStockTypeID"

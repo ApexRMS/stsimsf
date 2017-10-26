@@ -54,7 +54,7 @@ Class SFChartProvider
 
         StockTypesGroup.Properties.Add(New MetaDataProperty("dataSheet", "SF_OutputStock"))
         StockTypesGroup.Properties.Add(New MetaDataProperty("column", "Amount"))
-        StockTypesGroup.Properties.Add(New MetaDataProperty("filter", "StratumID|SecondaryStratumID|StateClassID"))
+        StockTypesGroup.Properties.Add(New MetaDataProperty("filter", "StratumID|SecondaryStratumID|TertiaryStratumID|StateClassID"))
 
         AddStockTypeChartVariables(project, StockTypesGroup.Items)
 
@@ -67,7 +67,7 @@ Class SFChartProvider
 
         StockGroupsGroup.Properties.Add(New MetaDataProperty("dataSheet", "SF_OutputStock"))
         StockGroupsGroup.Properties.Add(New MetaDataProperty("column", "Amount"))
-        StockGroupsGroup.Properties.Add(New MetaDataProperty("filter", "StratumID|SecondaryStratumID|StateClassID"))
+        StockGroupsGroup.Properties.Add(New MetaDataProperty("filter", "StratumID|SecondaryStratumID|TertiaryStratumID|StateClassID"))
 
         AddStockGroupChartVariables(project, StockGroupsGroup.Items)
 

@@ -9,17 +9,18 @@ Imports SyncroSim.Common
 Imports System.Collections.ObjectModel
 
 Friend Class OutputStockCollection
-    Inherits KeyedCollection(Of FourIntegerLookupKey, OutputStock)
+    Inherits KeyedCollection(Of FiveIntegerLookupKey, OutputStock)
 
     Public Sub New()
-        MyBase.New(New FourIntegerLookupKeyEqualityComparer)
+        MyBase.New(New FiveIntegerLookupKeyEqualityComparer)
     End Sub
 
-    Protected Overrides Function GetKeyForItem(ByVal item As OutputStock) As FourIntegerLookupKey
+    Protected Overrides Function GetKeyForItem(ByVal item As OutputStock) As FiveIntegerLookupKey
 
-        Return New FourIntegerLookupKey(
+        Return New FiveIntegerLookupKey(
             item.StratumId,
             GetNullableKey(item.SecondaryStratumId),
+            GetNullableKey(item.TertiaryStratumId),
             item.StateClassId,
             item.StockTypeId)
 

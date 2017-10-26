@@ -47,8 +47,9 @@ Class SummaryStockReport
         Dim TimestepLabel As String = GetTimestepUnits(Me.Project)
         Dim PrimaryStratumLabel As String = Nothing
         Dim SecondaryStratumLabel As String = Nothing
+        Dim TertiaryStratumLabel As String = Nothing
 
-        GetStratumLabelStrings(dstermSTSim, PrimaryStratumLabel, SecondaryStratumLabel)
+        GetStratumLabelStrings(dstermSTSim, PrimaryStratumLabel, SecondaryStratumLabel, TertiaryStratumLabel)
         Dim TotalValue As String = String.Format(CultureInfo.InvariantCulture, "Total Value ({0})", StockUnits)
 
         c.Add(New ExportColumn("ScenarioID", "Scenario ID"))
@@ -57,6 +58,7 @@ Class SummaryStockReport
         c.Add(New ExportColumn("Timestep", TimestepLabel))
         c.Add(New ExportColumn("Stratum", PrimaryStratumLabel))
         c.Add(New ExportColumn("SecondaryStratum", SecondaryStratumLabel))
+        c.Add(New ExportColumn("TertiaryStratum", TertiaryStratumLabel))
         c.Add(New ExportColumn("StateClass", "State Class"))
         c.Add(New ExportColumn("StockType", "Stock Type"))
         c.Add(New ExportColumn("Amount", TotalValue))
@@ -81,12 +83,14 @@ Class SummaryStockReport
                 "SF_OutputStock.Timestep,  " &
                 "ST1.Name AS Stratum,  " &
                 "ST2.Name AS SecondaryStratum,  " &
+                "ST3.Name AS TertiaryStratum,  " &
                 "SC1.Name AS StateClass,  " &
                 "SF_StockType.Name as StockType, " &
                 "SF_OutputStock.Amount " &
                 "FROM SF_OutputStock " &
                 "INNER JOIN STSim_Stratum AS ST1 ON ST1.StratumID = SF_OutputStock.StratumID " &
                 "LEFT JOIN STSim_SecondaryStratum AS ST2 ON ST2.SecondaryStratumID = SF_OutputStock.SecondaryStratumID " &
+                "LEFT JOIN STSim_TertiaryStratum AS ST3 ON ST3.TertiaryStratumID = SF_OutputStock.TertiaryStratumID " &
                 "INNER JOIN STSim_StateClass AS SC1 ON SC1.StateClassID = SF_OutputStock.StateClassID " &
                 "INNER JOIN SF_StockType ON SF_StockType.StockTypeID = SF_OutputStock.StockTypeID " &
                 "WHERE SF_OutputStock.ScenarioID IN ({0})  " &
@@ -96,6 +100,7 @@ Class SummaryStockReport
                 "SF_OutputStock.Timestep, " &
                 "ST1.Name, " &
                 "ST2.Name, " &
+                "ST3.Name, " &
                 "SC1.Name, " &
                 "SF_StockType.Name",
                 ScenFilter)
@@ -110,6 +115,7 @@ Class SummaryStockReport
                 "SF_OutputStock.Timestep,  " &
                 "ST1.Name AS Stratum,  " &
                 "ST2.Name AS SecondaryStratum,  " &
+                "ST3.Name AS TertiaryStratum,  " &
                 "SC1.Name AS StateClass,  " &
                 "SF_StockType.Name as StockType, " &
                 "SF_OutputStock.Amount " &
@@ -117,6 +123,7 @@ Class SummaryStockReport
                 "INNER JOIN SSim_Scenario ON SSim_Scenario.ScenarioID = SF_OutputStock.ScenarioID " &
                 "INNER JOIN STSim_Stratum AS ST1 ON ST1.StratumID = SF_OutputStock.StratumID " &
                 "LEFT JOIN STSim_SecondaryStratum AS ST2 ON ST2.SecondaryStratumID = SF_OutputStock.SecondaryStratumID " &
+                "LEFT JOIN STSim_TertiaryStratum AS ST3 ON ST3.TertiaryStratumID = SF_OutputStock.TertiaryStratumID " &
                 "INNER JOIN STSim_StateClass AS SC1 ON SC1.StateClassID = SF_OutputStock.StateClassID " &
                 "INNER JOIN SF_StockType ON SF_StockType.StockTypeID = SF_OutputStock.StockTypeID " &
                 "WHERE SF_OutputStock.ScenarioID IN ({0})  " &
@@ -127,6 +134,7 @@ Class SummaryStockReport
                 "SF_OutputStock.Timestep, " &
                 "ST1.Name, " &
                 "ST2.Name, " &
+                "ST3.Name, " &
                 "SC1.Name, " &
                 "SF_StockType.Name",
                 ScenFilter)

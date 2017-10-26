@@ -47,8 +47,9 @@ Class SummaryFlowReport
         Dim TimestepLabel As String = GetTimestepUnits(Me.Project)
         Dim PrimaryStratumLabel As String = Nothing
         Dim SecondaryStratumLabel As String = Nothing
+        Dim TertiaryStratumLabel As String = Nothing
 
-        GetStratumLabelStrings(dstermSTSim, PrimaryStratumLabel, SecondaryStratumLabel)
+        GetStratumLabelStrings(dstermSTSim, PrimaryStratumLabel, SecondaryStratumLabel, TertiaryStratumLabel)
         Dim TotalValue As String = String.Format(CultureInfo.InvariantCulture, "Total Value ({0})", FlowUnits)
 
         c.Add(New ExportColumn("ScenarioID", "Scenario ID"))
@@ -57,6 +58,7 @@ Class SummaryFlowReport
         c.Add(New ExportColumn("Timestep", TimestepLabel))
         c.Add(New ExportColumn("FromStratum", "From " & PrimaryStratumLabel))
         c.Add(New ExportColumn("FromSecondaryStratum", "From " & SecondaryStratumLabel))
+        c.Add(New ExportColumn("FromTertiaryStratum", "From " & TertiaryStratumLabel))
         c.Add(New ExportColumn("FromStateClass", "From State Class"))
         c.Add(New ExportColumn("FromStock", "From Stock"))
         c.Add(New ExportColumn("TransitionType", "TransitionType"))
@@ -86,6 +88,7 @@ Class SummaryFlowReport
                 "SF_OutputFlow.Timestep,  " &
                 "ST1.Name AS FromStratum, " &
                 "SS1.Name AS FromSecondaryStratum, " &
+                "TS1.Name AS FromTertiaryStratum, " &
                 "SC1.Name AS FromStateClass, " &
                 "STK1.Name AS FromStock, " &
                 "STSim_TransitionType.Name AS TransitionType, " &
@@ -98,6 +101,7 @@ Class SummaryFlowReport
                 "INNER JOIN STSim_Stratum AS ST1 ON ST1.StratumID = SF_OutputFlow.FromStratumID " &
                 "INNER JOIN STSim_Stratum AS ST2 ON ST2.StratumID = SF_OutputFlow.ToStratumID " &
                 "LEFT JOIN STSim_SecondaryStratum AS SS1 ON SS1.SecondaryStratumID = SF_OutputFlow.FromSecondaryStratumID " &
+                "LEFT JOIN STSim_TertiaryStratum AS TS1 ON TS1.TertiaryStratumID = SF_OutputFlow.FromTertiaryStratumID " &
                 "INNER JOIN STSim_StateClass AS SC1 ON SC1.StateClassID = SF_OutputFlow.FromStateClassID " &
                 "INNER JOIN STSim_StateClass AS SC2 ON SC2.StateClassID = SF_OutputFlow.ToStateClassID " &
                 "INNER JOIN SF_StockType AS STK1 ON STK1.StockTypeID = SF_OutputFlow.FromStockTypeID " &
@@ -111,6 +115,7 @@ Class SummaryFlowReport
                 "SF_OutputFlow.Timestep, " &
                 "ST1.Name, " &
                 "SS1.Name, " &
+                "TS1.Name, " &
                 "SC1.Name, " &
                 "STK1.Name, " &
                 "STSim_TransitionType.Name, " &
@@ -130,6 +135,7 @@ Class SummaryFlowReport
                 "SF_OutputFlow.Timestep,  " &
                 "ST1.Name AS FromStratum, " &
                 "SS1.Name AS FromSecondaryStratum, " &
+                "TS1.Name AS FromTertiaryStratum, " &
                 "SC1.Name AS FromStateClass, " &
                 "STK1.Name AS FromStock, " &
                 "STSim_TransitionType.Name AS TransitionType, " &
@@ -143,6 +149,7 @@ Class SummaryFlowReport
                 "INNER JOIN STSim_Stratum AS ST1 ON ST1.StratumID = SF_OutputFlow.FromStratumID " &
                 "INNER JOIN STSim_Stratum AS ST2 ON ST2.StratumID = SF_OutputFlow.ToStratumID " &
                 "LEFT JOIN STSim_SecondaryStratum AS SS1 ON SS1.SecondaryStratumID = SF_OutputFlow.FromSecondaryStratumID " &
+                "LEFT JOIN STSim_TertiaryStratum AS TS1 ON TS1.TertiaryStratumID = SF_OutputFlow.FromTertiaryStratumID " &
                 "INNER JOIN STSim_StateClass AS SC1 ON SC1.StateClassID = SF_OutputFlow.FromStateClassID " &
                 "INNER JOIN STSim_StateClass AS SC2 ON SC2.StateClassID = SF_OutputFlow.ToStateClassID " &
                 "INNER JOIN SF_StockType AS STK1 ON STK1.StockTypeID = SF_OutputFlow.FromStockTypeID " &
@@ -157,6 +164,7 @@ Class SummaryFlowReport
                 "SF_OutputFlow.Timestep, " &
                 "ST1.Name, " &
                 "SS1.Name, " &
+                "TS1.Name, " &
                 "SC1.Name, " &
                 "STK1.Name, " &
                 "STSim_TransitionType.Name, " &

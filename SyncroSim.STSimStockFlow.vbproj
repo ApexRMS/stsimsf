@@ -137,6 +137,7 @@
     <Compile Include="Runtime\OutputStockCollection.vb" />
     <Compile Include="Runtime\StockFlowMapBase.vb" />
     <Compile Include="Runtime\StockFlowMapBase1.vb" />
+    <Compile Include="Runtime\StockFlowMapBase5.vb" />
     <Compile Include="Runtime\StockFlowMapBase4.vb" />
     <Compile Include="Runtime\StockFlowTransformer.Collections.vb" />
     <Compile Include="Runtime\StockFlowTransformer.Initialize.vb" />

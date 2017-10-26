@@ -8,7 +8,7 @@
 Imports SyncroSim.Core
 
 Class StockLimitMap
-    Inherits StockFlowMapBase4(Of StockLimit)
+    Inherits StockFlowMapBase5(Of StockLimit)
 
     Public Sub New(
         ByVal scenario As Scenario,
@@ -26,6 +26,7 @@ Class StockLimitMap
         ByVal stockTypeId As Integer,
         ByVal stratumId As Integer,
         ByVal secondaryStratumId As Nullable(Of Integer),
+        ByVal tertiaryStratumId As Nullable(Of Integer),
         ByVal stateClassId As Integer,
         ByVal iteration As Integer,
         ByVal timestep As Integer) As StockLimit
@@ -34,6 +35,7 @@ Class StockLimitMap
             stockTypeId,
             stratumId,
             secondaryStratumId,
+            tertiaryStratumId,
             stateClassId,
             iteration,
             timestep)
@@ -48,6 +50,7 @@ Class StockLimitMap
                 item.StockTypeId,
                 item.StratumId,
                 item.SecondaryStratumId,
+                item.TertiaryStratumId,
                 item.StateClassId,
                 item.Iteration,
                 item.Timestep,
@@ -57,7 +60,7 @@ Class StockLimitMap
 
             Dim template As String =
                 "A duplicate stock limit was detected: More information:" & vbCrLf &
-                "Stock Type={0}, {1}={2}, {3}={4}, State Class={5}, Iteration={6}, Timestep={7}."
+                "Stock Type={0}, {1}={2}, {3}={4}, {5}={6}, State Class={7}, Iteration={8}, Timestep={9}."
 
             ExceptionUtils.ThrowArgumentException(
                 template,
@@ -66,6 +69,8 @@ Class StockLimitMap
                 Me.GetStratumName(item.StratumId),
                 Me.SecondaryStratumLabel,
                 Me.GetSecondaryStratumName(item.SecondaryStratumId),
+                Me.TertiaryStratumLabel,
+                Me.GetTertiaryStratumName(item.TertiaryStratumId),
                 Me.GetStateClassName(item.StateClassId),
                 StockFlowMapBase.FormatValue(item.Iteration),
                 StockFlowMapBase.FormatValue(item.Timestep))

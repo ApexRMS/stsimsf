@@ -9,6 +9,7 @@ Class OutputStock
 
     Private m_StratumId As Integer
     Private m_SecondaryStratumId As Nullable(Of Integer)
+    Private m_TertiaryStratumId As Nullable(Of Integer)
     Private m_StateClassId As Integer
     Private m_StockTypeId As Integer
     Private m_Amount As Double
@@ -16,21 +17,20 @@ Class OutputStock
     Public Sub New(
         ByVal stratumId As Integer,
         ByVal secondaryStratumId As Nullable(Of Integer),
+        ByVal tertiaryStratumId As Nullable(Of Integer),
         ByVal stateClassId As Integer,
         ByVal stockTypeId As Integer,
         ByVal amount As Double)
 
         Me.m_StratumId = stratumId
         Me.m_SecondaryStratumId = secondaryStratumId
+        Me.m_TertiaryStratumId = tertiaryStratumId
         Me.m_StateClassId = stateClassId
         Me.m_StockTypeId = stockTypeId
         Me.m_Amount = amount
 
     End Sub
 
-    ''' <summary>
-    ''' Gets the Stratum Id
-    ''' </summary>
     Public ReadOnly Property StratumId As Integer
         Get
             Return Me.m_StratumId
@@ -40,6 +40,12 @@ Class OutputStock
     Public ReadOnly Property SecondaryStratumId As Nullable(Of Integer)
         Get
             Return Me.m_SecondaryStratumId
+        End Get
+    End Property
+
+    Public ReadOnly Property TertiaryStratumId As Nullable(Of Integer)
+        Get
+            Return Me.m_TertiaryStratumId
         End Get
     End Property
 

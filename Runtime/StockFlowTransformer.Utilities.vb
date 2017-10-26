@@ -54,22 +54,11 @@ Partial Class StockFlowTransformer
 
     End Function
 
-    ''' <summary>
-    ''' Gets the state attribute value for the specified criteria
-    ''' </summary>
-    ''' <param name="stateAttributeTypeId"></param>
-    ''' <param name="stratumId"></param>
-    ''' <param name="secondaryStratumId"></param>
-    ''' <param name="stateClassId"></param>
-    ''' <param name="iteration"></param>
-    ''' <param name="timestep"></param>
-    ''' <param name="age"></param>
-    ''' <returns></returns>
-    ''' <remarks></remarks>
     Private Function GetAttributeValue(
         ByVal stateAttributeTypeId As Integer,
         ByVal stratumId As Integer,
         ByVal secondaryStratumId As Nullable(Of Integer),
+        ByVal tertiaryStratumId As Nullable(Of Integer),
         ByVal stateClassId As Integer,
         ByVal iteration As Integer,
         ByVal timestep As Integer,
@@ -81,6 +70,7 @@ Partial Class StockFlowTransformer
             stateAttributeTypeId,
             stratumId,
             secondaryStratumId,
+            tertiaryStratumId,
             stateClassId,
             iteration,
             timestep,
@@ -92,6 +82,7 @@ Partial Class StockFlowTransformer
                     stateAttributeTypeId,
                     stratumId,
                     secondaryStratumId,
+                    tertiaryStratumId,
                     stateClassId,
                     iteration,
                     timestep)

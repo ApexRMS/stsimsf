@@ -87,6 +87,7 @@ Partial Class StockFlowTransformer
             dr(TIMESTEP_COLUMN_NAME) = timestep
             dr(STRATUM_ID_COLUMN_NAME) = r.StratumId
             dr(SECONDARY_STRATUM_ID_COLUMN_NAME) = DataTableUtilities.GetNullableDatabaseValue(r.SecondaryStratumId)
+            dr(TERTIARY_STRATUM_ID_COLUMN_NAME) = DataTableUtilities.GetNullableDatabaseValue(r.TertiaryStratumId)
             dr(STATECLASS_ID_COLUMN_NAME) = r.StateClassId
             dr(STOCK_TYPE_ID_COLUMN_NAME) = r.StockTypeId
             dr(AMOUNT_COLUMN_NAME) = r.Amount
@@ -113,6 +114,7 @@ Partial Class StockFlowTransformer
             dr(TIMESTEP_COLUMN_NAME) = timestep
             dr(FROM_STRATUM_ID_COLUMN_NAME) = r.FromStratumId
             dr(FROM_SECONDARY_STRATUM_ID_COLUMN_NAME) = DataTableUtilities.GetNullableDatabaseValue(r.FromSecondaryStratumId)
+            dr(FROM_TERTIARY_STRATUM_ID_COLUMN_NAME) = DataTableUtilities.GetNullableDatabaseValue(r.FromTertiaryStratumId)
             dr(FROM_STATECLASS_ID_COLUMN_NAME) = r.FromStateClassId
             dr(FROM_STOCK_TYPE_ID_COLUMN_NAME) = r.FromStockTypeId
             dr(TRANSITION_TYPE_ID_COLUMN_NAME) = DataTableUtilities.GetNullableDatabaseValue(r.TransitionTypeId)
@@ -224,13 +226,23 @@ Partial Class StockFlowTransformer
                         rastOutput.AddDbl(rastStockType)
                     Next
 
-                    RasterFiles.SaveOutputRaster(rastOutput, Me.ResultScenario.GetDataSheet(DATASHEET_OUTPUT_SPATIAL_STOCK_GROUP),RasterDataType.DTDouble, iteration, timestep, SPATIAL_MAP_STOCK_GROUP_VARIABLE_PREFIX, sgId,DATASHEET_OUTPUT_SPATIAL_FILENAME_COLUMN)
+                    RasterFiles.SaveOutputRaster(
+                        rastOutput,
+                        Me.ResultScenario.GetDataSheet(DATASHEET_OUTPUT_SPATIAL_STOCK_GROUP),
+                        RasterDataType.DTDouble,
+                        iteration,
+                        timestep,
+                        SPATIAL_MAP_STOCK_GROUP_VARIABLE_PREFIX,
+                        sgId,
+                        DATASHEET_OUTPUT_SPATIAL_FILENAME_COLUMN)
+
                 End If
+
             Next
+
         End Using
 
     End Sub
-
 
     ''' <summary>
     ''' Processes the current flow spatial data
@@ -247,10 +259,18 @@ Partial Class StockFlowTransformer
         For Each flowType As FlowType In Me.m_FlowTypes.Values
 
             rastOutput.DblCells = GetOutputFlowDictionary()(flowType.Id)
-            RasterFiles.SaveOutputRaster(rastOutput, Me.ResultScenario.GetDataSheet(DATASHEET_OUTPUT_SPATIAL_FLOW_TYPE), RasterDataType.DTDouble, iteration, timestep, SPATIAL_MAP_FLOW_TYPE_VARIABLE_PREFIX, flowType.Id,DATASHEET_OUTPUT_SPATIAL_FILENAME_COLUMN)
+
+            RasterFiles.SaveOutputRaster(
+                rastOutput,
+                Me.ResultScenario.GetDataSheet(DATASHEET_OUTPUT_SPATIAL_FLOW_TYPE),
+                RasterDataType.DTDouble,
+                iteration,
+                timestep,
+                SPATIAL_MAP_FLOW_TYPE_VARIABLE_PREFIX,
+                flowType.Id,
+                DATASHEET_OUTPUT_SPATIAL_FILENAME_COLUMN)
 
         Next
-
 
     End Sub
 
@@ -301,15 +321,23 @@ Partial Class StockFlowTransformer
                         rastOutput.AddDbl(rastFlowType)
                     Next
 
-                    RasterFiles.SaveOutputRaster(rastOutput, Me.ResultScenario.GetDataSheet(DATASHEET_OUTPUT_SPATIAL_FLOW_GROUP),RasterDataType.DTDouble, iteration, timestep,SPATIAL_MAP_FLOW_GROUP_VARIABLE_PREFIX,  fgId,DATASHEET_OUTPUT_SPATIAL_FILENAME_COLUMN)
+                    RasterFiles.SaveOutputRaster(
+                        rastOutput,
+                        Me.ResultScenario.GetDataSheet(DATASHEET_OUTPUT_SPATIAL_FLOW_GROUP),
+                        RasterDataType.DTDouble,
+                        iteration,
+                        timestep,
+                        SPATIAL_MAP_FLOW_GROUP_VARIABLE_PREFIX,
+                        fgId,
+                        DATASHEET_OUTPUT_SPATIAL_FILENAME_COLUMN)
+
                 End If
+
             Next
+
         End Using
 
-
-
     End Sub
-
 
     ''' <summary>
     ''' Adds to the stock summary result collection
@@ -324,7 +352,12 @@ Partial Class StockFlowTransformer
             For Each id As Integer In StockAmounts.Keys
 
                 Dim amount As Double = StockAmounts(id)
-                Dim k As New FourIntegerLookupKey(c.StratumId, GetNullableKey(c.SecondaryStratumId), c.StateClassId, id)
+
+                Dim k As New FiveIntegerLookupKey(
+                    c.StratumId,
+                    GetNullableKey(c.SecondaryStratumId),
+                    GetNullableKey(c.TertiaryStratumId),
+                    c.StateClassId, id)
 
                 If (Me.m_SummaryOutputStockRecords.Contains(k)) Then
 
@@ -333,7 +366,7 @@ Partial Class StockFlowTransformer
 
                 Else
 
-                    Dim r As New OutputStock(c.StratumId, c.SecondaryStratumId, c.StateClassId, id, amount)
+                    Dim r As New OutputStock(c.StratumId, c.SecondaryStratumId, c.TertiaryStratumId, c.StateClassId, id, amount)
                     Me.m_SummaryOutputStockRecords.Add(r)
 
                 End If
@@ -397,9 +430,10 @@ Partial Class StockFlowTransformer
 
         If (Me.m_STSimTransformer.IsOutputTimestep(timestep, Me.m_SummaryFlowOutputTimesteps, Me.m_CreateSummaryFlowOutput)) Then
 
-            Dim k As New NineIntegerLookupKey(
+            Dim k As New TenIntegerLookupKey(
                 cell.StratumId,
                 GetNullableKey(cell.SecondaryStratumId),
+                GetNullableKey(cell.TertiaryStratumId),
                 cell.StateClassId,
                 flowPathway.FromStockTypeId,
                 GetNullableKey(TransitionTypeId),
@@ -418,6 +452,7 @@ Partial Class StockFlowTransformer
                 Dim r As New OutputFlow(
                     cell.StratumId,
                     cell.SecondaryStratumId,
+                    cell.TertiaryStratumId,
                     cell.StateClassId,
                     flowPathway.FromStockTypeId,
                     TransitionTypeId,

@@ -9,6 +9,7 @@ Class OutputFlow
 
     Private m_FromStratumId As Integer
     Private m_FromSecondaryStratumId As Nullable(Of Integer)
+    Private m_FromTertiaryStratumID As Nullable(Of Integer)
     Private m_FromStateClassId As Integer
     Private m_FromStockTypeId As Integer
     Private m_transitionTypeId As Nullable(Of Integer)
@@ -21,6 +22,7 @@ Class OutputFlow
     Public Sub New(
         ByVal fromStratumId As Integer,
         ByVal fromSecondaryStratumId As Nullable(Of Integer),
+        ByVal fromTertiaryStratumId As Nullable(Of Integer),
         ByVal fromStateClassId As Integer,
         ByVal fromStockTypeId As Integer,
         ByVal transitionTypeId As Nullable(Of Integer),
@@ -32,6 +34,7 @@ Class OutputFlow
 
         Me.m_FromStratumId = fromStratumId
         Me.m_FromSecondaryStratumId = fromSecondaryStratumId
+        Me.m_FromTertiaryStratumID = fromTertiaryStratumId
         Me.m_FromStateClassId = fromStateClassId
         Me.m_FromStockTypeId = fromStockTypeId
         Me.m_transitionTypeId = transitionTypeId
@@ -52,6 +55,12 @@ Class OutputFlow
     Public ReadOnly Property FromSecondaryStratumId As Nullable(Of Integer)
         Get
             Return Me.m_FromSecondaryStratumId
+        End Get
+    End Property
+
+    Public ReadOnly Property FromTertiaryStratumId As Nullable(Of Integer)
+        Get
+            Return Me.m_FromTertiaryStratumID
         End Get
     End Property
 

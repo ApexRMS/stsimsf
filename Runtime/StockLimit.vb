@@ -12,6 +12,7 @@ Class StockLimit
     Private m_StockTypeId As Integer
     Private m_StratumId As Nullable(Of Integer)
     Private m_SecondaryStratumId As Nullable(Of Integer)
+    Private m_TertiaryStratumId As Nullable(Of Integer)
     Private m_StateClassId As Nullable(Of Integer)
     Private m_StockMinimum As Double
     Private m_StockMaximum As Double
@@ -22,6 +23,7 @@ Class StockLimit
         ByVal stockTypeId As Integer,
         ByVal stratumId As Nullable(Of Integer),
         ByVal secondaryStratumId As Nullable(Of Integer),
+        ByVal tertiaryStratumId As Nullable(Of Integer),
         ByVal stateClassId As Nullable(Of Integer),
         ByVal stockMinimum As Double,
         ByVal stockMaximum As Double)
@@ -31,6 +33,7 @@ Class StockLimit
         Me.m_StockTypeId = stockTypeId
         Me.m_StratumId = stratumId
         Me.m_SecondaryStratumId = secondaryStratumId
+        Me.m_TertiaryStratumId = tertiaryStratumId
         Me.m_StateClassId = stateClassId
         Me.m_StockMinimum = stockMinimum
         Me.m_StockMaximum = stockMaximum
@@ -64,6 +67,12 @@ Class StockLimit
     Public ReadOnly Property SecondaryStratumId As Nullable(Of Integer)
         Get
             Return Me.m_SecondaryStratumId
+        End Get
+    End Property
+
+    Public ReadOnly Property TertiaryStratumId As Nullable(Of Integer)
+        Get
+            Return Me.m_TertiaryStratumId
         End Get
     End Property
 
