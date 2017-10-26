@@ -792,7 +792,9 @@ Class StockFlowTransformer
         For Each fg As FlowGroup In ft.FlowGroups
 
             FlowAmount *= Me.m_FlowMultiplierMap.GetFlowMultiplier(
-                fg.Id, cell.StratumId, cell.SecondaryStratumId, cell.StateClassId, iteration, timestep)
+                fg.Id,
+                cell.StratumId, cell.SecondaryStratumId, cell.TertiaryStratumId,
+                cell.StateClassId, iteration, timestep)
 
             If (Me.m_IsSpatial) Then
                 FlowAmount *= Me.GetFlowSpatialMultiplier(cell.CellId, fg.Id, iteration, timestep)

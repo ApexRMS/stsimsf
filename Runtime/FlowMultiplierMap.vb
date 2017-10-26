@@ -10,7 +10,7 @@ Imports SyncroSim.STSim
 Imports SyncroSim.StochasticTime
 
 Class FlowMultiplierMap
-    Inherits StockFlowMapBase4(Of FlowMultiplier)
+    Inherits StockFlowMapBase5(Of FlowMultiplier)
 
     Private m_DistributionProvider As STSimDistributionProvider
 
@@ -33,6 +33,7 @@ Class FlowMultiplierMap
         ByVal flowGroupId As Integer,
         ByVal stratumId As Integer,
         ByVal secondaryStratumId As Nullable(Of Integer),
+        ByVal tertiaryStratumId As Nullable(Of Integer),
         ByVal stateClassId As Integer,
         ByVal iteration As Integer,
         ByVal timestep As Integer) As Double
@@ -41,6 +42,7 @@ Class FlowMultiplierMap
            flowGroupId,
            stratumId,
            secondaryStratumId,
+           tertiaryStratumId,
            stateClassId,
            iteration,
            timestep)
@@ -69,6 +71,7 @@ Class FlowMultiplierMap
                 item.FlowGroupId,
                 item.StratumId,
                 item.SecondaryStratumId,
+                item.TertiaryStratumId,
                 item.StateClassId,
                 item.Iteration,
                 item.Timestep,
@@ -78,7 +81,7 @@ Class FlowMultiplierMap
 
             Dim template As String =
                 "A duplicate flow multiplier was detected: More information:" & vbCrLf &
-                "Flow Group={0}, {1}={2}, {3}={4}, State Class={5}, Iteration={6}, Timestep={7}."
+                "Flow Group={0}, {1}={2}, {3}={4}, {5}={6}, State Class={7}, Iteration={8}, Timestep={9}."
 
             ExceptionUtils.ThrowArgumentException(
                 template,
@@ -87,6 +90,8 @@ Class FlowMultiplierMap
                 Me.GetStratumName(item.StratumId),
                 Me.SecondaryStratumLabel,
                 Me.GetSecondaryStratumName(item.SecondaryStratumId),
+                Me.TertiaryStratumLabel,
+                Me.GetTertiaryStratumName(item.TertiaryStratumId),
                 Me.GetStateClassName(item.StateClassId),
                 StockFlowMapBase.FormatValue(item.Iteration),
                 StockFlowMapBase.FormatValue(item.Timestep))
