@@ -9,12 +9,12 @@ Imports SyncroSim.Core
 
 Module LookupKeyUtilities
 
-    Public Function GetNullableKey(ByVal value As Nullable(Of Integer)) As Integer
+    Public Function GetOutputCollectionKey(ByVal stratumId As Nullable(Of Integer)) As Integer
 
-        If (value.HasValue) Then
-            Return value.Value
+        If (stratumId.HasValue) Then
+            Return stratumId.Value
         Else
-            Return 0
+            Return OUTPUT_COLLECTION_WILDCARD_KEY
         End If
 
     End Function

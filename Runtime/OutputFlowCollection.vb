@@ -19,11 +19,11 @@ Friend Class OutputFlowCollection
 
         Return New TenIntegerLookupKey(
             item.FromStratumId,
-            GetNullableKey(item.FromSecondaryStratumId),
-            GetNullableKey(item.FromTertiaryStratumId),
+            LookupKeyUtilities.GetOutputCollectionKey(item.FromSecondaryStratumId),
+            LookupKeyUtilities.GetOutputCollectionKey(item.FromTertiaryStratumId),
             item.FromStateClassId,
             item.FromStockTypeId,
-            GetNullableKey(item.TransitionTypeId),
+            LookupKeyUtilities.GetOutputCollectionKey(item.TransitionTypeId),
             item.ToStratumId,
             item.ToStateClassId,
             item.ToStockTypeId,

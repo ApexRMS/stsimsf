@@ -148,7 +148,16 @@ Partial Class StockFlowTransformer
             rastOutput.InitDblCells()
 
             GetStockValues(s.Id, rastOutput)
-            RasterFiles.SaveOutputRaster(rastOutput, Me.ResultScenario.GetDataSheet(DATASHEET_OUTPUT_SPATIAL_STOCK_TYPE),RasterDataType.DTDouble,  iteration, timestep, SPATIAL_MAP_STOCK_TYPE_VARIABLE_PREFIX,s.Id,DATASHEET_OUTPUT_SPATIAL_FILENAME_COLUMN)
+
+            RasterFiles.SaveOutputRaster(
+                rastOutput,
+                Me.ResultScenario.GetDataSheet(DATASHEET_OUTPUT_SPATIAL_STOCK_TYPE),
+                RasterDataType.DTDouble,
+                iteration,
+                timestep,
+                SPATIAL_MAP_STOCK_TYPE_VARIABLE_PREFIX,
+                s.Id,
+                DATASHEET_OUTPUT_SPATIAL_FILENAME_COLUMN)
 
         Next
 
@@ -158,8 +167,7 @@ Partial Class StockFlowTransformer
     ''' Get Stock Values for the specified Stock Type ID, placing then into the DblCells() in the specified raster.
     ''' </summary>
     ''' <param name="stockTypeId">The Stock Type ID that we want values for</param>
-    ''' <param name="rastStockType">An object of type ApexRaster, where we will write the Stock Type values. The raster should be initialized with metadata and appropriate
-    ''' array sizing.</param>
+    ''' <param name="rastStockType">An object of type ApexRaster, where we will write the Stock Type values. The raster should be initialized with metadata and appropriate array sizing.</param>
     ''' <remarks></remarks>
     Private Sub GetStockValues(stockTypeId As Integer, rastStockType As StochasticTimeRaster)
 
@@ -355,8 +363,8 @@ Partial Class StockFlowTransformer
 
                 Dim k As New FiveIntegerLookupKey(
                     c.StratumId,
-                    GetNullableKey(c.SecondaryStratumId),
-                    GetNullableKey(c.TertiaryStratumId),
+                    GetSecondaryStratumIdKey(c),
+                    GetTertiaryStratumIdKey(c),
                     c.StateClassId, id)
 
                 If (Me.m_SummaryOutputStockRecords.Contains(k)) Then
@@ -366,7 +374,14 @@ Partial Class StockFlowTransformer
 
                 Else
 
-                    Dim r As New OutputStock(c.StratumId, c.SecondaryStratumId, c.TertiaryStratumId, c.StateClassId, id, amount)
+                    Dim r As New OutputStock(
+                        c.StratumId,
+                        GetSecondaryStratumIdValue(c),
+                        GetTertiaryStratumIdValue(c),
+                        c.StateClassId,
+                        id,
+                        amount)
+
                     Me.m_SummaryOutputStockRecords.Add(r)
 
                 End If
@@ -432,11 +447,11 @@ Partial Class StockFlowTransformer
 
             Dim k As New TenIntegerLookupKey(
                 cell.StratumId,
-                GetNullableKey(cell.SecondaryStratumId),
-                GetNullableKey(cell.TertiaryStratumId),
+                GetSecondaryStratumIdKey(cell),
+                GetTertiaryStratumIdKey(cell),
                 cell.StateClassId,
                 flowPathway.FromStockTypeId,
-                GetNullableKey(TransitionTypeId),
+                LookupKeyUtilities.GetOutputCollectionKey(TransitionTypeId),
                 StratumIdDest,
                 StateClassIdDest,
                 flowPathway.ToStockTypeId,
@@ -451,8 +466,8 @@ Partial Class StockFlowTransformer
 
                 Dim r As New OutputFlow(
                     cell.StratumId,
-                    cell.SecondaryStratumId,
-                    cell.TertiaryStratumId,
+                    GetSecondaryStratumIdValue(cell),
+                    GetTertiaryStratumIdValue(cell),
                     cell.StateClassId,
                     flowPathway.FromStockTypeId,
                     TransitionTypeId,
@@ -500,5 +515,61 @@ Partial Class StockFlowTransformer
         End If
 
     End Sub
+
+    Friend Function GetSecondaryStratumIdKey(ByVal value As Nullable(Of Integer)) As Integer
+
+        If (Me.m_SummaryOmitSecondaryStrata) Then
+            Return OUTPUT_COLLECTION_WILDCARD_KEY
+        Else
+            Return LookupKeyUtilities.GetOutputCollectionKey(value)
+        End If
+
+    End Function
+
+    Private Function GetSecondaryStratumIdValue(ByVal value As Nullable(Of Integer)) As Nullable(Of Integer)
+
+        If (Me.m_SummaryOmitSecondaryStrata) Then
+            Return Nothing
+        Else
+            Return value
+        End If
+
+    End Function
+
+    Friend Function GetTertiaryStratumIdKey(ByVal value As Nullable(Of Integer)) As Integer
+
+        If (Me.m_SummaryOmitTertiaryStrata) Then
+            Return OUTPUT_COLLECTION_WILDCARD_KEY
+        Else
+            Return LookupKeyUtilities.GetOutputCollectionKey(value)
+        End If
+
+    End Function
+
+    Private Function GetTertiaryStratumIdValue(ByVal value As Nullable(Of Integer)) As Nullable(Of Integer)
+
+        If (Me.m_SummaryOmitTertiaryStrata) Then
+            Return Nothing
+        Else
+            Return value
+        End If
+
+    End Function
+
+    Private Function GetSecondaryStratumIdKey(ByVal simulationCell As Cell) As Integer
+        Return GetSecondaryStratumIdKey(simulationCell.SecondaryStratumId)
+    End Function
+
+    Private Function GetSecondaryStratumIdValue(ByVal simulationCell As Cell) As Nullable(Of Integer)
+        Return GetSecondaryStratumIdValue(simulationCell.SecondaryStratumId)
+    End Function
+
+    Private Function GetTertiaryStratumIdKey(ByVal simulationCell As Cell) As Integer
+        Return GetTertiaryStratumIdKey(simulationCell.TertiaryStratumId)
+    End Function
+
+    Private Function GetTertiaryStratumIdValue(ByVal simulationCell As Cell) As Nullable(Of Integer)
+        Return GetTertiaryStratumIdValue(simulationCell.TertiaryStratumId)
+    End Function
 
 End Class

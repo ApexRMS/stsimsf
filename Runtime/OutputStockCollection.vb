@@ -19,8 +19,8 @@ Friend Class OutputStockCollection
 
         Return New FiveIntegerLookupKey(
             item.StratumId,
-            GetNullableKey(item.SecondaryStratumId),
-            GetNullableKey(item.TertiaryStratumId),
+            LookupKeyUtilities.GetOutputCollectionKey(item.SecondaryStratumId),
+            LookupKeyUtilities.GetOutputCollectionKey(item.TertiaryStratumId),
             item.StateClassId,
             item.StockTypeId)
 

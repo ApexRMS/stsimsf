@@ -11,6 +11,7 @@ Module Constants
     Public Const STOCK_REPORT_NAME As String = "stocks"
     Public Const FLOW_REPORT_NAME As String = "flows"
     Public Const DEFAULT_FLOW_ORDER As Double = Double.MinValue
+    Public Const OUTPUT_COLLECTION_WILDCARD_KEY As Integer = 0
 
     'Categories and groups
     Public Const STOCK_TYPE_GROUP_NAME As String = "Stock Types"

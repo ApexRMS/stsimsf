@@ -19,6 +19,8 @@ Class StockFlowTransformer
     Private m_IsSpatial As Boolean
     Private m_ApplyBeforeTransitions As Boolean
     Private m_ApplyEquallyRankedSimultaneously As Boolean
+    Private m_SummaryOmitSecondaryStrata As Boolean
+    Private m_SummaryOmitTertiaryStrata As Boolean
     Private m_STSimTransformer As STSimTransformer
     Private m_CanComputeStocksAndFlows As Boolean
     Private m_ValidatedMultipliers As Boolean
@@ -277,6 +279,7 @@ Class StockFlowTransformer
             'to interact with an initialized ST-Sim...
 
             Me.InitializeSpatialRunFlag()
+            Me.Initialize_SS_TS_Flags()
             Me.InitializeFlowOrderOptions()
             Me.InitializeOutputOptions()
             Me.InitializeOutputDataTables()

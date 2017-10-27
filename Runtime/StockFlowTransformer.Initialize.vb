@@ -19,6 +19,22 @@ Partial Class StockFlowTransformer
     End Sub
 
     ''' <summary>
+    ''' Initializes the flags for controlling SecondaryStratum and TertiaryStratum output
+    ''' </summary>
+    Private Sub Initialize_SS_TS_Flags()
+
+        Dim dr As DataRow = Me.ResultScenario.GetDataSheet("STSim_OutputOptions").GetDataRow()
+
+        If (dr IsNot Nothing) Then
+
+            Me.m_SummaryOmitSecondaryStrata = DataTableUtilities.GetDataBool(dr, "SummaryOutputOmitSS")
+            Me.m_SummaryOmitTertiaryStrata = DataTableUtilities.GetDataBool(dr, "SummaryOutputOmitTS")
+
+        End If
+
+    End Sub
+
+    ''' <summary>
     ''' Sets the Flow Order Options
     ''' </summary>
     ''' <remarks></remarks>
