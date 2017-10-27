@@ -80,7 +80,7 @@ Class SFChartProvider
 
         FlowTypesGroup.Properties.Add(New MetaDataProperty("dataSheet", "SF_OutputFlow"))
         FlowTypesGroup.Properties.Add(New MetaDataProperty("column", "Amount"))
-        FlowTypesGroup.Properties.Add(New MetaDataProperty("filter", "FromStratumID|FromSecondaryStratumID|FromStateClassID|FromStockTypeID|TransitionTypeID|ToStratumID|ToStateClassID|ToStockTypeID"))
+        FlowTypesGroup.Properties.Add(New MetaDataProperty("filter", "FromStratumID|FromSecondaryStratumID|FromTertiaryStratumID|FromStateClassID|FromStockTypeID|TransitionTypeID|ToStratumID|ToStateClassID|ToStockTypeID"))
 
         AddFlowTypeChartVariables(project, FlowTypesGroup.Items)
 
@@ -93,7 +93,7 @@ Class SFChartProvider
 
         FlowGroupsGroup.Properties.Add(New MetaDataProperty("dataSheet", "SF_OutputFlow"))
         FlowGroupsGroup.Properties.Add(New MetaDataProperty("column", "Amount"))
-        FlowGroupsGroup.Properties.Add(New MetaDataProperty("filter", "FromStratumID|FromSecondaryStratumID|FromStateClassID|FromStockTypeID|TransitionTypeID|ToStratumID|ToStateClassID|ToStockTypeID"))
+        FlowGroupsGroup.Properties.Add(New MetaDataProperty("filter", "FromStratumID|FromSecondaryStratumID|FromTertiaryStratumID|FromStateClassID|FromStockTypeID|TransitionTypeID|ToStratumID|ToStateClassID|ToStockTypeID"))
 
         AddFlowGroupChartVariables(project, FlowGroupsGroup.Items)
 
@@ -545,6 +545,11 @@ Class SFChartProvider
                     s = s.Replace("FromSecondaryStratumID", "SecondaryStratumID")
                     sb.AppendFormat(CultureInfo.InvariantCulture, "{0} AND ", s)
 
+                ElseIf (s.Contains("FromTertiaryStratumID")) Then
+
+                    s = s.Replace("FromTertiaryStratumID", "TertiaryStratumID")
+                    sb.AppendFormat(CultureInfo.InvariantCulture, "{0} AND ", s)
+
                 End If
 
             Next
@@ -553,7 +558,7 @@ Class SFChartProvider
 
             For Each s As String In AndSplit
 
-                If (s.Contains("StratumID") Or s.Contains("SecondaryStratumID")) Then
+                If (s.Contains("StratumID") Or s.Contains("SecondaryStratumID") Or s.Contains("TertiaryStratumID")) Then
                     sb.AppendFormat(CultureInfo.InvariantCulture, "{0} AND ", s)
                 End If
 
