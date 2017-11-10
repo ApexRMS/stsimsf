@@ -124,6 +124,7 @@ Partial Class StockFlowTransformer
 
     Private Sub FillInitialStocksSpatial()
 
+        Debug.Assert(Me.m_IsSpatial)
         Debug.Assert(Me.m_InitialStocksSpatial.Count = 0)
         Dim ds As DataSheet = Me.ResultScenario.GetDataSheet(DATASHEET_INITIAL_STOCK_SPATIAL)
 
@@ -491,6 +492,7 @@ Partial Class StockFlowTransformer
 
         Debug.Assert(Me.m_IsSpatial)
         Debug.Assert(Me.m_FlowSpatialMultipliers.Count = 0)
+        Debug.Assert(Me.m_FlowSpatialMultiplierRasters.Count = 0)
 
         Dim ds As DataSheet = Me.ResultScenario.GetDataSheet(DATASHEET_FLOW_SPATIAL_MULTIPLIER_NAME)
 

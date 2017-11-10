@@ -78,7 +78,17 @@ Partial Class StockFlowTransformer
 
     End Sub
 
+    ''' <summary>
+    ''' Initializes all distribution values
+    ''' </summary>
     Private Sub InitializeDistributionValues()
+        Me.InitializeFlowMultiplierDistributionValues()
+    End Sub
+
+    ''' <summary>
+    ''' Initializes distribution values for the flow multipliers
+    ''' </summary>
+    Private Sub InitializeFlowMultiplierDistributionValues()
 
         Try
 

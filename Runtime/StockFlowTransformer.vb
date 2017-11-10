@@ -23,10 +23,8 @@ Class StockFlowTransformer
     Private m_SummaryOmitTertiaryStrata As Boolean
     Private m_STSimTransformer As STSimTransformer
     Private m_CanComputeStocksAndFlows As Boolean
-    Private m_ValidatedMultipliers As Boolean
     Private m_RandomGenerator As New RandomGenerator()
     Private m_ShufflableFlowTypes As New List(Of FlowType)
-    Private m_IsInitialized As Boolean
 
     ''' <summary>
     ''' Gets the ST-Sim Transformer
@@ -58,6 +56,55 @@ Class StockFlowTransformer
     End Sub
 
     ''' <summary>
+    ''' Overrides Initialize
+    ''' </summary>
+    Public Overrides Sub Initialize()
+
+        Me.m_STSimTransformer = Me.GetSTSimTransformer()
+        Me.m_CanComputeStocksAndFlows = Me.CanComputeStocksAndFlows()
+
+        If (Not Me.m_CanComputeStocksAndFlows) Then
+            Return
+        End If
+
+        Me.InitializeSpatialRunFlag()
+        Me.Initialize_SS_TS_Flags()
+        Me.InitializeFlowOrderOptions()
+        Me.InitializeOutputOptions()
+        Me.InitializeOutputDataTables()
+
+        Me.FillFlowGroups()
+        Me.FillFlowTypes()
+        Me.FillFlowTypeGroups()
+        Me.FillStockTypes()
+        Me.FillInitialStocksNonSpatial()
+        Me.FillStockLimits()
+        Me.FillFlowPathways()
+        Me.FillFlowMultipliers()
+        Me.FillFlowOrders()
+
+        If (Me.m_IsSpatial) Then
+            Me.FillInitialStocksSpatial()
+            Me.FillFlowSpatialMultipliers()
+            Me.ValidateFlowSpatialMultipliers()
+        End If
+
+        Me.NormalizeForUserDistributions()
+        Me.InitializeDistributionValues()
+        Me.InitializeShufflableFlowTypes()
+        Me.CreateStockLimitMap()
+        Me.CreateFlowPathwayMap()
+        Me.CreateFlowMultiplierMap()
+        Me.CreateFlowSpatialMultiplierMap()
+        Me.CreateFlowOrderMap()
+
+        If (Me.m_IsSpatial) Then
+            Me.CreateInitialStockSpatialMap()
+        End If
+
+    End Sub
+
+    ''' <summary>
     ''' Overrides Transform
     ''' </summary>
     ''' <remarks>
@@ -66,11 +113,6 @@ Class StockFlowTransformer
     ''' part of an MP run.
     ''' </remarks>
     Public Overrides Sub Transform()
-
-        MyBase.Transform()
-
-        Me.m_STSimTransformer = Me.GetSTSimTransformer()
-        Me.m_CanComputeStocksAndFlows = Me.CanComputeStocksAndFlows()
 
         If (Not Me.m_CanComputeStocksAndFlows) Then
             Return
@@ -115,57 +157,72 @@ Class StockFlowTransformer
     End Sub
 
     ''' <summary>
-    ''' Handles the BeforeIteration event. We run this raster verification code here as it depends of the STSim rasters having been loaded ( it's a timing thing)
+    ''' Overrides External Data Ready
+    ''' </summary>
+    ''' <param name="dataSheet"></param>
+    ''' <param name="previousData"></param>
+    Protected Overrides Sub OnExternalDataReady(dataSheet As DataSheet, previousData As DataTable)
+
+        If (dataSheet.Name = DATASHEET_FLOW_PATHWAY_NAME) Then
+
+            Me.m_FlowPathways.Clear()
+            Me.FillFlowPathways()
+            Me.m_FlowPathwayMap = Nothing
+            Me.CreateFlowPathwayMap()
+
+        ElseIf (dataSheet.Name = DATASHEET_FLOW_MULTIPLIER_NAME) Then
+
+            Me.m_FlowMultipliers.Clear()
+            Me.FillFlowMultipliers()
+            Me.InitializeFlowMultiplierDistributionValues()
+            Me.m_FlowMultiplierMap = Nothing
+            Me.CreateFlowMultiplierMap()
+
+        ElseIf (dataSheet.Name = DATASHEET_FLOW_SPATIAL_MULTIPLIER_NAME) Then
+
+            If (Me.m_IsSpatial) Then
+
+                Me.m_FlowSpatialMultipliers.Clear()
+                Me.m_FlowSpatialMultiplierRasters.Clear()
+                Me.m_FlowSpatialMultiplierMap = Nothing
+
+                Me.FillFlowSpatialMultipliers()
+                Me.ValidateFlowSpatialMultipliers()
+                Me.CreateFlowSpatialMultiplierMap()
+
+            End If
+
+        ElseIf (dataSheet.Name = DATASHEET_FLOW_ORDER) Then
+
+            Me.m_FlowOrders.Clear()
+            Me.FillFlowOrders()
+            Me.m_FlowOrderMap = Nothing
+            Me.CreateFlowOrderMap()
+
+        ElseIf (dataSheet.Name = DATASHEET_STOCK_LIMIT_NAME) Then
+
+            Me.m_StockLimits.Clear()
+            Me.FillStockLimits()
+            Me.m_StockLimitMap = Nothing
+            Me.CreateStockLimitMap()
+
+        Else
+
+            Dim msg As String = String.Format(CultureInfo.InvariantCulture, "External data is not supported for: {0}", dataSheet.Name)
+            Throw New TransformerFailedException(msg)
+
+        End If
+
+    End Sub
+
+    ''' <summary>
+    ''' Handles the BeforeIteration event. We run this raster verification code here
+    ''' as it depends of the STSim rasters having been loaded (it's a timing thing).
     ''' </summary>
     ''' <param name="sender"></param>
     ''' <param name="e"></param>
     ''' <remarks></remarks>
     Private Sub OnSTSimBeforeIteration(ByVal sender As Object, ByVal e As IterationEventArgs)
-
-        If (Me.m_IsSpatial And (Not Me.m_ValidatedMultipliers)) Then
-
-            Dim ds As DataSheet = Me.ResultScenario.GetDataSheet(DATASHEET_FLOW_SPATIAL_MULTIPLIER_NAME)
-
-            For i As Integer = Me.m_FlowSpatialMultipliers.Count - 1 To 0 Step -1
-
-                Dim r As FlowSpatialMultiplier = Me.m_FlowSpatialMultipliers(i)
-
-                If Not Me.m_FlowSpatialMultiplierRasters.ContainsKey(r.FileName) Then
-
-                    Dim msg As String = String.Format(CultureInfo.InvariantCulture, SPATIAL_PROCESS_WARNING, r.FileName)
-                    RecordStatus(StatusType.Warning, msg)
-
-                    Continue For
-
-                End If
-
-                Dim cmpMsg As String = ""
-                Dim cmpRes = Me.STSimTransformer.InputRasters.CompareMetadata(Me.m_FlowSpatialMultiplierRasters(r.FileName), cmpMsg)
-                Dim FullFilename As String = RasterFiles.GetInputFileName(ds, r.FileName, False)
-
-                If (cmpRes = STSim.CompareMetadataResult.ImportantDifferences) Then
-
-                    Dim msg As String = String.Format(CultureInfo.InvariantCulture, SPATIAL_METADATA_WARNING, FullFilename)
-                    RecordStatus(StatusType.Warning, msg)
-
-                    Me.m_FlowSpatialMultipliers.RemoveAt(i)
-
-                Else
-
-                    If (cmpRes = STSim.CompareMetadataResult.UnimportantDifferences) Then
-
-                        Dim msg As String = String.Format(CultureInfo.InvariantCulture, SPATIAL_METADATA_INFO, FullFilename, cmpMsg)
-                        RecordStatus(StatusType.Information, msg)
-
-                    End If
-
-                End If
-
-            Next
-
-            Me.m_ValidatedMultipliers = True
-
-        End If
 
         Me.ResampleFlowMultiplierValues(
             e.Iteration,
@@ -185,8 +242,7 @@ Class StockFlowTransformer
         'Is it spatial flow output timestep.  If so, then iterate over flow types and initialize an output raster 
         'for each flow type Initialize to DEFAULT_NODATA_VALUE
 
-        If (Me.m_STSimTransformer.IsOutputTimestep(
-            e.Timestep, Me.m_SpatialFlowOutputTimesteps, Me.m_CreateSpatialFlowOutput)) Then
+        If (Me.m_STSimTransformer.IsOutputTimestep(e.Timestep, Me.m_SpatialFlowOutputTimesteps, Me.m_CreateSpatialFlowOutput)) Then
 
             For Each ft As FlowType In Me.m_FlowTypes.Values
 
@@ -272,49 +328,6 @@ Class StockFlowTransformer
     ''' <param name="e"></param>
     ''' <remarks></remarks>
     Private Sub OnSTSimCellInitialized(ByVal sender As Object, ByVal e As CellEventArgs)
-
-        If (Not Me.m_IsInitialized) Then
-
-            'We are doing this here because some of the initialization code below needs
-            'to interact with an initialized ST-Sim...
-
-            Me.InitializeSpatialRunFlag()
-            Me.Initialize_SS_TS_Flags()
-            Me.InitializeFlowOrderOptions()
-            Me.InitializeOutputOptions()
-            Me.InitializeOutputDataTables()
-
-            Me.FillFlowGroups()
-            Me.FillFlowTypes()
-            Me.FillFlowTypeGroups()
-            Me.FillStockTypes()
-            Me.FillInitialStocksNonSpatial()
-            Me.FillStockLimits()
-            Me.FillFlowPathways()
-            Me.FillFlowMultipliers()
-            Me.FillFlowOrders()
-
-            If (Me.m_IsSpatial) Then
-                Me.FillInitialStocksSpatial()
-                Me.FillFlowSpatialMultipliers()
-            End If
-
-            Me.NormalizeForUserDistributions()
-            Me.InitializeDistributionValues()
-            Me.InitializeShufflableFlowTypes()
-            Me.CreateStockLimitMap()
-            Me.CreateFlowPathwayMap()
-            Me.CreateFlowMultiplierMap()
-            Me.CreateFlowSpatialMultiplierMap()
-            Me.CreateFlowOrderMap()
-
-            If (Me.m_IsSpatial) Then
-                Me.CreateInitialStockSpatialMap()
-            End If
-
-            Me.m_IsInitialized = True
-
-        End If
 
         Dim StockAmounts As Dictionary(Of Integer, Double) = GetStockAmountDictionary(e.Cell)
 
@@ -487,6 +500,50 @@ Class StockFlowTransformer
         If Me.m_ApplyBeforeTransitions = True Then
             ApplyAutomaticFlows(e)
         End If
+
+    End Sub
+
+    Private Sub ValidateFlowSpatialMultipliers()
+
+        Debug.Assert(Me.m_IsSpatial)
+        Dim ds As DataSheet = Me.ResultScenario.GetDataSheet(DATASHEET_FLOW_SPATIAL_MULTIPLIER_NAME)
+
+        For i As Integer = Me.m_FlowSpatialMultipliers.Count - 1 To 0 Step -1
+
+            Dim r As FlowSpatialMultiplier = Me.m_FlowSpatialMultipliers(i)
+
+            If Not Me.m_FlowSpatialMultiplierRasters.ContainsKey(r.FileName) Then
+
+                Dim msg As String = String.Format(CultureInfo.InvariantCulture, SPATIAL_PROCESS_WARNING, r.FileName)
+                RecordStatus(StatusType.Warning, msg)
+
+                Continue For
+
+            End If
+
+            Dim cmpMsg As String = ""
+            Dim cmpRes = Me.STSimTransformer.InputRasters.CompareMetadata(Me.m_FlowSpatialMultiplierRasters(r.FileName), cmpMsg)
+            Dim FullFilename As String = RasterFiles.GetInputFileName(ds, r.FileName, False)
+
+            If (cmpRes = STSim.CompareMetadataResult.ImportantDifferences) Then
+
+                Dim msg As String = String.Format(CultureInfo.InvariantCulture, SPATIAL_METADATA_WARNING, FullFilename)
+                RecordStatus(StatusType.Warning, msg)
+
+                Me.m_FlowSpatialMultipliers.RemoveAt(i)
+
+            Else
+
+                If (cmpRes = STSim.CompareMetadataResult.UnimportantDifferences) Then
+
+                    Dim msg As String = String.Format(CultureInfo.InvariantCulture, SPATIAL_METADATA_INFO, FullFilename, cmpMsg)
+                    RecordStatus(StatusType.Information, msg)
+
+                End If
+
+            End If
+
+        Next
 
     End Sub
 
