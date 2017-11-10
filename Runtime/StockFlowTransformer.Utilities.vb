@@ -130,22 +130,11 @@ Partial Class StockFlowTransformer
     Protected Function CanComputeStocksAndFlows() As Boolean
 
         Dim OutputOptionsExist As Boolean = Me.AnyOutputOptionsSelected()
-        Dim FlowPathwaysExist As Boolean = (Me.ResultScenario.GetDataSheet(DATASHEET_FLOW_PATHWAY_NAME).GetData().Rows.Count > 0)
         Dim ICSpatialRecordsExist As Boolean = (Me.ResultScenario.GetDataSheet(DATASHEET_INITIAL_STOCK_SPATIAL).GetData().Rows.Count > 0)
         Dim ICNonSpatialRecordsExist As Boolean = (Me.ResultScenario.GetDataSheet(DATASHEET_INITIAL_STOCK_NON_SPATIAL).GetData().Rows.Count > 0)
 
-        If (Not OutputOptionsExist And Not FlowPathwaysExist And Not ICSpatialRecordsExist And Not ICNonSpatialRecordsExist) Then
+        If (Not OutputOptionsExist And Not ICSpatialRecordsExist And Not ICNonSpatialRecordsExist) Then
             Return False
-        End If
-
-        If (Not FlowPathwaysExist) Then
-
-            If (ICSpatialRecordsExist Or ICNonSpatialRecordsExist Or OutputOptionsExist) Then
-                Me.RecordStatus(StatusType.Information, "Flow pathways not specified.  Not computing stocks and flows.")
-            End If
-
-            Return False
-
         End If
 
         If (Not ICSpatialRecordsExist And Not ICNonSpatialRecordsExist) Then

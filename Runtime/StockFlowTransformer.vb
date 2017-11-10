@@ -163,6 +163,10 @@ Class StockFlowTransformer
     ''' <param name="previousData"></param>
     Protected Overrides Sub OnExternalDataReady(dataSheet As DataSheet, previousData As DataTable)
 
+        If (Not Me.m_CanComputeStocksAndFlows) Then
+            Return
+        End If
+
         If (dataSheet.Name = DATASHEET_FLOW_PATHWAY_NAME) Then
 
             Me.m_FlowPathways.Clear()
