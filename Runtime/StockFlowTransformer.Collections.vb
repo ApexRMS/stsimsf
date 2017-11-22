@@ -265,7 +265,7 @@ Partial Class StockFlowTransformer
             Dim TransitionGroupId As Integer = CInt(dr(TRANSITION_GROUP_ID_COLUMN_NAME))
             Dim StockGroupId As Integer = CInt(dr(STOCK_GROUP_ID_COLUMN_NAME))
             Dim StockValue As Double = CDbl(dr(STOCK_VALUE_COLUMN_NAME))
-            Dim MultiplierValue As Nullable(Of Double) = Nothing
+            Dim Multiplier As Nullable(Of Double) = Nothing
             Dim DistributionTypeId As Nullable(Of Integer) = Nothing
             Dim DistributionFrequency As Nullable(Of DistributionFrequency) = Nothing
             Dim DistributionSD As Nullable(Of Double) = Nothing
@@ -296,8 +296,8 @@ Partial Class StockFlowTransformer
                 StateClassId = CInt(dr(STATECLASS_ID_COLUMN_NAME))
             End If
 
-            If (dr(VALUE_COLUMN_NAME) IsNot DBNull.Value) Then
-                MultiplierValue = CDbl(dr(VALUE_COLUMN_NAME))
+            If (dr(MULTIPLIER_COLUMN_NAME) IsNot DBNull.Value) Then
+                Multiplier = CDbl(dr(MULTIPLIER_COLUMN_NAME))
             End If
 
             If (dr(DISTRIBUTIONTYPE_COLUMN_NAME) IsNot DBNull.Value) Then
@@ -332,7 +332,7 @@ Partial Class StockFlowTransformer
                     TransitionGroupId,
                     StockGroupId,
                     StockValue,
-                    MultiplierValue,
+                    Multiplier,
                     DistributionTypeId,
                     DistributionFrequency,
                     DistributionSD,
