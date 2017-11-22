@@ -19,6 +19,7 @@ Partial Class StockFlowTransformer
     Private m_InitialStocksSpatial As New InitialStockSpatialCollection()
     Private m_InitialStockSpatialRasters As New Dictionary(Of String, StochasticTimeRaster)
     Private m_StockLimits As New StockLimitCollection()
+    Private m_StockTransitionMultipliers As New StockTransitionMultiplierCollection()
     Private m_FlowPathways As New FlowPathwayCollection()
     Private m_FlowMultipliers As New FlowMultiplierCollection()
     Private m_FlowSpatialMultipliers As New FlowSpatialMultiplierCollection()
@@ -243,6 +244,113 @@ Partial Class StockFlowTransformer
                 StateClassId,
                 StockMin,
                 StockMax))
+
+        Next
+
+    End Sub
+
+    Private Sub FillStockTransitionMultipliers()
+
+        Debug.Assert(Me.m_StockTransitionMultipliers.Count = 0)
+        Dim ds As DataSheet = Me.ResultScenario.GetDataSheet(DATASHEET_STOCK_TRANSITION_MULTIPLIER_NAME)
+
+        For Each dr As DataRow In ds.GetData.Rows
+
+            Dim Iteration As Nullable(Of Integer) = Nothing
+            Dim Timestep As Nullable(Of Integer) = Nothing
+            Dim StratumId As Nullable(Of Integer) = Nothing
+            Dim SecondaryStratumId As Nullable(Of Integer) = Nothing
+            Dim TertiaryStratumId As Nullable(Of Integer) = Nothing
+            Dim StateClassId As Nullable(Of Integer) = Nothing
+            Dim TransitionGroupId As Integer = CInt(dr(TRANSITION_GROUP_ID_COLUMN_NAME))
+            Dim StockGroupId As Integer = CInt(dr(STOCK_GROUP_ID_COLUMN_NAME))
+            Dim StockValue As Double = CDbl(dr(STOCK_VALUE_COLUMN_NAME))
+            Dim MultiplierValue As Nullable(Of Double) = Nothing
+            Dim DistributionTypeId As Nullable(Of Integer) = Nothing
+            Dim DistributionFrequency As Nullable(Of DistributionFrequency) = Nothing
+            Dim DistributionSD As Nullable(Of Double) = Nothing
+            Dim DistributionMin As Nullable(Of Double) = Nothing
+            Dim DistributionMax As Nullable(Of Double) = Nothing
+
+            If (dr(ITERATION_COLUMN_NAME) IsNot DBNull.Value) Then
+                Iteration = CInt(dr(ITERATION_COLUMN_NAME))
+            End If
+
+            If (dr(TIMESTEP_COLUMN_NAME) IsNot DBNull.Value) Then
+                Timestep = CInt(dr(TIMESTEP_COLUMN_NAME))
+            End If
+
+            If (dr(STRATUM_ID_COLUMN_NAME) IsNot DBNull.Value) Then
+                StratumId = CInt(dr(STRATUM_ID_COLUMN_NAME))
+            End If
+
+            If (dr(SECONDARY_STRATUM_ID_COLUMN_NAME) IsNot DBNull.Value) Then
+                SecondaryStratumId = CInt(dr(SECONDARY_STRATUM_ID_COLUMN_NAME))
+            End If
+
+            If (dr(TERTIARY_STRATUM_ID_COLUMN_NAME) IsNot DBNull.Value) Then
+                TertiaryStratumId = CInt(dr(TERTIARY_STRATUM_ID_COLUMN_NAME))
+            End If
+
+            If (dr(STATECLASS_ID_COLUMN_NAME) IsNot DBNull.Value) Then
+                StateClassId = CInt(dr(STATECLASS_ID_COLUMN_NAME))
+            End If
+
+            If (dr(VALUE_COLUMN_NAME) IsNot DBNull.Value) Then
+                MultiplierValue = CDbl(dr(VALUE_COLUMN_NAME))
+            End If
+
+            If (dr(DISTRIBUTIONTYPE_COLUMN_NAME) IsNot DBNull.Value) Then
+                DistributionTypeId = CInt(dr(DISTRIBUTIONTYPE_COLUMN_NAME))
+            End If
+
+            If (dr(DISTRIBUTION_FREQUENCY_COLUMN_NAME) IsNot DBNull.Value) Then
+                DistributionFrequency = CType(dr(DISTRIBUTION_FREQUENCY_COLUMN_NAME), DistributionFrequency)
+            End If
+
+            If (dr(DISTRIBUTIONSD_COLUMN_NAME) IsNot DBNull.Value) Then
+                DistributionSD = CDbl(dr(DISTRIBUTIONSD_COLUMN_NAME))
+            End If
+
+            If (dr(DISTRIBUTIONMIN_COLUMN_NAME) IsNot DBNull.Value) Then
+                DistributionMin = CDbl(dr(DISTRIBUTIONMIN_COLUMN_NAME))
+            End If
+
+            If (dr(DISTRIBUTIONMAX_COLUMN_NAME) IsNot DBNull.Value) Then
+                DistributionMax = CDbl(dr(DISTRIBUTIONMAX_COLUMN_NAME))
+            End If
+
+            Try
+
+                Dim Item As New StockTransitionMultiplier(
+                    Iteration,
+                    Timestep,
+                    StratumId,
+                    SecondaryStratumId,
+                    TertiaryStratumId,
+                    StateClassId,
+                    TransitionGroupId,
+                    StockGroupId,
+                    StockValue,
+                    MultiplierValue,
+                    DistributionTypeId,
+                    DistributionFrequency,
+                    DistributionSD,
+                    DistributionMin,
+                    DistributionMax)
+
+                Me.m_STSimTransformer.DistributionProvider.Validate(
+                    Item.DistributionTypeId,
+                    Item.DistributionValue,
+                    Item.DistributionSD,
+                    Item.DistributionMin,
+                    Item.DistributionMax)
+
+                Me.m_StockTransitionMultipliers.Add(Item)
+
+            Catch ex As Exception
+                Throw New ArgumentException(ds.DisplayName & " -> " & ex.Message)
+            End Try
 
         Next
 

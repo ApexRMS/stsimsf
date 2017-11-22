@@ -5,12 +5,12 @@
 '
 '*********************************************************************************************
 
+Imports System.Reflection
+Imports System.Globalization
 Imports SyncroSim.Core
 Imports SyncroSim.STSim
-Imports SyncroSim.StochasticTime
-Imports System.Globalization
 Imports SyncroSim.Common
-Imports System.Reflection
+Imports SyncroSim.StochasticTime
 
 <ObfuscationAttribute(Exclude:=True, ApplyToMembers:=False)>
 Class StockFlowTransformer
@@ -79,20 +79,24 @@ Class StockFlowTransformer
         Me.FillStockTypes()
         Me.FillInitialStocksNonSpatial()
         Me.FillStockLimits()
+        Me.FillStockTransitionMultipliers()
         Me.FillFlowPathways()
         Me.FillFlowMultipliers()
         Me.FillFlowOrders()
 
         If (Me.m_IsSpatial) Then
+
             Me.FillInitialStocksSpatial()
             Me.FillFlowSpatialMultipliers()
             Me.ValidateFlowSpatialMultipliers()
+
         End If
 
         Me.NormalizeForUserDistributions()
         Me.InitializeDistributionValues()
         Me.InitializeShufflableFlowTypes()
         Me.CreateStockLimitMap()
+        Me.CreateStockTransitionMultiplierMap()
         Me.CreateFlowPathwayMap()
         Me.CreateFlowMultiplierMap()
         Me.CreateFlowSpatialMultiplierMap()
@@ -126,6 +130,7 @@ Class StockFlowTransformer
         AddHandler Me.STSimTransformer.IterationStarted, AddressOf Me.OnSTSimBeforeIteration
         AddHandler Me.STSimTransformer.TimestepStarted, AddressOf Me.OnSTSimBeforeTimestep
         AddHandler Me.STSimTransformer.TimestepCompleted, AddressOf Me.OnSTSimAfterTimestep
+        AddHandler Me.STSimTransformer.ApplyingTransitionMultipliers, AddressOf Me.OnApplyingTransitionMultipliers
 
     End Sub
 
@@ -147,6 +152,7 @@ Class StockFlowTransformer
                 RemoveHandler Me.STSimTransformer.IterationStarted, AddressOf Me.OnSTSimBeforeIteration
                 RemoveHandler Me.STSimTransformer.TimestepStarted, AddressOf Me.OnSTSimBeforeTimestep
                 RemoveHandler Me.STSimTransformer.TimestepCompleted, AddressOf Me.OnSTSimAfterTimestep
+                RemoveHandler Me.STSimTransformer.ApplyingTransitionMultipliers, AddressOf Me.OnApplyingTransitionMultipliers
 
             End If
 
@@ -209,6 +215,13 @@ Class StockFlowTransformer
             Me.FillStockLimits()
             Me.m_StockLimitMap = Nothing
             Me.CreateStockLimitMap()
+
+        ElseIf (dataSheet.Name = DATASHEET_STOCK_TRANSITION_MULTIPLIER_NAME) Then
+
+            Me.m_StockTransitionMultipliers.Clear()
+            Me.FillStockTransitionMultipliers()
+            Me.m_StockTransitionMultiplierMap = Nothing
+            Me.CreateStockTransitionMultiplierMap()
 
         Else
 
@@ -326,6 +339,55 @@ Class StockFlowTransformer
     End Sub
 
     ''' <summary>
+    ''' Called when (non-spatial) multipliers are being applied
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
+    Private Sub OnApplyingTransitionMultipliers(sender As Object, e As MultiplierEventArgs)
+
+        Dim Multiplier As Double = 1.0
+        Dim Groups As DataSheet = Me.Project.GetDataSheet(DATASHEET_STOCK_GROUP_NAME)
+        Dim TGMembership As DataSheet = Me.ResultScenario.GetDataSheet(DATASHEET_STOCK_TYPE_GROUP_MEMBERSHIP_NAME)
+        Dim StockAmounts As Dictionary(Of Integer, Double) = GetStockAmountDictionary(e.SimulationCell)
+        Dim dtgroups = Groups.GetData()
+        Dim dtmembership = TGMembership.GetData()
+
+        For Each dr As DataRow In dtgroups.Rows
+
+            Dim StockGroupValue As Double = 0.0
+            Dim StockGroupId As Integer = CInt(dr(Groups.ValueMember))
+            Dim query As String = String.Format(CultureInfo.InvariantCulture, "StockGroupID={0}", StockGroupId)
+            Dim rows As DataRow() = dtmembership.Select(query)
+
+            For Each r As DataRow In rows
+
+                Dim ValueMultiplier As Double = 1.0
+                Dim StockTypeId As Integer = CInt(r(STOCK_TYPE_ID_COLUMN_NAME))
+                Dim StockTypeAmount As Double = 0.0
+
+                If (StockAmounts.ContainsKey(StockTypeId)) Then
+                    StockTypeAmount = StockAmounts(StockTypeId)
+                End If
+
+                If (Not IsDBNull(r(VALUE_COLUMN_NAME))) Then
+                    ValueMultiplier = CDbl(r(VALUE_COLUMN_NAME))
+                End If
+
+                StockGroupValue += ((StockTypeAmount * ValueMultiplier) / Me.m_STSimTransformer.AmountPerCell)
+
+            Next
+
+            Multiplier *= Me.m_StockTransitionMultiplierMap.GetStockTransitionMultiplier(
+                StockGroupId, e.SimulationCell.StratumId, e.SimulationCell.SecondaryStratumId, e.SimulationCell.TertiaryStratumId,
+                e.SimulationCell.StateClassId, e.TransitionGroupId, e.Iteration, e.Timestep, StockGroupValue)
+
+        Next
+
+        e.ApplyMultiplier(Multiplier)
+
+    End Sub
+
+    ''' <summary>
     ''' Called when a cell has been initialized
     ''' </summary>
     ''' <param name="sender"></param>
@@ -333,7 +395,7 @@ Class StockFlowTransformer
     ''' <remarks></remarks>
     Private Sub OnSTSimCellInitialized(ByVal sender As Object, ByVal e As CellEventArgs)
 
-        Dim StockAmounts As Dictionary(Of Integer, Double) = GetStockAmountDictionary(e.Cell)
+        Dim StockAmounts As Dictionary(Of Integer, Double) = GetStockAmountDictionary(e.SimulationCell)
 
         For Each s As StockType In Me.m_StockTypes
 
@@ -349,24 +411,24 @@ Class StockFlowTransformer
 
             Dim lim As StockLimit = Me.m_StockLimitMap.GetStockLimit(
                 s.StockTypeId,
-                e.Cell.StratumId,
-                e.Cell.SecondaryStratumId,
-                e.Cell.TertiaryStratumId,
-                e.Cell.StateClassId,
+                e.SimulationCell.StratumId,
+                e.SimulationCell.SecondaryStratumId,
+                e.SimulationCell.TertiaryStratumId,
+                e.SimulationCell.StateClassId,
                 e.Iteration,
                 e.Timestep)
 
             Dim val As Double = Me.GetAttributeValue(
                 s.StateAttributeTypeId,
-                e.Cell.StratumId,
-                e.Cell.SecondaryStratumId,
-                e.Cell.TertiaryStratumId,
-                e.Cell.StateClassId,
+                e.SimulationCell.StratumId,
+                e.SimulationCell.SecondaryStratumId,
+                e.SimulationCell.TertiaryStratumId,
+                e.SimulationCell.StateClassId,
                 e.Iteration,
                 e.Timestep,
-                e.Cell.Age)
+                e.SimulationCell.Age)
 
-            Dim v As Double = val * e.AmountPerCell
+            Dim v As Double = val * Me.m_STSimTransformer.AmountPerCell
             v = GetLimitBasedInitialStock(v, lim)
 
             StockAmounts(s.StockTypeId) = v
@@ -383,10 +445,10 @@ Class StockFlowTransformer
 
                     Dim lim As StockLimit = Me.m_StockLimitMap.GetStockLimit(
                         s.StockTypeId,
-                        e.Cell.StratumId,
-                        e.Cell.SecondaryStratumId,
-                        e.Cell.TertiaryStratumId,
-                        e.Cell.StateClassId,
+                        e.SimulationCell.StratumId,
+                        e.SimulationCell.SecondaryStratumId,
+                        e.SimulationCell.TertiaryStratumId,
+                        e.SimulationCell.StateClassId,
                         e.Iteration,
                         e.Timestep)
 
@@ -395,7 +457,7 @@ Class StockFlowTransformer
 
                     If Me.m_InitialStockSpatialRasters.ContainsKey(s.Filename) Then
 
-                        Dim v As Double = Me.m_InitialStockSpatialRasters(s.Filename).DblCells(e.Cell.CellId)
+                        Dim v As Double = Me.m_InitialStockSpatialRasters(s.Filename).DblCells(e.SimulationCell.CellId)
 
                         'If a cell is a no data cell or if there is a -INF value for a cell, initialize the stock value to zero
 
@@ -466,10 +528,9 @@ Class StockFlowTransformer
                 Me.ApplyTransitionFlows(
                     l,
                     st,
-                    e.Cell,
+                    e.SimulationCell,
                     e.Iteration,
                     e.Timestep,
-                    e.AmountPerCell,
                     Nothing,
                     e.ProbabilisticPathway)
 
@@ -607,10 +668,9 @@ Class StockFlowTransformer
                 Me.ApplyTransitionFlows(
                     l,
                     st,
-                    e.Cell,
+                    e.SimulationCell,
                     e.Iteration,
                     e.Timestep,
-                    e.AmountPerCell,
                     e.DeterministicPathway,
                     Nothing)
 
@@ -642,7 +702,6 @@ Class StockFlowTransformer
         ByVal cell As Cell,
         ByVal iteration As Integer,
         ByVal timestep As Integer,
-        ByVal amountPerCell As Double,
         ByVal dtPathway As DeterministicTransition,
         ByVal ptPathway As Transition)
 
@@ -740,7 +799,7 @@ Class StockFlowTransformer
             Next
 
             For Each fp As FlowPathway In allFlowPathways
-                fp.FlowAmount = Me.CalculateFlowAmount(fp, cell, iteration, timestep, amountPerCell)
+                fp.FlowAmount = Me.CalculateFlowAmount(fp, cell, iteration, timestep)
             Next
 
             For Each fp As FlowPathway In allFlowPathways
@@ -819,8 +878,7 @@ Class StockFlowTransformer
         ByVal fp As FlowPathway,
         ByVal cell As Cell,
         ByVal iteration As Integer,
-        ByVal timestep As Integer,
-        ByVal amountPerCell As Double) As Double
+        ByVal timestep As Integer) As Double
 
         Dim FlowAmount As Double = 0.0
         Dim ft As FlowType = Me.m_FlowTypes(fp.FlowTypeId)
@@ -837,7 +895,7 @@ Class StockFlowTransformer
                 timestep,
                 cell.Age)
 
-            FlowAmount *= amountPerCell
+            FlowAmount *= Me.m_STSimTransformer.AmountPerCell
 
         Else
 

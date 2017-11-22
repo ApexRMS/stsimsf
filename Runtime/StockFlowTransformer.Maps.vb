@@ -8,6 +8,7 @@
 Partial Class StockFlowTransformer
 
     Private m_StockLimitMap As StockLimitMap
+    Private m_StockTransitionMultiplierMap As StockTransitionMultiplierMap
     Private m_FlowPathwayMap As FlowPathwayMap
     Private m_FlowMultiplierMap As FlowMultiplierMap
     Private m_FlowSpatialMultiplierMap As FlowSpatialMultiplierMap
@@ -21,6 +22,17 @@ Partial Class StockFlowTransformer
         Me.m_StockLimitMap = New StockLimitMap(
             Me.ResultScenario,
             Me.m_StockLimits)
+
+    End Sub
+
+    Private Sub CreateStockTransitionMultiplierMap()
+
+        Debug.Assert(Me.m_StockTransitionMultiplierMap Is Nothing)
+
+        Me.m_StockTransitionMultiplierMap = New StockTransitionMultiplierMap(
+            Me.ResultScenario,
+            Me.m_StockTransitionMultipliers,
+            Me.m_STSimTransformer.DistributionProvider)
 
     End Sub
 

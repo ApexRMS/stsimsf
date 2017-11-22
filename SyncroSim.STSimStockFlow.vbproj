@@ -137,6 +137,7 @@
     <Compile Include="Runtime\OutputStockCollection.vb" />
     <Compile Include="Runtime\StockFlowMapBase.vb" />
     <Compile Include="Runtime\StockFlowMapBase1.vb" />
+    <Compile Include="Runtime\StockFlowMapBase6.vb" />
     <Compile Include="Runtime\StockFlowMapBase5.vb" />
     <Compile Include="Runtime\StockFlowMapBase4.vb" />
     <Compile Include="Runtime\StockFlowTransformer.Collections.vb" />
@@ -150,6 +151,9 @@
     <Compile Include="Runtime\StockLimit.vb" />
     <Compile Include="Runtime\StockLimitCollection.vb" />
     <Compile Include="Runtime\StockLimitMap.vb" />
+    <Compile Include="Runtime\StockTransitionMultiplier.vb" />
+    <Compile Include="Runtime\StockTransitionMultiplierCollection.vb" />
+    <Compile Include="Runtime\StockTransitionMultiplierMap.vb" />
     <Compile Include="Runtime\StockType.vb" />
     <Compile Include="Runtime\StockTypeCollection.vb" />
     <Compile Include="DataFeedViews\FlowOrderDataFeedView.Designer.vb">
@@ -273,7 +277,9 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="module.config" />
+    <None Include="module.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="My Project\Application.myapp">
       <Generator>MyApplicationCodeGenerator</Generator>
       <LastGenOutput>Application.Designer.vb</LastGenOutput>

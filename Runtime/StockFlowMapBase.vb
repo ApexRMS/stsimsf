@@ -85,8 +85,16 @@ MustInherit Class StockFlowMapBase
         Return Me.GetProjectItemName("STSim_StateClass", id)
     End Function
 
+    Protected Function GetTransitionGroupName(ByVal id As Nullable(Of Integer)) As String
+        Return Me.GetProjectItemName("STSim_TransitionGroup", id)
+    End Function
+
     Protected Function GetStockTypeName(ByVal id As Nullable(Of Integer)) As String
         Return Me.GetProjectItemName(DATASHEET_STOCK_TYPE_NAME, id)
+    End Function
+
+    Protected Function GetStockGroupName(ByVal id As Nullable(Of Integer)) As String
+        Return Me.GetProjectItemName(DATASHEET_STOCK_GROUP_NAME, id)
     End Function
 
     Protected Function GetFlowGroupName(ByVal id As Nullable(Of Integer)) As String

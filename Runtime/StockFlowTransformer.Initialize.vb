@@ -82,7 +82,10 @@ Partial Class StockFlowTransformer
     ''' Initializes all distribution values
     ''' </summary>
     Private Sub InitializeDistributionValues()
+
         Me.InitializeFlowMultiplierDistributionValues()
+        Me.InitializeStockTransitionMultiplierDistributionValues()
+
     End Sub
 
     ''' <summary>
@@ -103,6 +106,28 @@ Partial Class StockFlowTransformer
 
         Catch ex As Exception
             Throw New ArgumentException("Flow Multipliers" & " -> " & ex.Message)
+        End Try
+
+    End Sub
+
+    ''' <summary>
+    ''' Initializes distribution values for the stock transition multipliers
+    ''' </summary>
+    Private Sub InitializeStockTransitionMultiplierDistributionValues()
+
+        Try
+
+            For Each t As StockTransitionMultiplier In Me.m_StockTransitionMultipliers
+
+                t.Initialize(
+                    Me.m_STSimTransformer.MinimumIteration,
+                    Me.m_STSimTransformer.MinimumTimestep,
+                    Me.m_STSimTransformer.DistributionProvider)
+
+            Next
+
+        Catch ex As Exception
+            Throw New ArgumentException("Stock Transition Multipliers" & " -> " & ex.Message)
         End Try
 
     End Sub
