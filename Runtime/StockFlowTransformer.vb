@@ -130,7 +130,10 @@ Class StockFlowTransformer
         AddHandler Me.STSimTransformer.IterationStarted, AddressOf Me.OnSTSimBeforeIteration
         AddHandler Me.STSimTransformer.TimestepStarted, AddressOf Me.OnSTSimBeforeTimestep
         AddHandler Me.STSimTransformer.TimestepCompleted, AddressOf Me.OnSTSimAfterTimestep
-        AddHandler Me.STSimTransformer.ApplyingTransitionMultipliers, AddressOf Me.OnApplyingTransitionMultipliers
+
+        If (Me.m_StockTransitionMultipliers.Count > 0) Then
+            AddHandler Me.STSimTransformer.ApplyingTransitionMultipliers, AddressOf Me.OnApplyingTransitionMultipliers
+        End If
 
     End Sub
 
@@ -152,7 +155,10 @@ Class StockFlowTransformer
                 RemoveHandler Me.STSimTransformer.IterationStarted, AddressOf Me.OnSTSimBeforeIteration
                 RemoveHandler Me.STSimTransformer.TimestepStarted, AddressOf Me.OnSTSimBeforeTimestep
                 RemoveHandler Me.STSimTransformer.TimestepCompleted, AddressOf Me.OnSTSimAfterTimestep
-                RemoveHandler Me.STSimTransformer.ApplyingTransitionMultipliers, AddressOf Me.OnApplyingTransitionMultipliers
+
+                If (Me.m_StockTransitionMultipliers.Count > 0) Then
+                    RemoveHandler Me.STSimTransformer.ApplyingTransitionMultipliers, AddressOf Me.OnApplyingTransitionMultipliers
+                End If
 
             End If
 
@@ -344,6 +350,8 @@ Class StockFlowTransformer
     ''' <param name="sender"></param>
     ''' <param name="e"></param>
     Private Sub OnApplyingTransitionMultipliers(sender As Object, e As MultiplierEventArgs)
+
+        Debug.Assert(Me.m_StockTransitionMultipliers.Count > 0)
 
         Dim Multiplier As Double = 1.0
         Dim Groups As DataSheet = Me.Project.GetDataSheet(DATASHEET_STOCK_GROUP_NAME)
@@ -677,6 +685,7 @@ Class StockFlowTransformer
             Next
 
         Next
+
     End Sub
 
     Private Sub ResampleFlowMultiplierValues(
