@@ -79,6 +79,10 @@ Class SFUpdates
             SF0000017(store)
         End If
 
+        If (currentSchemaVersion < 18) Then
+            SF0000018(store)
+        End If
+
     End Sub
 
     ''' <summary>
@@ -544,6 +548,22 @@ Class SFUpdates
             store.ExecuteNonQuery("DROP TABLE TEMP_TABLE")
 
         End If
+
+    End Sub
+
+    ''' <summary>
+    ''' SF0000018
+    ''' </summary>
+    ''' <param name="store"></param>
+    ''' <remarks>
+    ''' This update restores indexes that were dropped as a result of a previous alteration to a table
+    ''' </remarks>
+    Private Shared Sub SF0000018(ByVal store As DataStore)
+
+        UpdateProvider.CreateIndex(store, "SF_FlowMultiplier", {"ScenarioID"})
+        UpdateProvider.CreateIndex(store, "SF_StockTransitionMultiplier", {"ScenarioID"})
+        UpdateProvider.CreateIndex(store, "SF_OutputFlow", {"ScenarioID", "Iteration", "Timestep", "FromStratumID", "FromSecondaryStratumID", "FromTertiaryStratumID", "FromStateClassID", "FromStockTypeID", "TransitionTypeID", "ToStratumID", "ToStateClassID", "ToStockTypeID", "FlowTypeID"})
+        UpdateProvider.CreateIndex(store, "SF_OutputStock", {"ScenarioID", "Iteration", "Timestep", "StratumID", "SecondaryStratumID", "TertiaryStratumID", "StateClassID", "StockTypeID"})
 
     End Sub
 
