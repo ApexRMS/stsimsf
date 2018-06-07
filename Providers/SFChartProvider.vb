@@ -53,7 +53,6 @@ Class SFChartProvider
         Dim StockTypesGroup As SyncroSimLayoutItem = New SyncroSimLayoutItem("StockTypes", "Stock Types", True)
 
         StockTypesGroup.Properties.Add(New MetaDataProperty("dataSheet", "SF_OutputStock"))
-        StockTypesGroup.Properties.Add(New MetaDataProperty("column", "Amount"))
         StockTypesGroup.Properties.Add(New MetaDataProperty("filter", "StratumID|SecondaryStratumID|TertiaryStratumID|StateClassID"))
 
         AddStockTypeChartVariables(project, StockTypesGroup.Items)
@@ -66,7 +65,6 @@ Class SFChartProvider
         Dim StockGroupsGroup As SyncroSimLayoutItem = New SyncroSimLayoutItem("StockGroups", "Stock Groups", True)
 
         StockGroupsGroup.Properties.Add(New MetaDataProperty("dataSheet", "SF_OutputStock"))
-        StockGroupsGroup.Properties.Add(New MetaDataProperty("column", "Amount"))
         StockGroupsGroup.Properties.Add(New MetaDataProperty("filter", "StratumID|SecondaryStratumID|TertiaryStratumID|StateClassID"))
 
         AddStockGroupChartVariables(project, StockGroupsGroup.Items)
@@ -79,7 +77,6 @@ Class SFChartProvider
         Dim FlowTypesGroup As SyncroSimLayoutItem = New SyncroSimLayoutItem("FlowTypes", "Flow Types", True)
 
         FlowTypesGroup.Properties.Add(New MetaDataProperty("dataSheet", "SF_OutputFlow"))
-        FlowTypesGroup.Properties.Add(New MetaDataProperty("column", "Amount"))
         FlowTypesGroup.Properties.Add(New MetaDataProperty("filter", "FromStratumID|FromSecondaryStratumID|FromTertiaryStratumID|FromStateClassID|FromStockTypeID|TransitionTypeID|ToStratumID|ToStateClassID|ToStockTypeID"))
 
         AddFlowTypeChartVariables(project, FlowTypesGroup.Items)
@@ -92,7 +89,6 @@ Class SFChartProvider
         Dim FlowGroupsGroup As SyncroSimLayoutItem = New SyncroSimLayoutItem("FlowGroups", "Flow Groups", True)
 
         FlowGroupsGroup.Properties.Add(New MetaDataProperty("dataSheet", "SF_OutputFlow"))
-        FlowGroupsGroup.Properties.Add(New MetaDataProperty("column", "Amount"))
         FlowGroupsGroup.Properties.Add(New MetaDataProperty("filter", "FromStratumID|FromSecondaryStratumID|FromTertiaryStratumID|FromStateClassID|FromStockTypeID|TransitionTypeID|ToStratumID|ToStateClassID|ToStockTypeID"))
 
         AddFlowGroupChartVariables(project, FlowGroupsGroup.Items)
