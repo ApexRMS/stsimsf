@@ -13,6 +13,27 @@ Imports System.Reflection
 Class SFUpdates
     Inherits UpdateProvider
 
+    Public Overrides Sub PerformUpdate(store As DataStore, currentSchemaVersion As Integer)
+
+        Me.PerformUpdateInternal(store, currentSchemaVersion)
+
+#If DEBUG Then
+
+        'Verify that all expected indexes exist after the update because it is easy to forget to recreate them after 
+        'adding a column to an existing table (which requires the table to be recreated if you want to preserve column order.)
+
+        ASSERT_INDEX_EXISTS(store, "SF_FlowPathway")
+        ASSERT_INDEX_EXISTS(store, "SF_OutputFlow")
+        ASSERT_INDEX_EXISTS(store, "SF_OutputStock")
+        ASSERT_INDEX_EXISTS(store, "STSim_DistributionValue")
+        ASSERT_INDEX_EXISTS(store, "SF_StockTypeGroupMembership")
+        ASSERT_INDEX_EXISTS(store, "SF_FlowTypeGroupMembership")
+        ASSERT_INDEX_EXISTS(store, "SF_StockTransitionMultiplier")
+        ASSERT_INDEX_EXISTS(store, "SF_FlowMultiplier")
+
+#End If
+
+    End Sub
     ''' <summary>
     ''' Performs the database updates for Stocks and Flows
     ''' </summary>
@@ -25,7 +46,7 @@ Class SFUpdates
     ''' the upgrade will eventually be performed and then things will behave normally for the rest of
     ''' the lifetime of this module.)
     ''' </remarks>
-    Public Overrides Sub PerformUpdate(store As DataStore, currentSchemaVersion As Integer)
+    Private Sub PerformUpdateInternal(store As DataStore, currentSchemaVersion As Integer)
 
         If (currentSchemaVersion < 5) Then
             SF0000005(store)
