@@ -15,7 +15,7 @@ Class SFUpdates
 
     Public Overrides Sub PerformUpdate(store As DataStore, currentSchemaVersion As Integer)
 
-        Me.PerformUpdateInternal(store, currentSchemaVersion)
+        PerformUpdateInternal(store, currentSchemaVersion)
 
 #If DEBUG Then
 
@@ -46,7 +46,7 @@ Class SFUpdates
     ''' the upgrade will eventually be performed and then things will behave normally for the rest of
     ''' the lifetime of this module.)
     ''' </remarks>
-    Private Sub PerformUpdateInternal(store As DataStore, currentSchemaVersion As Integer)
+    Private Shared Sub PerformUpdateInternal(store As DataStore, currentSchemaVersion As Integer)
 
         If (currentSchemaVersion < 5) Then
             SF0000005(store)
