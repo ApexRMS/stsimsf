@@ -43,8 +43,7 @@ namespace SyncroSim.STSimStockFlow
 		/// <remarks></remarks>
 		private static Dictionary<int, double> GetStockAmountDictionary(Cell cell)
 		{
-			Dictionary<int, double> StockAmounts = 
-                (global::System.Collections.Generic.Dictionary<int, double>)cell.GetAssociatedObject(STOCK_AMOUNT_KEY);
+			Dictionary<int, double> StockAmounts = (Dictionary<int, double>)cell.GetAssociatedObject(STOCK_AMOUNT_KEY);
 
 			if (StockAmounts == null)
 			{
