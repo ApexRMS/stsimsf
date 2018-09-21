@@ -1,0 +1,80 @@
+﻿//*********************************************************************************************
+// STSimStockFlow: A SyncroSim Module for the ST-Sim Stocks and Flows Add-In.
+//
+// Copyright © 2007-2017 Apex Resource Management Solution Ltd. (ApexRMS). All rights reserved.
+//
+//*********************************************************************************************
+
+using System;
+using System.Data;
+using System.Diagnostics;
+using SyncroSim.Core;
+
+namespace SyncroSim.STSimStockFlow
+{
+	internal partial class ChooseStockTypeForm
+	{
+		public ChooseStockTypeForm()
+		{
+			InitializeComponent();
+		}
+
+		private FlowPathwayDiagram m_Diagram;
+		private Project m_Project;
+		private int m_StockTypeId;
+
+		public int StockTypeId
+		{
+			get
+			{
+				Debug.Assert(this.m_StockTypeId > 0);
+				return this.m_StockTypeId;
+			}
+		}
+
+		public void Initialize(FlowPathwayDiagram diagram, Project project)
+		{
+			this.m_Diagram = diagram;
+			this.m_Project = project;
+			DataSheet ds = this.m_Project.GetDataSheet(Constants.DATASHEET_STOCK_TYPE_NAME);
+			DataView dv = new DataView(ds.GetData(), null, ds.DisplayMember, DataViewRowState.CurrentRows);
+
+			foreach (DataRowView drv in dv)
+			{
+				this.ComboBoxStocks.Items.Add(new BaseValueDisplayListItem(
+                    Convert.ToInt32(drv.Row[ds.ValueMember]), 
+                    Convert.ToString(drv.Row[ds.DisplayMember])));
+			}
+
+			Debug.Assert(dv.Count > 0);
+			Debug.Assert(this.ComboBoxStocks.Items.Count == dv.Count);
+
+			this.ComboBoxStocks.SelectedIndex = 0;
+		}
+
+		private void ButtonOK_Click(object sender, EventArgs e)
+		{
+			Debug.Assert(this.m_StockTypeId == 0);
+			int id = ((BaseValueDisplayListItem)this.ComboBoxStocks.SelectedItem).Value;
+
+			if (this.m_Diagram.GetStockTypeShape(id) != null)
+			{
+				FormsUtilities.InformationMessageBox("The specified stock type has already been added to the diagram.");
+				return;
+			}
+
+			this.m_StockTypeId = id;
+			this.DialogResult = System.Windows.Forms.DialogResult.OK;
+
+			this.Close();
+		}
+
+		private void ButtonCancel_Click(object sender, EventArgs e)
+		{
+			Debug.Assert(this.m_StockTypeId == 0);
+			this.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+
+			this.Close();
+		}
+	}
+}

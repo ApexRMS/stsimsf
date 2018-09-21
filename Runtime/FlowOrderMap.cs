@@ -1,0 +1,58 @@
+﻿//*********************************************************************************************
+// STSimStockFlow: A SyncroSim Module for the ST-Sim Stocks and Flows Add-In.
+//
+// Copyright © 2007-2017 Apex Resource Management Solution Ltd. (ApexRMS). All rights reserved.
+//
+//*********************************************************************************************
+
+using SyncroSim.Common;
+using System.Diagnostics;
+
+namespace SyncroSim.STSimStockFlow
+{
+	internal class FlowOrderMap
+	{
+		private bool m_HasItems;
+		private SortedKeyMap2<FlowOrderCollection> m_Map = new SortedKeyMap2<FlowOrderCollection>(SearchMode.ExactPrev);
+
+		public FlowOrderMap(FlowOrderCollection orders)
+		{
+			foreach (FlowOrder o in orders)
+			{
+				this.AddOrder(o);
+			}
+		}
+
+		private void AddOrder(FlowOrder order)
+		{
+			FlowOrderCollection l = this.m_Map.GetItemExact(order.Iteration, order.Timestep);
+
+			if (l == null)
+			{
+				l = new FlowOrderCollection();
+				this.m_Map.AddItem(order.Iteration, order.Timestep, l);
+			}
+
+			l.Add(order);
+			this.m_HasItems = true;
+		}
+
+		public FlowOrderCollection GetOrders(int iteration, int timestep)
+		{
+			if (!this.m_HasItems)
+			{
+				return null;
+			}
+
+			FlowOrderCollection l = this.m_Map.GetItem(iteration, timestep);
+
+			if (l == null)
+			{
+				return null;
+			}
+
+			Debug.Assert(l.Count > 0);
+			return l;
+		}
+	}
+}
