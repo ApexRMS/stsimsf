@@ -305,7 +305,7 @@
       <Project>{ac26a679-5fb6-4cae-9b08-e0ea8027c628}</Project>
       <Name>SyncroSim.StochasticTime</Name>
     </ProjectReference>
-    <ProjectReference Include="..\STSim\SyncroSim.STSim.vbproj">
+    <ProjectReference Include="..\STSim\SyncroSim.STSim.csproj">
       <Project>{33774e89-6247-4162-8c3f-09b7470202ca}</Project>
       <Name>SyncroSim.STSim</Name>
     </ProjectReference>

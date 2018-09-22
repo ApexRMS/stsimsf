@@ -306,7 +306,7 @@ namespace SyncroSim.STSimStockFlow
 
 				if (dr[Constants.DISTRIBUTION_FREQUENCY_COLUMN_NAME] != DBNull.Value)
 				{
-					DistributionFrequency = (DistributionFrequency)dr[Constants.DISTRIBUTION_FREQUENCY_COLUMN_NAME];
+					DistributionFrequency = (DistributionFrequency)(long)dr[Constants.DISTRIBUTION_FREQUENCY_COLUMN_NAME];
 				}
 
 				if (dr[Constants.DISTRIBUTIONSD_COLUMN_NAME] != DBNull.Value)
@@ -501,7 +501,7 @@ namespace SyncroSim.STSimStockFlow
 
 				if (dr[Constants.DISTRIBUTION_FREQUENCY_COLUMN_NAME] != DBNull.Value)
 				{
-					DistributionFrequency = (DistributionFrequency)dr[Constants.DISTRIBUTION_FREQUENCY_COLUMN_NAME];
+					DistributionFrequency = (DistributionFrequency)(long)dr[Constants.DISTRIBUTION_FREQUENCY_COLUMN_NAME];
 				}
 
 				if (dr[Constants.DISTRIBUTIONSD_COLUMN_NAME] != DBNull.Value)
