@@ -36,8 +36,8 @@ namespace SyncroSim.STSimStockFlow
 
 			if (!AnyOutputOptionsSelected())
 			{
-				DataTableUtilities.SetRowValue(droo, Constants.DATASHEET_OO_SUMMARY_OUTPUT_ST_COLUMN_NAME, true);
-				DataTableUtilities.SetRowValue(droo, Constants.DATASHEET_OO_SUMMARY_OUTPUT_FL_COLUMN_NAME, true);
+				DataTableUtilities.SetRowValue(droo, Constants.DATASHEET_OO_SUMMARY_OUTPUT_ST_COLUMN_NAME, Booleans.BoolToInt(true));
+				DataTableUtilities.SetRowValue(droo, Constants.DATASHEET_OO_SUMMARY_OUTPUT_FL_COLUMN_NAME, Booleans.BoolToInt(true));
 				DataTableUtilities.SetRowValue(droo, Constants.DATASHEET_OO_SUMMARY_OUTPUT_ST_TIMESTEPS_COLUMN_NAME, 1);
 				DataTableUtilities.SetRowValue(droo, Constants.DATASHEET_OO_SUMMARY_OUTPUT_FL_TIMESTEPS_COLUMN_NAME, 1);
 
