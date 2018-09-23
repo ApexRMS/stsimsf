@@ -1,9 +1,5 @@
-﻿//*********************************************************************************************
-// STSimStockFlow: A SyncroSim Module for the ST-Sim Stocks and Flows Add-In.
-//
-// Copyright © 2007-2017 Apex Resource Management Solution Ltd. (ApexRMS). All rights reserved.
-//
-//*********************************************************************************************
+﻿// STSimStockFlow: A SyncroSim Module for the ST-Sim Stocks and Flows Add-In.
+// Copyright © 2007-2018 Apex Resource Management Solution Ltd. (ApexRMS). All rights reserved.
 
 using System.Globalization;
 using System.Windows.Forms;
