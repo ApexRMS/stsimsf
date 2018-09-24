@@ -4,6 +4,7 @@
 using System;
 using System.Data;
 using System.Diagnostics;
+using System.Globalization;
 
 namespace SyncroSim.STSimStockFlow
 {
@@ -64,7 +65,7 @@ namespace SyncroSim.STSimStockFlow
 				}
 				else
 				{
-					return Convert.ToInt32(o);
+					return Convert.ToInt32(o, CultureInfo.InvariantCulture);
 				}
 			};
 

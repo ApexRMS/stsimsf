@@ -3,6 +3,7 @@
 
 using System;
 using SyncroSim.Core;
+using System.Globalization;
 
 namespace SyncroSim.STSimStockFlow
 {
@@ -75,7 +76,7 @@ namespace SyncroSim.STSimStockFlow
 			}
 			else
 			{
-				return Convert.ToString(value);
+				return Convert.ToString(value, CultureInfo.InvariantCulture);
 			}
 		}
 

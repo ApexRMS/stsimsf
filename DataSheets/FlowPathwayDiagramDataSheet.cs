@@ -56,8 +56,8 @@ namespace SyncroSim.STSimStockFlow
 					continue;
 				}
 
-				int FromStockTypeId = Convert.ToInt32(dr[Constants.FROM_STOCK_TYPE_ID_COLUMN_NAME]);
-				int ToStockTypeId = Convert.ToInt32(dr[Constants.TO_STOCK_TYPE_ID_COLUMN_NAME]);
+				int FromStockTypeId = Convert.ToInt32(dr[Constants.FROM_STOCK_TYPE_ID_COLUMN_NAME], CultureInfo.InvariantCulture);
+				int ToStockTypeId = Convert.ToInt32(dr[Constants.TO_STOCK_TYPE_ID_COLUMN_NAME], CultureInfo.InvariantCulture);
 
 				if ((!RemainingStockTypes.ContainsKey(FromStockTypeId)) | (!RemainingStockTypes.ContainsKey(ToStockTypeId)))
 				{
@@ -81,7 +81,7 @@ namespace SyncroSim.STSimStockFlow
 				return false;
 			}
 
-			string Location = Convert.ToString(proposedLocation);
+			string Location = Convert.ToString(proposedLocation, CultureInfo.InvariantCulture);
 
 			if (string.IsNullOrEmpty(Location))
 			{

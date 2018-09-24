@@ -4,6 +4,7 @@
 using System;
 using System.Data;
 using System.Diagnostics;
+using System.Globalization;
 using SyncroSim.Core;
 
 namespace SyncroSim.STSimStockFlow
@@ -37,9 +38,10 @@ namespace SyncroSim.STSimStockFlow
 
 			foreach (DataRowView drv in dv)
 			{
-				this.ComboBoxStocks.Items.Add(new BaseValueDisplayListItem(
-                    Convert.ToInt32(drv.Row[ds.ValueMember]), 
-                    Convert.ToString(drv.Row[ds.DisplayMember])));
+				this.ComboBoxStocks.Items.Add(
+                    new BaseValueDisplayListItem(
+                        Convert.ToInt32(drv.Row[ds.ValueMember], CultureInfo.InvariantCulture), 
+                        Convert.ToString(drv.Row[ds.DisplayMember], CultureInfo.InvariantCulture)));
 			}
 
 			Debug.Assert(dv.Count > 0);

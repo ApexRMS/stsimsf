@@ -4,6 +4,7 @@
 using System;
 using System.Data;
 using SyncroSim.Core;
+using System.Globalization;
 
 namespace SyncroSim.STSimStockFlow
 {
@@ -20,7 +21,7 @@ namespace SyncroSim.STSimStockFlow
 			}
 			else
 			{
-				return Convert.ToString(dr[columnName]);
+				return Convert.ToString(dr[columnName], CultureInfo.InvariantCulture);
 			}
 		}
 
@@ -34,11 +35,15 @@ namespace SyncroSim.STSimStockFlow
 			}
 			else
 			{
-				return Convert.ToString(dr["TimestepUnits"]);
+				return Convert.ToString(dr["TimestepUnits"], CultureInfo.InvariantCulture);
 			}
 		}
 
-		public static void GetStratumLabelStrings(DataSheet terminologyDataSheet, ref string primaryStratumLabel, ref string secondaryStratumLabel, ref string tertiaryStratumLabel)
+		public static void GetStratumLabelStrings(
+            DataSheet terminologyDataSheet, 
+            ref string primaryStratumLabel,
+            ref string secondaryStratumLabel, 
+            ref string tertiaryStratumLabel)
 		{
 			DataRow dr = terminologyDataSheet.GetDataRow();
 
@@ -50,17 +55,17 @@ namespace SyncroSim.STSimStockFlow
 			{
 				if (dr["PrimaryStratumLabel"] != DBNull.Value)
 				{
-					primaryStratumLabel = Convert.ToString(dr["PrimaryStratumLabel"]);
+					primaryStratumLabel = Convert.ToString(dr["PrimaryStratumLabel"], CultureInfo.InvariantCulture);
 				}
 
 				if (dr["SecondaryStratumLabel"] != DBNull.Value)
 				{
-					secondaryStratumLabel = Convert.ToString(dr["SecondaryStratumLabel"]);
+					secondaryStratumLabel = Convert.ToString(dr["SecondaryStratumLabel"], CultureInfo.InvariantCulture);
 				}
 
 				if (dr["TertiaryStratumLabel"] != DBNull.Value)
 				{
-					tertiaryStratumLabel = Convert.ToString(dr["TertiaryStratumLabel"]);
+					tertiaryStratumLabel = Convert.ToString(dr["TertiaryStratumLabel"], CultureInfo.InvariantCulture);
 				}
 			}
 		}

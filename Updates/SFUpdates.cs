@@ -266,7 +266,7 @@ namespace SyncroSim.STSimStockFlow
 				return;
 			}
 
-			if (!Convert.ToBoolean(store.ExecuteScalar("SELECT EXISTS(SELECT 1 FROM SF_FlowPathway)")))
+			if (!Convert.ToBoolean(store.ExecuteScalar("SELECT EXISTS(SELECT 1 FROM SF_FlowPathway)"), CultureInfo.InvariantCulture))
 			{
 				return;
 			}
@@ -292,7 +292,7 @@ namespace SyncroSim.STSimStockFlow
 			{
 				Debug.Assert(column < 26);
 
-				string s = Convert.ToString((char)((int)'A' + column));
+				string s = Convert.ToString((char)((int)'A' + column), CultureInfo.InvariantCulture);
 				s = s + (row + 1).ToString(CultureInfo.InvariantCulture);
 
 				return s;
@@ -300,7 +300,7 @@ namespace SyncroSim.STSimStockFlow
 
 			foreach (DataRow ScenarioRow in Scenarios.Rows)
 			{
-				int ScenarioId = Convert.ToInt32(ScenarioRow["ScenarioID"]);
+				int ScenarioId = Convert.ToInt32(ScenarioRow["ScenarioID"], CultureInfo.InvariantCulture);
 				DataTable FlowPathways = store.CreateDataTable("SF_FlowPathway", "ScenarioID", ScenarioId);
 
 				if (FlowPathways.Rows.Count == 0)
@@ -312,14 +312,14 @@ namespace SyncroSim.STSimStockFlow
 
 				foreach (DataRow drflow in FlowPathways.Rows)
 				{
-					int FromStockId = Convert.ToInt32(drflow["FromStockTypeID"]);
+					int FromStockId = Convert.ToInt32(drflow["FromStockTypeID"], CultureInfo.InvariantCulture);
 
 					if (!StockTypeIds.ContainsKey(FromStockId))
 					{
 						StockTypeIds.Add(FromStockId, true);
 					}
 
-					int ToStockId = Convert.ToInt32(drflow["ToStockTypeId"]);
+					int ToStockId = Convert.ToInt32(drflow["ToStockTypeId"], CultureInfo.InvariantCulture);
 
 					if (!StockTypeIds.ContainsKey(ToStockId))
 					{
@@ -371,7 +371,7 @@ namespace SyncroSim.STSimStockFlow
 
 			foreach (DataRow ProjectRow in Projects.Rows)
 			{
-				int ProjectId = Convert.ToInt32(ProjectRow["ProjectID"]);
+				int ProjectId = Convert.ToInt32(ProjectRow["ProjectID"], CultureInfo.InvariantCulture);
 				DataTable DistributionTypes = store.CreateDataTableFromQuery(string.Format(CultureInfo.InvariantCulture, "SELECT * FROM STime_DistributionType WHERE ProjectID={0}", ProjectId), "DistributionTypes");
 
 				Debug.Assert(DistributionTypes.Rows.Count == 4);
@@ -394,14 +394,14 @@ namespace SyncroSim.STSimStockFlow
 
 			foreach (DataRow ScenarioRow in scenarios.Rows)
 			{
-				int ScenarioId = Convert.ToInt32(ScenarioRow["ScenarioID"]);
-				int ProjectId = Convert.ToInt32(ScenarioRow["ProjectID"]);
+				int ScenarioId = Convert.ToInt32(ScenarioRow["ScenarioID"], CultureInfo.InvariantCulture);
+				int ProjectId = Convert.ToInt32(ScenarioRow["ProjectID"], CultureInfo.InvariantCulture);
 				DataTable DistributionTypes = distTables[ProjectId];
 
 				foreach (DataRow DistTypeRow in DistributionTypes.Rows)
 				{
-					int DistTypeId = Convert.ToInt32(DistTypeRow["DistributionTypeID"]);
-					string DistTypeName = Convert.ToString(DistTypeRow["Name"]);
+					int DistTypeId = Convert.ToInt32(DistTypeRow["DistributionTypeID"], CultureInfo.InvariantCulture);
+					string DistTypeName = Convert.ToString(DistTypeRow["Name"], CultureInfo.InvariantCulture);
 					int TempDistId = 0;
 					bool DoUpdate = true;
 
@@ -444,15 +444,15 @@ namespace SyncroSim.STSimStockFlow
 		{
 			if (store.TableExists("SF_FlowMultiplier"))
 			{
-				Debug.Assert(Convert.ToInt32(StochasticTime.DistributionFrequency.Always) == 0);
-				Debug.Assert(Convert.ToInt32(StochasticTime.DistributionFrequency.Iteration) == 1);
-				Debug.Assert(Convert.ToInt32(StochasticTime.DistributionFrequency.Timestep) == 2);
+				Debug.Assert(Convert.ToInt32(StochasticTime.DistributionFrequency.Always, CultureInfo.InvariantCulture) == 0);
+				Debug.Assert(Convert.ToInt32(StochasticTime.DistributionFrequency.Iteration, CultureInfo.InvariantCulture) == 1);
+				Debug.Assert(Convert.ToInt32(StochasticTime.DistributionFrequency.Timestep, CultureInfo.InvariantCulture) == 2);
 
 				store.ExecuteNonQuery("ALTER TABLE SF_FlowMultiplier ADD COLUMN DistributionFrequencyID INTEGER");
 
 				store.ExecuteNonQuery(string.Format(CultureInfo.InvariantCulture, 
                     "UPDATE SF_FlowMultiplier SET DistributionFrequencyID={0} WHERE DistributionType IS NOT NULL", 
-                    Convert.ToInt32(StochasticTime.DistributionFrequency.Iteration)));
+                    Convert.ToInt32(StochasticTime.DistributionFrequency.Iteration, CultureInfo.InvariantCulture)));
 			}
 		}
 

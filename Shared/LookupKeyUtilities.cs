@@ -4,6 +4,7 @@
 using System;
 using System.Data;
 using SyncroSim.Core;
+using System.Globalization;
 using System.Collections.Generic;
 
 namespace SyncroSim.STSimStockFlow
@@ -31,7 +32,7 @@ namespace SyncroSim.STSimStockFlow
 			{
 				if (dr.RowState != DataRowState.Deleted)
 				{
-					d.Add(Convert.ToInt32(dr[colName]), true);
+					d.Add(Convert.ToInt32(dr[colName], CultureInfo.InvariantCulture), true);
 				}
 			}
 

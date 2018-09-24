@@ -35,7 +35,9 @@ namespace SyncroSim.STSimStockFlow
                     VarName == "flowgroup" || 
                     VarName == "flowgroupdensity")
 				{
-					return CreateRawChartData(dataSheet, descriptor, store, VarName, int.Parse(v[1]));
+					return CreateRawChartData(
+                        dataSheet, descriptor, store, VarName, 
+                        int.Parse(v[1], CultureInfo.InvariantCulture));
 				}
 			}
 
@@ -106,8 +108,8 @@ namespace SyncroSim.STSimStockFlow
 
 			foreach (DataRowView drv in dv)
 			{
-				int id = Convert.ToInt32(drv.Row[ds.ValidationTable.ValueMember]);
-				string DisplayName = Convert.ToString(drv.Row[ds.ValidationTable.DisplayMember]);
+				int id = Convert.ToInt32(drv.Row[ds.ValidationTable.ValueMember], CultureInfo.InvariantCulture);
+				string DisplayName = Convert.ToString(drv.Row[ds.ValidationTable.DisplayMember], CultureInfo.InvariantCulture);
 
 				//Normal
 				string VarNameNormal = string.Format(CultureInfo.InvariantCulture, "{0}-{1}", "stocktype", id);
@@ -149,8 +151,8 @@ namespace SyncroSim.STSimStockFlow
 
 			foreach (DataRowView drv in dv)
 			{
-				int id = Convert.ToInt32(drv.Row[ds.ValidationTable.ValueMember]);
-				string DisplayName = Convert.ToString(drv.Row[ds.ValidationTable.DisplayMember]);
+				int id = Convert.ToInt32(drv.Row[ds.ValidationTable.ValueMember], CultureInfo.InvariantCulture);
+				string DisplayName = Convert.ToString(drv.Row[ds.ValidationTable.DisplayMember], CultureInfo.InvariantCulture);
 
 				//Normal
 				string VarNameNormal = string.Format(CultureInfo.InvariantCulture, "{0}-{1}", "stockgroup", id);
@@ -192,8 +194,8 @@ namespace SyncroSim.STSimStockFlow
 
 			foreach (DataRowView drv in dv)
 			{
-				int id = Convert.ToInt32(drv.Row[ds.ValidationTable.ValueMember]);
-				string DisplayName = Convert.ToString(drv.Row[ds.ValidationTable.DisplayMember]);
+				int id = Convert.ToInt32(drv.Row[ds.ValidationTable.ValueMember], CultureInfo.InvariantCulture);
+				string DisplayName = Convert.ToString(drv.Row[ds.ValidationTable.DisplayMember], CultureInfo.InvariantCulture);
 
 				//Normal
 				string VarNameNormal = string.Format(CultureInfo.InvariantCulture, "{0}-{1}", "flowtype", id);
@@ -237,8 +239,8 @@ namespace SyncroSim.STSimStockFlow
 
 			foreach (DataRowView drv in dv)
 			{
-				int id = Convert.ToInt32(drv.Row[ds.ValidationTable.ValueMember]);
-				string DisplayName = Convert.ToString(drv.Row[ds.ValidationTable.DisplayMember]);
+				int id = Convert.ToInt32(drv.Row[ds.ValidationTable.ValueMember], CultureInfo.InvariantCulture);
+				string DisplayName = Convert.ToString(drv.Row[ds.ValidationTable.DisplayMember], CultureInfo.InvariantCulture);
 
 				//Normal
 				string VarNameNormal = string.Format(CultureInfo.InvariantCulture, "{0}-{1}", "flowgroup", id);
@@ -300,11 +302,11 @@ namespace SyncroSim.STSimStockFlow
 				{
 					foreach (DataRow dr in dt.Rows)
 					{
-						int it = Convert.ToInt32(dr["Iteration"]);
-						int ts = Convert.ToInt32(dr["Timestep"]);
+						int it = Convert.ToInt32(dr["Iteration"], CultureInfo.InvariantCulture);
+						int ts = Convert.ToInt32(dr["Timestep"], CultureInfo.InvariantCulture);
 
 						string k = string.Format(CultureInfo.InvariantCulture, "{0}-{1}", it, ts);
-						dr["SumOfAmount"] = Convert.ToDouble(dr["SumOfAmount"]) / dict[k];
+						dr["SumOfAmount"] = Convert.ToDouble(dr["SumOfAmount"], CultureInfo.InvariantCulture) / dict[k];
 					}
 				}
 			}
@@ -314,8 +316,11 @@ namespace SyncroSim.STSimStockFlow
 
 		private static string CreateRawChartDataQueryForType(DataSheet dataSheet, ChartDescriptor descriptor, string variableName, int variableId)
 		{
-			Debug.Assert(variableName == "stocktype" || variableName == "stocktypedensity" || variableName == "flowtype" || variableName == "flowtypedensity");
-			string TypeColumnName = null;
+			Debug.Assert(
+                variableName == "stocktype" || variableName == "stocktypedensity" || 
+                variableName == "flowtype" || variableName == "flowtypedensity");
+
+            string TypeColumnName = null;
 
 			if (variableName == "stocktype" || variableName == "stocktypedensity")
 			{
@@ -345,7 +350,8 @@ namespace SyncroSim.STSimStockFlow
 
 		private static string CreateRawChartDataQueryForGroup(DataSheet dataSheet, ChartDescriptor descriptor, string variableName, int variableId)
 		{
-			Debug.Assert(variableName == "stockgroup" || variableName == "stockgroupdensity" || variableName == "flowgroup" || variableName == "flowgroupdensity");
+			Debug.Assert(variableName == "stockgroup" || variableName == "stockgroupdensity" || 
+                variableName == "flowgroup" || variableName == "flowgroupdensity");
 
 			string GroupColumnName = null;
 			string JoinColumnName = null;
@@ -389,11 +395,11 @@ namespace SyncroSim.STSimStockFlow
 
 			foreach (DataRow dr in dt.Rows)
 			{
-				int it = Convert.ToInt32(dr["Iteration"]);
-				int ts = Convert.ToInt32(dr["Timestep"]);
+				int it = Convert.ToInt32(dr["Iteration"], CultureInfo.InvariantCulture);
+				int ts = Convert.ToInt32(dr["Timestep"], CultureInfo.InvariantCulture);
 				string k = string.Format(CultureInfo.InvariantCulture, "{0}-{1}", it, ts);
 
-				dict.Add(k, Convert.ToDouble(dr["SumOfAmount"]));
+				dict.Add(k, Convert.ToDouble(dr["SumOfAmount"], CultureInfo.InvariantCulture));
 			}
 
 			return dict;

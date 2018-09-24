@@ -367,8 +367,8 @@ namespace SyncroSim.STSimStockFlow
 			{
 				if (dr.RowState != DataRowState.Deleted)
 				{
-					int Id = Convert.ToInt32(dr[ds.ValueMember]);
-					string Name = Convert.ToString(dr[ds.DisplayMember]);
+					int Id = Convert.ToInt32(dr[ds.ValueMember], CultureInfo.InvariantCulture);
+					string Name = Convert.ToString(dr[ds.DisplayMember], CultureInfo.InvariantCulture);
 					bool IsSelected = this.m_FilterCriteria.FlowTypes[Id];
 
 					dlg.CheckBoxPanelMain.AddItem(IsSelected, Id, Name);
@@ -385,7 +385,9 @@ namespace SyncroSim.STSimStockFlow
 
 			foreach (DataRow dr in dlg.CheckBoxPanelMain.DataSource.Rows)
 			{
-				this.m_FilterCriteria.FlowTypes[Convert.ToInt32(dr["ItemID"])] = Convert.ToBoolean(dr["IsSelected"]);
+				this.m_FilterCriteria.FlowTypes[
+                    Convert.ToInt32(dr["ItemID"], CultureInfo.InvariantCulture)] = 
+                    Convert.ToBoolean(dr["IsSelected"], CultureInfo.InvariantCulture);
 			}
 
 			this.GetFlowDiagram().FilterFlowPathways(this.m_FilterCriteria);
@@ -548,8 +550,8 @@ namespace SyncroSim.STSimStockFlow
 
 			foreach (StockTypeShape s in d.SelectedShapes)
 			{
-				sb.AppendFormat(CultureInfo.InvariantCulture, "{0},", Convert.ToString(
-                    DataTableUtilities.GetTableValue(ds.GetData(), ds.ValueMember, s.StockTypeId, ds.DisplayMember)));
+                object v = DataTableUtilities.GetTableValue(ds.GetData(), ds.ValueMember, s.StockTypeId, ds.DisplayMember);
+				sb.AppendFormat(CultureInfo.InvariantCulture, "{0},", Convert.ToString(v, CultureInfo.InvariantCulture));
 			}
 
 			return sb.ToString().Trim(',');
@@ -575,7 +577,8 @@ namespace SyncroSim.STSimStockFlow
 				{
 					if (s.StockTypeId == i)
 					{
-						string DisplayValue = Convert.ToString(DataTableUtilities.GetTableValue(ds.GetData(), ds.ValueMember, s.StockTypeId, ds.DisplayMember));
+                        object v = DataTableUtilities.GetTableValue(ds.GetData(), ds.ValueMember, s.StockTypeId, ds.DisplayMember);
+						string DisplayValue = Convert.ToString(v, CultureInfo.InvariantCulture);
 						sb.AppendFormat(CultureInfo.InvariantCulture, "{0}-{1}:", s.StockTypeId, DisplayValue);
 					}
 				}
@@ -605,7 +608,7 @@ namespace SyncroSim.STSimStockFlow
 			{
 				if (dr.RowState != DataRowState.Deleted)
 				{
-					cr.FlowTypes.Add(Convert.ToInt32(dr[ds.ValueMember]), true);
+					cr.FlowTypes.Add(Convert.ToInt32(dr[ds.ValueMember], CultureInfo.InvariantCulture), true);
 				}
 			}
 

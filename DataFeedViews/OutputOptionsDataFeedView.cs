@@ -67,7 +67,9 @@ namespace SyncroSim.STSimStockFlow
 
 		private void OnTerminologyChanged(DataSheetMonitorEventArgs e)
 		{
-			string t = Convert.ToString(e.GetValue("TimestepUnits", "timestep")).ToLower(CultureInfo.InvariantCulture);
+			string t = Convert.ToString(
+                e.GetValue("TimestepUnits", "timestep"), CultureInfo.InvariantCulture).
+                ToLower(CultureInfo.InvariantCulture);
 
 			this.LabelSummarySTTimesteps.Text = t;
 			this.LabelSummaryFLTimesteps.Text = t;

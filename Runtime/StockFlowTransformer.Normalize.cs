@@ -20,7 +20,7 @@ namespace SyncroSim.STSimStockFlow
 		private void NormalizeOutputOptions()
 		{
 			DataRow drrc = this.ResultScenario.GetDataSheet("STSim_RunControl").GetDataRow();
-			int MaxTimestep = Convert.ToInt32(drrc["MaximumTimestep"]);
+			int MaxTimestep = Convert.ToInt32(drrc["MaximumTimestep"], CultureInfo.InvariantCulture);
 			DataSheet dsoo = this.ResultScenario.GetDataSheet(Constants.DATASHEET_OO_NAME);
 			DataRow droo = dsoo.GetDataRow();
 
@@ -62,14 +62,16 @@ namespace SyncroSim.STSimStockFlow
 				return;
 			}
 
-			if (!Convert.ToBoolean(dr[optionColumnName]))
+			if (!Convert.ToBoolean(dr[optionColumnName], CultureInfo.InvariantCulture))
 			{
 				return;
 			}
 
 			if (dr[timestepsColumnName] == DBNull.Value)
 			{
-				string message = string.Format(CultureInfo.InvariantCulture, "Stocks and Flows Timestep value for '{0}' is invalid.  Using default.", timestepsColumnHeaderText);
+				string message = string.Format(CultureInfo.InvariantCulture, 
+                    "Stocks and Flows Timestep value for '{0}' is invalid.  Using default.", 
+                    timestepsColumnHeaderText);
 
 				this.RecordStatus(StatusType.Warning, message);
 				dr[timestepsColumnName] = 1;
@@ -77,11 +79,13 @@ namespace SyncroSim.STSimStockFlow
 				return;
 			}
 
-			int val = Convert.ToInt32(dr[timestepsColumnName]);
+			int val = Convert.ToInt32(dr[timestepsColumnName], CultureInfo.InvariantCulture);
 
 			if (val > maxTimestep)
 			{
-				string message = string.Format(CultureInfo.InvariantCulture, "Stocks and Flows Timestep value for '{0}' out of range.  Using default.", timestepsColumnHeaderText);
+				string message = string.Format(CultureInfo.InvariantCulture, 
+                    "Stocks and Flows Timestep value for '{0}' out of range.  Using default.", 
+                    timestepsColumnHeaderText);
 
 				this.RecordStatus(StatusType.Warning, message);
 				dr[timestepsColumnName] = maxTimestep;

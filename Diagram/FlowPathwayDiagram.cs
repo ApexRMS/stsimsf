@@ -236,11 +236,11 @@ namespace SyncroSim.STSimStockFlow
 			{
 				if (dr.RowState != DataRowState.Deleted)
 				{
-					int StockTypeId = Convert.ToInt32(dr[Constants.STOCK_TYPE_ID_COLUMN_NAME]);
+					int StockTypeId = Convert.ToInt32(dr[Constants.STOCK_TYPE_ID_COLUMN_NAME], CultureInfo.InvariantCulture);
 					string DisplayName = ds.ValidationTable.GetDisplayName(StockTypeId);
 					int ShapeRow = -1;
 					int ShapeColumn = -1;
-					string Location = Convert.ToString(dr[Constants.LOCATION_COLUMN_NAME]);
+					string Location = Convert.ToString(dr[Constants.LOCATION_COLUMN_NAME], CultureInfo.InvariantCulture);
 
 					LocationToRowCol(Location, ref ShapeRow, ref ShapeColumn);
 
@@ -282,7 +282,7 @@ namespace SyncroSim.STSimStockFlow
 
 			foreach (DataRow dr in OutgoingRows)
 			{
-				Debug.Assert(Convert.ToInt32(dr[Constants.FROM_STOCK_TYPE_ID_COLUMN_NAME]) == shape.StockTypeId);
+				Debug.Assert(Convert.ToInt32(dr[Constants.FROM_STOCK_TYPE_ID_COLUMN_NAME], CultureInfo.InvariantCulture) == shape.StockTypeId);
 
 				FlowPathway p = CreateFlowPathway(dr);
 				shape.OutgoingFlowPathways.Add(p);
@@ -314,51 +314,51 @@ namespace SyncroSim.STSimStockFlow
 
 			if (dr[Constants.ITERATION_COLUMN_NAME] != DBNull.Value)
 			{
-				Iteration = Convert.ToInt32(dr[Constants.ITERATION_COLUMN_NAME]);
+				Iteration = Convert.ToInt32(dr[Constants.ITERATION_COLUMN_NAME], CultureInfo.InvariantCulture);
 			}
 
 			if (dr[Constants.TIMESTEP_COLUMN_NAME] != DBNull.Value)
 			{
-				Timestep = Convert.ToInt32(dr[Constants.TIMESTEP_COLUMN_NAME]);
+				Timestep = Convert.ToInt32(dr[Constants.TIMESTEP_COLUMN_NAME], CultureInfo.InvariantCulture);
 			}
 
 			if (dr[Constants.FROM_STRATUM_ID_COLUMN_NAME] != DBNull.Value)
 			{
-				FromStratumId = Convert.ToInt32(dr[Constants.FROM_STRATUM_ID_COLUMN_NAME]);
+				FromStratumId = Convert.ToInt32(dr[Constants.FROM_STRATUM_ID_COLUMN_NAME], CultureInfo.InvariantCulture);
 			}
 
 			if (dr[Constants.FROM_STATECLASS_ID_COLUMN_NAME] != DBNull.Value)
 			{
-				FromStateClassId = Convert.ToInt32(dr[Constants.FROM_STATECLASS_ID_COLUMN_NAME]);
+				FromStateClassId = Convert.ToInt32(dr[Constants.FROM_STATECLASS_ID_COLUMN_NAME], CultureInfo.InvariantCulture);
 			}
 
 			if (dr[Constants.FROM_MIN_AGE_COLUMN_NAME] != DBNull.Value)
 			{
-				FromMinimumAge = Convert.ToInt32(dr[Constants.FROM_MIN_AGE_COLUMN_NAME]);
+				FromMinimumAge = Convert.ToInt32(dr[Constants.FROM_MIN_AGE_COLUMN_NAME], CultureInfo.InvariantCulture);
 			}
 
-			FromStockTypeId = Convert.ToInt32(dr[Constants.FROM_STOCK_TYPE_ID_COLUMN_NAME]);
+			FromStockTypeId = Convert.ToInt32(dr[Constants.FROM_STOCK_TYPE_ID_COLUMN_NAME], CultureInfo.InvariantCulture);
 
 			if (dr[Constants.TO_STRATUM_ID_COLUMN_NAME] != DBNull.Value)
 			{
-				ToStratumId = Convert.ToInt32(dr[Constants.TO_STRATUM_ID_COLUMN_NAME]);
+				ToStratumId = Convert.ToInt32(dr[Constants.TO_STRATUM_ID_COLUMN_NAME], CultureInfo.InvariantCulture);
 			}
 
 			if (dr[Constants.TO_STATECLASS_ID_COLUMN_NAME] != DBNull.Value)
 			{
-				ToStateClassId = Convert.ToInt32(dr[Constants.TO_STATECLASS_ID_COLUMN_NAME]);
+				ToStateClassId = Convert.ToInt32(dr[Constants.TO_STATECLASS_ID_COLUMN_NAME], CultureInfo.InvariantCulture);
 			}
 
 			if (dr[Constants.TO_MIN_AGE_COLUMN_NAME] != DBNull.Value)
 			{
-				ToMinimumAge = Convert.ToInt32(dr[Constants.TO_MIN_AGE_COLUMN_NAME]);
+				ToMinimumAge = Convert.ToInt32(dr[Constants.TO_MIN_AGE_COLUMN_NAME], CultureInfo.InvariantCulture);
 			}
 
-			ToStockTypeId = Convert.ToInt32(dr[Constants.TO_STOCK_TYPE_ID_COLUMN_NAME]);
+			ToStockTypeId = Convert.ToInt32(dr[Constants.TO_STOCK_TYPE_ID_COLUMN_NAME], CultureInfo.InvariantCulture);
 
 			if (dr[Constants.TRANSITION_GROUP_ID_COLUMN_NAME] != DBNull.Value)
 			{
-				TransitionGroupId = Convert.ToInt32(dr[Constants.TRANSITION_GROUP_ID_COLUMN_NAME]);
+				TransitionGroupId = Convert.ToInt32(dr[Constants.TRANSITION_GROUP_ID_COLUMN_NAME], CultureInfo.InvariantCulture);
 			}
 			else
 			{
@@ -367,11 +367,11 @@ namespace SyncroSim.STSimStockFlow
 
 			if (dr[Constants.STATE_ATTRIBUTE_TYPE_ID_COLUMN_NAME] != DBNull.Value)
 			{
-				StateAttributeTypeId = Convert.ToInt32(dr[Constants.STATE_ATTRIBUTE_TYPE_ID_COLUMN_NAME]);
+				StateAttributeTypeId = Convert.ToInt32(dr[Constants.STATE_ATTRIBUTE_TYPE_ID_COLUMN_NAME], CultureInfo.InvariantCulture);
 			}
 
-			FlowTypeId = Convert.ToInt32(dr[Constants.FLOW_TYPE_ID_COLUMN_NAME]);
-			Multiplier = Convert.ToDouble(dr[Constants.MULTIPLIER_COLUMN_NAME]);
+			FlowTypeId = Convert.ToInt32(dr[Constants.FLOW_TYPE_ID_COLUMN_NAME], CultureInfo.InvariantCulture);
+			Multiplier = Convert.ToDouble(dr[Constants.MULTIPLIER_COLUMN_NAME], CultureInfo.InvariantCulture);
 
 			FlowPathway p = new FlowPathway(
                 Iteration, Timestep, FromStratumId, FromStateClassId, FromMinimumAge, FromStockTypeId, 
@@ -412,7 +412,7 @@ namespace SyncroSim.STSimStockFlow
 			{
 				if (dr.RowState != DataRowState.Deleted)
 				{
-					int id = Convert.ToInt32(dr[Constants.STOCK_TYPE_ID_COLUMN_NAME]);
+					int id = Convert.ToInt32(dr[Constants.STOCK_TYPE_ID_COLUMN_NAME], CultureInfo.InvariantCulture);
 
 					if (id == stockTypeId)
 					{
@@ -493,8 +493,8 @@ namespace SyncroSim.STSimStockFlow
 		{
 			if (this.GetShapeAt(this.CurrentMouseRow, this.CurrentMouseColumn) == null)
 			{
-				string ColLetter = Convert.ToString((char)((int)'A' + this.CurrentMouseColumn));
-				string RowLetter = Convert.ToString(this.CurrentMouseRow + 1);
+				string ColLetter = Convert.ToString((char)((int)'A' + this.CurrentMouseColumn), CultureInfo.InvariantCulture);
+				string RowLetter = Convert.ToString(this.CurrentMouseRow + 1, CultureInfo.InvariantCulture);
 
 				return ColLetter + RowLetter;
 			}
@@ -505,8 +505,8 @@ namespace SyncroSim.STSimStockFlow
 				{
 					if (this.GetShapeAt(row, col) == null)
 					{
-						string ColLetter = Convert.ToString((char)((int)'A' + col));
-						string RowLetter = (row + 1).ToString();
+						string ColLetter = Convert.ToString((char)((int)'A' + col), CultureInfo.InvariantCulture);
+						string RowLetter = (row + 1).ToString(CultureInfo.InvariantCulture);
 
 						return (ColLetter + RowLetter);
 					}
@@ -528,7 +528,7 @@ namespace SyncroSim.STSimStockFlow
             int CharVal = ((int)c - (int)'A');
 
 			column = CharVal;
-			row = int.Parse(NumPart) - 1;
+			row = int.Parse(NumPart, CultureInfo.InvariantCulture) - 1;
 
 			Debug.Assert(column >= 0 && row >= 0);
 		}
@@ -537,7 +537,7 @@ namespace SyncroSim.STSimStockFlow
 		{
 			Debug.Assert(column < 26);
 
-			string s = Convert.ToString((char)((int)'A' + column));
+			string s = Convert.ToString((char)((int)'A' + column), CultureInfo.InvariantCulture);
 			s = s + (row + 1).ToString(CultureInfo.InvariantCulture);
 
 			return s;

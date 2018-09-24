@@ -431,7 +431,7 @@ namespace SyncroSim.STSimStockFlow
 			{
 				if (dr.RowState != DataRowState.Deleted)
 				{
-					int Id = Convert.ToInt32(dr[Constants.STOCK_TYPE_ID_COLUMN_NAME]);
+					int Id = Convert.ToInt32(dr[Constants.STOCK_TYPE_ID_COLUMN_NAME], CultureInfo.InvariantCulture);
 
 					if (!lst.Contains(Id))
 					{
@@ -473,7 +473,7 @@ namespace SyncroSim.STSimStockFlow
 			{
 				if (dr["PrimaryStratumLabel"] != DBNull.Value)
 				{
-					l = Convert.ToString(dr["PrimaryStratumLabel"]);
+					l = Convert.ToString(dr["PrimaryStratumLabel"], CultureInfo.InvariantCulture);
 				}
 			}
 

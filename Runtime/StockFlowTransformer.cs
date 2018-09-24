@@ -345,14 +345,14 @@ namespace SyncroSim.STSimStockFlow
 			foreach (DataRow dr in dtgroups.Rows)
 			{
 				double StockGroupValue = 0.0;
-				int StockGroupId = Convert.ToInt32(dr[Groups.ValueMember]);
+				int StockGroupId = Convert.ToInt32(dr[Groups.ValueMember], CultureInfo.InvariantCulture);
 				string query = string.Format(CultureInfo.InvariantCulture, "StockGroupID={0}", StockGroupId);
 				DataRow[] rows = dtmembership.Select(query);
 
 				foreach (DataRow r in rows)
 				{
 					double ValueMultiplier = 1.0;
-					int StockTypeId = Convert.ToInt32(r[Constants.STOCK_TYPE_ID_COLUMN_NAME]);
+					int StockTypeId = Convert.ToInt32(r[Constants.STOCK_TYPE_ID_COLUMN_NAME], CultureInfo.InvariantCulture);
 					double StockTypeAmount = 0.0;
 
 					if (StockAmounts.ContainsKey(StockTypeId))
@@ -362,7 +362,7 @@ namespace SyncroSim.STSimStockFlow
 
 					if (!Convert.IsDBNull(r[Constants.VALUE_COLUMN_NAME]))
 					{
-						ValueMultiplier = Convert.ToDouble(r[Constants.VALUE_COLUMN_NAME]);
+						ValueMultiplier = Convert.ToDouble(r[Constants.VALUE_COLUMN_NAME], CultureInfo.InvariantCulture);
 					}
 
 					StockGroupValue += ((StockTypeAmount * ValueMultiplier) / this.m_STSimTransformer.AmountPerCell);
