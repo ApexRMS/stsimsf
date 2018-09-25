@@ -275,7 +275,12 @@ namespace SyncroSim.STSimStockFlow
 			}
 		}
 
-		private static DataTable CreateRawChartData(DataSheet dataSheet, ChartDescriptor descriptor, DataStore store, string variableName, int variableId)
+		private static DataTable CreateRawChartData(
+            DataSheet dataSheet, 
+            ChartDescriptor descriptor, 
+            DataStore store, 
+            string variableName, 
+            int variableId)
 		{
 			string query = null;
 
@@ -288,12 +293,23 @@ namespace SyncroSim.STSimStockFlow
 			}
 			else
 			{
-				Debug.Assert(variableName == "stockgroup" || variableName == "stockgroupdensity" || variableName == "flowgroup" || variableName == "flowgroupdensity");
+				Debug.Assert(
+                    variableName == "stockgroup" || 
+                    variableName == "stockgroupdensity" || 
+                    variableName == "flowgroup" || 
+                    variableName == "flowgroupdensity");
+
 				query = CreateRawChartDataQueryForGroup(dataSheet, descriptor, variableName, variableId);
 			}
 
-			DataTable dt = store.CreateDataTableFromQuery(query, "RawData");
+            DataTable dt = StochasticTime.ChartCache.GetCachedData(dataSheet.Scenario, query);
 
+            if (dt == null)
+            {
+                dt = store.CreateDataTableFromQuery(query, "RawData");
+                StochasticTime.ChartCache.SetCachedData(dataSheet.Scenario, query, dt);
+            }
+                              
 			if (variableName.EndsWith("density", StringComparison.Ordinal))
 			{
 				Dictionary<string, double> dict = CreateAmountDictionary(dataSheet.Scenario, descriptor, variableName, store);
@@ -331,20 +347,32 @@ namespace SyncroSim.STSimStockFlow
 				TypeColumnName = Constants.FLOW_TYPE_ID_COLUMN_NAME;
 			}
 
-			string ScenarioClause = string.Format(CultureInfo.InvariantCulture, "([{0}]={1})", Constants.SCENARIO_ID_COLUMN_NAME, dataSheet.Scenario.Id);
-			string WhereClause = string.Format(CultureInfo.InvariantCulture, "{0} AND ([{1}]={2})", ScenarioClause, TypeColumnName, variableId);
+			string ScenarioClause = string.Format(CultureInfo.InvariantCulture, 
+                "([{0}]={1})", 
+                Constants.SCENARIO_ID_COLUMN_NAME, dataSheet.Scenario.Id);
+
+			string WhereClause = string.Format(CultureInfo.InvariantCulture,
+                "{0} AND ([{1}]={2})", 
+                ScenarioClause, TypeColumnName, variableId);
 
 			if (!string.IsNullOrEmpty(descriptor.DisaggregateFilter))
 			{
-				WhereClause = string.Format(CultureInfo.InvariantCulture, "{0} AND ({1})", WhereClause, descriptor.DisaggregateFilter);
+				WhereClause = string.Format(CultureInfo.InvariantCulture, 
+                    "{0} AND ({1})", 
+                    WhereClause, descriptor.DisaggregateFilter);
 			}
 
 			if (!string.IsNullOrEmpty(descriptor.IncludeDataFilter))
 			{
-				WhereClause = string.Format(CultureInfo.InvariantCulture, "{0} AND ({1})", WhereClause, descriptor.IncludeDataFilter);
+				WhereClause = string.Format(CultureInfo.InvariantCulture, 
+                    "{0} AND ({1})", 
+                    WhereClause, descriptor.IncludeDataFilter);
 			}
 
-			string query = string.Format(CultureInfo.InvariantCulture, "SELECT Iteration, Timestep, SUM(Amount) AS SumOfAmount FROM {0} WHERE ({1}) GROUP BY Iteration, Timestep", dataSheet.Name, WhereClause);
+			string query = string.Format(CultureInfo.InvariantCulture, 
+                "SELECT Iteration, Timestep, SUM(Amount) AS SumOfAmount FROM {0} WHERE ({1}) GROUP BY Iteration, Timestep", 
+                dataSheet.Name, WhereClause);
+
 			return query;
 		}
 
@@ -370,29 +398,51 @@ namespace SyncroSim.STSimStockFlow
 				TypeGroupTableName = Constants.DATASHEET_FLOW_TYPE_GROUP_MEMBERSHIP_NAME;
 			}
 
-			string ScenarioClause = string.Format(CultureInfo.InvariantCulture, "({0}.{1}={2})", dataSheet.Name, Constants.SCENARIO_ID_COLUMN_NAME, dataSheet.Scenario.Id);
-			string WhereClause = string.Format(CultureInfo.InvariantCulture, "{0} AND ({1}.{2}={3})", ScenarioClause, TypeGroupTableName, GroupColumnName, variableId);
+			string ScenarioClause = string.Format(CultureInfo.InvariantCulture, 
+                "({0}.{1}={2})", 
+                dataSheet.Name, Constants.SCENARIO_ID_COLUMN_NAME, dataSheet.Scenario.Id);
+
+			string WhereClause = string.Format(CultureInfo.InvariantCulture, 
+                "{0} AND ({1}.{2}={3})", 
+                ScenarioClause, TypeGroupTableName, GroupColumnName, variableId);
 
 			if (!string.IsNullOrEmpty(descriptor.DisaggregateFilter))
 			{
-				WhereClause = string.Format(CultureInfo.InvariantCulture, "{0} AND ({1})", WhereClause, descriptor.DisaggregateFilter);
+				WhereClause = string.Format(CultureInfo.InvariantCulture, 
+                    "{0} AND ({1})", 
+                    WhereClause, descriptor.DisaggregateFilter);
 			}
 
 			if (!string.IsNullOrEmpty(descriptor.IncludeDataFilter))
 			{
-				WhereClause = string.Format(CultureInfo.InvariantCulture, "{0} AND ({1})", WhereClause, descriptor.IncludeDataFilter);
+				WhereClause = string.Format(CultureInfo.InvariantCulture, 
+                    "{0} AND ({1})",
+                    WhereClause, descriptor.IncludeDataFilter);
 			}
 
-			string query = string.Format(CultureInfo.InvariantCulture, "SELECT Iteration, Timestep, Sum({0}.Amount * CASE WHEN {1}.Value IS NULL THEN 1.0 ELSE {2}.Value END) AS SumOfAmount " + "FROM {3} INNER JOIN {4} ON {5}.{6} = {7}.{8} AND {9}.ScenarioID = {10}.ScenarioID " + "WHERE ({11}) GROUP BY Iteration, Timestep", dataSheet.Name, TypeGroupTableName, TypeGroupTableName, dataSheet.Name, TypeGroupTableName, dataSheet.Name, JoinColumnName, TypeGroupTableName, JoinColumnName, dataSheet.Name, TypeGroupTableName, WhereClause);
-			return query;
+			string query = string.Format(CultureInfo.InvariantCulture, 
+                "SELECT Iteration, Timestep, Sum({0}.Amount * CASE WHEN {1}.Value IS NULL THEN 1.0 ELSE {2}.Value END) AS SumOfAmount " + "FROM {3} INNER JOIN {4} ON {5}.{6} = {7}.{8} AND {9}.ScenarioID = {10}.ScenarioID " + "WHERE ({11}) GROUP BY Iteration, Timestep", 
+                dataSheet.Name, TypeGroupTableName, TypeGroupTableName, dataSheet.Name, TypeGroupTableName, dataSheet.Name, JoinColumnName, TypeGroupTableName, JoinColumnName, dataSheet.Name, TypeGroupTableName, WhereClause);
+
+            return query;
 		}
 
-		public static Dictionary<string, double> CreateAmountDictionary(Scenario scenario, ChartDescriptor descriptor, string variableName, DataStore store)
+		public static Dictionary<string, double> CreateAmountDictionary(
+            Scenario scenario, 
+            ChartDescriptor descriptor, 
+            string variableName, 
+            DataStore store)
 		{
 			Dictionary<string, double> dict = new Dictionary<string, double>();
 			string query = CreateAmountQuery(scenario, descriptor, variableName);
-			DataTable dt = store.CreateDataTableFromQuery(query, "AmountData");
+            DataTable dt = StochasticTime.ChartCache.GetCachedData(scenario, query);
 
+            if (dt == null)
+            {
+                dt = store.CreateDataTableFromQuery(query, "AmountData");
+                StochasticTime.ChartCache.SetCachedData(scenario, query, dt);
+            }
+                             
 			foreach (DataRow dr in dt.Rows)
 			{
 				int it = Convert.ToInt32(dr["Iteration"], CultureInfo.InvariantCulture);
@@ -408,7 +458,11 @@ namespace SyncroSim.STSimStockFlow
 		private static string CreateAmountQuery(Scenario scenario, ChartDescriptor descriptor, string variableName)
 		{
 			Debug.Assert(variableName.EndsWith("density", StringComparison.Ordinal));
-			string ScenarioClause = string.Format(CultureInfo.InvariantCulture, "([{0}]={1})", Constants.SCENARIO_ID_COLUMN_NAME, scenario.Id);
+
+			string ScenarioClause = string.Format(CultureInfo.InvariantCulture, 
+                "([{0}]={1})", 
+                Constants.SCENARIO_ID_COLUMN_NAME, scenario.Id);
+
 			string WhereClause = ScenarioClause;
 			string Disagg = RemoveUnwantedColumnReferences(descriptor.DisaggregateFilter, variableName);
 			string IncData = RemoveUnwantedColumnReferences(descriptor.IncludeDataFilter, variableName);
@@ -423,7 +477,10 @@ namespace SyncroSim.STSimStockFlow
 				WhereClause = string.Format(CultureInfo.InvariantCulture, "{0} AND ({1})", WhereClause, IncData);
 			}
 
-			string query = string.Format(CultureInfo.InvariantCulture, "SELECT Iteration, Timestep, SUM(Amount) AS SumOfAmount FROM STSim_OutputStratum WHERE ({0}) GROUP BY Iteration, Timestep", WhereClause);
+			string query = string.Format(CultureInfo.InvariantCulture, 
+                "SELECT Iteration, Timestep, SUM(Amount) AS SumOfAmount FROM STSim_OutputStratum WHERE ({0}) GROUP BY Iteration, Timestep", 
+                WhereClause);
+
 			return query;
 		}
 
