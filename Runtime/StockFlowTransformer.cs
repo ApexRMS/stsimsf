@@ -174,8 +174,7 @@ namespace SyncroSim.STSimStockFlow
 		/// Overrides External Data Ready
 		/// </summary>
 		/// <param name="dataSheet"></param>
-		/// <param name="previousData"></param>
-		protected override void OnExternalDataReady(DataSheet dataSheet, DataTable previousData)
+		protected override void OnExternalDataReady(DataSheet dataSheet)
 		{
 			if (!this.m_CanComputeStocksAndFlows)
 			{
