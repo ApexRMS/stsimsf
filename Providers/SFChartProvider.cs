@@ -302,12 +302,12 @@ namespace SyncroSim.STSimStockFlow
 				query = CreateRawChartDataQueryForGroup(dataSheet, descriptor, variableName, variableId);
 			}
 
-            DataTable dt = StochasticTime.ChartCache.GetCachedData(dataSheet.Scenario, query);
+            DataTable dt = StochasticTime.ChartCache.GetCachedData(dataSheet.Scenario, query, null);
 
             if (dt == null)
             {
                 dt = store.CreateDataTableFromQuery(query, "RawData");
-                StochasticTime.ChartCache.SetCachedData(dataSheet.Scenario, query, dt);
+                StochasticTime.ChartCache.SetCachedData(dataSheet.Scenario, query, dt, null);
             }
                               
 			if (variableName.EndsWith("density", StringComparison.Ordinal))
@@ -435,12 +435,12 @@ namespace SyncroSim.STSimStockFlow
 		{
 			Dictionary<string, double> dict = new Dictionary<string, double>();
 			string query = CreateAmountQuery(scenario, descriptor, variableName);
-            DataTable dt = StochasticTime.ChartCache.GetCachedData(scenario, query);
+            DataTable dt = StochasticTime.ChartCache.GetCachedData(scenario, query, null);
 
             if (dt == null)
             {
                 dt = store.CreateDataTableFromQuery(query, "AmountData");
-                StochasticTime.ChartCache.SetCachedData(scenario, query, dt);
+                StochasticTime.ChartCache.SetCachedData(scenario, query, dt, null);
             }
                              
 			foreach (DataRow dr in dt.Rows)
