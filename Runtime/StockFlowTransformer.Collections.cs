@@ -127,7 +127,7 @@ namespace SyncroSim.STSimStockFlow
 			foreach (DataRow dr in ds.GetData().Rows)
 			{
 				string stockFileName = Convert.ToString(dr[Constants.RASTER_FILE_COLUMN_NAME], CultureInfo.InvariantCulture);
-				string fullFilename = RasterFiles.GetInputFileName(ds, stockFileName, false);
+				string fullFilename = Spatial.GetSpatialInputFileName(ds, stockFileName, false);
 				int? Iteration = null;
 
 				if (dr[Constants.ITERATION_COLUMN_NAME] != DBNull.Value)
@@ -135,12 +135,12 @@ namespace SyncroSim.STSimStockFlow
 					Iteration = Convert.ToInt32(dr[Constants.ITERATION_COLUMN_NAME], CultureInfo.InvariantCulture);
 				}
 
-				//Load Initial Stock raster file
-				StochasticTimeRaster raster = new StochasticTimeRaster();
+                //Load Initial Stock raster file
+                StochasticTimeRaster raster;
 
 				try
 				{
-					RasterFiles.LoadRasterFile(fullFilename, raster, RasterDataType.DTDouble);
+					raster = new StochasticTimeRaster(fullFilename, RasterDataType.DTDouble);
 				}
 				catch (Exception)
 				{
@@ -611,12 +611,12 @@ namespace SyncroSim.STSimStockFlow
 				}
 
 				FlowSpatialMultiplier Multiplier = new FlowSpatialMultiplier(FlowGroupId, Iteration, Timestep, FileName);
-				string FullFilename = RasterFiles.GetInputFileName(ds, FileName, false);
-				StochasticTimeRaster MultiplierRaster = new StochasticTimeRaster();
+				string FullFilename = Spatial.GetSpatialInputFileName(ds, FileName, false);
+                StochasticTimeRaster MultiplierRaster;
 
 				try
 				{
-					RasterFiles.LoadRasterFile(FullFilename, MultiplierRaster, RasterDataType.DTDouble);
+					MultiplierRaster = new StochasticTimeRaster(FullFilename, RasterDataType.DTDouble);
 				}
 				catch (Exception)
 				{

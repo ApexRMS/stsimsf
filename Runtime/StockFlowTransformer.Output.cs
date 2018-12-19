@@ -135,21 +135,18 @@ namespace SyncroSim.STSimStockFlow
 
 			foreach (StockType s in this.m_StockTypes)
 			{
-				StochasticTimeRaster rastOutput = new StochasticTimeRaster();
-				// Fetch the raster metadata from the InpRasters object
-				this.STSimTransformer.InputRasters.GetMetadata(rastOutput);
-				rastOutput.InitDblCells();
+                DataSheet ds = this.ResultScenario.GetDataSheet(Constants.DATASHEET_OUTPUT_SPATIAL_STOCK_TYPE);
+                StochasticTimeRaster rast = this.STSimTransformer.InputRasters.CreateOutputRaster(RasterDataType.DTDouble);
 
-				GetStockValues(s.Id, rastOutput);
+				GetStockValues(s.Id, rast);
 
-				RasterFiles.SaveOutputRaster(
-                    rastOutput, 
-                    this.ResultScenario.GetDataSheet(Constants.DATASHEET_OUTPUT_SPATIAL_STOCK_TYPE), 
-                    RasterDataType.DTDouble, 
+                Spatial.WriteRasterData(
+                    rast, 
+                    ds, 
                     iteration, 
                     timestep, 
-                    Constants.SPATIAL_MAP_STOCK_TYPE_VARIABLE_PREFIX, 
                     s.Id, 
+                    Constants.SPATIAL_MAP_STOCK_TYPE_VARIABLE_PREFIX, 
                     Constants.DATASHEET_OUTPUT_SPATIAL_FILENAME_COLUMN);
 			}
 		}
@@ -197,13 +194,10 @@ namespace SyncroSim.STSimStockFlow
 					var sgId = Convert.ToInt32(dr[dsGrp.ValidationTable.ValueMember], CultureInfo.InvariantCulture);
 					var sgName = dr[dsGrp.ValidationTable.DisplayMember];
 
-					StochasticTimeRaster rastOutput = new StochasticTimeRaster();
-					// Fetch the raster metadata from the InpRasters object
-					this.STSimTransformer.InputRasters.GetMetadata(rastOutput);
-					rastOutput.InitDblCells();
+					StochasticTimeRaster rastOutput = this.STSimTransformer.InputRasters.CreateOutputRaster(RasterDataType.DTDouble);
 
-					// Fetch the Stock Group Multipler table, and add the Stock Type values together, applying the multiplier
-					string query = string.Format(CultureInfo.InvariantCulture, "select * from {0} where ScenarioId = {1} and {2}={3}", Constants.DATASHEET_STOCK_TYPE_GROUP_MEMBERSHIP_NAME, ResultScenario.Id, Constants.STOCK_GROUP_ID_COLUMN_NAME, sgId);
+                    // Fetch the Stock Group Multipler table, and add the Stock Type values together, applying the multiplier
+                    string query = string.Format(CultureInfo.InvariantCulture, "select * from {0} where ScenarioId = {1} and {2}={3}", Constants.DATASHEET_STOCK_TYPE_GROUP_MEMBERSHIP_NAME, ResultScenario.Id, Constants.STOCK_GROUP_ID_COLUMN_NAME, sgId);
 					DataTable dtGrpTypes = store.CreateDataTableFromQuery(query, "GrpTypeMultData");
 					if (dtGrpTypes.Rows.Count > 0)
 					{
@@ -221,24 +215,20 @@ namespace SyncroSim.STSimStockFlow
 							}
 							int stockTypeId = Convert.ToInt32(drGrpType[Constants.STOCK_TYPE_ID_COLUMN_NAME], CultureInfo.InvariantCulture);
 							Debug.Print(string.Format(CultureInfo.InvariantCulture, "Group Name {0}, Group ID:{3}, Type:{1}, Amount:{2}", sgName, stockTypeId, amt, sgId));
-							StochasticTimeRaster rastStockType = new StochasticTimeRaster();
+							StochasticTimeRaster rastStockType = this.STSimTransformer.InputRasters.CreateOutputRaster(RasterDataType.DTDouble);
 
-							// Fetch the raster metadata from the InpRasters object
-							this.STSimTransformer.InputRasters.GetMetadata(rastStockType);
-							rastStockType.InitDblCells();
 							GetStockValues(stockTypeId, rastStockType);
-							rastStockType.ScaleDbl(amt);
-							rastOutput.AddDbl(rastStockType);
+							rastStockType.ScaleDblCells(amt);
+							rastOutput.AddDblCells(rastStockType);
 						}
 
-						RasterFiles.SaveOutputRaster(
+                        Spatial.WriteRasterData(
                             rastOutput, 
                             this.ResultScenario.GetDataSheet(Constants.DATASHEET_OUTPUT_SPATIAL_STOCK_GROUP),
-                            RasterDataType.DTDouble, 
                             iteration, 
                             timestep, 
-                            Constants.SPATIAL_MAP_STOCK_GROUP_VARIABLE_PREFIX, 
                             sgId, 
+                            Constants.SPATIAL_MAP_STOCK_GROUP_VARIABLE_PREFIX, 
                             Constants.DATASHEET_OUTPUT_SPATIAL_FILENAME_COLUMN);
 					}
 				}
@@ -252,23 +242,19 @@ namespace SyncroSim.STSimStockFlow
 		private void ProcessFlowSpatialData(int iteration, int timestep)
 		{
 			Debug.Assert(this.m_IsSpatial);
-			StochasticTimeRaster rastOutput = new StochasticTimeRaster();
-
-			// Fetch the raster metadata from the InpRasters object
-			this.STSimTransformer.InputRasters.GetMetadata(rastOutput);
+			StochasticTimeRaster rastOutput = this.STSimTransformer.InputRasters.CreateOutputRaster(RasterDataType.DTDouble);
 
 			foreach (FlowType flowType in this.m_FlowTypes.Values)
 			{
 				rastOutput.DblCells = GetOutputFlowDictionary()[flowType.Id];
 
-				RasterFiles.SaveOutputRaster(
+                Spatial.WriteRasterData(
                     rastOutput, 
                     this.ResultScenario.GetDataSheet(Constants.DATASHEET_OUTPUT_SPATIAL_FLOW_TYPE), 
-                    RasterDataType.DTDouble, 
                     iteration, 
                     timestep, 
-                    Constants.SPATIAL_MAP_FLOW_TYPE_VARIABLE_PREFIX, 
                     flowType.Id, 
+                    Constants.SPATIAL_MAP_FLOW_TYPE_VARIABLE_PREFIX, 
                     Constants.DATASHEET_OUTPUT_SPATIAL_FILENAME_COLUMN);
 			}
 		}
@@ -291,15 +277,12 @@ namespace SyncroSim.STSimStockFlow
 					var fgId = Convert.ToInt32(dr[dsGrp.ValidationTable.ValueMember], CultureInfo.InvariantCulture);
 					var fgName = dr[dsGrp.ValidationTable.DisplayMember];
 
-					StochasticTimeRaster rastOutput = new StochasticTimeRaster();
-
-					// Fetch the raster metadata from the InpRasters object
-					this.STSimTransformer.InputRasters.GetMetadata(rastOutput);
-					rastOutput.InitDblCells();
+					StochasticTimeRaster rastOutput = this.STSimTransformer.InputRasters.CreateOutputRaster(RasterDataType.DTDouble);
 
 					// Loop through the Flow Group Multipler table, and add the Flow Type values together, applying the multiplier
 					string query = string.Format(CultureInfo.InvariantCulture, "select * from {0} where scenarioId = {1} and {2}={3}", Constants.DATASHEET_FLOW_TYPE_GROUP_MEMBERSHIP_NAME, ResultScenario.Id, Constants.FLOW_GROUP_ID_COLUMN_NAME, fgId);
 					DataTable dtGrpTypes = store.CreateDataTableFromQuery(query, "GrpTypeMultData");
+
 					if (dtGrpTypes.Rows.Count > 0)
 					{
 						foreach (DataRow drGrpType in dtGrpTypes.Rows)
@@ -317,25 +300,20 @@ namespace SyncroSim.STSimStockFlow
 
 							int flowTypeId = Convert.ToInt32(drGrpType[Constants.FLOW_TYPE_ID_COLUMN_NAME], CultureInfo.InvariantCulture);
 							Debug.Print(string.Format(CultureInfo.InvariantCulture, "Group Name {0}, Group ID:{3}, Type:{1}, Amount:{2}", fgName, flowTypeId, amt, fgId));
-							StochasticTimeRaster rastFlowType = new StochasticTimeRaster();
+							StochasticTimeRaster rastFlowType = this.STSimTransformer.InputRasters.CreateOutputRaster(RasterDataType.DTDouble);
 
-							// Fetch the raster metadata from the InpRasters object
-							this.STSimTransformer.InputRasters.GetMetadata(rastFlowType);
-							rastFlowType.InitDblCells();
-
-							rastFlowType.DblCells = (double[])(GetOutputFlowDictionary()[flowTypeId].Clone());
-							rastFlowType.ScaleDbl(amt);
-							rastOutput.AddDbl(rastFlowType);
+                            rastFlowType.DblCells = (double[])(GetOutputFlowDictionary()[flowTypeId].Clone());
+							rastFlowType.ScaleDblCells(amt);
+							rastOutput.AddDblCells(rastFlowType);
 						}
 
-						RasterFiles.SaveOutputRaster(
+                        Spatial.WriteRasterData(
                             rastOutput, 
                             this.ResultScenario.GetDataSheet(Constants.DATASHEET_OUTPUT_SPATIAL_FLOW_GROUP), 
-                            RasterDataType.DTDouble, 
                             iteration, 
                             timestep, 
-                            Constants.SPATIAL_MAP_FLOW_GROUP_VARIABLE_PREFIX, 
                             fgId, 
+                            Constants.SPATIAL_MAP_FLOW_GROUP_VARIABLE_PREFIX, 
                             Constants.DATASHEET_OUTPUT_SPATIAL_FILENAME_COLUMN);
 					}
 				}
@@ -486,7 +464,7 @@ namespace SyncroSim.STSimStockFlow
 				{
 					double amt = GetOutputFlowDictionary()[flowTypeId][cell.CellId];
 
-					if (amt.Equals(StochasticTimeRaster.DefaultNoDataValue))
+					if (amt.Equals(Spatial.DefaultNoDataValue))
 					{
 						amt = 0;
 					}

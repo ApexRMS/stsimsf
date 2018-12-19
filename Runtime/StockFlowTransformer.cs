@@ -273,14 +273,14 @@ namespace SyncroSim.STSimStockFlow
 
 						for (var i = 0; i <= arr.GetUpperBound(0); i++)
 						{
-							arr[i] = StochasticTimeRaster.DefaultNoDataValue;
+							arr[i] = Spatial.DefaultNoDataValue;
 						}
 
 #if DEBUG
 						if (arr.Length > 0)
 						{
-							Debug.Assert(arr[0] == StochasticTimeRaster.DefaultNoDataValue);
-							Debug.Assert(arr[arr.Length - 1] == StochasticTimeRaster.DefaultNoDataValue);
+							Debug.Assert(arr[0] == Spatial.DefaultNoDataValue);
+							Debug.Assert(arr[arr.Length - 1] == Spatial.DefaultNoDataValue);
 						}
 #endif
 					}
@@ -537,7 +537,7 @@ namespace SyncroSim.STSimStockFlow
 
 				string cmpMsg = "";
 				var cmpRes = this.STSimTransformer.InputRasters.CompareMetadata(this.m_FlowSpatialMultiplierRasters[r.FileName], ref cmpMsg);
-				string FullFilename = RasterFiles.GetInputFileName(ds, r.FileName, false);
+				string FullFilename = Spatial.GetSpatialInputFileName(ds, r.FileName, false);
 
 				if (cmpRes == CompareMetadataResult.ImportantDifferences)
 				{

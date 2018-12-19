@@ -21,7 +21,7 @@ namespace SyncroSim.STSimStockFlow
 
 		public override DataTable GetData(DataStore store, ChartDescriptor descriptor, DataSheet dataSheet)
 		{
-			if (descriptor.DataSheetName == "SF_OutputStock" || descriptor.DataSheetName == "SF_OutputFlow")
+			if (descriptor.DatasheetName == "SF_OutputStock" || descriptor.DatasheetName == "SF_OutputFlow")
 			{
 				string[] v = descriptor.VariableName.Split('-');
 				string VarName = v[0];
