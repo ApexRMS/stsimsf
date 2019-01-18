@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 // Review the values of the assembly attributes
 
 [assembly: AssemblyTitle("SyncroSim.STSimStockFlow")]
-[assembly: AssemblyDescription("Stocks and Flows Module")]
+[assembly: AssemblyDescription("Stocks and Flows Package")]
 [assembly: AssemblyCompany("ApexRMS")]
 [assembly: AssemblyProduct("SyncroSim.STSimStockFlow")]
 [assembly: AssemblyCopyright("Copyright © 2007-2018 Apex Resource Management Solution Ltd. (ApexRMS). All rights reserved.")]
