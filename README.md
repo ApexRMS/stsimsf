@@ -1,2 +1,2 @@
-# carep
-A SyncroSim Package for the Caribou Energy Protein Model.
+# stsim-stockflow
+A SyncroSim Package for the ST-Sim Stocks and Flows Add-In.
