@@ -1,2 +1,2 @@
 # stsim-stockflow
-A SyncroSim Package for the ST-Sim Stocks and Flows Add-On.
+SyncroSim Package Add-on to stsim for using Stocks and Flows with ST-Sim.
