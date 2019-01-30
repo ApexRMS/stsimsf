@@ -1,5 +1,5 @@
 ﻿// STSimStockFlow: A SyncroSim Package for the ST-Sim Stocks and Flows Add-In.
-// Copyright © 2007-2018 Apex Resource Management Solution Ltd. (ApexRMS). All rights reserved.
+// Copyright © 2007-2019 Apex Resource Management Solution Ltd. (ApexRMS). All rights reserved.
 
 using System;
 using System.Globalization;
