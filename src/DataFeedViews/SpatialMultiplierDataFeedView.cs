@@ -62,8 +62,8 @@ namespace SyncroSim.STSimStockFlow
 				this.m_MultipliersDataGrid.DataBindingComplete += this.OnGridBindingComplete;
 				this.m_MultipliersDataGrid.KeyDown += this.OnGridKeyDown;
 
-				//Configure columns
-				this.m_MultipliersDataGrid.Columns[FILE_NAME_COLUMN_INDEX].DefaultCellStyle.BackColor = Color.LightGray;
+                //Configure columns
+                this.m_MultipliersDataGrid.Columns[FILE_NAME_COLUMN_INDEX].DefaultCellStyle.BackColor = Constants.READONLY_COLUMN_COLOR;
 
 				//Add the browse button column
 				DataGridViewButtonColumn BrowseColumn = new DataGridViewButtonColumn();

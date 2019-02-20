@@ -1,6 +1,8 @@
 ﻿// stsim-stockflow: SyncroSim Add-On Package (to stsim) for integrating stocks and flows into state-and-transition simulation models in ST-Sim.
 // Copyright © 2007-2019 Apex Resource Management Solution Ltd. (ApexRMS). All rights reserved.
 
+using System.Drawing;
+
 namespace SyncroSim.STSimStockFlow
 {
 	internal static class Constants
@@ -162,12 +164,13 @@ namespace SyncroSim.STSimStockFlow
 		public const int DIAGRAM_LANES_BETWEEN_SHAPES = 11;
 		public const int ZOOM_SAFE_PEN_WIDTH = -1;
 
-		public static System.Drawing.Color DIAGRAM_SHAPE_TEXT_COLOR = System.Drawing.Color.Black;
-		public static System.Drawing.Color DIAGRAM_SHAPE_READONLY_TEXT_COLOR = System.Drawing.Color.Gray;
-		public static System.Drawing.Color DIAGRAM_SHAPE_BORDER_COLOR = System.Drawing.Color.Gray;
-		public static System.Drawing.Color DIAGRAM_SHAPE_READONLY_BORDER_COLOR = System.Drawing.Color.LightGray;
-		public static System.Drawing.Color DIAGRAM_SHAPE_BACKGROUND_COLOR = System.Drawing.Color.FromArgb(255, 240, 240, 240);
-		public static System.Drawing.Color DIAGRAM_FLOW_PATHWAY_LINE_COLOR = System.Drawing.Color.CornflowerBlue;
-		public static System.Drawing.Font DIAGRAM_SHAPE_NORMAL_FONT = new System.Drawing.Font("Segoe UI", 9.0F, System.Drawing.FontStyle.Regular);
+        public static Color READONLY_COLUMN_COLOR = Color.FromArgb(232, 232, 232);
+        public static Color DIAGRAM_SHAPE_TEXT_COLOR = Color.Black;
+		public static Color DIAGRAM_SHAPE_READONLY_TEXT_COLOR = Color.Gray;
+		public static Color DIAGRAM_SHAPE_BORDER_COLOR = Color.Gray;
+		public static Color DIAGRAM_SHAPE_READONLY_BORDER_COLOR = Color.LightGray;
+		public static Color DIAGRAM_SHAPE_BACKGROUND_COLOR = Color.FromArgb(255, 240, 240, 240);
+		public static Color DIAGRAM_FLOW_PATHWAY_LINE_COLOR = Color.CornflowerBlue;
+		public static Font DIAGRAM_SHAPE_NORMAL_FONT = new Font("Segoe UI", 9.0F, FontStyle.Regular);
 	}
 }

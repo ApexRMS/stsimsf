@@ -2,11 +2,11 @@
 // Copyright © 2007-2019 Apex Resource Management Solution Ltd. (ApexRMS). All rights reserved.
 
 using System.IO;
-using System.Drawing;
+using System.Reflection;
 using System.Windows.Forms;
 using SyncroSim.Core;
 using SyncroSim.Core.Forms;
-using System.Reflection;
+using SyncroSim.Common.Forms;
 
 namespace SyncroSim.STSimStockFlow
 {
@@ -60,8 +60,8 @@ namespace SyncroSim.STSimStockFlow
 				this.m_RasterFilesDataGrid.DataBindingComplete += this.OnGridBindingComplete;
 				this.m_RasterFilesDataGrid.KeyDown += this.OnGridKeyDown;
 
-				//Configure columns
-				this.m_RasterFilesDataGrid.Columns[FILE_NAME_COLUMN_INDEX].DefaultCellStyle.BackColor = Color.LightGray;
+                //Configure columns
+                this.m_RasterFilesDataGrid.Columns[FILE_NAME_COLUMN_INDEX].DefaultCellStyle.BackColor = Constants.READONLY_COLUMN_COLOR;
 
 				//Add the browse button column
 				DataGridViewButtonColumn BrowseColumn = new DataGridViewButtonColumn();
@@ -215,21 +215,21 @@ namespace SyncroSim.STSimStockFlow
 				return;
 			}
 
-			DataGridViewEditMode OldMode = this.m_RasterFilesDataGrid.EditMode;
-			this.m_RasterFilesDataGrid.EditMode = DataGridViewEditMode.EditProgrammatically;
+            using (HourGlass h = new HourGlass())
+            {
+                DataGridViewEditMode OldMode = this.m_RasterFilesDataGrid.EditMode;
 
-			this.m_RasterFilesDataGrid.CurrentCell = this.m_RasterFilesDataGrid.Rows[rowIndex].Cells[FILE_NAME_COLUMN_INDEX];
-			this.m_RasterFilesDataGrid.Rows[rowIndex].Cells[Constants.RASTER_FILE_COLUMN_NAME].Value = Path.GetFileName(RasterFile);
-			this.m_RasterFilesDataGrid.NotifyCurrentCellDirty(true);
+			    this.m_RasterFilesDataGrid.EditMode = DataGridViewEditMode.EditProgrammatically;
+			    this.m_RasterFilesDataGrid.CurrentCell = this.m_RasterFilesDataGrid.Rows[rowIndex].Cells[FILE_NAME_COLUMN_INDEX];
+			    this.m_RasterFilesDataGrid.Rows[rowIndex].Cells[Constants.RASTER_FILE_COLUMN_NAME].Value = Path.GetFileName(RasterFile);
+			    this.m_RasterFilesDataGrid.NotifyCurrentCellDirty(true);
+			    this.m_RasterFilesDataGrid.BeginEdit(false);
+			    this.m_RasterFilesDataGrid.EndEdit();
+			    this.m_RasterFilesDataGrid.CurrentCell = this.m_RasterFilesDataGrid.Rows[rowIndex].Cells[BROWSE_COLUMN_INDEX];
 
-			this.m_RasterFilesDataGrid.BeginEdit(false);
-			this.m_RasterFilesDataGrid.EndEdit();
-
-			this.m_RasterFilesDataGrid.CurrentCell = this.m_RasterFilesDataGrid.Rows[rowIndex].Cells[BROWSE_COLUMN_INDEX];
-
-			ds.AddExternalInputFile(RasterFile);
-
-			this.m_RasterFilesDataGrid.EditMode = OldMode;
+			    ds.AddExternalInputFile(RasterFile);
+			    this.m_RasterFilesDataGrid.EditMode = OldMode;
+            }
 		}
 
 		/// <summary>

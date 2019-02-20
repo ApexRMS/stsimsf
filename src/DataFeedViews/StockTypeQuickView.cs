@@ -483,7 +483,7 @@ namespace SyncroSim.STSimStockFlow
 		private void SetColumnReadOnly(string columnName)
 		{
 			DataGridViewColumn col = this.m_FlowPathwayGrid.Columns[columnName];
-			col.DefaultCellStyle.BackColor = Color.LightGray;
+            col.DefaultCellStyle.BackColor = Constants.READONLY_COLUMN_COLOR;
 			col.ReadOnly = true;     
 		}
 
