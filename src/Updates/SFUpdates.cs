@@ -117,6 +117,11 @@ namespace SyncroSim.STSimStockFlow
 			{
 				SF0000018(store);
 			}
+
+			if (currentSchemaVersion < 19)
+			{
+				SF0000019(store);
+			}
 		}
 
 		/// <summary>
@@ -579,5 +584,33 @@ namespace SyncroSim.STSimStockFlow
 			UpdateProvider.CreateIndex(store, "SF_OutputFlow", new[] {"ScenarioID", "Iteration", "Timestep", "FromStratumID", "FromSecondaryStratumID", "FromTertiaryStratumID", "FromStateClassID", "FromStockTypeID", "TransitionTypeID", "ToStratumID", "ToStateClassID", "ToStockTypeID", "FlowTypeID"});
 			UpdateProvider.CreateIndex(store, "SF_OutputStock", new[] {"ScenarioID", "Iteration", "Timestep", "StratumID", "SecondaryStratumID", "TertiaryStratumID", "StateClassID", "StockTypeID"});
 		}
+
+		/// <summary>
+		/// SF0000019
+		/// </summary>
+		/// <param name="store"></param>
+		/// <remarks>
+		/// This update adds a FlowMultiplierTypeID column to the SF_FlowMultiplier and SF_FlowSpatialMultiplier tables
+		/// </remarks>
+		private static void SF0000019(DataStore store)
+		{
+            if (store.TableExists("SF_FlowMultiplier"))
+            {
+                store.ExecuteNonQuery("ALTER TABLE SF_FlowMultiplier RENAME TO TEMP_TABLE");
+                store.ExecuteNonQuery("CREATE TABLE SF_FlowMultiplier(FlowMultiplierID INTEGER PRIMARY KEY AUTOINCREMENT, ScenarioID INTEGER, Iteration INTEGER, Timestep INTEGER, StratumID INTEGER, SecondaryStratumID INTEGER, TertiaryStratumID INTEGER, StateClassID INTEGER, FlowMultiplierTypeID INTEGER, FlowGroupID INTEGER, Value DOUBLE, DistributionType INTEGER, DistributionFrequencyID INTEGER, DistributionSD DOUBLE, DistributionMin DOUBLE, DistributionMax DOUBLE)");
+                store.ExecuteNonQuery("INSERT INTO SF_FlowMultiplier(ScenarioID, Iteration, Timestep, StratumID, SecondaryStratumID, TertiaryStratumID, StateClassID, FlowGroupID, Value, DistributionType, DistributionFrequencyID, DistributionSD, DistributionMin, DistributionMax) SELECT ScenarioID, Iteration, Timestep, StratumID, SecondaryStratumID, TertiaryStratumID, StateClassID, FlowGroupID, Value, DistributionType, DistributionFrequencyID, DistributionSD, DistributionMin, DistributionMax FROM TEMP_TABLE");
+                store.ExecuteNonQuery("DROP TABLE TEMP_TABLE");
+
+			    UpdateProvider.CreateIndex(store, "SF_FlowMultiplier", new[] {"ScenarioID"});
+            }
+
+            if (store.TableExists("SF_FlowSpatialMultiplier"))
+            {
+                store.ExecuteNonQuery("ALTER TABLE SF_FlowSpatialMultiplier RENAME TO TEMP_TABLE");
+                store.ExecuteNonQuery("CREATE TABLE SF_FlowSpatialMultiplier(FlowSpatialMultiplierID INTEGER PRIMARY KEY AUTOINCREMENT, ScenarioID INTEGER, Iteration INTEGER, Timestep INTEGER, FlowGroupID INTEGER, FlowMultiplierTypeID INTEGER, MultiplierFileName TEXT)");           
+                store.ExecuteNonQuery("INSERT INTO SF_FlowSpatialMultiplier(ScenarioID, Iteration, Timestep, FlowGroupID, MultiplierFileName) SELECT ScenarioID, Iteration, Timestep, FlowGroupID, MultiplierFileName FROM TEMP_TABLE");
+                store.ExecuteNonQuery("DROP TABLE TEMP_TABLE");                
+            }
+        }
 	}
 }

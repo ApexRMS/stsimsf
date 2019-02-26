@@ -10,8 +10,6 @@ namespace SyncroSim.STSimStockFlow
 		private StockLimitMap m_StockLimitMap;
 		private StockTransitionMultiplierMap m_StockTransitionMultiplierMap;
 		private FlowPathwayMap m_FlowPathwayMap;
-		private FlowMultiplierMap m_FlowMultiplierMap;
-		private FlowSpatialMultiplierMap m_FlowSpatialMultiplierMap;
 		private InitialStockSpatialMap m_InitialStockSpatialMap;
 		private FlowOrderMap m_FlowOrderMap;
 
@@ -33,18 +31,6 @@ namespace SyncroSim.STSimStockFlow
 			this.m_FlowPathwayMap = new FlowPathwayMap(this.m_FlowPathways);
 		}
 
-		private void CreateFlowMultiplierMap()
-		{
-			Debug.Assert(this.m_FlowMultiplierMap == null);
-			this.m_FlowMultiplierMap = new FlowMultiplierMap(this.ResultScenario, this.m_FlowMultipliers, this.m_STSimTransformer.DistributionProvider);
-		}
-
-		private void CreateFlowSpatialMultiplierMap()
-		{
-			Debug.Assert(this.m_FlowSpatialMultiplierMap == null);
-			this.m_FlowSpatialMultiplierMap = new FlowSpatialMultiplierMap(this.ResultScenario, this.m_FlowSpatialMultipliers);
-		}
-
 		private void CreateInitialStockSpatialMap()
 		{
 			Debug.Assert(this.m_InitialStockSpatialMap == null);
@@ -56,5 +42,26 @@ namespace SyncroSim.STSimStockFlow
 			Debug.Assert(this.m_FlowOrderMap == null);
 			this.m_FlowOrderMap = new FlowOrderMap(this.m_FlowOrders);
 		}
-	}
+
+        private void CreateMultiplierTypeMaps()
+        {
+            foreach (FlowMultiplier tm in this.m_FlowMultipliers)
+            {
+                FlowMultiplierType mt = this.GetFlowMultiplierType(tm.FlowMultiplierTypeId);
+                mt.AddFlowMultiplier(tm);
+            }
+
+            foreach (FlowSpatialMultiplier tm in this.m_FlowSpatialMultipliers)
+            {
+                FlowMultiplierType mt = this.GetFlowMultiplierType(tm.FlowMultiplierTypeId);
+                mt.AddFlowSpatialMultiplier(tm);
+            }  
+
+            foreach (FlowMultiplierType tmt in this.m_FlowMultiplierTypes)
+            {
+                tmt.CreateFlowMultiplierMap();
+                tmt.CreateSpatialFlowMultiplierMap(); 
+            }
+        }
+    }
 }

@@ -128,6 +128,8 @@
     <Compile Include="Runtime\FlowMultiplier.cs" />
     <Compile Include="Runtime\FlowMultiplierCollection.cs" />
     <Compile Include="Runtime\FlowMultiplierMap.cs" />
+    <Compile Include="Runtime\FlowMultiplierType.cs" />
+    <Compile Include="Runtime\FlowMultiplierTypeCollection.cs" />
     <Compile Include="Runtime\FlowOrder.cs" />
     <Compile Include="Runtime\FlowOrderCollection.cs" />
     <Compile Include="Runtime\FlowOrderMap.cs" />
@@ -155,6 +157,7 @@
     <Compile Include="Runtime\StockFlowTransformer.Collections.cs" />
     <Compile Include="Runtime\StockFlowTransformer.Initialize.cs" />
     <Compile Include="Runtime\StockFlowTransformer.Maps.cs" />
+    <Compile Include="Runtime\StockFlowTransformer.Multipliers.cs" />
     <Compile Include="Runtime\StockFlowTransformer.Normalize.cs" />
     <Compile Include="Runtime\StockFlowTransformer.Output.cs" />
     <Compile Include="Runtime\StockFlowTransformer.Utilities.cs" />

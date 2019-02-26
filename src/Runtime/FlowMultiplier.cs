@@ -9,15 +9,17 @@ namespace SyncroSim.STSimStockFlow
 	internal class FlowMultiplier : STSimDistributionBase
     {
 		private int? m_StateClassId;
+        private int? m_FlowMultiplierTypeId;
 		private int m_FlowGroupId;
 
 		public FlowMultiplier(
             int? iteration, int? timestep, int? stratumId, int? secondaryStratumId, int? tertiaryStratumId, 
-            int? stateClassId, int flowGroupId, double? multiplierValue, int? distributionTypeId, 
+            int? stateClassId, int? flowMultiplierTypeId, int flowGroupId, double? multiplierValue, int? distributionTypeId, 
             DistributionFrequency? distributionFrequency, double? distributionSD, 
             double? distributionMin, double? distributionMax) : base(iteration, timestep, stratumId, secondaryStratumId, tertiaryStratumId, multiplierValue, distributionTypeId, distributionFrequency, distributionSD, distributionMin, distributionMax)
 		{
 			this.m_StateClassId = stateClassId;
+            this.m_FlowMultiplierTypeId = flowMultiplierTypeId;
 			this.m_FlowGroupId = flowGroupId;
 		}
 
@@ -26,6 +28,14 @@ namespace SyncroSim.STSimStockFlow
 			get
 			{
 				return this.m_StateClassId;
+			}
+		}
+
+		public int? FlowMultiplierTypeId
+		{
+			get
+			{
+				return this.m_FlowMultiplierTypeId;
 			}
 		}
 
@@ -41,7 +51,7 @@ namespace SyncroSim.STSimStockFlow
 		{
 			return new FlowMultiplier(
                 this.Iteration, this.Timestep, this.StratumId, this.SecondaryStratumId, this.TertiaryStratumId, 
-                this.StateClassId, this.FlowGroupId, this.DistributionValue, this.DistributionTypeId, 
+                this.StateClassId, this.FlowMultiplierTypeId, this.FlowGroupId, this.DistributionValue, this.DistributionTypeId, 
                 this.DistributionFrequency, this.DistributionSD, this.DistributionMin, this.DistributionMax);
 		}
 	}

@@ -2,31 +2,29 @@
 // Copyright © 2007-2019 Apex Resource Management Solution Ltd. (ApexRMS). All rights reserved.
 
 using System.IO;
-using System.Drawing;
+using System.Reflection;
 using System.Windows.Forms;
 using SyncroSim.Core;
 using SyncroSim.Core.Forms;
-using System.Reflection;
 
 namespace SyncroSim.STSimStockFlow
 {
 	[ObfuscationAttribute(Exclude=true, ApplyToMembers=false)]
 	internal partial class SpatialMultiplierDataFeedView
 	{
-		public SpatialMultiplierDataFeedView()
+		private bool m_IsEnabled = true;
+		private bool m_ColumnsInitialized;
+		private DataFeedView m_MultipliersView;
+		private DataGridView m_MultipliersDataGrid;
+		private const string BROWSE_BUTTON_TEXT = "...";
+        private const int FILE_NAME_COLUMN_INDEX = 4;
+        private const int BROWSE_COLUMN_INDEX = 5;
+		private delegate void DelegateNoArgs();
+
+        public SpatialMultiplierDataFeedView()
 		{
 			InitializeComponent();
 		}
-
-		private DataFeedView m_MultipliersView;
-		private DataGridView m_MultipliersDataGrid;
-		private bool m_ColumnsInitialized;
-		private delegate void DelegateNoArgs();
-		private bool m_IsEnabled = true;
-
-		private const string BROWSE_BUTTON_TEXT = "...";
-		private const int FILE_NAME_COLUMN_INDEX = 3;
-		private const int BROWSE_COLUMN_INDEX = 4;
 
 		protected override void InitializeView()
 		{
@@ -136,15 +134,13 @@ namespace SyncroSim.STSimStockFlow
 			}
 
 			DataGridViewEditMode OldMode = this.m_MultipliersDataGrid.EditMode;
-			this.m_MultipliersDataGrid.EditMode = DataGridViewEditMode.EditProgrammatically;
 
+			this.m_MultipliersDataGrid.EditMode = DataGridViewEditMode.EditProgrammatically;
 			this.m_MultipliersDataGrid.CurrentCell = this.m_MultipliersDataGrid.Rows[rowIndex].Cells[FILE_NAME_COLUMN_INDEX];
 			this.m_MultipliersDataGrid.Rows[rowIndex].Cells[FILE_NAME_COLUMN_INDEX].Value = Path.GetFileName(RasterFile);
 			this.m_MultipliersDataGrid.NotifyCurrentCellDirty(true);
-
 			this.m_MultipliersDataGrid.BeginEdit(false);
-			this.m_MultipliersDataGrid.EndEdit();
-
+			this.m_MultipliersDataGrid.EndEdit();        
 			this.m_MultipliersDataGrid.CurrentCell = this.m_MultipliersDataGrid.Rows[rowIndex].Cells[BROWSE_COLUMN_INDEX];
 
 			ds.AddExternalInputFile(RasterFile);

@@ -29,6 +29,7 @@ namespace SyncroSim.STSimStockFlow
 		public const string DATASHEET_STOCK_TYPE_NAME = "SF_StockType";
 		public const string DATASHEET_STOCK_GROUP_NAME = "SF_StockGroup";
 		public const string DATASHEET_FLOW_TYPE_NAME = "SF_FlowType";
+		public const string DATASHEET_FLOW_MULTIPLIER_TYPE_NAME = "SF_FlowMultiplierType";
 		public const string DATASHEET_FLOW_GROUP_NAME = "SF_FlowGroup";
 		public const string DATASHEET_TERMINOLOGY_NAME = "SF_Terminology";
 		public const string DATASHEET_INITIAL_STOCK_NON_SPATIAL = "SF_InitialStockNonSpatial";
@@ -64,6 +65,7 @@ namespace SyncroSim.STSimStockFlow
 		public const string STOCK_GROUP_ID_COLUMN_NAME = "StockGroupID";
 		public const string FLOW_TYPE_ID_COLUMN_NAME = "FlowTypeID";
 		public const string FLOW_GROUP_ID_COLUMN_NAME = "FlowGroupID";
+		public const string FLOW_MULTIPLIER_TYPE_ID_COLUMN_NAME = "FlowMultiplierTypeID";
 		public const string MULTIPLIER_COLUMN_NAME = "Multiplier";
 		public const string MULTIPLIER_FILE_COLUMN_NAME = "MultiplierFilename";
 		public const string AMOUNT_COLUMN_NAME = "Amount";

@@ -8,11 +8,17 @@ namespace SyncroSim.STSimStockFlow
 	internal class FlowSpatialMultiplier
 	{
 		private int m_FlowGroupId;
+        private int? m_FlowMultiplierTypeId;
 		private int? m_Iteration;
 		private int? m_Timestep;
 		private string m_Filename;
 
-		public FlowSpatialMultiplier(int flowGroupId, int? iteration, int? timestep, string fileName)
+		public FlowSpatialMultiplier(
+            int flowGroupId, 
+            int? flowMultiplierTypeId, 
+            int? iteration, 
+            int? timestep, 
+            string fileName)
 		{
 			if (fileName == null)
 			{
@@ -20,6 +26,7 @@ namespace SyncroSim.STSimStockFlow
 			}
 
 			this.m_FlowGroupId = flowGroupId;
+            this.m_FlowMultiplierTypeId = flowMultiplierTypeId;
 			this.m_Iteration = iteration;
 			this.m_Timestep = timestep;
 			this.m_Filename = fileName;
@@ -32,6 +39,14 @@ namespace SyncroSim.STSimStockFlow
 				return this.m_FlowGroupId;
 			}
 		}
+
+        public int? FlowMultiplierTypeId
+        {
+            get
+            {
+                return this.m_FlowMultiplierTypeId;
+            }
+        }
 
 		public int? Iteration
 		{

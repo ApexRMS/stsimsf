@@ -80,6 +80,7 @@ namespace SyncroSim.STSimStockFlow
 			this.FillFlowGroups();
 			this.FillFlowTypes();
 			this.FillFlowTypeGroups();
+            this.FillFlowMultiplierTypes();
 			this.FillStockTypes();
 			this.FillInitialStocksNonSpatial();
 			this.FillStockLimits();
@@ -101,8 +102,7 @@ namespace SyncroSim.STSimStockFlow
 			this.CreateStockLimitMap();
 			this.CreateStockTransitionMultiplierMap();
 			this.CreateFlowPathwayMap();
-			this.CreateFlowMultiplierMap();
-			this.CreateFlowSpatialMultiplierMap();
+            this.CreateMultiplierTypeMaps();
 			this.CreateFlowOrderMap();
 
 			if (this.m_IsSpatial)
@@ -193,21 +193,48 @@ namespace SyncroSim.STSimStockFlow
 				this.m_FlowMultipliers.Clear();
 				this.FillFlowMultipliers();
 				this.InitializeFlowMultiplierDistributionValues();
-				this.m_FlowMultiplierMap = null;
-				this.CreateFlowMultiplierMap();
-			}
+
+                foreach (FlowMultiplierType tmt in this.m_FlowMultiplierTypes)
+                {
+                    tmt.ClearFlowMultiplierMap();
+                }
+
+                foreach (FlowMultiplier sm in this.m_FlowMultipliers)
+                {
+                    FlowMultiplierType mt = this.GetFlowMultiplierType(sm.FlowMultiplierTypeId);
+                    mt.AddFlowMultiplier(sm);
+                }
+
+                foreach (FlowMultiplierType tmt in this.m_FlowMultiplierTypes)
+                {
+                    tmt.CreateFlowMultiplierMap();
+                }
+            }
 			else if (dataSheet.Name == Constants.DATASHEET_FLOW_SPATIAL_MULTIPLIER_NAME)
 			{
 				if (this.m_IsSpatial)
 				{
 					this.m_FlowSpatialMultipliers.Clear();
 					this.m_FlowSpatialMultiplierRasters.Clear();
-					this.m_FlowSpatialMultiplierMap = null;
-
 					this.FillFlowSpatialMultipliers();
 					this.ValidateFlowSpatialMultipliers();
-					this.CreateFlowSpatialMultiplierMap();
-				}
+
+                    foreach (FlowMultiplierType tmt in this.m_FlowMultiplierTypes)
+                    {
+                        tmt.ClearFlowSpatialMultiplierMap();
+                    }
+
+                    foreach (FlowSpatialMultiplier sm in this.m_FlowSpatialMultipliers)
+                    {
+                        FlowMultiplierType mt = this.GetFlowMultiplierType(sm.FlowMultiplierTypeId);
+                        mt.AddFlowSpatialMultiplier(sm);
+                    }
+
+                    foreach (FlowMultiplierType tmt in this.m_FlowMultiplierTypes)
+                    {
+                        tmt.CreateSpatialFlowMultiplierMap();
+                    }
+                }
 			}
 			else if (dataSheet.Name == Constants.DATASHEET_FLOW_ORDER)
 			{
@@ -815,17 +842,24 @@ namespace SyncroSim.STSimStockFlow
 
 			FlowAmount *= fp.Multiplier;
 
-			foreach (FlowGroup fg in ft.FlowGroups)
-			{
-				FlowAmount *= this.m_FlowMultiplierMap.GetFlowMultiplier(
-                    fg.Id, cell.StratumId, cell.SecondaryStratumId, cell.TertiaryStratumId, 
-                    cell.StateClassId, iteration, timestep);
+            foreach (FlowMultiplierType mt in this.m_FlowMultiplierTypes)
+            {
+			    foreach (FlowGroup fg in ft.FlowGroups)
+			    {
+                    if (mt.FlowMultiplierMap != null)
+                    {
+				        FlowAmount *= mt.FlowMultiplierMap.GetFlowMultiplier(
+                            fg.Id, cell.StratumId, cell.SecondaryStratumId, cell.TertiaryStratumId, 
+                            cell.StateClassId, iteration, timestep);
+			        }
 
-				if (this.m_IsSpatial)
-				{
-					FlowAmount *= this.GetFlowSpatialMultiplier(cell.CellId, fg.Id, iteration, timestep);
-				}
-			}
+                    if (this.m_IsSpatial && mt.FlowSpatialMultiplierMap != null)
+                    {
+                        FlowAmount *= this.GetFlowSpatialMultiplier(
+                            cell.CellId, mt.FlowSpatialMultiplierMap, fg.Id, iteration, timestep);
+                    }
+                }
+            }
 
 			if (FlowAmount <= 0.0)
 			{
@@ -835,16 +869,12 @@ namespace SyncroSim.STSimStockFlow
 			return FlowAmount;
 		}
 
-		private double GetFlowSpatialMultiplier(int cellId, int flowGroupId, int iteration, int timestep)
+		private double GetFlowSpatialMultiplier(int cellId, FlowSpatialMultiplierMap map, int flowGroupId, int iteration, int timestep)
 		{
 			Debug.Assert(this.m_IsSpatial);
+            Debug.Assert(this.m_FlowSpatialMultipliers.Count > 0);
 
-			if (this.m_FlowSpatialMultipliers.Count == 0)
-			{
-				return 1.0;
-			}
-
-			FlowSpatialMultiplier m = this.m_FlowSpatialMultiplierMap.GetFlowSpatialMultiplier(flowGroupId, iteration, timestep);
+			FlowSpatialMultiplier m = map.GetFlowSpatialMultiplier(flowGroupId, iteration, timestep);
 
 			if (m == null)
 			{

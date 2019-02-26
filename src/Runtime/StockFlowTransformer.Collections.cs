@@ -14,6 +14,7 @@ namespace SyncroSim.STSimStockFlow
 	internal partial class StockFlowTransformer
 	{
 		private Dictionary<int, FlowType> m_FlowTypes = new Dictionary<int, FlowType>();
+        private FlowMultiplierTypeCollection m_FlowMultiplierTypes = new FlowMultiplierTypeCollection();
 		private FlowGroupCollection m_FlowGroups = new FlowGroupCollection();
 		private StockTypeCollection m_StockTypes = new StockTypeCollection();
 		private InitialStockNonSpatialCollection m_InitialStocksNonSpatial = new InitialStockNonSpatialCollection();
@@ -91,7 +92,24 @@ namespace SyncroSim.STSimStockFlow
 			}
 		}
 
-		private void FillStockTypes()
+        private void FillFlowMultiplierTypes()
+        {
+            Debug.Assert(this.m_FlowMultiplierTypes.Count == 0);
+            DataSheet ds = this.Project.GetDataSheet(Constants.DATASHEET_FLOW_MULTIPLIER_TYPE_NAME);
+
+            //Always add type with a Null Id because flow multipliers can have null types.
+            this.m_FlowMultiplierTypes.Add(new FlowMultiplierType(null, this.ResultScenario, this.m_STSimTransformer.DistributionProvider));
+
+            foreach (DataRow dr in ds.GetData().Rows)
+            {
+                int FlowMultiplierTypeId = Convert.ToInt32(dr[ds.PrimaryKeyColumn.Name], CultureInfo.InvariantCulture);
+
+                this.m_FlowMultiplierTypes.Add(new FlowMultiplierType
+                    (FlowMultiplierTypeId, this.ResultScenario, this.m_STSimTransformer.DistributionProvider));
+            }
+        }
+
+        private void FillStockTypes()
 		{
 			Debug.Assert(this.m_StockTypes.Count == 0);
 			DataSheet ds = this.Project.GetDataSheet(Constants.DATASHEET_STOCK_TYPE_NAME);
@@ -454,6 +472,7 @@ namespace SyncroSim.STSimStockFlow
 				int? SecondaryStratumId = null;
 				int? TertiaryStratumId = null;
 				int? StateClassId = null;
+                int? FlowMultiplierTypeId = null;
 				int FlowGroupId = 0;
 				double? MultiplierAmount = null;
 				int? DistributionTypeId = null;
@@ -492,6 +511,11 @@ namespace SyncroSim.STSimStockFlow
 					StateClassId = Convert.ToInt32(dr[Constants.STATECLASS_ID_COLUMN_NAME], CultureInfo.InvariantCulture);
 				}
 
+				if (dr[Constants.FLOW_MULTIPLIER_TYPE_ID_COLUMN_NAME] != DBNull.Value)
+				{
+					FlowMultiplierTypeId = Convert.ToInt32(dr[Constants.FLOW_MULTIPLIER_TYPE_ID_COLUMN_NAME], CultureInfo.InvariantCulture);
+				}
+
 				FlowGroupId = Convert.ToInt32(dr[Constants.FLOW_GROUP_ID_COLUMN_NAME], CultureInfo.InvariantCulture);
 
 				if (dr[Constants.VALUE_COLUMN_NAME] != DBNull.Value)
@@ -528,7 +552,7 @@ namespace SyncroSim.STSimStockFlow
 				{
 					FlowMultiplier Item = new FlowMultiplier(
                         Iteration, Timestep, StratumId, SecondaryStratumId, TertiaryStratumId, StateClassId, 
-                        FlowGroupId, MultiplierAmount, DistributionTypeId, DistributionFrequency, 
+                        FlowMultiplierTypeId, FlowGroupId, MultiplierAmount, DistributionTypeId, DistributionFrequency, 
                         DistributionSD, DistributionMin, DistributionMax);
 
 					this.m_STSimTransformer.DistributionProvider.Validate(
@@ -596,11 +620,17 @@ namespace SyncroSim.STSimStockFlow
 			foreach (DataRow dr in ds.GetData().Rows)
 			{
 				int FlowGroupId = Convert.ToInt32(dr[Constants.FLOW_GROUP_ID_COLUMN_NAME], CultureInfo.InvariantCulture);
+                int? FlowMultiplierTypeId = null;
 				int? Iteration = null;
 				int? Timestep = null;
 				string FileName = Convert.ToString(dr[Constants.MULTIPLIER_FILE_COLUMN_NAME], CultureInfo.InvariantCulture);
 
-				if (dr[Constants.ITERATION_COLUMN_NAME] != DBNull.Value)
+                if (dr[Constants.FLOW_MULTIPLIER_TYPE_ID_COLUMN_NAME] != DBNull.Value)
+                {
+                    FlowMultiplierTypeId = Convert.ToInt32(dr[Constants.FLOW_MULTIPLIER_TYPE_ID_COLUMN_NAME], CultureInfo.InvariantCulture);
+                }
+
+                if (dr[Constants.ITERATION_COLUMN_NAME] != DBNull.Value)
 				{
 					Iteration = Convert.ToInt32(dr[Constants.ITERATION_COLUMN_NAME], CultureInfo.InvariantCulture);
 				}
@@ -610,7 +640,7 @@ namespace SyncroSim.STSimStockFlow
 					Timestep = Convert.ToInt32(dr[Constants.TIMESTEP_COLUMN_NAME], CultureInfo.InvariantCulture);
 				}
 
-				FlowSpatialMultiplier Multiplier = new FlowSpatialMultiplier(FlowGroupId, Iteration, Timestep, FileName);
+				FlowSpatialMultiplier Multiplier = new FlowSpatialMultiplier(FlowGroupId, FlowMultiplierTypeId, Iteration, Timestep, FileName);
 				string FullFilename = Spatial.GetSpatialInputFileName(ds, FileName, false);
                 StochasticTimeRaster MultiplierRaster;
 
