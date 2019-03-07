@@ -63,7 +63,7 @@ namespace SyncroSim.STSimStockFlow
 			c.Add(new ExportColumn("ToStratum", "To " + PrimaryStratumLabel));
 			c.Add(new ExportColumn("ToStateClass", "To State Class"));
 			c.Add(new ExportColumn("ToStock", "To Stock"));
-			c.Add(new ExportColumn("FlowGroup", "Flow Type/Group"));
+			c.Add(new ExportColumn("FlowGroup", "Flow Group"));
 			c.Add(new ExportColumn("Amount", TotalValue));
 
 			c["Amount"].DecimalPlaces = 2;
