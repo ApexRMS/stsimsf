@@ -1,15 +1,13 @@
 ﻿// stsim-stockflow: SyncroSim Add-On Package (to stsim) for integrating stocks and flows into state-and-transition simulation models in ST-Sim.
 // Copyright © 2007-2019 Apex Resource Management Solution Ltd. (ApexRMS). All rights reserved.
 
-using System;
 using System.Data;
 using System.Diagnostics;
-using SyncroSim.Core;
+using System.Globalization;
+using System.Collections.Generic;
 using SyncroSim.STSim;
 using SyncroSim.Common;
 using SyncroSim.StochasticTime;
-using System.Globalization;
-using System.Collections.Generic;
 
 namespace SyncroSim.STSimStockFlow
 {
@@ -18,16 +16,16 @@ namespace SyncroSim.STSimStockFlow
 		private DataTable m_OutputStockTable;
 		private bool m_CreateSummaryStockOutput;
 		private int m_SummaryStockOutputTimesteps;
-		private OutputStockCollection m_SummaryOutputStockRecords = new OutputStockCollection();
 		private DataTable m_OutputFlowTable;
 		private bool m_CreateSummaryFlowOutput;
 		private int m_SummaryFlowOutputTimesteps;
-		private OutputFlowCollection m_SummaryOutputFlowRecords = new OutputFlowCollection();
-		private Dictionary<int, double[]> m_SpatialOutputFlowDict;
 		private bool m_CreateSpatialStockOutput;
 		private int m_SpatialStockOutputTimesteps;
 		private bool m_CreateSpatialFlowOutput;
 		private int m_SpatialFlowOutputTimesteps;
+		private Dictionary<int, double[]> m_SpatialOutputFlowDict;
+		private OutputFlowCollection m_SummaryOutputFlowRecords = new OutputFlowCollection();
+		private OutputStockCollection m_SummaryOutputStockRecords = new OutputStockCollection();
 
 		/// <summary>
 		/// Initializes the output data tables
@@ -55,26 +53,30 @@ namespace SyncroSim.STSimStockFlow
             {
                 Dictionary<int, double> StockAmounts = GetStockAmountDictionary(c);
 
-                foreach (int id in StockAmounts.Keys)
+                foreach (int StockTypeId in StockAmounts.Keys)
                 {
-                    double amount = StockAmounts[id];
+                    StockType t = this.m_StockTypes[StockTypeId];
+                    double amount = StockAmounts[StockTypeId];
 
-                    FiveIntegerLookupKey k = new FiveIntegerLookupKey(
-                        c.StratumId, GetSecondaryStratumIdKey(c),
-                        GetTertiaryStratumIdKey(c), c.StateClassId, id);
-
-                    if (this.m_SummaryOutputStockRecords.Contains(k))
+                    foreach (StockGroupLinkage l in t.StockGroupLinkages)
                     {
-                        OutputStock r = this.m_SummaryOutputStockRecords[k];
-                        r.Amount += amount;
-                    }
-                    else
-                    {
-                        OutputStock r = new OutputStock(
-                            c.StratumId, GetSecondaryStratumIdValue(c),
-                            GetTertiaryStratumIdValue(c), c.StateClassId, id, amount);
+                        FiveIntegerLookupKey k = new FiveIntegerLookupKey(
+                            c.StratumId, GetSecondaryStratumIdKey(c),
+                            GetTertiaryStratumIdKey(c), c.StateClassId, l.StockGroup.Id);
 
-                        this.m_SummaryOutputStockRecords.Add(r);
+                        if (this.m_SummaryOutputStockRecords.Contains(k))
+                        {
+                            OutputStock r = this.m_SummaryOutputStockRecords[k];
+                            r.Amount += (amount * l.Value);
+                        }
+                        else
+                        {
+                            OutputStock r = new OutputStock(
+                                c.StratumId, GetSecondaryStratumIdValue(c),
+                                GetTertiaryStratumIdValue(c), c.StateClassId, l.StockGroup.Id, amount * l.Value);
+
+                            this.m_SummaryOutputStockRecords.Add(r);
+                        }
                     }
                 }
             }
@@ -88,23 +90,18 @@ namespace SyncroSim.STSimStockFlow
 		{
 			foreach (OutputStock r in this.m_SummaryOutputStockRecords)
 			{
-                StockType t = this.m_StockTypes[r.StockTypeId];
-                
-                foreach (StockGroupLinkage l in t.StockGroupLinkages)
-                {
-				    DataRow dr = this.m_OutputStockTable.NewRow();
+				DataRow dr = this.m_OutputStockTable.NewRow();
 
-				    dr[Constants.ITERATION_COLUMN_NAME] = iteration;
-				    dr[Constants.TIMESTEP_COLUMN_NAME] = timestep;
-				    dr[Constants.STRATUM_ID_COLUMN_NAME] = r.StratumId;
-				    dr[Constants.SECONDARY_STRATUM_ID_COLUMN_NAME] = DataTableUtilities.GetNullableDatabaseValue(r.SecondaryStratumId);
-				    dr[Constants.TERTIARY_STRATUM_ID_COLUMN_NAME] = DataTableUtilities.GetNullableDatabaseValue(r.TertiaryStratumId);
-				    dr[Constants.STATECLASS_ID_COLUMN_NAME] = r.StateClassId;
-                    dr[Constants.STOCK_GROUP_ID_COLUMN_NAME] = l.StockGroup.Id;
-				    dr[Constants.AMOUNT_COLUMN_NAME] = r.Amount * l.Value;
+				dr[Constants.ITERATION_COLUMN_NAME] = iteration;
+				dr[Constants.TIMESTEP_COLUMN_NAME] = timestep;
+				dr[Constants.STRATUM_ID_COLUMN_NAME] = r.StratumId;
+				dr[Constants.SECONDARY_STRATUM_ID_COLUMN_NAME] = DataTableUtilities.GetNullableDatabaseValue(r.SecondaryStratumId);
+				dr[Constants.TERTIARY_STRATUM_ID_COLUMN_NAME] = DataTableUtilities.GetNullableDatabaseValue(r.TertiaryStratumId);
+				dr[Constants.STATECLASS_ID_COLUMN_NAME] = r.StateClassId;
+                dr[Constants.STOCK_GROUP_ID_COLUMN_NAME] = r.StockGroupId;
+                dr[Constants.AMOUNT_COLUMN_NAME] = r.Amount;
 
-				    this.m_OutputStockTable.Rows.Add(dr);
-                }
+				this.m_OutputStockTable.Rows.Add(dr);
 			}
 
 			this.m_SummaryOutputStockRecords.Clear();
@@ -168,39 +165,44 @@ namespace SyncroSim.STSimStockFlow
                 this.m_SummaryFlowOutputTimesteps, 
                 this.m_CreateSummaryFlowOutput))
             {
-                TenIntegerLookupKey k = new TenIntegerLookupKey(
-                    cell.StratumId,
-                    GetSecondaryStratumIdKey(cell),
-                    GetTertiaryStratumIdKey(cell),
-                    cell.StateClassId,
-                    flowPathway.FromStockTypeId,
-                    LookupKeyUtilities.GetOutputCollectionKey(TransitionTypeId),
-                    StratumIdDest,
-                    StateClassIdDest,
-                    flowPathway.ToStockTypeId,
-                    flowPathway.FlowTypeId);
+                FlowType t = this.m_FlowTypes[flowPathway.FlowTypeId];
 
-                if (this.m_SummaryOutputFlowRecords.Contains(k))
+                foreach (FlowGroupLinkage l in t.FlowGroupLinkages)
                 {
-                    OutputFlow r = this.m_SummaryOutputFlowRecords[k];
-                    r.Amount += flowAmount;
-                }
-                else
-                {
-                    OutputFlow r = new OutputFlow(
+                    TenIntegerLookupKey k = new TenIntegerLookupKey(
                         cell.StratumId,
-                        GetSecondaryStratumIdValue(cell),
-                        GetTertiaryStratumIdValue(cell),
+                        GetSecondaryStratumIdKey(cell),
+                        GetTertiaryStratumIdKey(cell),
                         cell.StateClassId,
                         flowPathway.FromStockTypeId,
-                        TransitionTypeId,
+                        LookupKeyUtilities.GetOutputCollectionKey(TransitionTypeId),
                         StratumIdDest,
                         StateClassIdDest,
                         flowPathway.ToStockTypeId,
-                        flowPathway.FlowTypeId,
-                        flowAmount);
+                        l.FlowGroup.Id);
 
-                    this.m_SummaryOutputFlowRecords.Add(r);
+                    if (this.m_SummaryOutputFlowRecords.Contains(k))
+                    {
+                        OutputFlow r = this.m_SummaryOutputFlowRecords[k];
+                        r.Amount += (flowAmount * l.Value);
+                    }
+                    else
+                    {
+                        OutputFlow r = new OutputFlow(
+                            cell.StratumId,
+                            GetSecondaryStratumIdValue(cell),
+                            GetTertiaryStratumIdValue(cell),
+                            cell.StateClassId,
+                            flowPathway.FromStockTypeId,
+                            TransitionTypeId,
+                            StratumIdDest,
+                            StateClassIdDest,
+                            flowPathway.ToStockTypeId,
+                            l.FlowGroup.Id,
+                            flowAmount * l.Value);
+
+                        this.m_SummaryOutputFlowRecords.Add(r);
+                    }
                 }
             }
         }
@@ -213,28 +215,23 @@ namespace SyncroSim.STSimStockFlow
 		{
 			foreach (OutputFlow r in this.m_SummaryOutputFlowRecords)
 			{
-                FlowType t = this.m_FlowTypes[r.FlowTypeId];
+				DataRow dr = this.m_OutputFlowTable.NewRow();
 
-                foreach (FlowGroupLinkage l in t.FlowGroupLinkages)
-                {
-				    DataRow dr = this.m_OutputFlowTable.NewRow();
+				dr[Constants.ITERATION_COLUMN_NAME] = iteration;
+				dr[Constants.TIMESTEP_COLUMN_NAME] = timestep;
+				dr[Constants.FROM_STRATUM_ID_COLUMN_NAME] = r.FromStratumId;
+				dr[Constants.FROM_SECONDARY_STRATUM_ID_COLUMN_NAME] = DataTableUtilities.GetNullableDatabaseValue(r.FromSecondaryStratumId);
+				dr[Constants.FROM_TERTIARY_STRATUM_ID_COLUMN_NAME] = DataTableUtilities.GetNullableDatabaseValue(r.FromTertiaryStratumId);
+				dr[Constants.FROM_STATECLASS_ID_COLUMN_NAME] = r.FromStateClassId;
+				dr[Constants.FROM_STOCK_TYPE_ID_COLUMN_NAME] = r.FromStockTypeId;
+				dr[Constants.TRANSITION_TYPE_ID_COLUMN_NAME] = DataTableUtilities.GetNullableDatabaseValue(r.TransitionTypeId);
+				dr[Constants.TO_STRATUM_ID_COLUMN_NAME] = r.ToStratumId;
+				dr[Constants.TO_STATECLASS_ID_COLUMN_NAME] = r.ToStateClassId;
+				dr[Constants.TO_STOCK_TYPE_ID_COLUMN_NAME] = r.ToStockTypeId;
+                dr[Constants.FLOW_GROUP_ID_COLUMN_NAME] = r.FlowGroupId;
+                dr[Constants.AMOUNT_COLUMN_NAME] = r.Amount;
 
-				    dr[Constants.ITERATION_COLUMN_NAME] = iteration;
-				    dr[Constants.TIMESTEP_COLUMN_NAME] = timestep;
-				    dr[Constants.FROM_STRATUM_ID_COLUMN_NAME] = r.FromStratumId;
-				    dr[Constants.FROM_SECONDARY_STRATUM_ID_COLUMN_NAME] = DataTableUtilities.GetNullableDatabaseValue(r.FromSecondaryStratumId);
-				    dr[Constants.FROM_TERTIARY_STRATUM_ID_COLUMN_NAME] = DataTableUtilities.GetNullableDatabaseValue(r.FromTertiaryStratumId);
-				    dr[Constants.FROM_STATECLASS_ID_COLUMN_NAME] = r.FromStateClassId;
-				    dr[Constants.FROM_STOCK_TYPE_ID_COLUMN_NAME] = r.FromStockTypeId;
-				    dr[Constants.TRANSITION_TYPE_ID_COLUMN_NAME] = DataTableUtilities.GetNullableDatabaseValue(r.TransitionTypeId);
-				    dr[Constants.TO_STRATUM_ID_COLUMN_NAME] = r.ToStratumId;
-				    dr[Constants.TO_STATECLASS_ID_COLUMN_NAME] = r.ToStateClassId;
-				    dr[Constants.TO_STOCK_TYPE_ID_COLUMN_NAME] = r.ToStockTypeId;
-				    dr[Constants.FLOW_GROUP_ID_COLUMN_NAME] = l.FlowGroup.Id;
-				    dr[Constants.AMOUNT_COLUMN_NAME] = r.Amount * l.Value;
-
-				    this.m_OutputFlowTable.Rows.Add(dr);
-                }
+				this.m_OutputFlowTable.Rows.Add(dr);
 			}
 
 			this.m_SummaryOutputFlowRecords.Clear();

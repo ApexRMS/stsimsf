@@ -24,7 +24,7 @@ namespace SyncroSim.STSimStockFlow
                 item.ToStratumId, 
                 item.ToStateClassId, 
                 item.ToStockTypeId, 
-                item.FlowTypeId);
+                item.FlowGroupId);
 		}
 	}
 }

@@ -18,7 +18,7 @@ namespace SyncroSim.STSimStockFlow
                 LookupKeyUtilities.GetOutputCollectionKey(item.SecondaryStratumId),
                 LookupKeyUtilities.GetOutputCollectionKey(item.TertiaryStratumId), 
                 item.StateClassId, 
-                item.StockTypeId);
+                item.StockGroupId);
 		}
 	}
 }

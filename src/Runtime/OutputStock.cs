@@ -9,16 +9,22 @@ namespace SyncroSim.STSimStockFlow
 		private int? m_SecondaryStratumId;
 		private int? m_TertiaryStratumId;
 		private int m_StateClassId;
-		private int m_StockTypeId;
+		private int m_StockGroupId;
 		private double m_Amount;
 
-		public OutputStock(int stratumId, int? secondaryStratumId, int? tertiaryStratumId, int stateClassId, int stockTypeId, double amount)
+		public OutputStock(
+            int stratumId, 
+            int? secondaryStratumId, 
+            int? tertiaryStratumId, 
+            int stateClassId, 
+            int stockGroupId, 
+            double amount)
 		{
 			this.m_StratumId = stratumId;
 			this.m_SecondaryStratumId = secondaryStratumId;
 			this.m_TertiaryStratumId = tertiaryStratumId;
 			this.m_StateClassId = stateClassId;
-			this.m_StockTypeId = stockTypeId;
+			this.m_StockGroupId = stockGroupId;
 			this.m_Amount = amount;
 		}
 
@@ -54,11 +60,11 @@ namespace SyncroSim.STSimStockFlow
 			}
 		}
 
-		public int StockTypeId
+		public int StockGroupId
 		{
 			get
 			{
-				return this.m_StockTypeId;
+				return this.m_StockGroupId;
 			}
 		}
 
