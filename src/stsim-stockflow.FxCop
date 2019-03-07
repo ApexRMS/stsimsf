@@ -1,0 +1,442 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FxCopProject Version="1.36" Name="My FxCop Project">
+ <ProjectOptions>
+  <SharedProject>True</SharedProject>
+  <Stylesheet Apply="False">c:\program files (x86)\microsoft fxcop 1.36\Xml\FxCopReport.xsl</Stylesheet>
+  <SaveMessages>
+   <Project Status="Active, Excluded" NewOnly="False" />
+   <Report Status="Active" NewOnly="False" />
+  </SaveMessages>
+  <ProjectFile Compress="True" DefaultTargetCheck="True" DefaultRuleCheck="True" SaveByRuleGroup="" Deterministic="True" />
+  <EnableMultithreadedLoad>True</EnableMultithreadedLoad>
+  <EnableMultithreadedAnalysis>True</EnableMultithreadedAnalysis>
+  <SourceLookup>True</SourceLookup>
+  <AnalysisExceptionsThreshold>10</AnalysisExceptionsThreshold>
+  <RuleExceptionsThreshold>1</RuleExceptionsThreshold>
+  <Spelling Locale="en-US" />
+  <OverrideRuleVisibilities>False</OverrideRuleVisibilities>
+  <CustomDictionaries SearchFxCopDir="True" SearchUserProfile="True" SearchProjectDir="True" />
+  <SearchGlobalAssemblyCache>False</SearchGlobalAssemblyCache>
+  <DeadlockDetectionTimeout>120</DeadlockDetectionTimeout>
+  <IgnoreGeneratedCode>False</IgnoreGeneratedCode>
+ </ProjectOptions>
+ <Targets>
+  <Target Name="$(ProjectDir)/bin/x86/Debug/SyncroSim.STSimStockFlow.dll" Analyze="True" AnalyzeAllChildren="True" />
+ </Targets>
+ <Rules>
+  <RuleFiles>
+   <RuleFile Name="$(FxCopDir)\Rules\DesignRules.dll" Enabled="True" AllRulesEnabled="True" />
+   <RuleFile Name="$(FxCopDir)\Rules\GlobalizationRules.dll" Enabled="True" AllRulesEnabled="True" />
+   <RuleFile Name="$(FxCopDir)\Rules\InteroperabilityRules.dll" Enabled="True" AllRulesEnabled="True" />
+   <RuleFile Name="$(FxCopDir)\Rules\MobilityRules.dll" Enabled="True" AllRulesEnabled="True" />
+   <RuleFile Name="$(FxCopDir)\Rules\NamingRules.dll" Enabled="True" AllRulesEnabled="True" />
+   <RuleFile Name="$(FxCopDir)\Rules\PerformanceRules.dll" Enabled="True" AllRulesEnabled="True" />
+   <RuleFile Name="$(FxCopDir)\Rules\PortabilityRules.dll" Enabled="True" AllRulesEnabled="True" />
+   <RuleFile Name="$(FxCopDir)\Rules\SecurityRules.dll" Enabled="True" AllRulesEnabled="True" />
+   <RuleFile Name="$(FxCopDir)\Rules\UsageRules.dll" Enabled="True" AllRulesEnabled="True" />
+  </RuleFiles>
+  <Groups />
+  <Settings />
+ </Rules>
+ <FxCopReport Version="1.36">
+  <Namespaces>
+   <Namespace Name="SyncroSim.STSimStockFlow">
+    <Messages>
+     <Message TypeName="AvoidNamespacesWithFewTypes" Category="Microsoft.Design" CheckId="CA1020" Status="Excluded" Created="2019-03-07 00:10:40Z">
+      <Issue>
+       <Item>SyncroSim.STSimStockFlow</Item>
+      </Issue>
+      <Notes>
+       <User Name="Alex">
+        <Note Id="1" />
+       </User>
+      </Notes>
+     </Message>
+     <Message Id="Sim" TypeName="IdentifiersShouldBeSpelledCorrectly" Category="Microsoft.Naming" CheckId="CA1704" Status="Excluded" Created="2019-03-07 00:10:40Z">
+      <Issue Name="Namespace">
+       <Item>Sim</Item>
+       <Item>SyncroSim.STSimStockFlow</Item>
+      </Issue>
+      <Issue Name="Namespace">
+       <Item>Sim</Item>
+       <Item>SyncroSim.STSimStockFlow</Item>
+      </Issue>
+      <Notes>
+       <User Name="Alex">
+        <Note Id="0" />
+       </User>
+      </Notes>
+     </Message>
+     <Message Id="Syncro" TypeName="IdentifiersShouldBeSpelledCorrectly" Category="Microsoft.Naming" CheckId="CA1704" Status="Excluded" Created="2019-03-07 00:10:40Z">
+      <Issue Name="Namespace">
+       <Item>Syncro</Item>
+       <Item>SyncroSim.STSimStockFlow</Item>
+      </Issue>
+      <Notes>
+       <User Name="Alex">
+        <Note Id="0" />
+       </User>
+      </Notes>
+     </Message>
+    </Messages>
+   </Namespace>
+  </Namespaces>
+  <Targets>
+   <Target Name="$(ProjectDir)/bin/x86/Debug/SyncroSim.STSimStockFlow.dll">
+    <Modules>
+     <Module Name="syncrosim.stsimstockflow.dll">
+      <Messages>
+       <Message TypeName="AssembliesShouldHaveValidStrongNames" Category="Microsoft.Design" CheckId="CA2210" Status="Excluded" Created="2019-03-07 00:10:40Z">
+        <Issue Name="NoStrongName">
+         <Item>'SyncroSim.STSimStockFlow.dll'</Item>
+        </Issue>
+        <Notes>
+         <User Name="Alex">
+          <Note Id="0" />
+         </User>
+        </Notes>
+       </Message>
+       <Message Id="Sim" TypeName="IdentifiersShouldBeSpelledCorrectly" Category="Microsoft.Naming" CheckId="CA1704" Status="Excluded" Created="2019-03-07 00:10:40Z">
+        <Issue Name="Assembly">
+         <Item>Sim</Item>
+         <Item>'SyncroSim.STSimStockFlow.dll'</Item>
+        </Issue>
+        <Issue Name="Assembly">
+         <Item>Sim</Item>
+         <Item>'SyncroSim.STSimStockFlow.dll'</Item>
+        </Issue>
+        <Notes>
+         <User Name="Alex">
+          <Note Id="0" />
+         </User>
+        </Notes>
+       </Message>
+       <Message Id="Syncro" TypeName="IdentifiersShouldBeSpelledCorrectly" Category="Microsoft.Naming" CheckId="CA1704" Status="Excluded" Created="2019-03-07 00:10:40Z">
+        <Issue Name="Assembly">
+         <Item>Syncro</Item>
+         <Item>'SyncroSim.STSimStockFlow.dll'</Item>
+        </Issue>
+        <Notes>
+         <User Name="Alex">
+          <Note Id="0" />
+         </User>
+        </Notes>
+       </Message>
+      </Messages>
+      <Namespaces>
+       <Namespace Name="SyncroSim.STSimStockFlow">
+        <Types>
+         <Type Name="FlowGroupDataSheet">
+          <Messages>
+           <Message TypeName="AvoidUninstantiatedInternalClasses" Category="Microsoft.Performance" CheckId="CA1812" Status="Excluded" Created="2019-03-07 00:10:40Z">
+            <Issue>
+             <Item>'FlowGroupDataSheet'</Item>
+            </Issue>
+            <Notes>
+             <User Name="Alex">
+              <Note Id="5" />
+             </User>
+            </Notes>
+           </Message>
+          </Messages>
+         </Type>
+         <Type Name="FlowOrderDataFeedView">
+          <Messages>
+           <Message TypeName="AvoidUninstantiatedInternalClasses" Category="Microsoft.Performance" CheckId="CA1812" Status="Excluded" Created="2019-03-07 00:10:40Z">
+            <Issue>
+             <Item>'FlowOrderDataFeedView'</Item>
+            </Issue>
+            <Notes>
+             <User Name="Alex">
+              <Note Id="2" />
+             </User>
+            </Notes>
+           </Message>
+          </Messages>
+         </Type>
+         <Type Name="FlowPathwayDataFeedView">
+          <Messages>
+           <Message TypeName="AvoidUninstantiatedInternalClasses" Category="Microsoft.Performance" CheckId="CA1812" Status="Excluded" Created="2019-03-07 00:10:40Z">
+            <Issue>
+             <Item>'FlowPathwayDataFeedView'</Item>
+            </Issue>
+            <Notes>
+             <User Name="Alex">
+              <Note Id="3" />
+             </User>
+            </Notes>
+           </Message>
+          </Messages>
+         </Type>
+         <Type Name="FlowPathwayDataSheet">
+          <Messages>
+           <Message TypeName="AvoidUninstantiatedInternalClasses" Category="Microsoft.Performance" CheckId="CA1812" Status="Excluded" Created="2019-03-07 00:10:40Z">
+            <Issue>
+             <Item>'FlowPathwayDataSheet'</Item>
+            </Issue>
+            <Notes>
+             <User Name="Alex">
+              <Note Id="5" />
+             </User>
+            </Notes>
+           </Message>
+          </Messages>
+         </Type>
+         <Type Name="FlowPathwayDiagramDataSheet">
+          <Messages>
+           <Message TypeName="AvoidUninstantiatedInternalClasses" Category="Microsoft.Performance" CheckId="CA1812" Status="Excluded" Created="2019-03-07 00:10:40Z">
+            <Issue>
+             <Item>'FlowPathwayDiagramDataSheet'</Item>
+            </Issue>
+            <Notes>
+             <User Name="Alex">
+              <Note Id="5" />
+             </User>
+            </Notes>
+           </Message>
+          </Messages>
+         </Type>
+         <Type Name="FlowPathwayTabStripItem">
+          <Members>
+           <Member Name="#.ctor(System.String)">
+            <Messages>
+             <Message TypeName="AvoidUncalledPrivateCode" Category="Microsoft.Performance" CheckId="CA1811" Status="Excluded" Created="2019-03-07 00:10:40Z">
+              <Issue>
+               <Item>'FlowPathwayTabStripItem.FlowPathwayTabStripItem(string)'</Item>
+              </Issue>
+              <Notes>
+               <User Name="Alex">
+                <Note Id="4" />
+               </User>
+              </Notes>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="FlowTypeDataSheet">
+          <Messages>
+           <Message TypeName="AvoidUninstantiatedInternalClasses" Category="Microsoft.Performance" CheckId="CA1812" Status="Excluded" Created="2019-03-07 00:10:40Z">
+            <Issue>
+             <Item>'FlowTypeDataSheet'</Item>
+            </Issue>
+            <Notes>
+             <User Name="Alex">
+              <Note Id="5" />
+             </User>
+            </Notes>
+           </Message>
+          </Messages>
+         </Type>
+         <Type Name="InitialStocksDataFeedView">
+          <Messages>
+           <Message TypeName="AvoidUninstantiatedInternalClasses" Category="Microsoft.Performance" CheckId="CA1812" Status="Excluded" Created="2019-03-07 00:10:40Z">
+            <Issue>
+             <Item>'InitialStocksDataFeedView'</Item>
+            </Issue>
+            <Notes>
+             <User Name="Alex">
+              <Note Id="5" />
+             </User>
+            </Notes>
+           </Message>
+          </Messages>
+         </Type>
+         <Type Name="OutputFlowDataSheet">
+          <Messages>
+           <Message TypeName="AvoidUninstantiatedInternalClasses" Category="Microsoft.Performance" CheckId="CA1812" Status="Excluded" Created="2019-03-07 00:10:40Z">
+            <Issue>
+             <Item>'OutputFlowDataSheet'</Item>
+            </Issue>
+            <Notes>
+             <User Name="Alex">
+              <Note Id="5" />
+             </User>
+            </Notes>
+           </Message>
+          </Messages>
+         </Type>
+         <Type Name="OutputOptionsDataFeedView">
+          <Messages>
+           <Message TypeName="AvoidUninstantiatedInternalClasses" Category="Microsoft.Performance" CheckId="CA1812" Status="Excluded" Created="2019-03-07 00:10:40Z">
+            <Issue>
+             <Item>'OutputOptionsDataFeedView'</Item>
+            </Issue>
+            <Notes>
+             <User Name="Alex">
+              <Note Id="5" />
+             </User>
+            </Notes>
+           </Message>
+          </Messages>
+          <Members>
+           <Member Name="#OnTerminologyChanged(SyncroSim.Core.DataSheetMonitorEventArgs)">
+            <Messages>
+             <Message TypeName="NormalizeStringsToUppercase" Category="Microsoft.Globalization" CheckId="CA1308" Status="Excluded" Created="2019-03-07 00:10:40Z">
+              <Issue Name="ToUpperInvariant">
+               <Item>'OutputOptionsDataFeedView.OnTerminologyChanged(DataSheetMonitorEventArgs)'</Item>
+               <Item>'string.ToLower(CultureInfo)'</Item>
+              </Issue>
+              <Notes>
+               <User Name="Alex">
+                <Note Id="6" />
+               </User>
+              </Notes>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="ResultLayoutProvider">
+          <Messages>
+           <Message TypeName="AvoidUninstantiatedInternalClasses" Category="Microsoft.Performance" CheckId="CA1812" Status="Excluded" Created="2019-03-07 00:10:40Z">
+            <Issue>
+             <Item>'ResultLayoutProvider'</Item>
+            </Issue>
+            <Notes>
+             <User Name="Alex">
+              <Note Id="3" />
+             </User>
+            </Notes>
+           </Message>
+          </Messages>
+         </Type>
+         <Type Name="SFChartProvider">
+          <Messages>
+           <Message TypeName="AvoidUninstantiatedInternalClasses" Category="Microsoft.Performance" CheckId="CA1812" Status="Excluded" Created="2019-03-07 00:10:40Z">
+            <Issue>
+             <Item>'SFChartProvider'</Item>
+            </Issue>
+            <Notes>
+             <User Name="Alex">
+              <Note Id="3" />
+             </User>
+            </Notes>
+           </Message>
+          </Messages>
+         </Type>
+         <Type Name="SFConsole">
+          <Messages>
+           <Message TypeName="AvoidUninstantiatedInternalClasses" Category="Microsoft.Performance" CheckId="CA1812" Status="Excluded" Created="2019-03-07 00:10:40Z">
+            <Issue>
+             <Item>'SFConsole'</Item>
+            </Issue>
+            <Notes>
+             <User Name="Alex">
+              <Note Id="5" />
+             </User>
+            </Notes>
+           </Message>
+          </Messages>
+         </Type>
+         <Type Name="SpatialMultiplierDataFeedView">
+          <Messages>
+           <Message TypeName="AvoidUninstantiatedInternalClasses" Category="Microsoft.Performance" CheckId="CA1812" Status="Excluded" Created="2019-03-07 00:10:40Z">
+            <Issue>
+             <Item>'SpatialMultiplierDataFeedView'</Item>
+            </Issue>
+            <Notes>
+             <User Name="Alex">
+              <Note Id="5" />
+             </User>
+            </Notes>
+           </Message>
+          </Messages>
+         </Type>
+         <Type Name="StockGroupDataSheet">
+          <Messages>
+           <Message TypeName="AvoidUninstantiatedInternalClasses" Category="Microsoft.Performance" CheckId="CA1812" Status="Excluded" Created="2019-03-07 00:10:40Z">
+            <Issue>
+             <Item>'StockGroupDataSheet'</Item>
+            </Issue>
+            <Notes>
+             <User Name="Alex">
+              <Note Id="5" />
+             </User>
+            </Notes>
+           </Message>
+          </Messages>
+         </Type>
+         <Type Name="StockTypeDataSheet">
+          <Messages>
+           <Message TypeName="AvoidUninstantiatedInternalClasses" Category="Microsoft.Performance" CheckId="CA1812" Status="Excluded" Created="2019-03-07 00:10:40Z">
+            <Issue>
+             <Item>'StockTypeDataSheet'</Item>
+            </Issue>
+            <Notes>
+             <User Name="Alex">
+              <Note Id="3" />
+             </User>
+            </Notes>
+           </Message>
+          </Messages>
+         </Type>
+         <Type Name="SummaryFlowReport">
+          <Messages>
+           <Message TypeName="AvoidUninstantiatedInternalClasses" Category="Microsoft.Performance" CheckId="CA1812" Status="Excluded" Created="2019-03-07 00:10:40Z">
+            <Issue>
+             <Item>'SummaryFlowReport'</Item>
+            </Issue>
+            <Notes>
+             <User Name="Alex">
+              <Note Id="5" />
+             </User>
+            </Notes>
+           </Message>
+          </Messages>
+         </Type>
+         <Type Name="SummaryStockReport">
+          <Messages>
+           <Message TypeName="AvoidUninstantiatedInternalClasses" Category="Microsoft.Performance" CheckId="CA1812" Status="Excluded" Created="2019-03-07 00:10:40Z">
+            <Issue>
+             <Item>'SummaryStockReport'</Item>
+            </Issue>
+            <Notes>
+             <User Name="Alex">
+              <Note Id="3" />
+             </User>
+            </Notes>
+           </Message>
+          </Messages>
+         </Type>
+        </Types>
+       </Namespace>
+      </Namespaces>
+     </Module>
+    </Modules>
+   </Target>
+  </Targets>
+  <Notes>
+   <User Name="Alex">
+    <Note Id="0" Modified="2019-03-07 00:11:12Z">Won't fix</Note>
+    <Note Id="1" Modified="2019-03-07 00:15:40Z">Won't fix</Note>
+    <Note Id="2" Modified="2019-03-07 00:31:31Z">Won't fix</Note>
+    <Note Id="3" Modified="2019-03-07 00:34:36Z">Won't fix</Note>
+    <Note Id="4" Modified="2019-03-07 00:35:21Z">Won't fix</Note>
+    <Note Id="5" Modified="2019-03-07 00:35:44Z">Won't fix</Note>
+    <Note Id="6" Modified="2019-03-07 00:35:56Z">Won't fix</Note>
+   </User>
+  </Notes>
+  <Rules>
+   <Rule TypeName="AssembliesShouldHaveValidStrongNames" Category="Microsoft.Design" CheckId="CA2210">
+    <Resolution Name="NoStrongName">Sign {0} with a strong name key.</Resolution>
+   </Rule>
+   <Rule TypeName="AvoidNamespacesWithFewTypes" Category="Microsoft.Design" CheckId="CA1020">
+    <Resolution Name="Default">Consider merging the types defined in '{0}' with another namespace.</Resolution>
+   </Rule>
+   <Rule TypeName="AvoidUncalledPrivateCode" Category="Microsoft.Performance" CheckId="CA1811">
+    <Resolution Name="Default">{0} appears to have no upstream public or protected callers.</Resolution>
+   </Rule>
+   <Rule TypeName="AvoidUninstantiatedInternalClasses" Category="Microsoft.Performance" CheckId="CA1812">
+    <Resolution Name="Default">{0} is an internal class that is apparently never instantiated. If so, remove the code from the assembly. If this class is intended to contain only static methods, consider adding a private constructor to prevent the compiler from generating a default constructor.</Resolution>
+   </Rule>
+   <Rule TypeName="IdentifiersShouldBeSpelledCorrectly" Category="Microsoft.Naming" CheckId="CA1704">
+    <Resolution Name="Assembly">Correct the spelling of '{0}' in assembly name {1}.</Resolution>
+    <Resolution Name="Namespace">Correct the spelling of '{0}' in namespace name '{1}'.</Resolution>
+   </Rule>
+   <Rule TypeName="NormalizeStringsToUppercase" Category="Microsoft.Globalization" CheckId="CA1308">
+    <Resolution Name="ToUpperInvariant">In method {0}, replace the call to {1} with String.ToUpperInvariant().</Resolution>
+   </Rule>
+  </Rules>
+ </FxCopReport>
+</FxCopProject>

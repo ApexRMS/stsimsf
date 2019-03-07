@@ -26,18 +26,13 @@ namespace SyncroSim.STSimStockFlow
 				string[] v = descriptor.VariableName.Split('-');
 				string VarName = v[0];
 
-				if (VarName == "stocktype" || 
-                    VarName == "stocktypedensity" || 
-                    VarName == "flowtype" || 
-                    VarName == "flowtypedensity" || 
+				if (
                     VarName == "stockgroup" || 
                     VarName == "stockgroupdensity" || 
                     VarName == "flowgroup" || 
                     VarName == "flowgroupdensity")
 				{
-					return CreateRawChartData(
-                        dataSheet, descriptor, store, VarName, 
-                        int.Parse(v[1], CultureInfo.InvariantCulture));
+					return CreateRawChartData(dataSheet, descriptor, store, VarName);
 				}
 			}
 
@@ -46,24 +41,11 @@ namespace SyncroSim.STSimStockFlow
 
 		public override void RefreshCriteria(SyncroSimLayout layout, Project project)
 		{
-			//Stock Types
-			SyncroSimLayoutItem StockTypesGroup = new SyncroSimLayoutItem("StockTypes", "Stock Types", true);
-
-			StockTypesGroup.Properties.Add(new MetaDataProperty("dataSheet", "SF_OutputStock"));
-			StockTypesGroup.Properties.Add(new MetaDataProperty("filter", "StratumID|SecondaryStratumID|TertiaryStratumID|StateClassID"));
-
-			AddStockTypeChartVariables(project, StockTypesGroup.Items);
-
-			if (StockTypesGroup.Items.Count > 0)
-			{
-				layout.Items.Add(StockTypesGroup);
-			}
-
 			//Stock Groups
-			SyncroSimLayoutItem StockGroupsGroup = new SyncroSimLayoutItem("StockGroups", "Stock Groups", true);
+			SyncroSimLayoutItem StockGroupsGroup = new SyncroSimLayoutItem("StockGroups", "Stocks", true);
 
 			StockGroupsGroup.Properties.Add(new MetaDataProperty("dataSheet", "SF_OutputStock"));
-			StockGroupsGroup.Properties.Add(new MetaDataProperty("filter", "StratumID|SecondaryStratumID|TertiaryStratumID|StateClassID"));
+			StockGroupsGroup.Properties.Add(new MetaDataProperty("filter", "StratumID|SecondaryStratumID|TertiaryStratumID|StateClassID|StockGroupID"));
 
 			AddStockGroupChartVariables(project, StockGroupsGroup.Items);
 
@@ -72,73 +54,17 @@ namespace SyncroSim.STSimStockFlow
 				layout.Items.Add(StockGroupsGroup);
 			}
 
-			//Flow Types
-			SyncroSimLayoutItem FlowTypesGroup = new SyncroSimLayoutItem("FlowTypes", "Flow Types", true);
-
-			FlowTypesGroup.Properties.Add(new MetaDataProperty("dataSheet", "SF_OutputFlow"));
-			FlowTypesGroup.Properties.Add(new MetaDataProperty("filter", "FromStratumID|FromSecondaryStratumID|FromTertiaryStratumID|FromStateClassID|FromStockTypeID|TransitionTypeID|ToStratumID|ToStateClassID|ToStockTypeID"));
-
-			AddFlowTypeChartVariables(project, FlowTypesGroup.Items);
-
-			if (FlowTypesGroup.Items.Count > 0)
-			{
-				layout.Items.Add(FlowTypesGroup);
-			}
-
 			//Flow Groups
-			SyncroSimLayoutItem FlowGroupsGroup = new SyncroSimLayoutItem("FlowGroups", "Flow Groups", true);
+			SyncroSimLayoutItem FlowGroupsGroup = new SyncroSimLayoutItem("FlowGroups", "Flows", true);
 
 			FlowGroupsGroup.Properties.Add(new MetaDataProperty("dataSheet", "SF_OutputFlow"));
-			FlowGroupsGroup.Properties.Add(new MetaDataProperty("filter", "FromStratumID|FromSecondaryStratumID|FromTertiaryStratumID|FromStateClassID|FromStockTypeID|TransitionTypeID|ToStratumID|ToStateClassID|ToStockTypeID"));
+			FlowGroupsGroup.Properties.Add(new MetaDataProperty("filter", "FromStratumID|FromSecondaryStratumID|FromTertiaryStratumID|FromStateClassID|FromStockTypeID|TransitionTypeID|ToStratumID|ToStateClassID|ToStockTypeID|FlowGroupID"));
 
 			AddFlowGroupChartVariables(project, FlowGroupsGroup.Items);
 
 			if (FlowGroupsGroup.Items.Count > 0)
 			{
 				layout.Items.Add(FlowGroupsGroup);
-			}
-		}
-
-		private static void AddStockTypeChartVariables(Project project, SyncroSimLayoutItemCollection items)
-		{
-			DataSheet ds = project.GetDataSheet(Constants.DATASHEET_STOCK_TYPE_NAME);
-			DataTable dt = ds.GetData();
-			DataView dv = new DataView(dt, null, ds.ValidationTable.DisplayMember, DataViewRowState.CurrentRows);
-			SyncroSimLayoutItem DensityGroup = new SyncroSimLayoutItem(DENSITY_GROUP_NAME, "Density", true);
-
-			foreach (DataRowView drv in dv)
-			{
-				int id = Convert.ToInt32(drv.Row[ds.ValidationTable.ValueMember], CultureInfo.InvariantCulture);
-				string DisplayName = Convert.ToString(drv.Row[ds.ValidationTable.DisplayMember], CultureInfo.InvariantCulture);
-
-				//Normal
-				string VarNameNormal = string.Format(CultureInfo.InvariantCulture, "{0}-{1}", "stocktype", id);
-				SyncroSimLayoutItem ItemNormal = new SyncroSimLayoutItem(VarNameNormal, DisplayName, false);
-
-				ItemNormal.Properties.Add(new MetaDataProperty("dataSheet", "SF_OutputStock"));
-				ItemNormal.Properties.Add(new MetaDataProperty("column", "Amount"));
-				ItemNormal.Properties.Add(new MetaDataProperty("prefixFolderName", "False"));
-				ItemNormal.Properties.Add(new MetaDataProperty("customTitle", "Stock Type " + DisplayName));
-				ItemNormal.Properties.Add(new MetaDataProperty("defaultValue", "0.0"));
-
-				items.Add(ItemNormal);
-
-				//Density
-				string VarNameDensity = string.Format(CultureInfo.InvariantCulture, "{0}-{1}", "stocktypedensity", id);
-				SyncroSimLayoutItem ItemDensity = new SyncroSimLayoutItem(VarNameDensity, DisplayName, false);
-
-				ItemDensity.Properties.Add(new MetaDataProperty("dataSheet", "SF_OutputStock"));
-				ItemDensity.Properties.Add(new MetaDataProperty("column", "Amount"));
-				ItemDensity.Properties.Add(new MetaDataProperty("prefixFolderName", "False"));
-				ItemDensity.Properties.Add(new MetaDataProperty("customTitle", "(Density): Stock Type " + DisplayName));
-				ItemDensity.Properties.Add(new MetaDataProperty("defaultValue", "0.0"));
-
-				DensityGroup.Items.Add(ItemDensity);
-			}
-
-			if (DensityGroup.Items.Count > 0)
-			{
-				items.Add(DensityGroup);
 			}
 		}
 
@@ -174,51 +100,6 @@ namespace SyncroSim.STSimStockFlow
 				ItemDensity.Properties.Add(new MetaDataProperty("column", "Amount"));
 				ItemDensity.Properties.Add(new MetaDataProperty("prefixFolderName", "False"));
 				ItemDensity.Properties.Add(new MetaDataProperty("customTitle", "(Density): Stock Group " + DisplayName));
-				ItemDensity.Properties.Add(new MetaDataProperty("defaultValue", "0.0"));
-
-				DensityGroup.Items.Add(ItemDensity);
-			}
-
-			if (DensityGroup.Items.Count > 0)
-			{
-				items.Add(DensityGroup);
-			}
-		}
-
-		private static void AddFlowTypeChartVariables(Project project, SyncroSimLayoutItemCollection items)
-		{
-			DataSheet ds = project.GetDataSheet(Constants.DATASHEET_FLOW_TYPE_NAME);
-			DataTable dt = ds.GetData();
-			DataView dv = new DataView(dt, null, ds.ValidationTable.DisplayMember, DataViewRowState.CurrentRows);
-			SyncroSimLayoutItem DensityGroup = new SyncroSimLayoutItem(DENSITY_GROUP_NAME, "Density", true);
-
-			foreach (DataRowView drv in dv)
-			{
-				int id = Convert.ToInt32(drv.Row[ds.ValidationTable.ValueMember], CultureInfo.InvariantCulture);
-				string DisplayName = Convert.ToString(drv.Row[ds.ValidationTable.DisplayMember], CultureInfo.InvariantCulture);
-
-				//Normal
-				string VarNameNormal = string.Format(CultureInfo.InvariantCulture, "{0}-{1}", "flowtype", id);
-				SyncroSimLayoutItem ItemNormal = new SyncroSimLayoutItem(VarNameNormal, DisplayName, false);
-
-				ItemNormal.Properties.Add(new MetaDataProperty("dataSheet", "SF_OutputFlow"));
-				ItemNormal.Properties.Add(new MetaDataProperty("column", "Amount"));
-				ItemNormal.Properties.Add(new MetaDataProperty("skipTimestepZero", "True"));
-				ItemNormal.Properties.Add(new MetaDataProperty("prefixFolderName", "False"));
-				ItemNormal.Properties.Add(new MetaDataProperty("customTitle", "Flow Type " + DisplayName));
-				ItemNormal.Properties.Add(new MetaDataProperty("defaultValue", "0.0"));
-
-				items.Add(ItemNormal);
-
-				//Density
-				string VarNameDensity = string.Format(CultureInfo.InvariantCulture, "{0}-{1}", "flowtypedensity", id);
-				SyncroSimLayoutItem ItemDensity = new SyncroSimLayoutItem(VarNameDensity, DisplayName, false);
-
-				ItemDensity.Properties.Add(new MetaDataProperty("dataSheet", "SF_OutputFlow"));
-				ItemDensity.Properties.Add(new MetaDataProperty("column", "Amount"));
-				ItemDensity.Properties.Add(new MetaDataProperty("skipTimestepZero", "True"));
-				ItemDensity.Properties.Add(new MetaDataProperty("prefixFolderName", "False"));
-				ItemDensity.Properties.Add(new MetaDataProperty("customTitle", "(Density): Flow Type " + DisplayName));
 				ItemDensity.Properties.Add(new MetaDataProperty("defaultValue", "0.0"));
 
 				DensityGroup.Items.Add(ItemDensity);
@@ -279,29 +160,15 @@ namespace SyncroSim.STSimStockFlow
             DataSheet dataSheet, 
             ChartDescriptor descriptor, 
             DataStore store, 
-            string variableName, 
-            int variableId)
+            string variableName)
 		{
-			string query = null;
+            Debug.Assert(
+                variableName == "stockgroup" ||
+                variableName == "stockgroupdensity" ||
+                variableName == "flowgroup" ||
+                variableName == "flowgroupdensity");
 
-			if (variableName == "stocktype" || 
-                variableName == "stocktypedensity" || 
-                variableName == "flowtype" || 
-                variableName == "flowtypedensity")
-			{
-				query = CreateRawChartDataQueryForType(dataSheet, descriptor, variableName, variableId);
-			}
-			else
-			{
-				Debug.Assert(
-                    variableName == "stockgroup" || 
-                    variableName == "stockgroupdensity" || 
-                    variableName == "flowgroup" || 
-                    variableName == "flowgroupdensity");
-
-				query = CreateRawChartDataQueryForGroup(dataSheet, descriptor, variableName, variableId);
-			}
-
+            string query = CreateRawChartDataQueryForGroup(dataSheet, descriptor, variableName);		
             DataTable dt = StochasticTime.ChartCache.GetCachedData(dataSheet.Scenario, query, null);
 
             if (dt == null)
@@ -330,102 +197,53 @@ namespace SyncroSim.STSimStockFlow
 			return dt;
 		}
 
-		private static string CreateRawChartDataQueryForType(DataSheet dataSheet, ChartDescriptor descriptor, string variableName, int variableId)
+		private static string CreateRawChartDataQueryForGroup(
+            DataSheet dataSheet, 
+            ChartDescriptor descriptor,
+            string variableName)
 		{
+            Debug.Assert(dataSheet.Scenario.Id > 0);
+
 			Debug.Assert(
-                variableName == "stocktype" || variableName == "stocktypedensity" || 
-                variableName == "flowtype" || variableName == "flowtypedensity");
-
-            string TypeColumnName = null;
-
-			if (variableName == "stocktype" || variableName == "stocktypedensity")
-			{
-				TypeColumnName = Constants.STOCK_TYPE_ID_COLUMN_NAME;
-			}
-			else
-			{
-				TypeColumnName = Constants.FLOW_TYPE_ID_COLUMN_NAME;
-			}
-
-			string ScenarioClause = string.Format(CultureInfo.InvariantCulture, 
-                "([{0}]={1})", 
-                Constants.SCENARIO_ID_COLUMN_NAME, dataSheet.Scenario.Id);
-
-			string WhereClause = string.Format(CultureInfo.InvariantCulture,
-                "{0} AND ([{1}]={2})", 
-                ScenarioClause, TypeColumnName, variableId);
-
-			if (!string.IsNullOrEmpty(descriptor.DisaggregateFilter))
-			{
-				WhereClause = string.Format(CultureInfo.InvariantCulture, 
-                    "{0} AND ({1})", 
-                    WhereClause, descriptor.DisaggregateFilter);
-			}
-
-			if (!string.IsNullOrEmpty(descriptor.IncludeDataFilter))
-			{
-				WhereClause = string.Format(CultureInfo.InvariantCulture, 
-                    "{0} AND ({1})", 
-                    WhereClause, descriptor.IncludeDataFilter);
-			}
-
-			string query = string.Format(CultureInfo.InvariantCulture, 
-                "SELECT Iteration, Timestep, SUM(Amount) AS SumOfAmount FROM {0} WHERE ({1}) GROUP BY Iteration, Timestep", 
-                dataSheet.Name, WhereClause);
-
-			return query;
-		}
-
-		private static string CreateRawChartDataQueryForGroup(DataSheet dataSheet, ChartDescriptor descriptor, string variableName, int variableId)
-		{
-			Debug.Assert(variableName == "stockgroup" || variableName == "stockgroupdensity" || 
+                variableName == "stockgroup" || variableName == "stockgroupdensity" || 
                 variableName == "flowgroup" || variableName == "flowgroupdensity");
 
-			string GroupColumnName = null;
-			string JoinColumnName = null;
-			string TypeGroupTableName = null;
+            string ScenarioClause = string.Format(CultureInfo.InvariantCulture,
+                "([{0}]={1})",
+                Constants.SCENARIO_ID_COLUMN_NAME, dataSheet.Scenario.Id);
 
-			if (variableName == "stockgroup" || variableName == "stockgroupdensity")
-			{
-				GroupColumnName = Constants.STOCK_GROUP_ID_COLUMN_NAME;
-				JoinColumnName = Constants.STOCK_TYPE_ID_COLUMN_NAME;
-				TypeGroupTableName = Constants.DATASHEET_STOCK_TYPE_GROUP_MEMBERSHIP_NAME;
-			}
-			else
-			{
-				GroupColumnName = Constants.FLOW_GROUP_ID_COLUMN_NAME;
-				JoinColumnName = Constants.FLOW_TYPE_ID_COLUMN_NAME;
-				TypeGroupTableName = Constants.DATASHEET_FLOW_TYPE_GROUP_MEMBERSHIP_NAME;
-			}
+            string SumStatement = string.Format(CultureInfo.InvariantCulture,
+                "SUM([{0}]) AS {1}",
+                descriptor.ColumnName, Constants.SUM_OF_AMOUNT_COLUMN_NAME);
 
-			string ScenarioClause = string.Format(CultureInfo.InvariantCulture, 
-                "({0}.{1}={2})", 
-                dataSheet.Name, Constants.SCENARIO_ID_COLUMN_NAME, dataSheet.Scenario.Id);
+            string WhereClause = ScenarioClause;
 
-			string WhereClause = string.Format(CultureInfo.InvariantCulture, 
-                "{0} AND ({1}.{2}={3})", 
-                ScenarioClause, TypeGroupTableName, GroupColumnName, variableId);
-
-			if (!string.IsNullOrEmpty(descriptor.DisaggregateFilter))
-			{
-				WhereClause = string.Format(CultureInfo.InvariantCulture, 
-                    "{0} AND ({1})", 
+            if (!string.IsNullOrEmpty(descriptor.DisaggregateFilter))
+            {
+                WhereClause = string.Format(CultureInfo.InvariantCulture,
+                    "{0} AND ({1})",
                     WhereClause, descriptor.DisaggregateFilter);
-			}
+            }
 
-			if (!string.IsNullOrEmpty(descriptor.IncludeDataFilter))
-			{
-				WhereClause = string.Format(CultureInfo.InvariantCulture, 
+            if (!string.IsNullOrEmpty(descriptor.IncludeDataFilter))
+            {
+                WhereClause = string.Format(CultureInfo.InvariantCulture,
                     "{0} AND ({1})",
                     WhereClause, descriptor.IncludeDataFilter);
-			}
+            }
 
-			string query = string.Format(CultureInfo.InvariantCulture, 
-                "SELECT Iteration, Timestep, Sum({0}.Amount * CASE WHEN {1}.Value IS NULL THEN 1.0 ELSE {2}.Value END) AS SumOfAmount " + "FROM {3} INNER JOIN {4} ON {5}.{6} = {7}.{8} AND {9}.ScenarioID = {10}.ScenarioID " + "WHERE ({11}) GROUP BY Iteration, Timestep", 
-                dataSheet.Name, TypeGroupTableName, TypeGroupTableName, dataSheet.Name, TypeGroupTableName, dataSheet.Name, JoinColumnName, TypeGroupTableName, JoinColumnName, dataSheet.Name, TypeGroupTableName, WhereClause);
+            string query = string.Format(CultureInfo.InvariantCulture,
+                "SELECT {0},{1},{2} FROM {3} WHERE {4} GROUP BY [{5}],[{6}]",
+                Constants.ITERATION_COLUMN_NAME,
+                Constants.TIMESTEP_COLUMN_NAME,
+                SumStatement,
+                descriptor.DatasheetName,
+                WhereClause,
+                Constants.ITERATION_COLUMN_NAME,
+                Constants.TIMESTEP_COLUMN_NAME);
 
             return query;
-		}
+        }
 
 		public static Dictionary<string, double> CreateAmountDictionary(
             Scenario scenario, 

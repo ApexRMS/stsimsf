@@ -3,19 +3,19 @@
 
 namespace SyncroSim.STSimStockFlow
 {
-	internal class StockType : StockFlowType
-	{
-        private StockGroupLinkageCollection m_StockGroupLinkages = new StockGroupLinkageCollection();
+    class StockGroup : StockFlowType
+    {
+        private StockTypeLinkageCollection m_StockTypeLinkages = new StockTypeLinkageCollection();
 
-		public StockType(int id, string name) : base(id, name)
-		{
-		}
+        public StockGroup(int id, string name) : base(id, name)
+        {
+        }
 
-        internal StockGroupLinkageCollection StockGroupLinkages
+        internal StockTypeLinkageCollection StockTypeLinkages
         {
             get
             {
-                return this.m_StockGroupLinkages;
+                return this.m_StockTypeLinkages;
             }
         }
     }

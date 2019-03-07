@@ -13,10 +13,11 @@ namespace SyncroSim.STSimStockFlow
 {
 	internal partial class StockFlowTransformer
 	{
-		private Dictionary<int, FlowType> m_FlowTypes = new Dictionary<int, FlowType>();
-        private FlowMultiplierTypeCollection m_FlowMultiplierTypes = new FlowMultiplierTypeCollection();
-		private FlowGroupCollection m_FlowGroups = new FlowGroupCollection();
 		private StockTypeCollection m_StockTypes = new StockTypeCollection();
+        private StockGroupCollection m_StockGroups = new StockGroupCollection();
+        private FlowTypeCollection m_FlowTypes = new FlowTypeCollection();
+		private FlowGroupCollection m_FlowGroups = new FlowGroupCollection();
+        private FlowMultiplierTypeCollection m_FlowMultiplierTypes = new FlowMultiplierTypeCollection();
 		private InitialStockNonSpatialCollection m_InitialStocksNonSpatial = new InitialStockNonSpatialCollection();
 		private InitialStockSpatialCollection m_InitialStocksSpatial = new InitialStockSpatialCollection();
 		private Dictionary<string, StochasticTimeRaster> m_InitialStockSpatialRasters = new Dictionary<string, StochasticTimeRaster>();
@@ -29,68 +30,223 @@ namespace SyncroSim.STSimStockFlow
 		private FlowOrderCollection m_FlowOrders = new FlowOrderCollection();
 
 #if DEBUG
-		private bool m_FlowGroupsFilled;
+        private bool m_AutoStockLinkagesAdded;
+        private bool m_StockTypesFilled;
+        private bool m_StockGroupsFilled;
+
+        private bool m_AutoFlowLinkagesAdded;
 		private bool m_FlowTypesFilled;
+		private bool m_FlowGroupsFilled;
 #endif
 
-		private void FillFlowGroups()
+        private void FillStockTypes()
+        {
+            Debug.Assert(this.m_StockTypes.Count == 0);
+            DataSheet ds = this.Project.GetDataSheet(Constants.DATASHEET_STOCK_TYPE_NAME);
+
+            foreach (DataRow dr in ds.GetData().Rows)
+            {
+                this.m_StockTypes.Add(
+                    new StockType(
+                        Convert.ToInt32(dr[ds.PrimaryKeyColumn.Name], CultureInfo.InvariantCulture),
+                        Convert.ToString(dr[ds.DisplayMember], CultureInfo.InvariantCulture)));
+            }
+
+#if DEBUG
+            this.m_StockTypesFilled = true;
+#endif
+        }
+
+        private void FillStockGroups()
+        {
+            Debug.Assert(this.m_StockGroups.Count == 0);
+            DataSheet ds = this.Project.GetDataSheet(Constants.DATASHEET_STOCK_GROUP_NAME);
+
+            foreach (DataRow dr in ds.GetData().Rows)
+            {
+                this.m_StockGroups.Add(
+                    new StockGroup(
+                        Convert.ToInt32(dr[ds.PrimaryKeyColumn.Name], CultureInfo.InvariantCulture), 
+                        Convert.ToString(dr[ds.DisplayMember], CultureInfo.InvariantCulture)));
+            }
+
+#if DEBUG
+            this.m_StockGroupsFilled = true;
+#endif
+        }
+
+        private void FillFlowTypes()
+        {
+            Debug.Assert(this.m_FlowTypes.Count == 0);
+            DataSheet ds = this.Project.GetDataSheet(Constants.DATASHEET_FLOW_TYPE_NAME);
+
+            foreach (DataRow dr in ds.GetData().Rows)
+            {
+                this.m_FlowTypes.Add(
+                    new FlowType(
+                        Convert.ToInt32(dr[ds.PrimaryKeyColumn.Name], CultureInfo.InvariantCulture),
+                        Convert.ToString(dr[ds.DisplayMember], CultureInfo.InvariantCulture)));
+            }
+
+#if DEBUG
+            this.m_FlowTypesFilled = true;
+#endif
+
+        }
+
+        private void FillFlowGroups()
 		{
 			Debug.Assert(this.m_FlowGroups.Count == 0);
 			DataSheet ds = this.Project.GetDataSheet(Constants.DATASHEET_FLOW_GROUP_NAME);
 
 			foreach (DataRow dr in ds.GetData().Rows)
 			{
-				this.m_FlowGroups.Add(new FlowGroup(
-                    Convert.ToInt32(dr[ds.PrimaryKeyColumn.Name], CultureInfo.InvariantCulture)));
-			}
+				this.m_FlowGroups.Add(
+                    new FlowGroup(
+                        Convert.ToInt32(dr[ds.PrimaryKeyColumn.Name], CultureInfo.InvariantCulture),
+                        Convert.ToString(dr[ds.DisplayMember], CultureInfo.InvariantCulture)));
+            }
 
 #if DEBUG
 			this.m_FlowGroupsFilled = true;
 #endif
 		}
 
-		private void FillFlowTypes()
-		{       
-			Debug.Assert(this.m_FlowTypes.Count == 0);
-			DataSheet ds = this.Project.GetDataSheet(Constants.DATASHEET_FLOW_TYPE_NAME);
-
-			foreach (DataRow dr in ds.GetData().Rows)
-			{
-				int id = Convert.ToInt32(dr[ds.PrimaryKeyColumn.Name], CultureInfo.InvariantCulture);
-				FlowType ft = new FlowType(id);
-				this.m_FlowTypes.Add(id, ft);
-			}
+        private void FillStockGroupLinkages()
+        {
 
 #if DEBUG
-			this.m_FlowTypesFilled = true;
+            Debug.Assert(this.m_AutoStockLinkagesAdded);
+            Debug.Assert(this.m_StockTypesFilled);
+            Debug.Assert(this.m_StockGroupsFilled);
 #endif
 
-		}
+            DataTable dt = this.ResultScenario.GetDataSheet(Constants.DATASHEET_STOCK_TYPE_GROUP_MEMBERSHIP_NAME).GetData();
 
-		private void FillFlowTypeGroups()
+            foreach (StockType st in this.m_StockTypes)
+            {
+                Debug.Assert(st.StockGroupLinkages.Count == 0);
+
+                string q = string.Format(CultureInfo.InvariantCulture, "{0}={1}", Constants.STOCK_TYPE_ID_COLUMN_NAME, st.Id);
+                DataRow[] rows = dt.Select(q, null);
+
+                foreach (DataRow dr in rows)
+                {
+                    int gid = Convert.ToInt32(dr[Constants.STOCK_GROUP_ID_COLUMN_NAME], CultureInfo.InvariantCulture);
+                    double value = 1.0;
+
+                    if (dr[Constants.VALUE_COLUMN_NAME] != DBNull.Value)
+                    {
+                        value = (double)dr[Constants.VALUE_COLUMN_NAME];
+                    }
+
+                    StockGroupLinkage linkage = new StockGroupLinkage(this.m_StockGroups[gid], value);
+                    st.StockGroupLinkages.Add(linkage);
+                }
+            }
+        }
+
+        private void FillStockTypeLinkages()
+        {
+
+#if DEBUG
+            Debug.Assert(this.m_AutoStockLinkagesAdded);
+            Debug.Assert(this.m_StockTypesFilled);
+            Debug.Assert(this.m_StockGroupsFilled);
+#endif
+
+            DataTable dt = this.ResultScenario.GetDataSheet(Constants.DATASHEET_STOCK_TYPE_GROUP_MEMBERSHIP_NAME).GetData();
+
+            foreach (StockGroup sg in this.m_StockGroups)
+            {
+                Debug.Assert(sg.StockTypeLinkages.Count == 0);
+
+                string q = string.Format(CultureInfo.InvariantCulture, "{0}={1}", Constants.STOCK_GROUP_ID_COLUMN_NAME, sg.Id);
+                DataRow[] rows = dt.Select(q, null);
+
+                foreach (DataRow dr in rows)
+                {
+                    int tid = Convert.ToInt32(dr[Constants.STOCK_TYPE_ID_COLUMN_NAME], CultureInfo.InvariantCulture);
+                    double value = 1.0;
+
+                    if (dr[Constants.VALUE_COLUMN_NAME] != DBNull.Value)
+                    {
+                        value = (double)dr[Constants.VALUE_COLUMN_NAME];
+                    }
+
+                    StockTypeLinkage linkage = new StockTypeLinkage(this.m_StockTypes[tid], value);
+                    sg.StockTypeLinkages.Add(linkage);
+                }
+            }
+        }
+
+        private void FillFlowGroupLinkages()
 		{
 
 #if DEBUG
-			Debug.Assert(this.m_FlowGroupsFilled);
+            Debug.Assert(this.m_AutoFlowLinkagesAdded);
 			Debug.Assert(this.m_FlowTypesFilled);
+			Debug.Assert(this.m_FlowGroupsFilled);
 #endif
 
 			DataTable dt = this.ResultScenario.GetDataSheet(Constants.DATASHEET_FLOW_TYPE_GROUP_MEMBERSHIP_NAME).GetData();
 
-			foreach (FlowType ft in this.m_FlowTypes.Values)
+			foreach (FlowType ft in this.m_FlowTypes)
 			{
-				string q = string.Format(CultureInfo.InvariantCulture, "{0}={1}", Constants.FLOW_TYPE_ID_COLUMN_NAME, ft.Id);
-				DataRow[] rows = dt.Select(q, null);
+                Debug.Assert(ft.FlowGroupLinkages.Count == 0);
 
-				foreach (DataRow dr in rows)
-				{
-					int gid = Convert.ToInt32(dr[Constants.FLOW_GROUP_ID_COLUMN_NAME], CultureInfo.InvariantCulture);
+                string q = string.Format(CultureInfo.InvariantCulture, "{0}={1}", Constants.FLOW_TYPE_ID_COLUMN_NAME, ft.Id);
+                DataRow[] rows = dt.Select(q, null);
 
-					Debug.Assert(!ft.FlowGroups.Contains(gid));
-					ft.FlowGroups.Add(this.m_FlowGroups[gid]);
-				}
-			}
+                foreach (DataRow dr in rows)
+                {
+                    int gid = Convert.ToInt32(dr[Constants.FLOW_GROUP_ID_COLUMN_NAME], CultureInfo.InvariantCulture);
+                    double value = 1.0;
+
+                    if (dr[Constants.VALUE_COLUMN_NAME] != DBNull.Value)
+                    {
+                        value = (double)dr[Constants.VALUE_COLUMN_NAME];
+                    }
+
+                    FlowGroupLinkage linkage = new FlowGroupLinkage(this.m_FlowGroups[gid], value);
+                    ft.FlowGroupLinkages.Add(linkage);
+                }
+            }
 		}
+
+        private void FillFlowTypeLinkages()
+        {
+
+#if DEBUG
+            Debug.Assert(this.m_AutoFlowLinkagesAdded);
+            Debug.Assert(this.m_FlowTypesFilled);
+            Debug.Assert(this.m_FlowGroupsFilled);
+#endif
+
+            DataTable dt = this.ResultScenario.GetDataSheet(Constants.DATASHEET_FLOW_TYPE_GROUP_MEMBERSHIP_NAME).GetData();
+
+            foreach (FlowGroup fg in this.m_FlowGroups)
+            {
+                Debug.Assert(fg.FlowTypeLinkages.Count == 0);
+
+                string q = string.Format(CultureInfo.InvariantCulture, "{0}={1}", Constants.FLOW_GROUP_ID_COLUMN_NAME, fg.Id);
+                DataRow[] rows = dt.Select(q, null);
+
+                foreach (DataRow dr in rows)
+                {
+                    int tid = Convert.ToInt32(dr[Constants.FLOW_TYPE_ID_COLUMN_NAME], CultureInfo.InvariantCulture);
+                    double value = 1.0;
+
+                    if (dr[Constants.VALUE_COLUMN_NAME] != DBNull.Value)
+                    {
+                        value = (double)dr[Constants.VALUE_COLUMN_NAME];
+                    }
+
+                    FlowTypeLinkage linkage = new FlowTypeLinkage(this.m_FlowTypes[tid], value);
+                    fg.FlowTypeLinkages.Add(linkage);
+                }
+            }
+        }
 
         private void FillFlowMultiplierTypes()
         {
@@ -108,18 +264,6 @@ namespace SyncroSim.STSimStockFlow
                     (FlowMultiplierTypeId, this.ResultScenario, this.m_STSimTransformer.DistributionProvider));
             }
         }
-
-        private void FillStockTypes()
-		{
-			Debug.Assert(this.m_StockTypes.Count == 0);
-			DataSheet ds = this.Project.GetDataSheet(Constants.DATASHEET_STOCK_TYPE_NAME);
-
-			foreach (DataRow dr in ds.GetData().Rows)
-			{
-				this.m_StockTypes.Add(
-                    new StockType(Convert.ToInt32(dr[ds.PrimaryKeyColumn.Name], CultureInfo.InvariantCulture)));
-			}
-		}
 
 		private void FillInitialStocksNonSpatial()
 		{

@@ -77,17 +77,26 @@ namespace SyncroSim.STSimStockFlow
 			this.InitializeOutputOptions();
 			this.InitializeOutputDataTables();
 
-			this.FillFlowGroups();
-			this.FillFlowTypes();
-			this.FillFlowTypeGroups();
-            this.FillFlowMultiplierTypes();
 			this.FillStockTypes();
+            this.FillStockGroups();
 			this.FillInitialStocksNonSpatial();
 			this.FillStockLimits();
 			this.FillStockTransitionMultipliers();
+
+			this.FillFlowGroups();
+			this.FillFlowTypes();
+            this.FillFlowMultiplierTypes();
 			this.FillFlowPathways();
 			this.FillFlowMultipliers();
 			this.FillFlowOrders();
+
+            this.AddAutoStockTypeLinkages();
+            this.AddAutoFlowTypeLinkages();
+
+            this.FillStockGroupLinkages();
+            this.FillStockTypeLinkages();
+			this.FillFlowGroupLinkages();
+            this.FillFlowTypeLinkages();
 
 			if (this.m_IsSpatial)
 			{
@@ -109,7 +118,14 @@ namespace SyncroSim.STSimStockFlow
 			{
 				this.CreateInitialStockSpatialMap();
 			}
-		}
+
+#if DEBUG
+            foreach (StockType t in this.m_StockTypes) { Debug.Assert(t.StockGroupLinkages.Count > 0); }
+            foreach (StockGroup t in this.m_StockGroups) { Debug.Assert(t.StockTypeLinkages.Count > 0); }
+            foreach (FlowType t in this.m_FlowTypes) { Debug.Assert(t.FlowGroupLinkages.Count > 0); }
+            foreach (FlowGroup t in this.m_FlowGroups) { Debug.Assert(t.FlowTypeLinkages.Count > 0); }
+#endif
+        }
 
 		/// <summary>
 		/// Overrides Transform
@@ -292,7 +308,7 @@ namespace SyncroSim.STSimStockFlow
 
 			if (this.m_STSimTransformer.IsOutputTimestep(e.Timestep, this.m_SpatialFlowOutputTimesteps, this.m_CreateSpatialFlowOutput))
 			{
-				foreach (FlowType ft in this.m_FlowTypes.Values)
+				foreach (FlowType ft in this.m_FlowTypes)
 				{             
 					if (this.GetOutputFlowDictionary().ContainsKey(ft.Id))
 					{
@@ -340,13 +356,11 @@ namespace SyncroSim.STSimStockFlow
 			{
 				if (this.m_STSimTransformer.IsOutputTimestep(e.Timestep, this.m_SpatialStockOutputTimesteps, this.m_CreateSpatialStockOutput))
 				{
-					this.ProcessStockSpatialData(e.Iteration, e.Timestep);
 					this.ProcessStockGroupSpatialData(e.Iteration, e.Timestep);
 				}
 
 				if (this.m_STSimTransformer.IsOutputTimestep(e.Timestep, this.m_SpatialFlowOutputTimesteps, this.m_CreateSpatialFlowOutput))
 				{
-					this.ProcessFlowSpatialData(e.Iteration, e.Timestep);
 					this.ProcessFlowGroupSpatialData(e.Iteration, e.Timestep);
 				}
 			}
@@ -484,9 +498,11 @@ namespace SyncroSim.STSimStockFlow
 
 			if (this.m_IsSpatial)
 			{
-				if (this.m_STSimTransformer.IsOutputTimestep(e.Timestep, this.m_SpatialStockOutputTimesteps, this.m_CreateSpatialStockOutput))
+				if (this.m_STSimTransformer.IsOutputTimestep(
+                    e.Timestep, 
+                    this.m_SpatialStockOutputTimesteps, 
+                    this.m_CreateSpatialStockOutput))
 				{
-					this.ProcessStockSpatialData(e.Iteration, e.Timestep);
 					this.ProcessStockGroupSpatialData(e.Iteration, e.Timestep);
 				}
 			}
@@ -575,7 +591,7 @@ namespace SyncroSim.STSimStockFlow
 				}
 				else
 				{
-					if (cmpRes == STSim.CompareMetadataResult.UnimportantDifferences)
+					if (cmpRes == CompareMetadataResult.UnimportantDifferences)
 					{
 						string msg = string.Format(CultureInfo.InvariantCulture, Constants.SPATIAL_METADATA_INFO, FullFilename, cmpMsg);
 						RecordStatus(StatusType.Information, msg);
@@ -655,7 +671,14 @@ namespace SyncroSim.STSimStockFlow
 			}
 		}
 
-		private void ApplyTransitionFlows(List<FlowType> ftList, StockType st, Cell cell, int iteration, int timestep, DeterministicTransition dtPathway, Transition ptPathway)
+		private void ApplyTransitionFlows(
+            List<FlowType> ftList, 
+            StockType st, 
+            Cell cell, 
+            int iteration, 
+            int timestep, 
+            DeterministicTransition dtPathway, 
+            Transition ptPathway)
 		{
 			Debug.Assert(this.m_FlowPathwayMap.HasRecords);
 
@@ -844,19 +867,19 @@ namespace SyncroSim.STSimStockFlow
 
             foreach (FlowMultiplierType mt in this.m_FlowMultiplierTypes)
             {
-			    foreach (FlowGroup fg in ft.FlowGroups)
+			    foreach (FlowGroupLinkage fgl in ft.FlowGroupLinkages)
 			    {
                     if (mt.FlowMultiplierMap != null)
                     {
 				        FlowAmount *= mt.FlowMultiplierMap.GetFlowMultiplier(
-                            fg.Id, cell.StratumId, cell.SecondaryStratumId, cell.TertiaryStratumId, 
+                            fgl.FlowGroup.Id, cell.StratumId, cell.SecondaryStratumId, cell.TertiaryStratumId, 
                             cell.StateClassId, iteration, timestep);
 			        }
 
                     if (this.m_IsSpatial && mt.FlowSpatialMultiplierMap != null)
                     {
                         FlowAmount *= this.GetFlowSpatialMultiplier(
-                            cell.CellId, mt.FlowSpatialMultiplierMap, fg.Id, iteration, timestep);
+                            cell.CellId, mt.FlowSpatialMultiplierMap, fgl.FlowGroup.Id, iteration, timestep);
                     }
                 }
             }
@@ -869,7 +892,12 @@ namespace SyncroSim.STSimStockFlow
 			return FlowAmount;
 		}
 
-		private double GetFlowSpatialMultiplier(int cellId, FlowSpatialMultiplierMap map, int flowGroupId, int iteration, int timestep)
+		private double GetFlowSpatialMultiplier(
+            int cellId, 
+            FlowSpatialMultiplierMap map, 
+            int flowGroupId, 
+            int iteration, 
+            int timestep)
 		{
 			Debug.Assert(this.m_IsSpatial);
             Debug.Assert(this.m_FlowSpatialMultipliers.Count > 0);
@@ -946,7 +974,7 @@ namespace SyncroSim.STSimStockFlow
 
 			foreach (FlowOrder order in orders)
 			{
-				if (this.m_FlowTypes.ContainsKey(order.FlowTypeId))
+				if (this.m_FlowTypes.Contains(order.FlowTypeId))
 				{
 					Debug.Assert(this.m_ShufflableFlowTypes.Contains(this.m_FlowTypes[order.FlowTypeId]));
 					this.m_FlowTypes[order.FlowTypeId].Order = order.Order;

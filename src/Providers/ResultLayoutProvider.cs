@@ -21,16 +21,14 @@ namespace SyncroSim.STSimStockFlow
 
 				if (ReportsGroup != null)
 				{
-					ReportsGroup.Items.Add(new SyncroSimLayoutItem("stsim-stockflow:summary-stock-report", "Stocks", false));
-					ReportsGroup.Items.Add(new SyncroSimLayoutItem("stsim-stockflow:summary-flow-report", "Flows", false));
+					ReportsGroup.Items.Add(new SyncroSimLayoutItem("stsim-stockflow:summary-stock-report", "Stock Type/Group", false));
+					ReportsGroup.Items.Add(new SyncroSimLayoutItem("stsim-stockflow:summary-flow-report", "Flow Type/Group", false));
 				}
 
 				if (MapsGroup != null)
 				{
-					MapsGroup.Items.Add(new SyncroSimLayoutItem("stsim-stockflow:stock-raster-map", "Stock Types", false));
-					MapsGroup.Items.Add(new SyncroSimLayoutItem("stsim-stockflow:flow-raster-map", "Flow Types", false));
-					MapsGroup.Items.Add(new SyncroSimLayoutItem("stsim-stockflow:stock-group-raster-map", "Stock Groups", false));
-					MapsGroup.Items.Add(new SyncroSimLayoutItem("stsim-stockflow:flow-group-raster-map", "Flow Groups", false));
+					MapsGroup.Items.Add(new SyncroSimLayoutItem("stsim-stockflow:stock-raster-map", "Stock Type/Group", false));
+					MapsGroup.Items.Add(new SyncroSimLayoutItem("stsim-stockflow:flow-raster-map", "Flow Type/Group", false));
 				}
 			}        
 		}

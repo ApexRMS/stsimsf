@@ -70,31 +70,31 @@
   <ItemGroup>
     <Reference Include="SyncroSim.Common">
       <HintPath>..\..\ssimbin\SyncroSim.Common.dll</HintPath>
-      <Private>False</Private>
+      <Private>True</Private>
     </Reference>
     <Reference Include="SyncroSim.Common.Forms">
       <HintPath>..\..\ssimbin\SyncroSim.Common.Forms.dll</HintPath>
-      <Private>False</Private>
+      <Private>True</Private>
     </Reference>
     <Reference Include="SyncroSim.Core">
       <HintPath>..\..\ssimbin\SyncroSim.Core.dll</HintPath>
-      <Private>False</Private>
+      <Private>True</Private>
     </Reference>
     <Reference Include="SyncroSim.Core.Forms">
       <HintPath>..\..\ssimbin\SyncroSim.Core.Forms.dll</HintPath>
-      <Private>False</Private>
+      <Private>True</Private>
     </Reference>
     <Reference Include="SyncroSim.StochasticTime">
       <HintPath>..\..\ssimbin\SyncroSim.StochasticTime.dll</HintPath>
-      <Private>False</Private>
+      <Private>True</Private>
     </Reference>
     <Reference Include="SyncroSim.StochasticTime.Forms">
       <HintPath>..\..\ssimbin\SyncroSim.StochasticTime.Forms.dll</HintPath>
-      <Private>False</Private>
+      <Private>True</Private>
     </Reference>
     <Reference Include="SyncroSim.STSim">
       <HintPath>..\..\ssimbin\Packages\stsim\SyncroSim.STSim.dll</HintPath>
-      <Private>False</Private>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -122,9 +122,15 @@
     <Compile Include="Console\SFConsole.CreateReport.cs" />
     <Compile Include="Console\SFConsole.ListReports.cs" />
     <Compile Include="Console\SFConsole.cs" />
+    <Compile Include="DataSheets\FlowGroupDataSheet.cs" />
+    <Compile Include="DataSheets\FlowTypeDataSheet.cs" />
+    <Compile Include="DataSheets\StockGroupDataSheet.cs" />
+    <Compile Include="DataSheets\StockTypeDataSheet.cs" />
     <Compile Include="Diagram\FlowPathwayTabStripItem.cs" />
     <Compile Include="Runtime\FlowGroup.cs" />
     <Compile Include="Runtime\FlowGroupCollection.cs" />
+    <Compile Include="Runtime\FlowGroupLinkage.cs" />
+    <Compile Include="Runtime\FlowGroupLinkageCollection.cs" />
     <Compile Include="Runtime\FlowMultiplier.cs" />
     <Compile Include="Runtime\FlowMultiplierCollection.cs" />
     <Compile Include="Runtime\FlowMultiplierMap.cs" />
@@ -140,6 +146,9 @@
     <Compile Include="Runtime\FlowSpatialMultiplierCollection.cs" />
     <Compile Include="Runtime\FlowSpatialMultiplierMap.cs" />
     <Compile Include="Runtime\FlowType.cs" />
+    <Compile Include="Runtime\FlowTypeCollection.cs" />
+    <Compile Include="Runtime\FlowTypeLinkage.cs" />
+    <Compile Include="Runtime\FlowTypeLinkageCollection.cs" />
     <Compile Include="Runtime\InitialStockNonSpatial.cs" />
     <Compile Include="Runtime\InitialStockNonSpatialCollection.cs" />
     <Compile Include="Runtime\InitialStockSpatial.cs" />
@@ -163,6 +172,10 @@
     <Compile Include="Runtime\StockFlowTransformer.Utilities.cs" />
     <Compile Include="Runtime\StockFlowTransformer.cs" />
     <Compile Include="Runtime\StockFlowType.cs" />
+    <Compile Include="Runtime\StockGroup.cs" />
+    <Compile Include="Runtime\StockGroupCollection.cs" />
+    <Compile Include="Runtime\StockGroupLinkage.cs" />
+    <Compile Include="Runtime\StockGroupLinkageCollection.cs" />
     <Compile Include="Runtime\StockLimit.cs" />
     <Compile Include="Runtime\StockLimitCollection.cs" />
     <Compile Include="Runtime\StockLimitMap.cs" />
@@ -247,6 +260,8 @@
     <Compile Include="Providers\SFChartProvider.cs" />
     <Compile Include="Reports\SummaryFlowReport.cs" />
     <Compile Include="Reports\SummaryStockReport.cs" />
+    <Compile Include="Runtime\StockTypeLinkage.cs" />
+    <Compile Include="Runtime\StockTypeLinkageCollection.cs" />
     <Compile Include="Shared\BaseValueDisplayListItem.cs" />
     <Compile Include="Shared\Constants.cs" />
     <Compile Include="Shared\DataTableUtilities.cs" />

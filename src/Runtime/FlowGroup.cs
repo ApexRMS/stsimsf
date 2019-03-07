@@ -5,8 +5,18 @@ namespace SyncroSim.STSimStockFlow
 {
 	internal class FlowGroup : StockFlowType
 	{
-		public FlowGroup(int id) : base(id)
-		{
-		}
+        private FlowTypeLinkageCollection m_FlowTypeLinkages = new FlowTypeLinkageCollection();
+
+        public FlowGroup(int id, string name) : base(id, name)
+        {
+        }
+
+        internal FlowTypeLinkageCollection FlowTypeLinkages
+        {
+            get
+            {
+                return this.m_FlowTypeLinkages;
+            }
+        }
 	}
 }

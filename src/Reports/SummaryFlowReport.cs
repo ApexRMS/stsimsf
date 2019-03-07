@@ -1,10 +1,10 @@
 ﻿// stsim-stockflow: SyncroSim Add-On Package (to stsim) for integrating stocks and flows into state-and-transition simulation models in ST-Sim.
 // Copyright © 2007-2019 Apex Resource Management Solution Ltd. (ApexRMS). All rights reserved.
 
+using System.Reflection;
+using System.Globalization;
 using SyncroSim.Core;
 using SyncroSim.Core.Forms;
-using System.Globalization;
-using System.Reflection;
 
 namespace SyncroSim.STSimStockFlow
 {
@@ -63,7 +63,7 @@ namespace SyncroSim.STSimStockFlow
 			c.Add(new ExportColumn("ToStratum", "To " + PrimaryStratumLabel));
 			c.Add(new ExportColumn("ToStateClass", "To State Class"));
 			c.Add(new ExportColumn("ToStock", "To Stock"));
-			c.Add(new ExportColumn("FlowType", "Flow Type"));
+			c.Add(new ExportColumn("FlowGroup", "Flow Type/Group"));
 			c.Add(new ExportColumn("Amount", TotalValue));
 
 			c["Amount"].DecimalPlaces = 2;
@@ -91,7 +91,7 @@ namespace SyncroSim.STSimStockFlow
                     "ST2.Name AS ToStratum, " + 
                     "SC2.Name AS ToStateClass, " + 
                     "STK2.Name AS ToStock, " + 
-                    "SF_FlowType.Name as FlowType, " + 
+                    "SF_FlowGroup.Name as FlowGroup, " + 
                     "SF_OutputFlow.Amount " + 
                     "FROM SF_OutputFlow " + 
                     "INNER JOIN STSim_Stratum AS ST1 ON ST1.StratumID = SF_OutputFlow.FromStratumID " + 
@@ -102,7 +102,7 @@ namespace SyncroSim.STSimStockFlow
                     "INNER JOIN STSim_StateClass AS SC2 ON SC2.StateClassID = SF_OutputFlow.ToStateClassID " + 
                     "INNER JOIN SF_StockType AS STK1 ON STK1.StockTypeID = SF_OutputFlow.FromStockTypeID " + 
                     "INNER JOIN SF_StockType AS STK2 ON STK2.StockTypeID = SF_OutputFlow.ToStockTypeID " + 
-                    "INNER JOIN SF_FlowType ON SF_FlowType.FlowTypeID = SF_OutputFlow.FlowTypeID " + 
+                    "INNER JOIN SF_FlowGroup ON SF_FlowGroup.FlowGroupID = SF_OutputFlow.FlowGroupID " + 
                     "LEFT JOIN STSim_TransitionType ON STSim_TransitionType.TransitionTypeID = SF_OutputFlow.TransitionTypeID " + 
                     "WHERE SF_OutputFlow.ScenarioID IN ({0})  " + 
                     "ORDER BY " + 
@@ -110,7 +110,7 @@ namespace SyncroSim.STSimStockFlow
                     "SF_OutputFlow.Iteration, " + 
                     "SF_OutputFlow.Timestep, " + 
                     "ST1.Name, " + "SS1.Name, " + "TS1.Name, " + "SC1.Name, " + "STK1.Name, " + 
-                    "STSim_TransitionType.Name, " + "ST2.Name, " + "SC2.Name, " + "STK2.Name, " + "SF_FlowType.Name", 
+                    "STSim_TransitionType.Name, " + "ST2.Name, " + "SC2.Name, " + "STK2.Name, " + "SF_FlowGroup.Name", 
                     ScenFilter);
 			}
 			else
@@ -127,7 +127,7 @@ namespace SyncroSim.STSimStockFlow
                     "STSim_TransitionType.Name AS TransitionType, " + 
                     "ST2.Name AS ToStratum, " + 
                     "SC2.Name AS ToStateClass, " + "STK2.Name AS ToStock, " + 
-                    "SF_FlowType.Name as FlowType, " +
+                    "SF_FlowGroup.Name as FlowGroup, " +
                     "SF_OutputFlow.Amount " + 
                     "FROM SF_OutputFlow " + 
                     "INNER JOIN SSim_Scenario ON SSim_Scenario.ScenarioID = SF_OutputFlow.ScenarioID " + 
@@ -139,7 +139,7 @@ namespace SyncroSim.STSimStockFlow
                     "INNER JOIN STSim_StateClass AS SC2 ON SC2.StateClassID = SF_OutputFlow.ToStateClassID " + 
                     "INNER JOIN SF_StockType AS STK1 ON STK1.StockTypeID = SF_OutputFlow.FromStockTypeID " + 
                     "INNER JOIN SF_StockType AS STK2 ON STK2.StockTypeID = SF_OutputFlow.ToStockTypeID " + 
-                    "INNER JOIN SF_FlowType ON SF_FlowType.FlowTypeID = SF_OutputFlow.FlowTypeID " + 
+                    "INNER JOIN SF_FlowGroup ON SF_FlowGroup.FlowGroupID = SF_OutputFlow.FlowGroupID " + 
                     "LEFT JOIN STSim_TransitionType ON STSim_TransitionType.TransitionTypeID = SF_OutputFlow.TransitionTypeID " + 
                     "WHERE SF_OutputFlow.ScenarioID IN ({0})  " + 
                     "ORDER BY " + 
@@ -148,7 +148,7 @@ namespace SyncroSim.STSimStockFlow
                     "SF_OutputFlow.Iteration, " + 
                     "SF_OutputFlow.Timestep, " + 
                     "ST1.Name, " + "SS1.Name, " + "TS1.Name, " + "SC1.Name, " + "STK1.Name, " + "STSim_TransitionType.Name, " + 
-                    "ST2.Name, " + "SC2.Name, " + "STK2.Name, " + "SF_FlowType.Name", 
+                    "ST2.Name, " + "SC2.Name, " + "STK2.Name, " + "SF_FlowGroup.Name", 
                     ScenFilter);
 			}
 		}

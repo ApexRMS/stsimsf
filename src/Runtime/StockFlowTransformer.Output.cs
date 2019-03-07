@@ -30,31 +30,6 @@ namespace SyncroSim.STSimStockFlow
 		private int m_SpatialFlowOutputTimesteps;
 
 		/// <summary>
-		/// Gets the output flow dictionary
-		/// </summary>
-		/// <returns></returns>
-		/// <remarks>
-		/// We must lazy-load this dictionary because this transformer runs before ST-Sim's
-		/// and so the cell data is not there yet.
-		/// </remarks>
-		private Dictionary<int, double[]> GetOutputFlowDictionary()
-		{
-			if (this.m_SpatialOutputFlowDict == null)
-			{
-				this.m_SpatialOutputFlowDict = new Dictionary<int, double[]>();
-
-				foreach (FlowType ft in this.m_FlowTypes.Values)
-				{
-					double[] flowVals = null;
-					flowVals = new double[this.STSimTransformer.InputRasters.NumberCells];
-					this.m_SpatialOutputFlowDict.Add(ft.Id, flowVals);
-				}
-			}
-
-			return this.m_SpatialOutputFlowDict;
-		}
-
-		/// <summary>
 		/// Initializes the output data tables
 		/// </summary>
 		/// <remarks></remarks>
@@ -70,193 +45,232 @@ namespace SyncroSim.STSimStockFlow
 			Debug.Assert(this.m_OutputFlowTable.Rows.Count == 0);
 		}
 
-		/// <summary>
-		/// Processes the current stock summary data
-		/// </summary>
-		/// <remarks></remarks>
-		private void ProcessStockSummaryData(int iteration, int timestep)
+        /// <summary>
+        /// Adds to the stock summary result collection
+        /// </summary>
+        /// <remarks></remarks>
+        private void OnSummaryStockOutput()
+        {
+            foreach (Cell c in this.STSimTransformer.Cells)
+            {
+                Dictionary<int, double> StockAmounts = GetStockAmountDictionary(c);
+
+                foreach (int id in StockAmounts.Keys)
+                {
+                    double amount = StockAmounts[id];
+
+                    FiveIntegerLookupKey k = new FiveIntegerLookupKey(
+                        c.StratumId, GetSecondaryStratumIdKey(c),
+                        GetTertiaryStratumIdKey(c), c.StateClassId, id);
+
+                    if (this.m_SummaryOutputStockRecords.Contains(k))
+                    {
+                        OutputStock r = this.m_SummaryOutputStockRecords[k];
+                        r.Amount += amount;
+                    }
+                    else
+                    {
+                        OutputStock r = new OutputStock(
+                            c.StratumId, GetSecondaryStratumIdValue(c),
+                            GetTertiaryStratumIdValue(c), c.StateClassId, id, amount);
+
+                        this.m_SummaryOutputStockRecords.Add(r);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Processes the current stock summary data
+        /// </summary>
+        /// <remarks></remarks>
+        private void ProcessStockSummaryData(int iteration, int timestep)
 		{
 			foreach (OutputStock r in this.m_SummaryOutputStockRecords)
 			{
-				DataRow dr = this.m_OutputStockTable.NewRow();
+                StockType t = this.m_StockTypes[r.StockTypeId];
+                
+                foreach (StockGroupLinkage l in t.StockGroupLinkages)
+                {
+				    DataRow dr = this.m_OutputStockTable.NewRow();
 
-				dr[Constants.ITERATION_COLUMN_NAME] = iteration;
-				dr[Constants.TIMESTEP_COLUMN_NAME] = timestep;
-				dr[Constants.STRATUM_ID_COLUMN_NAME] = r.StratumId;
-				dr[Constants.SECONDARY_STRATUM_ID_COLUMN_NAME] = DataTableUtilities.GetNullableDatabaseValue(r.SecondaryStratumId);
-				dr[Constants.TERTIARY_STRATUM_ID_COLUMN_NAME] = DataTableUtilities.GetNullableDatabaseValue(r.TertiaryStratumId);
-				dr[Constants.STATECLASS_ID_COLUMN_NAME] = r.StateClassId;
-				dr[Constants.STOCK_TYPE_ID_COLUMN_NAME] = r.StockTypeId;
-				dr[Constants.AMOUNT_COLUMN_NAME] = r.Amount;
+				    dr[Constants.ITERATION_COLUMN_NAME] = iteration;
+				    dr[Constants.TIMESTEP_COLUMN_NAME] = timestep;
+				    dr[Constants.STRATUM_ID_COLUMN_NAME] = r.StratumId;
+				    dr[Constants.SECONDARY_STRATUM_ID_COLUMN_NAME] = DataTableUtilities.GetNullableDatabaseValue(r.SecondaryStratumId);
+				    dr[Constants.TERTIARY_STRATUM_ID_COLUMN_NAME] = DataTableUtilities.GetNullableDatabaseValue(r.TertiaryStratumId);
+				    dr[Constants.STATECLASS_ID_COLUMN_NAME] = r.StateClassId;
+                    dr[Constants.STOCK_GROUP_ID_COLUMN_NAME] = l.StockGroup.Id;
+				    dr[Constants.AMOUNT_COLUMN_NAME] = r.Amount * l.Value;
 
-				this.m_OutputStockTable.Rows.Add(dr);
+				    this.m_OutputStockTable.Rows.Add(dr);
+                }
 			}
 
 			this.m_SummaryOutputStockRecords.Clear();
 		}
 
-		/// <summary>
-		/// Processes the current flow summary data
-		/// </summary>
-		/// <remarks></remarks>
-		private void ProcessFlowSummaryData(int iteration, int timestep)
+        /// <summary>
+        /// Adds to the flow summary result collection
+        /// </summary>
+        /// <param name="timestep"></param>
+        /// <param name="cell"></param>
+        /// <param name="stockTypeId"></param>
+        /// <param name="flowTypeId"></param>
+        /// <param name="flowAmount"></param>
+        /// <param name="transitionPathway"></param>
+        /// <param name="flowPathway"></param>
+        /// <remarks></remarks>
+        private void OnSummaryFlowOutput(
+            int timestep,
+            Cell cell,
+            DeterministicTransition deterministicPathway,
+            Transition probabilisticPathway,
+            FlowPathway flowPathway,
+            double flowAmount)
+        {
+            int? TransitionTypeId = null;
+            int StratumIdDest = cell.StratumId;
+            int StateClassIdDest = cell.StateClassId;
+
+            if (probabilisticPathway != null)
+            {
+                TransitionTypeId = probabilisticPathway.TransitionTypeId;
+
+                if (probabilisticPathway.StratumIdDestination.HasValue)
+                {
+                    StratumIdDest = probabilisticPathway.StratumIdDestination.Value;
+                }
+
+                if (probabilisticPathway.StateClassIdDestination.HasValue)
+                {
+                    StateClassIdDest = probabilisticPathway.StateClassIdDestination.Value;
+                }
+            }
+            else
+            {
+                if (deterministicPathway != null)
+                {
+                    if (deterministicPathway.StratumIdDestination.HasValue)
+                    {
+                        StratumIdDest = deterministicPathway.StratumIdDestination.Value;
+                    }
+
+                    if (deterministicPathway.StateClassIdDestination.HasValue)
+                    {
+                        StateClassIdDest = deterministicPathway.StateClassIdDestination.Value;
+                    }
+                }
+            }
+
+            if (this.m_STSimTransformer.IsOutputTimestep(
+                timestep, 
+                this.m_SummaryFlowOutputTimesteps, 
+                this.m_CreateSummaryFlowOutput))
+            {
+                TenIntegerLookupKey k = new TenIntegerLookupKey(
+                    cell.StratumId,
+                    GetSecondaryStratumIdKey(cell),
+                    GetTertiaryStratumIdKey(cell),
+                    cell.StateClassId,
+                    flowPathway.FromStockTypeId,
+                    LookupKeyUtilities.GetOutputCollectionKey(TransitionTypeId),
+                    StratumIdDest,
+                    StateClassIdDest,
+                    flowPathway.ToStockTypeId,
+                    flowPathway.FlowTypeId);
+
+                if (this.m_SummaryOutputFlowRecords.Contains(k))
+                {
+                    OutputFlow r = this.m_SummaryOutputFlowRecords[k];
+                    r.Amount += flowAmount;
+                }
+                else
+                {
+                    OutputFlow r = new OutputFlow(
+                        cell.StratumId,
+                        GetSecondaryStratumIdValue(cell),
+                        GetTertiaryStratumIdValue(cell),
+                        cell.StateClassId,
+                        flowPathway.FromStockTypeId,
+                        TransitionTypeId,
+                        StratumIdDest,
+                        StateClassIdDest,
+                        flowPathway.ToStockTypeId,
+                        flowPathway.FlowTypeId,
+                        flowAmount);
+
+                    this.m_SummaryOutputFlowRecords.Add(r);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Processes the current flow summary data
+        /// </summary>
+        /// <remarks></remarks>
+        private void ProcessFlowSummaryData(int iteration, int timestep)
 		{
 			foreach (OutputFlow r in this.m_SummaryOutputFlowRecords)
 			{
-				DataRow dr = this.m_OutputFlowTable.NewRow();
+                FlowType t = this.m_FlowTypes[r.FlowTypeId];
 
-				dr[Constants.ITERATION_COLUMN_NAME] = iteration;
-				dr[Constants.TIMESTEP_COLUMN_NAME] = timestep;
-				dr[Constants.FROM_STRATUM_ID_COLUMN_NAME] = r.FromStratumId;
-				dr[Constants.FROM_SECONDARY_STRATUM_ID_COLUMN_NAME] = DataTableUtilities.GetNullableDatabaseValue(r.FromSecondaryStratumId);
-				dr[Constants.FROM_TERTIARY_STRATUM_ID_COLUMN_NAME] = DataTableUtilities.GetNullableDatabaseValue(r.FromTertiaryStratumId);
-				dr[Constants.FROM_STATECLASS_ID_COLUMN_NAME] = r.FromStateClassId;
-				dr[Constants.FROM_STOCK_TYPE_ID_COLUMN_NAME] = r.FromStockTypeId;
-				dr[Constants.TRANSITION_TYPE_ID_COLUMN_NAME] = DataTableUtilities.GetNullableDatabaseValue(r.TransitionTypeId);
-				dr[Constants.TO_STRATUM_ID_COLUMN_NAME] = r.ToStratumId;
-				dr[Constants.TO_STATECLASS_ID_COLUMN_NAME] = r.ToStateClassId;
-				dr[Constants.TO_STOCK_TYPE_ID_COLUMN_NAME] = r.ToStockTypeId;
-				dr[Constants.FLOW_TYPE_ID_COLUMN_NAME] = r.FlowTypeId;
-				dr[Constants.AMOUNT_COLUMN_NAME] = r.Amount;
+                foreach (FlowGroupLinkage l in t.FlowGroupLinkages)
+                {
+				    DataRow dr = this.m_OutputFlowTable.NewRow();
 
-				this.m_OutputFlowTable.Rows.Add(dr);
+				    dr[Constants.ITERATION_COLUMN_NAME] = iteration;
+				    dr[Constants.TIMESTEP_COLUMN_NAME] = timestep;
+				    dr[Constants.FROM_STRATUM_ID_COLUMN_NAME] = r.FromStratumId;
+				    dr[Constants.FROM_SECONDARY_STRATUM_ID_COLUMN_NAME] = DataTableUtilities.GetNullableDatabaseValue(r.FromSecondaryStratumId);
+				    dr[Constants.FROM_TERTIARY_STRATUM_ID_COLUMN_NAME] = DataTableUtilities.GetNullableDatabaseValue(r.FromTertiaryStratumId);
+				    dr[Constants.FROM_STATECLASS_ID_COLUMN_NAME] = r.FromStateClassId;
+				    dr[Constants.FROM_STOCK_TYPE_ID_COLUMN_NAME] = r.FromStockTypeId;
+				    dr[Constants.TRANSITION_TYPE_ID_COLUMN_NAME] = DataTableUtilities.GetNullableDatabaseValue(r.TransitionTypeId);
+				    dr[Constants.TO_STRATUM_ID_COLUMN_NAME] = r.ToStratumId;
+				    dr[Constants.TO_STATECLASS_ID_COLUMN_NAME] = r.ToStateClassId;
+				    dr[Constants.TO_STOCK_TYPE_ID_COLUMN_NAME] = r.ToStockTypeId;
+				    dr[Constants.FLOW_GROUP_ID_COLUMN_NAME] = l.FlowGroup.Id;
+				    dr[Constants.AMOUNT_COLUMN_NAME] = r.Amount * l.Value;
+
+				    this.m_OutputFlowTable.Rows.Add(dr);
+                }
 			}
 
 			this.m_SummaryOutputFlowRecords.Clear();
 		}
 
 		/// <summary>
-		/// Processes the Spatial Stock data. Create a raster file as a snapshot of the current Stock values.
-		/// </summary>
-		/// <remarks></remarks>
-		private void ProcessStockSpatialData(int iteration, int timestep)
-		{
-			Debug.Assert(this.m_IsSpatial);
-
-			foreach (StockType s in this.m_StockTypes)
-			{
-                DataSheet ds = this.ResultScenario.GetDataSheet(Constants.DATASHEET_OUTPUT_SPATIAL_STOCK_TYPE);
-                StochasticTimeRaster rast = this.STSimTransformer.InputRasters.CreateOutputRaster(RasterDataType.DTDouble);
-
-				GetStockValues(s.Id, rast);
-
-                Spatial.WriteRasterData(
-                    rast, 
-                    ds, 
-                    iteration, 
-                    timestep, 
-                    s.Id, 
-                    Constants.SPATIAL_MAP_STOCK_TYPE_VARIABLE_PREFIX, 
-                    Constants.DATASHEET_OUTPUT_SPATIAL_FILENAME_COLUMN);
-			}
-		}
-
-		/// <summary>
-		/// Get Stock Values for the specified Stock Type ID, placing then into the DblCells() in the specified raster.
-		/// </summary>
-		/// <param name="stockTypeId">The Stock Type ID that we want values for</param>
-		/// <param name="rastStockType">An object of type ApexRaster, where we will write the Stock Type values. The raster should be initialized with metadata and appropriate array sizing.</param>
-		/// <remarks></remarks>
-		private void GetStockValues(int stockTypeId, StochasticTimeRaster rastStockType)
-		{
-			double AmountPerCell = this.m_STSimTransformer.AmountPerCell;
-
-			foreach (Cell c in this.STSimTransformer.Cells)
-			{
-				Dictionary<int, double> StockAmounts = GetStockAmountDictionary(c);
-
-				if (StockAmounts.Count > 0)
-				{
-					rastStockType.DblCells[c.CellId] = (StockAmounts[stockTypeId] / AmountPerCell);
-				}
-				else
-				{
-					//I wouldnt expect to get here because of Stratum/StateClass test above
-					Debug.Assert(false);
-				}
-			}
-		}
-
-		/// <summary>
-		/// Processes the Spatial Stock Group data. Create a raster file as a snapshot of the Stock Group values.
+		/// Processes the Spatial Stock Group data.
 		/// </summary>
 		/// <remarks></remarks>
 		private void ProcessStockGroupSpatialData(int iteration, int timestep)
 		{
-			using (DataStore store = this.Library.CreateDataStore())
-			{
-				Debug.Assert(this.m_IsSpatial);
-
-				// Loop thru the Stock Groups
-				DataSheet dsGrp = this.Project.GetDataSheet(Constants.DATASHEET_STOCK_GROUP_NAME);
-				foreach (DataRow dr in dsGrp.GetData().Rows)
-				{
-					var sgId = Convert.ToInt32(dr[dsGrp.ValidationTable.ValueMember], CultureInfo.InvariantCulture);
-					var sgName = dr[dsGrp.ValidationTable.DisplayMember];
-
-					StochasticTimeRaster rastOutput = this.STSimTransformer.InputRasters.CreateOutputRaster(RasterDataType.DTDouble);
-
-                    // Fetch the Stock Group Multipler table, and add the Stock Type values together, applying the multiplier
-                    string query = string.Format(CultureInfo.InvariantCulture, "select * from {0} where ScenarioId = {1} and {2}={3}", Constants.DATASHEET_STOCK_TYPE_GROUP_MEMBERSHIP_NAME, ResultScenario.Id, Constants.STOCK_GROUP_ID_COLUMN_NAME, sgId);
-					DataTable dtGrpTypes = store.CreateDataTableFromQuery(query, "GrpTypeMultData");
-					if (dtGrpTypes.Rows.Count > 0)
-					{
-						foreach (DataRow drGrpType in dtGrpTypes.Rows)
-						{
-							// Find the Stock Types and associated multiplier that apply. Interpret and empty value (Null) as 1.0
-							double amt = 0;
-							if (Convert.IsDBNull(drGrpType["Value"]))
-							{
-								amt = 1.0;
-							}
-							else
-							{
-								amt = Convert.ToDouble(drGrpType["Value"], CultureInfo.InvariantCulture);
-							}
-							int stockTypeId = Convert.ToInt32(drGrpType[Constants.STOCK_TYPE_ID_COLUMN_NAME], CultureInfo.InvariantCulture);
-							Debug.Print(string.Format(CultureInfo.InvariantCulture, "Group Name {0}, Group ID:{3}, Type:{1}, Amount:{2}", sgName, stockTypeId, amt, sgId));
-							StochasticTimeRaster rastStockType = this.STSimTransformer.InputRasters.CreateOutputRaster(RasterDataType.DTDouble);
-
-							GetStockValues(stockTypeId, rastStockType);
-							rastStockType.ScaleDblCells(amt);
-							rastOutput.AddDblCells(rastStockType);
-						}
-
-                        Spatial.WriteRasterData(
-                            rastOutput, 
-                            this.ResultScenario.GetDataSheet(Constants.DATASHEET_OUTPUT_SPATIAL_STOCK_GROUP),
-                            iteration, 
-                            timestep, 
-                            sgId, 
-                            Constants.SPATIAL_MAP_STOCK_GROUP_VARIABLE_PREFIX, 
-                            Constants.DATASHEET_OUTPUT_SPATIAL_FILENAME_COLUMN);
-					}
-				}
-			}
-		}
-
-		/// <summary>
-		/// Processes the current flow spatial data
-		/// </summary>
-		/// <remarks></remarks>
-		private void ProcessFlowSpatialData(int iteration, int timestep)
-		{
 			Debug.Assert(this.m_IsSpatial);
-			StochasticTimeRaster rastOutput = this.STSimTransformer.InputRasters.CreateOutputRaster(RasterDataType.DTDouble);
 
-			foreach (FlowType flowType in this.m_FlowTypes.Values)
-			{
-				rastOutput.DblCells = GetOutputFlowDictionary()[flowType.Id];
+            foreach (StockGroup g in this.m_StockGroups)
+            {
+                Debug.Assert(g.StockTypeLinkages.Count > 0);
+                StochasticTimeRaster rastOutput = this.STSimTransformer.InputRasters.CreateOutputRaster(RasterDataType.DTDouble);
+
+                foreach (StockTypeLinkage l in g.StockTypeLinkages)
+                {
+                    StochasticTimeRaster rastStockType = this.STSimTransformer.InputRasters.CreateOutputRaster(RasterDataType.DTDouble);
+
+                    GetStockValues(l.StockType.Id, rastStockType);
+                    rastStockType.ScaleDblCells(l.Value);
+                    rastOutput.AddDblCells(rastStockType);
+                }
 
                 Spatial.WriteRasterData(
-                    rastOutput, 
-                    this.ResultScenario.GetDataSheet(Constants.DATASHEET_OUTPUT_SPATIAL_FLOW_TYPE), 
-                    iteration, 
-                    timestep, 
-                    flowType.Id, 
-                    Constants.SPATIAL_MAP_FLOW_TYPE_VARIABLE_PREFIX, 
+                    rastOutput,
+                    this.ResultScenario.GetDataSheet(Constants.DATASHEET_OUTPUT_SPATIAL_STOCK_GROUP),
+                    iteration,
+                    timestep,
+                    g.Id,
+                    Constants.SPATIAL_MAP_STOCK_GROUP_VARIABLE_PREFIX,
                     Constants.DATASHEET_OUTPUT_SPATIAL_FILENAME_COLUMN);
-			}
+            }
 		}
 
 		/// <summary>
@@ -265,187 +279,32 @@ namespace SyncroSim.STSimStockFlow
 		/// <remarks></remarks>
 		private void ProcessFlowGroupSpatialData(int iteration, int timestep)
 		{
-			using (DataStore store = this.Library.CreateDataStore())
-			{
-				Debug.Assert(this.m_IsSpatial);
+            Debug.Assert(this.m_IsSpatial);
 
-				// Loop thru the Flow Groups
-				DataSheet dsGrp = this.Project.GetDataSheet(Constants.DATASHEET_FLOW_GROUP_NAME);
+            foreach (FlowGroup g in this.m_FlowGroups)
+            {
+                Debug.Assert(g.FlowTypeLinkages.Count > 0);
+                StochasticTimeRaster rastOutput = this.STSimTransformer.InputRasters.CreateOutputRaster(RasterDataType.DTDouble);
 
-				foreach (DataRow dr in dsGrp.GetData().Rows)
-				{
-					var fgId = Convert.ToInt32(dr[dsGrp.ValidationTable.ValueMember], CultureInfo.InvariantCulture);
-					var fgName = dr[dsGrp.ValidationTable.DisplayMember];
+                foreach (FlowTypeLinkage l in g.FlowTypeLinkages)
+                {
+                    StochasticTimeRaster rastFlowType = this.STSimTransformer.InputRasters.CreateOutputRaster(RasterDataType.DTDouble);
 
-					StochasticTimeRaster rastOutput = this.STSimTransformer.InputRasters.CreateOutputRaster(RasterDataType.DTDouble);
+                    rastFlowType.DblCells = (double[])(GetOutputFlowDictionary()[l.FlowType.Id].Clone());
+                    rastFlowType.ScaleDblCells(l.Value);
+                    rastOutput.AddDblCells(rastFlowType);
+                }
 
-					// Loop through the Flow Group Multipler table, and add the Flow Type values together, applying the multiplier
-					string query = string.Format(CultureInfo.InvariantCulture, "select * from {0} where scenarioId = {1} and {2}={3}", Constants.DATASHEET_FLOW_TYPE_GROUP_MEMBERSHIP_NAME, ResultScenario.Id, Constants.FLOW_GROUP_ID_COLUMN_NAME, fgId);
-					DataTable dtGrpTypes = store.CreateDataTableFromQuery(query, "GrpTypeMultData");
-
-					if (dtGrpTypes.Rows.Count > 0)
-					{
-						foreach (DataRow drGrpType in dtGrpTypes.Rows)
-						{
-							// Find the Flow Types and associated multiplier that apply. Interpret and empty value (Null) as 1.0
-							double amt = 0;
-							if (Convert.IsDBNull(drGrpType["Value"]))
-							{
-								amt = 1.0;
-							}
-							else
-							{
-								amt = Convert.ToDouble(drGrpType["Value"], CultureInfo.InvariantCulture);
-							}
-
-							int flowTypeId = Convert.ToInt32(drGrpType[Constants.FLOW_TYPE_ID_COLUMN_NAME], CultureInfo.InvariantCulture);
-							Debug.Print(string.Format(CultureInfo.InvariantCulture, "Group Name {0}, Group ID:{3}, Type:{1}, Amount:{2}", fgName, flowTypeId, amt, fgId));
-							StochasticTimeRaster rastFlowType = this.STSimTransformer.InputRasters.CreateOutputRaster(RasterDataType.DTDouble);
-
-                            rastFlowType.DblCells = (double[])(GetOutputFlowDictionary()[flowTypeId].Clone());
-							rastFlowType.ScaleDblCells(amt);
-							rastOutput.AddDblCells(rastFlowType);
-						}
-
-                        Spatial.WriteRasterData(
-                            rastOutput, 
-                            this.ResultScenario.GetDataSheet(Constants.DATASHEET_OUTPUT_SPATIAL_FLOW_GROUP), 
-                            iteration, 
-                            timestep, 
-                            fgId, 
-                            Constants.SPATIAL_MAP_FLOW_GROUP_VARIABLE_PREFIX, 
-                            Constants.DATASHEET_OUTPUT_SPATIAL_FILENAME_COLUMN);
-					}
-				}
-			}
-		}
-
-		/// <summary>
-		/// Adds to the stock summary result collection
-		/// </summary>
-		/// <remarks></remarks>
-		private void OnSummaryStockOutput()
-		{
-			foreach (Cell c in this.STSimTransformer.Cells)
-			{
-				Dictionary<int, double> StockAmounts = GetStockAmountDictionary(c);
-
-				foreach (int id in StockAmounts.Keys)
-				{
-					double amount = StockAmounts[id];
-
-					FiveIntegerLookupKey k = new FiveIntegerLookupKey(
-                        c.StratumId, GetSecondaryStratumIdKey(c), 
-                        GetTertiaryStratumIdKey(c), c.StateClassId, id);
-
-					if (this.m_SummaryOutputStockRecords.Contains(k))
-					{
-						OutputStock r = this.m_SummaryOutputStockRecords[k];
-						r.Amount += amount;
-					}
-					else
-					{
-						OutputStock r = new OutputStock(
-                            c.StratumId, GetSecondaryStratumIdValue(c), 
-                            GetTertiaryStratumIdValue(c), c.StateClassId, id, amount);
-
-						this.m_SummaryOutputStockRecords.Add(r);
-					}
-				}
-			}        
-		}
-
-		/// <summary>
-		/// Adds to the flow summary result collection
-		/// </summary>
-		/// <param name="timestep"></param>
-		/// <param name="cell"></param>
-		/// <param name="stockTypeId"></param>
-		/// <param name="flowTypeId"></param>
-		/// <param name="flowAmount"></param>
-		/// <param name="transitionPathway"></param>
-		/// <param name="flowPathway"></param>
-		/// <remarks></remarks>
-		private void OnSummaryFlowOutput(
-            int timestep, 
-            Cell cell,
-            DeterministicTransition deterministicPathway, 
-            Transition probabilisticPathway, 
-            FlowPathway flowPathway, 
-            double flowAmount)
-		{
-			int? TransitionTypeId = null;
-			int StratumIdDest = cell.StratumId;
-			int StateClassIdDest = cell.StateClassId;
-
-			if (probabilisticPathway != null)
-			{
-				TransitionTypeId = probabilisticPathway.TransitionTypeId;
-
-				if (probabilisticPathway.StratumIdDestination.HasValue)
-				{
-					StratumIdDest = probabilisticPathway.StratumIdDestination.Value;
-				}
-
-				if (probabilisticPathway.StateClassIdDestination.HasValue)
-				{
-					StateClassIdDest = probabilisticPathway.StateClassIdDestination.Value;
-				}
-			}
-			else
-			{
-				if (deterministicPathway != null)
-				{
-					if (deterministicPathway.StratumIdDestination.HasValue)
-					{
-						StratumIdDest = deterministicPathway.StratumIdDestination.Value;
-					}
-
-					if (deterministicPathway.StateClassIdDestination.HasValue)
-					{
-						StateClassIdDest = deterministicPathway.StateClassIdDestination.Value;
-					}
-				}
-			}
-
-			if (this.m_STSimTransformer.IsOutputTimestep(timestep, this.m_SummaryFlowOutputTimesteps, this.m_CreateSummaryFlowOutput))
-			{
-				TenIntegerLookupKey k = new TenIntegerLookupKey(
-                    cell.StratumId,
-                    GetSecondaryStratumIdKey(cell), 
-                    GetTertiaryStratumIdKey(cell), 
-                    cell.StateClassId, 
-                    flowPathway.FromStockTypeId, 
-                    LookupKeyUtilities.GetOutputCollectionKey(TransitionTypeId), 
-                    StratumIdDest, 
-                    StateClassIdDest, 
-                    flowPathway.ToStockTypeId, 
-                    flowPathway.FlowTypeId);
-
-				if (this.m_SummaryOutputFlowRecords.Contains(k))
-				{
-					OutputFlow r = this.m_SummaryOutputFlowRecords[k];
-					r.Amount += flowAmount;
-				}
-				else
-				{
-					OutputFlow r = new OutputFlow(
-                        cell.StratumId, 
-                        GetSecondaryStratumIdValue(cell), 
-                        GetTertiaryStratumIdValue(cell), 
-                        cell.StateClassId, 
-                        flowPathway.FromStockTypeId,
-                        TransitionTypeId, 
-                        StratumIdDest, 
-                        StateClassIdDest, 
-                        flowPathway.ToStockTypeId, 
-                        flowPathway.FlowTypeId, 
-                        flowAmount);
-
-					this.m_SummaryOutputFlowRecords.Add(r);
-				}
-			}
-		}
+                Spatial.WriteRasterData(
+                    rastOutput,
+                    this.ResultScenario.GetDataSheet(Constants.DATASHEET_OUTPUT_SPATIAL_FLOW_GROUP),
+                    iteration,
+                    timestep,
+                    g.Id,
+                    Constants.SPATIAL_MAP_FLOW_GROUP_VARIABLE_PREFIX,
+                    Constants.DATASHEET_OUTPUT_SPATIAL_FILENAME_COLUMN);
+            }
+        }
 
 		/// <summary>
 		/// Adds to the flow summary result collection
@@ -458,7 +317,10 @@ namespace SyncroSim.STSimStockFlow
 		private void OnSpatialFlowOutput(int timestep, Cell cell, int flowTypeId, double flowAmount)
 		{
 			if (this.m_STSimTransformer.IsOutputTimestep(
-                timestep, this.m_SpatialFlowOutputTimesteps, this.m_CreateSpatialFlowOutput) && this.m_IsSpatial)
+                timestep, 
+                this.m_SpatialFlowOutputTimesteps, 
+                this.m_CreateSpatialFlowOutput) 
+                && this.m_IsSpatial)
 			{
 				if (GetOutputFlowDictionary().ContainsKey(flowTypeId))
 				{

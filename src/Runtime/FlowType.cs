@@ -5,22 +5,22 @@ namespace SyncroSim.STSimStockFlow
 {
 	internal class FlowType : StockFlowType
 	{
-		private FlowGroupCollection m_FlowGroups = new FlowGroupCollection();
-		private double m_Order = Constants.DEFAULT_FLOW_ORDER;
+        private FlowGroupLinkageCollection m_FlowGroupLinkages = new FlowGroupLinkageCollection();
+        private double m_Order = Constants.DEFAULT_FLOW_ORDER;
 
-		public FlowType(int id) : base(id)
+		public FlowType(int id, string name) : base(id, name)
 		{
 		}
 
-		public FlowGroupCollection FlowGroups
-		{
-			get
-			{
-				return this.m_FlowGroups;
-			}
-		}
+        internal FlowGroupLinkageCollection FlowGroupLinkages
+        {
+            get
+            {
+                return this.m_FlowGroupLinkages;
+            }
+        }
 
-		public double Order
+        public double Order
 		{
 			get
 			{

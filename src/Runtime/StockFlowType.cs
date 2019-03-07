@@ -6,10 +6,12 @@ namespace SyncroSim.STSimStockFlow
 	internal class StockFlowType
 	{
 		private int m_Id;
+        private string m_Name;
 
-		public StockFlowType(int id)
+		public StockFlowType(int id, string name)
 		{
 			this.m_Id = id;
+            this.m_Name = name;
 		}
 
 		public int Id
@@ -19,5 +21,13 @@ namespace SyncroSim.STSimStockFlow
 				return this.m_Id;
 			}
 		}
-	}
+
+        public string Name
+        {
+            get
+            {
+                return this.m_Name;
+            }
+        }
+    }
 }
