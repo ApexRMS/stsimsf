@@ -35,19 +35,33 @@ namespace SyncroSim.STSimStockFlow
 
 		}
 
-		/// <summary>
-		/// Performs the database updates for Stocks and Flows
-		/// </summary>
-		/// <param name="store"></param>
-		/// <param name="currentSchemaVersion"></param>
-		/// <remarks>
-		/// NOTE: We are starting at version 5 because the legacy version of Stocks and Flows leaves
-		/// things at version 4.  (Actually, I think there may have been a mistake here and it was left at 
-		/// version 3.  However, I am not going to touch this now, and it should not matter anyway because
-		/// the upgrade will eventually be performed and then things will behave normally for the rest of
-		/// the lifetime of this module.)
-		/// </remarks>
-		private static void PerformUpdateInternal(DataStore store, int currentSchemaVersion)
+#if DEBUG
+
+        private static void ASSERT_INDEX_EXISTS(DataStore store, string tableName)
+        {
+            if (store.TableExists(tableName))
+            {
+                string IndexName = tableName + "_Index";
+                string Query = string.Format(CultureInfo.InvariantCulture, "SELECT COUNT(name) FROM sqlite_master WHERE type = 'index' AND name = '{0}'", IndexName);
+                Debug.Assert((long)store.ExecuteScalar(Query) == 1);
+            }
+        }
+
+#endif
+
+        /// <summary>
+        /// Performs the database updates for Stocks and Flows
+        /// </summary>
+        /// <param name="store"></param>
+        /// <param name="currentSchemaVersion"></param>
+        /// <remarks>
+        /// NOTE: We are starting at version 5 because the legacy version of Stocks and Flows leaves
+        /// things at version 4.  (Actually, I think there may have been a mistake here and it was left at 
+        /// version 3.  However, I am not going to touch this now, and it should not matter anyway because
+        /// the upgrade will eventually be performed and then things will behave normally for the rest of
+        /// the lifetime of this module.)
+        /// </remarks>
+        private static void PerformUpdateInternal(DataStore store, int currentSchemaVersion)
 		{
 			if (currentSchemaVersion < 5)
 			{
