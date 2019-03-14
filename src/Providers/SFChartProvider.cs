@@ -72,104 +72,53 @@ namespace SyncroSim.STSimStockFlow
 		private static void AddStockGroupChartVariables(Project project, SyncroSimLayoutItemCollection items)
 		{
 			DataSheet ds = project.GetDataSheet(Constants.DATASHEET_STOCK_GROUP_NAME);
-			DataTable dt = ds.GetData();
-			DataView dv = new DataView(dt, null, ds.ValidationTable.DisplayMember, DataViewRowState.CurrentRows);
-			SyncroSimLayoutItem TotalGroup = new SyncroSimLayoutItem(TOTAL_GROUP_NAME, "Total", true);
-			SyncroSimLayoutItem DensityGroup = new SyncroSimLayoutItem(DENSITY_GROUP_NAME, "Density", true);
 
-			foreach (DataRowView drv in dv)
-			{
-				int id = Convert.ToInt32(drv.Row[ds.ValidationTable.ValueMember], CultureInfo.InvariantCulture);
-				string DisplayName = Convert.ToString(drv.Row[ds.ValidationTable.DisplayMember], CultureInfo.InvariantCulture);
-
+            if (ds.HasData())
+            {
 				//Normal
-				string VarNameNormal = string.Format(CultureInfo.InvariantCulture, "{0}-{1}", "stockgroup", id);
-				SyncroSimLayoutItem ItemNormal = new SyncroSimLayoutItem(VarNameNormal, DisplayName, false);
+				SyncroSimLayoutItem ItemNormal = new SyncroSimLayoutItem("StockGroupTotal", "Total", false);
 
 				ItemNormal.Properties.Add(new MetaDataProperty("dataSheet", "SF_OutputStock"));
 				ItemNormal.Properties.Add(new MetaDataProperty("column", "Amount"));
-				ItemNormal.Properties.Add(new MetaDataProperty("prefixFolderName", "False"));
-				ItemNormal.Properties.Add(new MetaDataProperty("customTitle", "Stock Group " + DisplayName));
 				ItemNormal.Properties.Add(new MetaDataProperty("defaultValue", "0.0"));
 
-				TotalGroup.Items.Add(ItemNormal);
+				items.Add(ItemNormal);
 
 				//Density
-				string VarNameDensity = string.Format(CultureInfo.InvariantCulture, "{0}-{1}", "stockgroupdensity", id);
-				SyncroSimLayoutItem ItemDensity = new SyncroSimLayoutItem(VarNameDensity, DisplayName, false);
+				SyncroSimLayoutItem ItemDensity = new SyncroSimLayoutItem("StockGroupDensity", "Density", false);
 
 				ItemDensity.Properties.Add(new MetaDataProperty("dataSheet", "SF_OutputStock"));
 				ItemDensity.Properties.Add(new MetaDataProperty("column", "Amount"));
-				ItemDensity.Properties.Add(new MetaDataProperty("prefixFolderName", "False"));
-				ItemDensity.Properties.Add(new MetaDataProperty("customTitle", "(Density): Stock Group " + DisplayName));
 				ItemDensity.Properties.Add(new MetaDataProperty("defaultValue", "0.0"));
 
-				DensityGroup.Items.Add(ItemDensity);
-			}
-
-            if (TotalGroup.Items.Count > 0)
-            {
-                Debug.Assert(DensityGroup.Items.Count > 0);
-                items.Add(TotalGroup);
+				items.Add(ItemDensity);
             }
-
-			if (DensityGroup.Items.Count > 0)
-			{
-                Debug.Assert(TotalGroup.Items.Count > 0);
-				items.Add(DensityGroup);
-			}
 		}
 
 		private static void AddFlowGroupChartVariables(Project project, SyncroSimLayoutItemCollection items)
 		{
 			DataSheet ds = project.GetDataSheet(Constants.DATASHEET_FLOW_GROUP_NAME);
-			DataTable dt = ds.GetData();
-			DataView dv = new DataView(dt, null, ds.ValidationTable.DisplayMember, DataViewRowState.CurrentRows);
-            SyncroSimLayoutItem TotalGroup = new SyncroSimLayoutItem(TOTAL_GROUP_NAME, "Total", true);
-            SyncroSimLayoutItem DensityGroup = new SyncroSimLayoutItem(DENSITY_GROUP_NAME, "Density", true);
 
-			foreach (DataRowView drv in dv)
-			{
-				int id = Convert.ToInt32(drv.Row[ds.ValidationTable.ValueMember], CultureInfo.InvariantCulture);
-				string DisplayName = Convert.ToString(drv.Row[ds.ValidationTable.DisplayMember], CultureInfo.InvariantCulture);
-
-				//Normal
-				string VarNameNormal = string.Format(CultureInfo.InvariantCulture, "{0}-{1}", "flowgroup", id);
-				SyncroSimLayoutItem ItemNormal = new SyncroSimLayoutItem(VarNameNormal, DisplayName, false);
+            if (ds.HasData())
+            {
+				SyncroSimLayoutItem ItemNormal = new SyncroSimLayoutItem("FlowGroupTotal", "Total", false);
 
 				ItemNormal.Properties.Add(new MetaDataProperty("dataSheet", "SF_OutputFlow"));
 				ItemNormal.Properties.Add(new MetaDataProperty("column", "Amount"));
 				ItemNormal.Properties.Add(new MetaDataProperty("skipTimestepZero", "True"));
-				ItemNormal.Properties.Add(new MetaDataProperty("prefixFolderName", "False"));
-				ItemNormal.Properties.Add(new MetaDataProperty("customTitle", "Flow Group " + DisplayName));
 				ItemNormal.Properties.Add(new MetaDataProperty("defaultValue", "0.0"));
 
-				TotalGroup.Items.Add(ItemNormal);
+                items.Add(ItemNormal);
 
 				//Density
-				string VarNameDensity = string.Format(CultureInfo.InvariantCulture, "{0}-{1}", "flowgroupdensity", id);
-				SyncroSimLayoutItem ItemDensity = new SyncroSimLayoutItem(VarNameDensity, DisplayName, false);
+				SyncroSimLayoutItem ItemDensity = new SyncroSimLayoutItem("FlowGroupDensity", "Density", false);
 
 				ItemDensity.Properties.Add(new MetaDataProperty("dataSheet", "SF_OutputFlow"));
 				ItemDensity.Properties.Add(new MetaDataProperty("column", "Amount"));
 				ItemDensity.Properties.Add(new MetaDataProperty("skipTimestepZero", "True"));
-				ItemDensity.Properties.Add(new MetaDataProperty("prefixFolderName", "False"));
-				ItemDensity.Properties.Add(new MetaDataProperty("customTitle", "(Density): Flow Group " + DisplayName));
 				ItemDensity.Properties.Add(new MetaDataProperty("defaultValue", "0.0"));
 
-				DensityGroup.Items.Add(ItemDensity);
-			}
-
-            if (TotalGroup.Items.Count > 0)
-            {
-                Debug.Assert(DensityGroup.Items.Count > 0);
-                items.Add(TotalGroup);
-            }
-
-            if (DensityGroup.Items.Count > 0)
-            {
-                Debug.Assert(TotalGroup.Items.Count > 0);
-                items.Add(DensityGroup);
+                items.Add(ItemDensity);
             }
         }
 
