@@ -17,6 +17,7 @@ namespace SyncroSim.STSimStockFlow
 	[ObfuscationAttribute(Exclude=true, ApplyToMembers=false)]
 	internal class SFChartProvider : ChartProvider
 	{
+        private const string TOTAL_GROUP_NAME = "stockflow_total_group";
 		private const string DENSITY_GROUP_NAME = "stockflow_density_group";
 
 		public override DataTable GetData(DataStore store, ChartDescriptor descriptor, DataSheet dataSheet)
@@ -73,6 +74,7 @@ namespace SyncroSim.STSimStockFlow
 			DataSheet ds = project.GetDataSheet(Constants.DATASHEET_STOCK_GROUP_NAME);
 			DataTable dt = ds.GetData();
 			DataView dv = new DataView(dt, null, ds.ValidationTable.DisplayMember, DataViewRowState.CurrentRows);
+			SyncroSimLayoutItem TotalGroup = new SyncroSimLayoutItem(TOTAL_GROUP_NAME, "Total", true);
 			SyncroSimLayoutItem DensityGroup = new SyncroSimLayoutItem(DENSITY_GROUP_NAME, "Density", true);
 
 			foreach (DataRowView drv in dv)
@@ -90,7 +92,7 @@ namespace SyncroSim.STSimStockFlow
 				ItemNormal.Properties.Add(new MetaDataProperty("customTitle", "Stock Group " + DisplayName));
 				ItemNormal.Properties.Add(new MetaDataProperty("defaultValue", "0.0"));
 
-				items.Add(ItemNormal);
+				TotalGroup.Items.Add(ItemNormal);
 
 				//Density
 				string VarNameDensity = string.Format(CultureInfo.InvariantCulture, "{0}-{1}", "stockgroupdensity", id);
@@ -105,8 +107,15 @@ namespace SyncroSim.STSimStockFlow
 				DensityGroup.Items.Add(ItemDensity);
 			}
 
+            if (TotalGroup.Items.Count > 0)
+            {
+                Debug.Assert(DensityGroup.Items.Count > 0);
+                items.Add(TotalGroup);
+            }
+
 			if (DensityGroup.Items.Count > 0)
 			{
+                Debug.Assert(TotalGroup.Items.Count > 0);
 				items.Add(DensityGroup);
 			}
 		}
@@ -116,7 +125,8 @@ namespace SyncroSim.STSimStockFlow
 			DataSheet ds = project.GetDataSheet(Constants.DATASHEET_FLOW_GROUP_NAME);
 			DataTable dt = ds.GetData();
 			DataView dv = new DataView(dt, null, ds.ValidationTable.DisplayMember, DataViewRowState.CurrentRows);
-			SyncroSimLayoutItem DensityGroup = new SyncroSimLayoutItem(DENSITY_GROUP_NAME, "Density", true);
+            SyncroSimLayoutItem TotalGroup = new SyncroSimLayoutItem(TOTAL_GROUP_NAME, "Total", true);
+            SyncroSimLayoutItem DensityGroup = new SyncroSimLayoutItem(DENSITY_GROUP_NAME, "Density", true);
 
 			foreach (DataRowView drv in dv)
 			{
@@ -134,7 +144,7 @@ namespace SyncroSim.STSimStockFlow
 				ItemNormal.Properties.Add(new MetaDataProperty("customTitle", "Flow Group " + DisplayName));
 				ItemNormal.Properties.Add(new MetaDataProperty("defaultValue", "0.0"));
 
-				items.Add(ItemNormal);
+				TotalGroup.Items.Add(ItemNormal);
 
 				//Density
 				string VarNameDensity = string.Format(CultureInfo.InvariantCulture, "{0}-{1}", "flowgroupdensity", id);
@@ -150,11 +160,18 @@ namespace SyncroSim.STSimStockFlow
 				DensityGroup.Items.Add(ItemDensity);
 			}
 
-			if (DensityGroup.Items.Count > 0)
-			{
-				items.Add(DensityGroup);
-			}
-		}
+            if (TotalGroup.Items.Count > 0)
+            {
+                Debug.Assert(DensityGroup.Items.Count > 0);
+                items.Add(TotalGroup);
+            }
+
+            if (DensityGroup.Items.Count > 0)
+            {
+                Debug.Assert(TotalGroup.Items.Count > 0);
+                items.Add(DensityGroup);
+            }
+        }
 
 		private static DataTable CreateRawChartData(
             DataSheet dataSheet, 
