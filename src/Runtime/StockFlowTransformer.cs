@@ -121,9 +121,7 @@ namespace SyncroSim.STSimStockFlow
 
 #if DEBUG
             foreach (StockType t in this.m_StockTypes) { Debug.Assert(t.StockGroupLinkages.Count > 0); }
-            foreach (StockGroup t in this.m_StockGroups) { Debug.Assert(t.StockTypeLinkages.Count > 0); }
             foreach (FlowType t in this.m_FlowTypes) { Debug.Assert(t.FlowGroupLinkages.Count > 0); }
-            foreach (FlowGroup t in this.m_FlowGroups) { Debug.Assert(t.FlowTypeLinkages.Count > 0); }
 #endif
         }
 

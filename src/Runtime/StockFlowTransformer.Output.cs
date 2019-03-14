@@ -247,7 +247,6 @@ namespace SyncroSim.STSimStockFlow
 
             foreach (StockGroup g in this.m_StockGroups)
             {
-                Debug.Assert(g.StockTypeLinkages.Count > 0);
                 StochasticTimeRaster rastOutput = this.STSimTransformer.InputRasters.CreateOutputRaster(RasterDataType.DTDouble);
 
                 foreach (StockTypeLinkage l in g.StockTypeLinkages)
@@ -280,7 +279,6 @@ namespace SyncroSim.STSimStockFlow
 
             foreach (FlowGroup g in this.m_FlowGroups)
             {
-                Debug.Assert(g.FlowTypeLinkages.Count > 0);
                 StochasticTimeRaster rastOutput = this.STSimTransformer.InputRasters.CreateOutputRaster(RasterDataType.DTDouble);
 
                 foreach (FlowTypeLinkage l in g.FlowTypeLinkages)
