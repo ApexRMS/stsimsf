@@ -76,7 +76,7 @@ namespace SyncroSim.STSimStockFlow
             if (ds.HasData())
             {
 				//Normal
-				SyncroSimLayoutItem ItemNormal = new SyncroSimLayoutItem("StockGroupTotal", "Total", false);
+				SyncroSimLayoutItem ItemNormal = new SyncroSimLayoutItem("stockgroup", "Total", false);
 
 				ItemNormal.Properties.Add(new MetaDataProperty("dataSheet", "SF_OutputStock"));
 				ItemNormal.Properties.Add(new MetaDataProperty("column", "Amount"));
@@ -85,7 +85,7 @@ namespace SyncroSim.STSimStockFlow
 				items.Add(ItemNormal);
 
 				//Density
-				SyncroSimLayoutItem ItemDensity = new SyncroSimLayoutItem("StockGroupDensity", "Density", false);
+				SyncroSimLayoutItem ItemDensity = new SyncroSimLayoutItem("stockgroupdensity", "Density", false);
 
 				ItemDensity.Properties.Add(new MetaDataProperty("dataSheet", "SF_OutputStock"));
 				ItemDensity.Properties.Add(new MetaDataProperty("column", "Amount"));
@@ -101,7 +101,7 @@ namespace SyncroSim.STSimStockFlow
 
             if (ds.HasData())
             {
-				SyncroSimLayoutItem ItemNormal = new SyncroSimLayoutItem("FlowGroupTotal", "Total", false);
+				SyncroSimLayoutItem ItemNormal = new SyncroSimLayoutItem("flowgroup", "Total", false);
 
 				ItemNormal.Properties.Add(new MetaDataProperty("dataSheet", "SF_OutputFlow"));
 				ItemNormal.Properties.Add(new MetaDataProperty("column", "Amount"));
@@ -111,7 +111,7 @@ namespace SyncroSim.STSimStockFlow
                 items.Add(ItemNormal);
 
 				//Density
-				SyncroSimLayoutItem ItemDensity = new SyncroSimLayoutItem("FlowGroupDensity", "Density", false);
+				SyncroSimLayoutItem ItemDensity = new SyncroSimLayoutItem("flowgroupdensity", "Density", false);
 
 				ItemDensity.Properties.Add(new MetaDataProperty("dataSheet", "SF_OutputFlow"));
 				ItemDensity.Properties.Add(new MetaDataProperty("column", "Amount"));
