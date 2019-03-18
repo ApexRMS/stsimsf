@@ -746,8 +746,15 @@ namespace SyncroSim.STSimStockFlow
 
             //(4.) Above
 
-            MigrateStockTypeSpatialData(StockIDTranslator, store);
-            MigrateFlowTypeSpatialData(FlowIDTranslator, store);
+            if (store.TableExists("SF_OutputSpatialStockType"))
+            {
+                MigrateStockTypeSpatialData(StockIDTranslator, store);
+            }
+
+            if (store.TableExists("SF_OutputSpatialFlowType"))
+            {
+                MigrateFlowTypeSpatialData(FlowIDTranslator, store);
+            }
 
             //(5.) Above
 
