@@ -27,7 +27,7 @@ namespace SyncroSim.STSimStockFlow
 			else
 			{
 				columns.Remove("ScenarioName");
-				this.CSVExport(location, columns, this.CreateReportQuery(true));
+                this.CSVExport(location, columns, this.CreateReportQuery(true));
 
 				if (showMessage)
 				{
