@@ -142,7 +142,16 @@ namespace SyncroSim.STSimStockFlow
 			{
 				SF0000020(store);
 			}
-		}
+
+            //This is the beginning of the v2.1.0 schema lineage.
+            //We are setting the base version to 100 to leave room
+            //for the legacy v2.0.N legacy branch.
+
+            if (currentSchemaVersion < 100)
+            {
+                SF0000100(store);
+            }
+        }
 
 		/// <summary>
 		/// SF0000005
@@ -974,6 +983,16 @@ namespace SyncroSim.STSimStockFlow
             }
 
             return f;
+        }
+
+        /// <summary>
+        /// SF0000100
+        /// </summary>
+        /// <param name="store"></param>
+        /// <remarks>See comments in caller function for this dummy routine...</remarks>
+        private static void SF0000100(DataStore store)
+        {
+            return;
         }
     }
 }
