@@ -284,8 +284,8 @@ namespace SyncroSim.STSimStockFlow
 			{
 				Debug.Assert(Convert.ToInt32(dr[Constants.FROM_STOCK_TYPE_ID_COLUMN_NAME], CultureInfo.InvariantCulture) == shape.StockTypeId);
 
-				FlowPathway p = CreateFlowPathway(dr);
-				shape.OutgoingFlowPathways.Add(p);
+				FlowPathway fp = DataTableUtilities.CreateFlowPathway(dr);
+				shape.OutgoingFlowPathways.Add(fp);
 			}
 		}
 
@@ -293,92 +293,6 @@ namespace SyncroSim.STSimStockFlow
 		{
 			string Query = string.Format(CultureInfo.InvariantCulture, "{0}={1}", Constants.FROM_STOCK_TYPE_ID_COLUMN_NAME, stockTypeId);
 			return this.m_FlowPathwayData.Select(Query, null);
-		}
-
-		private static FlowPathway CreateFlowPathway(DataRow dr)
-		{
-			int? Iteration = null;
-			int? Timestep = null;
-			int? FromStratumId = null;
-			int? FromStateClassId = null;
-			int? FromMinimumAge = null;
-			int FromStockTypeId = 0;
-			int? ToStratumId = null;
-			int? ToStateClassId = null;
-			int? ToMinimumAge = null;
-			int ToStockTypeId = 0;
-			int TransitionGroupId = 0;
-			int? StateAttributeTypeId = null;
-			int FlowTypeId = 0;
-			double Multiplier = 0;
-
-			if (dr[Constants.ITERATION_COLUMN_NAME] != DBNull.Value)
-			{
-				Iteration = Convert.ToInt32(dr[Constants.ITERATION_COLUMN_NAME], CultureInfo.InvariantCulture);
-			}
-
-			if (dr[Constants.TIMESTEP_COLUMN_NAME] != DBNull.Value)
-			{
-				Timestep = Convert.ToInt32(dr[Constants.TIMESTEP_COLUMN_NAME], CultureInfo.InvariantCulture);
-			}
-
-			if (dr[Constants.FROM_STRATUM_ID_COLUMN_NAME] != DBNull.Value)
-			{
-				FromStratumId = Convert.ToInt32(dr[Constants.FROM_STRATUM_ID_COLUMN_NAME], CultureInfo.InvariantCulture);
-			}
-
-			if (dr[Constants.FROM_STATECLASS_ID_COLUMN_NAME] != DBNull.Value)
-			{
-				FromStateClassId = Convert.ToInt32(dr[Constants.FROM_STATECLASS_ID_COLUMN_NAME], CultureInfo.InvariantCulture);
-			}
-
-			if (dr[Constants.FROM_MIN_AGE_COLUMN_NAME] != DBNull.Value)
-			{
-				FromMinimumAge = Convert.ToInt32(dr[Constants.FROM_MIN_AGE_COLUMN_NAME], CultureInfo.InvariantCulture);
-			}
-
-			FromStockTypeId = Convert.ToInt32(dr[Constants.FROM_STOCK_TYPE_ID_COLUMN_NAME], CultureInfo.InvariantCulture);
-
-			if (dr[Constants.TO_STRATUM_ID_COLUMN_NAME] != DBNull.Value)
-			{
-				ToStratumId = Convert.ToInt32(dr[Constants.TO_STRATUM_ID_COLUMN_NAME], CultureInfo.InvariantCulture);
-			}
-
-			if (dr[Constants.TO_STATECLASS_ID_COLUMN_NAME] != DBNull.Value)
-			{
-				ToStateClassId = Convert.ToInt32(dr[Constants.TO_STATECLASS_ID_COLUMN_NAME], CultureInfo.InvariantCulture);
-			}
-
-			if (dr[Constants.TO_MIN_AGE_COLUMN_NAME] != DBNull.Value)
-			{
-				ToMinimumAge = Convert.ToInt32(dr[Constants.TO_MIN_AGE_COLUMN_NAME], CultureInfo.InvariantCulture);
-			}
-
-			ToStockTypeId = Convert.ToInt32(dr[Constants.TO_STOCK_TYPE_ID_COLUMN_NAME], CultureInfo.InvariantCulture);
-
-			if (dr[Constants.TRANSITION_GROUP_ID_COLUMN_NAME] != DBNull.Value)
-			{
-				TransitionGroupId = Convert.ToInt32(dr[Constants.TRANSITION_GROUP_ID_COLUMN_NAME], CultureInfo.InvariantCulture);
-			}
-			else
-			{
-				TransitionGroupId = 0;
-			}
-
-			if (dr[Constants.STATE_ATTRIBUTE_TYPE_ID_COLUMN_NAME] != DBNull.Value)
-			{
-				StateAttributeTypeId = Convert.ToInt32(dr[Constants.STATE_ATTRIBUTE_TYPE_ID_COLUMN_NAME], CultureInfo.InvariantCulture);
-			}
-
-			FlowTypeId = Convert.ToInt32(dr[Constants.FLOW_TYPE_ID_COLUMN_NAME], CultureInfo.InvariantCulture);
-			Multiplier = Convert.ToDouble(dr[Constants.MULTIPLIER_COLUMN_NAME], CultureInfo.InvariantCulture);
-
-			FlowPathway p = new FlowPathway(
-                Iteration, Timestep, FromStratumId, FromStateClassId, FromMinimumAge, FromStockTypeId, 
-                ToStratumId, ToStateClassId, ToMinimumAge, ToStockTypeId, TransitionGroupId, 
-                StateAttributeTypeId, FlowTypeId, Multiplier);
-
-			return p;
 		}
 
 		private void RefreshLocationLookups()

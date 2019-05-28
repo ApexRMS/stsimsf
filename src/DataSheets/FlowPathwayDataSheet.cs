@@ -17,10 +17,19 @@ namespace SyncroSim.STSimStockFlow
 		{
 			base.OnDataSheetChanged(e);
 
-			string p = e.GetValue("PrimaryStratumLabel", "Stratum");
+			string psl = e.GetValue("PrimaryStratumLabel", "Stratum");
+			string ssl = e.GetValue("SecondaryStratumLabel", "Secondary Stratum");
+			string tsl = e.GetValue("TertiaryStratumLabel", "Tertiary Stratum");
 
-			this.Columns[Constants.FROM_STRATUM_ID_COLUMN_NAME].DisplayName = string.Format(CultureInfo.InvariantCulture, "From {0}", p);
-			this.Columns[Constants.TO_STRATUM_ID_COLUMN_NAME].DisplayName = string.Format(CultureInfo.InvariantCulture, "To {0}", p);
+			this.Columns[Constants.FROM_STRATUM_ID_COLUMN_NAME].DisplayName = string.Format(CultureInfo.InvariantCulture, "From {0}", psl);
+			this.Columns[Constants.FROM_SECONDARY_STRATUM_ID_COLUMN_NAME].DisplayName = string.Format(CultureInfo.InvariantCulture, "From {0}", ssl);
+			this.Columns[Constants.FROM_TERTIARY_STRATUM_ID_COLUMN_NAME].DisplayName = string.Format(CultureInfo.InvariantCulture, "From {0}", tsl);
+
+			this.Columns[Constants.TO_STRATUM_ID_COLUMN_NAME].DisplayName = string.Format(CultureInfo.InvariantCulture, "To {0}", psl);
+
+			this.Columns[Constants.TRANSFER_TO_STRATUM_ID_COLUMN_NAME].DisplayName = string.Format(CultureInfo.InvariantCulture, "Transfer to {0}", psl);
+			this.Columns[Constants.TRANSFER_TO_SECONDARY_STRATUM_ID_COLUMN_NAME].DisplayName = string.Format(CultureInfo.InvariantCulture, "Transfer to {0}", ssl);
+			this.Columns[Constants.TRANSFER_TO_TERTIARY_STRATUM_ID_COLUMN_NAME].DisplayName = string.Format(CultureInfo.InvariantCulture, "Transfer to {0}", tsl);
 		}
 
 		public override void Validate(DataRow proposedRow, DataTransferMethod transferMethod)

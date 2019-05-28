@@ -329,19 +329,24 @@
            </Message>
           </Messages>
          </Type>
-         <Type Name="SpatialMultiplierDataFeedView">
-          <Messages>
-           <Message TypeName="AvoidUninstantiatedInternalClasses" Category="Microsoft.Performance" CheckId="CA1812" Status="Excluded" Created="2019-03-07 00:10:40Z">
-            <Issue>
-             <Item>'SpatialMultiplierDataFeedView'</Item>
-            </Issue>
-            <Notes>
-             <User Name="Alex">
-              <Note Id="5" />
-             </User>
-            </Notes>
-           </Message>
-          </Messages>
+         <Type Name="SFUpdates">
+          <Members>
+           <Member Name="#SF0000100(SyncroSim.Core.DataStore)">
+            <Messages>
+             <Message Id="store" TypeName="ReviewUnusedParameters" Category="Microsoft.Usage" CheckId="CA1801" Status="Excluded" Created="2019-05-27 19:43:22Z" FixCategory="NonBreaking">
+              <Issue>
+               <Item>'store'</Item>
+               <Item>'SFUpdates.SF0000100(DataStore)'</Item>
+              </Issue>
+              <Notes>
+               <User Name="Alex">
+                <Note Id="7" />
+               </User>
+              </Notes>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
          </Type>
          <Type Name="StockGroupDataSheet">
           <Messages>
@@ -415,6 +420,7 @@
     <Note Id="4" Modified="2019-03-07 00:35:21Z">Won't fix</Note>
     <Note Id="5" Modified="2019-03-07 00:35:44Z">Won't fix</Note>
     <Note Id="6" Modified="2019-03-07 00:35:56Z">Won't fix</Note>
+    <Note Id="7" Modified="2019-05-27 19:45:53Z">Won't fix</Note>
    </User>
   </Notes>
   <Rules>
@@ -436,6 +442,9 @@
    </Rule>
    <Rule TypeName="NormalizeStringsToUppercase" Category="Microsoft.Globalization" CheckId="CA1308">
     <Resolution Name="ToUpperInvariant">In method {0}, replace the call to {1} with String.ToUpperInvariant().</Resolution>
+   </Rule>
+   <Rule TypeName="ReviewUnusedParameters" Category="Microsoft.Usage" CheckId="CA1801">
+    <Resolution Name="Default">Parameter {0} of {1} is never used. Remove the parameter or use it in the method body.</Resolution>
    </Rule>
   </Rules>
  </FxCopReport>

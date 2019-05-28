@@ -151,6 +151,11 @@ namespace SyncroSim.STSimStockFlow
             {
                 SF0000100(store);
             }
+
+            if (currentSchemaVersion < 101)
+            {
+                SF0000101(store);
+            }
         }
 
 		/// <summary>
@@ -993,6 +998,119 @@ namespace SyncroSim.STSimStockFlow
         private static void SF0000100(DataStore store)
         {
             return;
+        }
+
+        /// <summary>
+        /// SF0000101
+        /// </summary>
+        /// <param name="store"></param>
+        /// <remarks>
+        /// This update adds new fields to SF_FlowPathway and SF_OutputFlow to support the
+        /// Lateral Flows feature.
+        /// </remarks>
+        private static void SF0000101(DataStore store)
+        {
+            if (store.TableExists("SF_FlowPathway"))
+            {
+                store.ExecuteNonQuery("ALTER TABLE SF_FlowPathway RENAME TO TEMP_TABLE");
+
+                store.ExecuteNonQuery("CREATE TABLE SF_FlowPathway( " +
+                    "FlowPathwayID                INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    "ScenarioID                   INTEGER, " +
+                    "Iteration                    INTEGER, " +
+                    "Timestep                     INTEGER, " +
+                    "FromStratumID                INTEGER, " +
+                    "FromSecondaryStratumID       INTEGER, " +
+                    "FromTertiaryStratumID        INTEGER, " +
+                    "FromStateClassID             INTEGER, " +
+                    "FromAgeMin                   INTEGER, " +
+                    "FromStockTypeID              INTEGER, " +
+                    "ToStratumID                  INTEGER, " +
+                    "ToStateClassID               INTEGER, " +
+                    "ToAgeMin                     INTEGER, " +
+                    "ToStockTypeID                INTEGER, " +
+                    "TransitionGroupID            INTEGER, " +
+                    "StateAttributeTypeID         INTEGER, " +
+                    "FlowTypeID                   INTEGER, " +
+                    "Multiplier                   DOUBLE, " +
+                    "TransferToStratumID          INTEGER, " +
+                    "TransferToSecondaryStratumID INTEGER, " +
+                    "TransferToTertiaryStratumID  INTEGER, " +
+                    "TransferToStateClassID       INTEGER, " +
+                    "TransferToAgeMin             INTEGER)"
+                );
+
+                store.ExecuteNonQuery("INSERT INTO SF_FlowPathway( " + 
+                    "ScenarioID, " + 
+                    "Iteration, " + 
+                    "Timestep,  " + 
+                    "FromStratumID, " + 
+                    "FromStateClassID,  " + 
+                    "FromAgeMin, " + 
+                    "FromStockTypeID,  " + 
+                    "ToStratumID, " + 
+                    "ToStateClassID,  " + 
+                    "ToAgeMin, " + 
+                    "ToStockTypeID,  " + 
+                    "TransitionGroupID,  " + 
+                    "StateAttributeTypeID,  " + 
+                    "FlowTypeID,  " + 
+                    "Multiplier) " + 
+                    "SELECT " +
+                    "ScenarioID,  " + 
+                    "Iteration, " + 
+                    "Timestep,  " + 
+                    "FromStratumID, " + 
+                    "FromStateClassID,  " + 
+                    "FromAgeMin, " + 
+                    "FromStockTypeID,  " + 
+                    "ToStratumID, " + 
+                    "ToStateClassID,  " + 
+                    "ToAgeMin, " + 
+                    "ToStockTypeID,  " + 
+                    "TransitionGroupID,  " + 
+                    "StateAttributeTypeID,  " + 
+                    "FlowTypeID, " +
+                    "Multiplier " +  
+                    "FROM TEMP_TABLE");
+
+                store.ExecuteNonQuery("DROP TABLE TEMP_TABLE");
+
+                store.ExecuteNonQuery("DROP INDEX IF EXISTS SF_FlowPathway_Index");
+                store.ExecuteNonQuery("CREATE INDEX SF_FlowPathway_Index ON SF_FlowPathway(ScenarioID)");
+            }
+
+            if (store.TableExists("SF_OutputFlow"))
+            {
+                store.ExecuteNonQuery("ALTER TABLE SF_OutputFlow ADD COLUMN EndStratumID INTEGER");
+                store.ExecuteNonQuery("ALTER TABLE SF_OutputFlow ADD COLUMN EndSecondaryStratumID INTEGER");
+                store.ExecuteNonQuery("ALTER TABLE SF_OutputFlow ADD COLUMN EndTertiaryStratumID INTEGER");
+                store.ExecuteNonQuery("ALTER TABLE SF_OutputFlow ADD COLUMN EndStateClassID INTEGER");
+                store.ExecuteNonQuery("ALTER TABLE SF_OutputFlow ADD COLUMN EndMinAge INTEGER");
+
+                string[] cols = new string[] {
+                    "ScenarioID",
+                    "Iteration",
+                    "Timestep",
+                    "FromStratumID",
+                    "FromSecondaryStratumID",
+                    "FromTertiaryStratumID",
+                    "FromStateClassID",
+                    "FromStockTypeID",
+                    "TransitionTypeID",
+                    "ToStratumID",
+                    "ToStateClassID",
+                    "ToStockTypeID",
+                    "FlowGroupID", 
+                    "EndStratumID",
+                    "EndSecondaryStratumID",
+                    "EndTertiaryStratumID",
+                    "EndStateClassID",
+                    "EndMinAge"
+                };
+
+                UpdateProvider.CreateIndex(store, "SF_OutputFlow", cols);
+            }
         }
     }
 }

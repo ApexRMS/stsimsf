@@ -9,7 +9,7 @@ namespace SyncroSim.STSimStockFlow
 	internal class FlowPathwayMap
 	{
 		private bool m_HasRecords;
-		private MultiLevelKeyMap7<SortedKeyMap4<List<FlowPathway>>> m_Map = new MultiLevelKeyMap7<SortedKeyMap4<List<FlowPathway>>>();
+		private MultiLevelKeyMap9<SortedKeyMap4<List<FlowPathway>>> m_Map = new MultiLevelKeyMap9<SortedKeyMap4<List<FlowPathway>>>();
 
 		public FlowPathwayMap(FlowPathwayCollection pathways)
 		{
@@ -30,14 +30,14 @@ namespace SyncroSim.STSimStockFlow
 		public void AddItem(FlowPathway pathway)
 		{
 			SortedKeyMap4<List<FlowPathway>> m1 = this.m_Map.GetItemExact(
-                pathway.FromStratumId, pathway.FromStateClassId, pathway.FromStockTypeId, 
+                pathway.FromStratumId, pathway.FromSecondaryStratumId, pathway.FromTertiaryStratumId, pathway.FromStateClassId, pathway.FromStockTypeId, 
                 pathway.ToStratumId, pathway.ToStateClassId, pathway.TransitionGroupId, pathway.FlowTypeId);
 
 			if (m1 == null)
 			{
 				m1 = new SortedKeyMap4<List<FlowPathway>>(SearchMode.ExactPrev);
 
-				this.m_Map.AddItem(pathway.FromStratumId, pathway.FromStateClassId, pathway.FromStockTypeId, 
+				this.m_Map.AddItem(pathway.FromStratumId, pathway.FromSecondaryStratumId, pathway.FromTertiaryStratumId, pathway.FromStateClassId, pathway.FromStockTypeId, 
                     pathway.ToStratumId, pathway.ToStateClassId, pathway.TransitionGroupId, pathway.FlowTypeId, m1);
 			}
 
@@ -54,7 +54,7 @@ namespace SyncroSim.STSimStockFlow
 		}
 
 		public List<FlowPathway> GetFlowPathwayList(
-            int iteration, int timestep, int? fromStratumId, int fromStateClassId, int fromStockTypeId, int fromMinimumAge, int? 
+            int iteration, int timestep, int? fromStratumId, int? fromSecondaryStratumId, int? fromTertiaryStratumId, int fromStateClassId, int fromStockTypeId, int fromMinimumAge, int? 
             toStratumId, int? toStateClassId, int transitionGroupId, int flowTypeId, int toMinimumAge)
 		{    
 			if (!this.m_HasRecords)
@@ -63,7 +63,7 @@ namespace SyncroSim.STSimStockFlow
 			}
 
 			SortedKeyMap4<List<FlowPathway>> m1 = this.m_Map.GetItem(
-                fromStratumId, fromStateClassId, fromStockTypeId, 
+                fromStratumId, fromSecondaryStratumId, fromTertiaryStratumId, fromStateClassId, fromStockTypeId, 
                 toStratumId, toStateClassId, transitionGroupId, flowTypeId);
 
 			if (m1 == null)

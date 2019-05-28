@@ -13,20 +13,12 @@ namespace SyncroSim.STSimStockFlow
 	[ObfuscationAttribute(Exclude=true, ApplyToMembers=false)]
 	internal partial class InitialStocksDataFeedView
 	{
+		private DataFeedView m_RasterFilesView;
+
 		public InitialStocksDataFeedView()
 		{
 			InitializeComponent();
 		}
-
-		private DataFeedView m_RasterFilesView;
-		private DataGridView m_RasterFilesDataGrid;
-		private delegate void DelegateNoArgs();
-		private bool m_ColumnsInitialized;
-		private bool m_IsEnabled = true;
-
-		private const string BROWSE_BUTTON_TEXT = "...";
-		private const int FILE_NAME_COLUMN_INDEX = 2;
-		private const int BROWSE_COLUMN_INDEX = 3;
 
 		protected override void InitializeView()
 		{
@@ -37,7 +29,6 @@ namespace SyncroSim.STSimStockFlow
 
 			this.m_RasterFilesView = this.Session.CreateMultiRowDataFeedView(this.Scenario, this.ControllingScenario);
 			this.PanelSpatial.Controls.Add(this.m_RasterFilesView);
-			this.m_RasterFilesDataGrid = ((MultiRowDataFeedView)this.m_RasterFilesView).GridControl;
 
 			this.ConfigureContextMenu();
 		}
@@ -51,28 +42,6 @@ namespace SyncroSim.STSimStockFlow
 
 			DataFeedView v2 = (DataFeedView)this.PanelSpatial.Controls[0];
 			v2.LoadDataFeed(dataFeed, Constants.DATASHEET_INITIAL_STOCK_SPATIAL);
-
-			if (!this.m_ColumnsInitialized)
-			{
-				//Add handlers
-				this.m_RasterFilesDataGrid.CellEnter += this.OnGridCellEnter;
-				this.m_RasterFilesDataGrid.CellMouseDown += this.OnGridCellMouseDown;
-				this.m_RasterFilesDataGrid.DataBindingComplete += this.OnGridBindingComplete;
-				this.m_RasterFilesDataGrid.KeyDown += this.OnGridKeyDown;
-
-                //Configure columns
-                this.m_RasterFilesDataGrid.Columns[FILE_NAME_COLUMN_INDEX].DefaultCellStyle.BackColor = Constants.READONLY_COLUMN_COLOR;
-
-				//Add the browse button column
-				DataGridViewButtonColumn BrowseColumn = new DataGridViewButtonColumn();
-
-				BrowseColumn.HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter;
-				BrowseColumn.Width = 40;
-				BrowseColumn.MinimumWidth = 40;
-
-				this.m_RasterFilesDataGrid.Columns.Add(BrowseColumn);
-				this.m_ColumnsInitialized = true;
-			}
 		}
 
 		/// <summary>
@@ -100,136 +69,6 @@ namespace SyncroSim.STSimStockFlow
 
 			this.LabelNonSpatial.Enabled = enable;
 			this.LabelSpatial.Enabled = enable;
-			this.m_IsEnabled = enable;
-		}
-
-		/// <summary>
-		/// Handles the cell enter event for the grid
-		/// </summary>
-		/// <param name="sender"></param>
-		/// <param name="e"></param>
-		/// <remarks></remarks>
-		private void OnGridCellEnter(object sender, System.Windows.Forms.DataGridViewCellEventArgs e)
-		{
-			if (e.ColumnIndex == FILE_NAME_COLUMN_INDEX)
-			{
-				this.Session.MainForm.BeginInvoke(new DelegateNoArgs(this.OnNewCellEnterAsync), null);
-			}
-		}
-
-		/// <summary>
-		/// Handles the CellMouseDown event
-		/// </summary>
-		/// <param name="sender"></param>
-		/// <param name="e"></param>
-		/// <remarks></remarks>
-		private void OnGridCellMouseDown(object sender, DataGridViewCellMouseEventArgs e)
-		{
-			if (e.RowIndex >= 0)
-			{
-				if (e.ColumnIndex == BROWSE_COLUMN_INDEX)
-				{
-					this.GetMultiplierFile(e.RowIndex);
-				}
-			}
-		}
-
-		/// <summary>
-		/// Handles the grid's KeyDown event
-		/// </summary>
-		/// <param name="sender"></param>
-		/// <param name="e"></param>
-		/// <remarks></remarks>
-		private void OnGridKeyDown(object sender, KeyEventArgs e)
-		{
-			if (this.m_RasterFilesDataGrid.CurrentCell != null)
-			{
-				if (this.m_RasterFilesDataGrid.CurrentCell.ColumnIndex == BROWSE_COLUMN_INDEX)
-				{
-					if (e.KeyValue == (System.Int32)Keys.Enter)
-					{
-						this.GetMultiplierFile(this.m_RasterFilesDataGrid.CurrentCell.RowIndex);
-						e.Handled = true;
-					}
-				}
-			}       
-		}
-
-		/// <summary>
-		/// Handles the grid's DataBindingComplete event
-		/// </summary>
-		/// <param name="sender"></param>
-		/// <param name="e"></param>
-		/// <remarks></remarks>
-		private void OnGridBindingComplete(object sender, System.Windows.Forms.DataGridViewBindingCompleteEventArgs e)
-		{
-			foreach (DataGridViewRow dgr in this.m_RasterFilesDataGrid.Rows)
-			{
-				dgr.Cells[BROWSE_COLUMN_INDEX].Value = BROWSE_BUTTON_TEXT;
-			}
-		}
-
-		/// <summary>
-		/// Handles the CellEnter event
-		/// </summary>
-		/// <param name="argument"></param>
-		/// <remarks></remarks>
-		private void OnNewCellEnterAsync()
-		{
-			int Row = this.m_RasterFilesDataGrid.CurrentCell.RowIndex;
-			int Col = this.m_RasterFilesDataGrid.CurrentCell.ColumnIndex;
-
-			if (Col == FILE_NAME_COLUMN_INDEX)
-			{
-				if (ModifierKeys == Keys.Shift)
-				{
-					Col -= 1;
-				}
-				else
-				{
-					Col += 1;
-				}
-
-				this.m_RasterFilesDataGrid.CurrentCell = this.m_RasterFilesDataGrid.Rows[Row].Cells[Col];
-				this.m_RasterFilesDataGrid.BeginEdit(true);
-			}
-		}
-
-		/// <summary>
-		/// Gets a multiplier file from the user
-		/// </summary>
-		/// <param name="rowIndex"></param>
-		/// <remarks></remarks>
-		private void GetMultiplierFile(int rowIndex)
-		{
-			if (!this.m_IsEnabled)
-			{
-				return;
-			}
-
-			DataSheet ds = this.Scenario.GetDataSheet(Constants.DATASHEET_INITIAL_STOCK_SPATIAL);
-			string RasterFile = RasterUtilities.ChooseRasterFileName("Raster File");
-
-			if (RasterFile == null)
-			{
-				return;
-			}
-
-            using (HourGlass h = new HourGlass())
-            {
-                DataGridViewEditMode OldMode = this.m_RasterFilesDataGrid.EditMode;
-
-			    this.m_RasterFilesDataGrid.EditMode = DataGridViewEditMode.EditProgrammatically;
-			    this.m_RasterFilesDataGrid.CurrentCell = this.m_RasterFilesDataGrid.Rows[rowIndex].Cells[FILE_NAME_COLUMN_INDEX];
-			    this.m_RasterFilesDataGrid.Rows[rowIndex].Cells[Constants.RASTER_FILE_COLUMN_NAME].Value = Path.GetFileName(RasterFile);
-			    this.m_RasterFilesDataGrid.NotifyCurrentCellDirty(true);
-			    this.m_RasterFilesDataGrid.BeginEdit(false);
-			    this.m_RasterFilesDataGrid.EndEdit();
-			    this.m_RasterFilesDataGrid.CurrentCell = this.m_RasterFilesDataGrid.Rows[rowIndex].Cells[BROWSE_COLUMN_INDEX];
-
-			    ds.AddExternalInputFile(RasterFile);
-			    this.m_RasterFilesDataGrid.EditMode = OldMode;
-            }
 		}
 
 		/// <summary>

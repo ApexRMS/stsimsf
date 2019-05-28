@@ -34,6 +34,8 @@ namespace SyncroSim.STSimStockFlow
 		private bool m_ShowFlowsFrom = true;
 		private bool m_ShowFlowsTo;
 		private bool m_FromStratumVisible;
+        private bool m_FromSecondaryStratumVisible;
+        private bool m_FromTertiaryStratumVisible;
 		private bool m_FromStateClassVisible;
 		private bool m_FromMinAgeVisible;
 		private bool m_ToStratumVisible;
@@ -41,6 +43,11 @@ namespace SyncroSim.STSimStockFlow
 		private bool m_ToMinAgeVisible;
 		private bool m_TransitionGroupVisible;
 		private bool m_StateAttributeTypeVisible;
+        private bool m_TransferToStratumVisible;
+        private bool m_TransferToSecondaryStratumVisible;
+        private bool m_TransferToTertiaryStratumVisible;
+        private bool m_TransferToStateClassVisible;
+        private bool m_TransferToMinAgeVisible;
 
 		public void LoadStockTypes(DataFeed dataFeed, List<int> stockTypeIds)
 		{
@@ -101,6 +108,8 @@ namespace SyncroSim.STSimStockFlow
 		private void InitializeColumnVisiblity()
 		{
 			this.m_FromStratumVisible = DataTableUtilities.TableHasData(this.m_FlowPathwayData, Constants.FROM_STRATUM_ID_COLUMN_NAME);
+			this.m_FromSecondaryStratumVisible = DataTableUtilities.TableHasData(this.m_FlowPathwayData, Constants.FROM_SECONDARY_STRATUM_ID_COLUMN_NAME);
+			this.m_FromTertiaryStratumVisible = DataTableUtilities.TableHasData(this.m_FlowPathwayData, Constants.FROM_TERTIARY_STRATUM_ID_COLUMN_NAME);
 			this.m_FromStateClassVisible = DataTableUtilities.TableHasData(this.m_FlowPathwayData, Constants.FROM_STATECLASS_ID_COLUMN_NAME);
 			this.m_FromMinAgeVisible = DataTableUtilities.TableHasData(this.m_FlowPathwayData, Constants.FROM_MIN_AGE_COLUMN_NAME);
 			this.m_ToStratumVisible = DataTableUtilities.TableHasData(this.m_FlowPathwayData, Constants.TO_STRATUM_ID_COLUMN_NAME);
@@ -108,6 +117,11 @@ namespace SyncroSim.STSimStockFlow
 			this.m_ToMinAgeVisible = DataTableUtilities.TableHasData(this.m_FlowPathwayData, Constants.TO_MIN_AGE_COLUMN_NAME);
 			this.m_TransitionGroupVisible = DataTableUtilities.TableHasData(this.m_FlowPathwayData, Constants.TRANSITION_GROUP_ID_COLUMN_NAME);
 			this.m_StateAttributeTypeVisible = DataTableUtilities.TableHasData(this.m_FlowPathwayData, Constants.STATE_ATTRIBUTE_TYPE_ID_COLUMN_NAME);
+            this.m_TransferToStratumVisible = DataTableUtilities.TableHasData(this.m_FlowPathwayData, Constants.TRANSFER_TO_STRATUM_ID_COLUMN_NAME);
+            this.m_TransferToSecondaryStratumVisible = DataTableUtilities.TableHasData(this.m_FlowPathwayData, Constants.TRANSFER_TO_SECONDARY_STRATUM_ID_COLUMN_NAME);
+            this.m_TransferToTertiaryStratumVisible = DataTableUtilities.TableHasData(this.m_FlowPathwayData, Constants.TRANSFER_TO_TERTIARY_STRATUM_ID_COLUMN_NAME);
+            this.m_TransferToStateClassVisible = DataTableUtilities.TableHasData(this.m_FlowPathwayData, Constants.TRANSFER_TO_STATECLASS_ID_COLUMN_NAME);
+            this.m_TransferToMinAgeVisible = DataTableUtilities.TableHasData(this.m_FlowPathwayData, Constants.TRANSFER_TO_MIN_AGE_COLUMN_NAME);
 		}
 
 		private void UpdateColumnVisibility()
@@ -131,6 +145,8 @@ namespace SyncroSim.STSimStockFlow
 			}
 
 			this.m_FlowPathwayGrid.Columns[Constants.FROM_STRATUM_ID_COLUMN_NAME].Visible = this.m_FromStratumVisible;
+			this.m_FlowPathwayGrid.Columns[Constants.FROM_SECONDARY_STRATUM_ID_COLUMN_NAME].Visible = this.m_FromSecondaryStratumVisible;
+			this.m_FlowPathwayGrid.Columns[Constants.FROM_TERTIARY_STRATUM_ID_COLUMN_NAME].Visible = this.m_FromTertiaryStratumVisible;
 			this.m_FlowPathwayGrid.Columns[Constants.FROM_STATECLASS_ID_COLUMN_NAME].Visible = this.m_FromStateClassVisible;
 			this.m_FlowPathwayGrid.Columns[Constants.FROM_MIN_AGE_COLUMN_NAME].Visible = this.m_FromMinAgeVisible;
 			this.m_FlowPathwayGrid.Columns[Constants.TO_STRATUM_ID_COLUMN_NAME].Visible = this.m_ToStratumVisible;
@@ -138,6 +154,11 @@ namespace SyncroSim.STSimStockFlow
 			this.m_FlowPathwayGrid.Columns[Constants.TO_MIN_AGE_COLUMN_NAME].Visible = this.m_ToMinAgeVisible;
 			this.m_FlowPathwayGrid.Columns[Constants.TRANSITION_GROUP_ID_COLUMN_NAME].Visible = this.m_TransitionGroupVisible;
 			this.m_FlowPathwayGrid.Columns[Constants.STATE_ATTRIBUTE_TYPE_ID_COLUMN_NAME].Visible = this.m_StateAttributeTypeVisible;
+			this.m_FlowPathwayGrid.Columns[Constants.TRANSFER_TO_STRATUM_ID_COLUMN_NAME].Visible = this.m_TransferToStratumVisible;
+			this.m_FlowPathwayGrid.Columns[Constants.TRANSFER_TO_SECONDARY_STRATUM_ID_COLUMN_NAME].Visible = this.m_TransferToSecondaryStratumVisible;
+			this.m_FlowPathwayGrid.Columns[Constants.TRANSFER_TO_TERTIARY_STRATUM_ID_COLUMN_NAME].Visible = this.m_TransferToTertiaryStratumVisible;
+			this.m_FlowPathwayGrid.Columns[Constants.TRANSFER_TO_STATECLASS_ID_COLUMN_NAME].Visible = this.m_TransferToStateClassVisible;
+			this.m_FlowPathwayGrid.Columns[Constants.TRANSFER_TO_MIN_AGE_COLUMN_NAME].Visible = this.m_TransferToMinAgeVisible;
 		}
 
 		private void ConfigureContextMenus()
@@ -153,13 +174,22 @@ namespace SyncroSim.STSimStockFlow
 			}
 
 			string StratumLabel = this.GetStratumLabelTerminology();
+			string SecondaryStratumLabel = this.GetSecondaryStratumLabelTerminology();
+			string TertiaryStratumLabel = this.GetTertiaryStratumLabelTerminology();
 			string FromStratum = string.Format(CultureInfo.InvariantCulture, "From {0}", StratumLabel);
+			string FromSecondaryStratum = string.Format(CultureInfo.InvariantCulture, "From {0}", SecondaryStratumLabel);
+			string FromTertiaryStratum = string.Format(CultureInfo.InvariantCulture, "From {0}", TertiaryStratumLabel);
 			string ToStratum = string.Format(CultureInfo.InvariantCulture, "To {0}", StratumLabel);
+			string TransferToStratum = string.Format(CultureInfo.InvariantCulture, "Transfer To {0}", StratumLabel);
+			string TransferToSecondaryStratum = string.Format(CultureInfo.InvariantCulture, "Transfer To {0}", SecondaryStratumLabel);
+			string TransferToTertiaryStratum = string.Format(CultureInfo.InvariantCulture, "Transfer To {0}", TertiaryStratumLabel);
 
 			this.m_FlowPathwayView.Commands.Add(new Command("Flows To", OnExecuteFlowsToCommand, OnUpdateFlowsToCommand));
 			this.m_FlowPathwayView.Commands.Add(new Command("Flows From", OnExecuteFlowsFromCommand, OnUpdateFlowsFromCommand));
 			this.m_FlowPathwayView.Commands.Add(Command.CreateSeparatorCommand());
 			this.m_FlowPathwayView.Commands.Add(new Command(FromStratum, OnExecuteFromStratumCommand, OnUpdateFromStratumCommand));
+			this.m_FlowPathwayView.Commands.Add(new Command(FromSecondaryStratum, OnExecuteFromSecondaryStratumCommand, OnUpdateFromSecondaryStratumCommand));
+			this.m_FlowPathwayView.Commands.Add(new Command(FromTertiaryStratum, OnExecuteFromTertiaryStratumCommand, OnUpdateFromTertiaryStratumCommand));
 			this.m_FlowPathwayView.Commands.Add(new Command("From State Class", OnExecuteFromStateClassCommand, OnUpdateFromStateClassCommand));
 			this.m_FlowPathwayView.Commands.Add(new Command("From Min Age", OnExecuteFromMinAgeCommand, OnUpdateFromMinAgeCommand));
 			this.m_FlowPathwayView.Commands.Add(new Command(ToStratum, OnExecuteToStratumCommand, OnUpdateToStratumCommand));
@@ -167,8 +197,13 @@ namespace SyncroSim.STSimStockFlow
 			this.m_FlowPathwayView.Commands.Add(new Command("To Min Age", OnExecuteToMinAgeCommand, OnUpdateToMinAgeCommand));
 			this.m_FlowPathwayView.Commands.Add(new Command("Transition Group", OnExecuteTransitionGroupCommand, OnUpdateTransitionGroupCommand));
 			this.m_FlowPathwayView.Commands.Add(new Command("State Attribute Type", OnExecuteStateAttributeTypeCommand, OnUpdateStateAttributeTypeCommand));
+            this.m_FlowPathwayView.Commands.Add(new Command(TransferToStratum, OnExecuteTransferToStratumCommand, OnUpdateTransferToStratumCommand));
+            this.m_FlowPathwayView.Commands.Add(new Command(TransferToSecondaryStratum, OnExecuteTransferToSecondaryStratumCommand, OnUpdateTransferToSecondaryStratumCommand));
+            this.m_FlowPathwayView.Commands.Add(new Command(TransferToTertiaryStratum, OnExecuteTransferToTertiaryStratumCommand, OnUpdateTransferToTertiaryStratumCommand));
+            this.m_FlowPathwayView.Commands.Add(new Command("Transfer To State Class", OnExecuteTransferToStateClassCommand, OnUpdateTransferToStateClassCommand));
+            this.m_FlowPathwayView.Commands.Add(new Command("Transfer To Min Age", OnExecuteTransferToMinAgeCommand, OnUpdateTransferToMinAgeCommand));
 
-			this.m_FlowPathwayView.RefreshContextMenuStrip();
+            this.m_FlowPathwayView.RefreshContextMenuStrip();
 
 			for (int i = this.m_FlowPathwayGrid.ContextMenuStrip.Items.Count - 1; i >= 0; i--)
 			{
@@ -240,7 +275,41 @@ namespace SyncroSim.STSimStockFlow
 			cmd.IsChecked = this.m_FromStratumVisible;
 		}
 
-		private void OnExecuteFromStateClassCommand(Command cmd)
+        private void OnExecuteFromSecondaryStratumCommand(Command cmd)
+        {
+            if (!this.Validate())
+            {
+                return;
+            }
+
+            this.m_FromSecondaryStratumVisible = (!this.m_FromSecondaryStratumVisible);
+            this.UpdateColumnVisibility();
+        }
+
+        private void OnUpdateFromSecondaryStratumCommand(Command cmd)
+        {
+            cmd.IsEnabled = true;
+            cmd.IsChecked = this.m_FromSecondaryStratumVisible;
+        }
+
+        private void OnExecuteFromTertiaryStratumCommand(Command cmd)
+        {
+            if (!this.Validate())
+            {
+                return;
+            }
+
+            this.m_FromTertiaryStratumVisible = (!this.m_FromTertiaryStratumVisible);
+            this.UpdateColumnVisibility();
+        }
+
+        private void OnUpdateFromTertiaryStratumCommand(Command cmd)
+        {
+            cmd.IsEnabled = true;
+            cmd.IsChecked = this.m_FromTertiaryStratumVisible;
+        }
+
+        private void OnExecuteFromStateClassCommand(Command cmd)
 		{
 			if (!this.Validate())
 			{
@@ -291,7 +360,7 @@ namespace SyncroSim.STSimStockFlow
 			cmd.IsChecked = this.m_ToStratumVisible;
 		}
 
-		private void OnExecuteToStateClassCommand(Command cmd)
+        private void OnExecuteToStateClassCommand(Command cmd)
 		{
 			if (!this.Validate())
 			{
@@ -359,7 +428,92 @@ namespace SyncroSim.STSimStockFlow
 			cmd.IsChecked = this.m_StateAttributeTypeVisible;
 		}
 
-		private void OnGridCellBeginEdit(object sender, DataGridViewCellCancelEventArgs e)
+        private void OnExecuteTransferToStratumCommand(Command cmd)
+        {
+            if (!this.Validate())
+            {
+                return;
+            }
+
+            this.m_TransferToStratumVisible = (!this.m_TransferToStratumVisible);
+            this.UpdateColumnVisibility();
+        }
+
+        private void OnUpdateTransferToStratumCommand(Command cmd)
+        {
+            cmd.IsEnabled = true;
+            cmd.IsChecked = this.m_TransferToStratumVisible;
+        }
+
+        private void OnExecuteTransferToSecondaryStratumCommand(Command cmd)
+        {
+            if (!this.Validate())
+            {
+                return;
+            }
+
+            this.m_TransferToSecondaryStratumVisible = (!this.m_TransferToSecondaryStratumVisible);
+            this.UpdateColumnVisibility();
+        }
+
+        private void OnUpdateTransferToSecondaryStratumCommand(Command cmd)
+        {
+            cmd.IsEnabled = true;
+            cmd.IsChecked = this.m_TransferToSecondaryStratumVisible;
+        }
+
+        private void OnExecuteTransferToTertiaryStratumCommand(Command cmd)
+        {
+            if (!this.Validate())
+            {
+                return;
+            }
+
+            this.m_TransferToTertiaryStratumVisible = (!this.m_TransferToTertiaryStratumVisible);
+            this.UpdateColumnVisibility();
+        }
+
+        private void OnUpdateTransferToTertiaryStratumCommand(Command cmd)
+        {
+            cmd.IsEnabled = true;
+            cmd.IsChecked = this.m_TransferToTertiaryStratumVisible;
+        }
+
+        private void OnExecuteTransferToStateClassCommand(Command cmd)
+        {
+            if (!this.Validate())
+            {
+                return;
+            }
+
+            this.m_TransferToStateClassVisible = (!this.m_TransferToStateClassVisible);
+            this.UpdateColumnVisibility();
+        }
+
+        private void OnUpdateTransferToStateClassCommand(Command cmd)
+        {
+            cmd.IsEnabled = true;
+            cmd.IsChecked = this.m_TransferToStateClassVisible;
+        }
+
+        private void OnExecuteTransferToMinAgeCommand(Command cmd)
+        {
+            if (!this.Validate())
+            {
+                return;
+            }
+
+            this.m_TransferToMinAgeVisible = (!this.m_TransferToMinAgeVisible);
+            this.UpdateColumnVisibility();
+        }
+
+        private void OnUpdateTransferToMinAgeCommand(Command cmd)
+        {
+            cmd.IsEnabled = true;
+            cmd.IsChecked = this.m_TransferToMinAgeVisible;
+        }
+
+        private void OnGridCellBeginEdit(object sender, DataGridViewCellCancelEventArgs e)
 		{
 			if (e.ColumnIndex == this.m_FlowPathwayGrid.Columns[Constants.FROM_STOCK_TYPE_ID_COLUMN_NAME].Index)
 			{
@@ -480,7 +634,39 @@ namespace SyncroSim.STSimStockFlow
 			return l;
 		}
 
-		private void SetColumnReadOnly(string columnName)
+        private string GetSecondaryStratumLabelTerminology()
+        {
+            string l = "Secondary Stratum";
+            DataRow dr = this.m_DataFeed.Project.GetDataSheet("STSim_Terminology").GetDataRow();
+
+            if (dr != null)
+            {
+                if (dr["SecondaryStratumLabel"] != DBNull.Value)
+                {
+                    l = Convert.ToString(dr["SecondaryStratumLabel"], CultureInfo.InvariantCulture);
+                }
+            }
+
+            return l;
+        }
+
+        private string GetTertiaryStratumLabelTerminology()
+        {
+            string l = "Tertiary Stratum";
+            DataRow dr = this.m_DataFeed.Project.GetDataSheet("STSim_Terminology").GetDataRow();
+
+            if (dr != null)
+            {
+                if (dr["TertiaryStratumLabel"] != DBNull.Value)
+                {
+                    l = Convert.ToString(dr["TertiaryStratumLabel"], CultureInfo.InvariantCulture);
+                }
+            }
+
+            return l;
+        }
+
+        private void SetColumnReadOnly(string columnName)
 		{
 			DataGridViewColumn col = this.m_FlowPathwayGrid.Columns[columnName];
             col.DefaultCellStyle.BackColor = Constants.READONLY_COLUMN_COLOR;

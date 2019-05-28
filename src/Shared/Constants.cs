@@ -41,6 +41,7 @@ namespace SyncroSim.STSimStockFlow
 		public const string DATASHEET_FLOW_PATHWAY_DIAGRAM_NAME = "SF_FlowPathwayDiagram";
 		public const string DATASHEET_FLOW_MULTIPLIER_NAME = "SF_FlowMultiplier";
 		public const string DATASHEET_FLOW_SPATIAL_MULTIPLIER_NAME = "SF_FlowSpatialMultiplier";
+		public const string DATASHEET_FLOW_LATERAL_MULTIPLIER_NAME = "SF_FlowLateralMultiplier";
 		public const string DATASHEET_FLOW_TYPE_GROUP_MEMBERSHIP_NAME = "SF_FlowTypeGroupMembership";
 		public const string DATASHEET_FLOW_ORDER = "SF_FlowOrder";
 		public const string DATASHEET_FLOW_ORDER_OPTIONS = "SF_FlowOrderOptions";
@@ -88,11 +89,22 @@ namespace SyncroSim.STSimStockFlow
 		public const string FROM_STATECLASS_ID_COLUMN_NAME = "FromStateClassID";
 		public const string FROM_MIN_AGE_COLUMN_NAME = "FromAgeMin";
 		public const string FROM_STOCK_TYPE_ID_COLUMN_NAME = "FromStockTypeID";
-
 		public const string TO_STRATUM_ID_COLUMN_NAME = "ToStratumID";
 		public const string TO_STATECLASS_ID_COLUMN_NAME = "ToStateClassID";
 		public const string TO_MIN_AGE_COLUMN_NAME = "ToAgeMin";
 		public const string TO_STOCK_TYPE_ID_COLUMN_NAME = "ToStockTypeID";
+
+		public const string TRANSFER_TO_STRATUM_ID_COLUMN_NAME = "TransferToStratumID";
+		public const string TRANSFER_TO_SECONDARY_STRATUM_ID_COLUMN_NAME = "TransferToSecondaryStratumID";
+		public const string TRANSFER_TO_TERTIARY_STRATUM_ID_COLUMN_NAME = "TransferToTertiaryStratumID";
+		public const string TRANSFER_TO_STATECLASS_ID_COLUMN_NAME = "TransferToStateClassID";
+		public const string TRANSFER_TO_MIN_AGE_COLUMN_NAME = "TransferToAgeMin";
+
+		public const string END_STRATUM_ID_COLUMN_NAME = "EndStratumID";
+		public const string END_SECONDARY_STRATUM_ID_COLUMN_NAME = "EndSecondaryStratumID";
+		public const string END_TERTIARY_STRATUM_ID_COLUMN_NAME = "EndTertiaryStratumID";
+		public const string END_STATECLASS_ID_COLUMN_NAME = "EndStateClassID";
+		public const string END_MIN_AGE_COLUMN_NAME = "EndAgeMin";
 
         public const string IS_AUTO_COLUMN_NAME = "IsAuto";
         public const string AUTO_COLUMN_SUFFIX = "[Type]";

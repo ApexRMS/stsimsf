@@ -131,6 +131,9 @@
     <Compile Include="Runtime\FlowGroupCollection.cs" />
     <Compile Include="Runtime\FlowGroupLinkage.cs" />
     <Compile Include="Runtime\FlowGroupLinkageCollection.cs" />
+    <Compile Include="Runtime\FlowLateralMultiplier.cs" />
+    <Compile Include="Runtime\FlowLateralMultiplierCollection.cs" />
+    <Compile Include="Runtime\FlowLateralMultiplierMap.cs" />
     <Compile Include="Runtime\FlowMultiplier.cs" />
     <Compile Include="Runtime\FlowMultiplierCollection.cs" />
     <Compile Include="Runtime\FlowMultiplierMap.cs" />
@@ -154,6 +157,8 @@
     <Compile Include="Runtime\InitialStockSpatial.cs" />
     <Compile Include="Runtime\InitialStockSpatialCollection.cs" />
     <Compile Include="Runtime\InitialStockSpatialMap.cs" />
+    <Compile Include="Runtime\LateralFlowAmountMap.cs" />
+    <Compile Include="Runtime\LateralFlowAmountRecord.cs" />
     <Compile Include="Runtime\OutputFlow.cs" />
     <Compile Include="Runtime\OutputFlowCollection.cs" />
     <Compile Include="Runtime\OutputStock.cs" />
@@ -206,12 +211,6 @@
       <DependentUpon>OutputOptionsDataFeedView.cs</DependentUpon>
     </Compile>
     <Compile Include="DataFeedViews\OutputOptionsDataFeedView.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="DataFeedViews\SpatialMultiplierDataFeedView.Designer.cs">
-      <DependentUpon>SpatialMultiplierDataFeedView.cs</DependentUpon>
-    </Compile>
-    <Compile Include="DataFeedViews\SpatialMultiplierDataFeedView.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="DataFeedViews\StockTypeQuickView.Designer.cs">
@@ -270,7 +269,6 @@
     <Compile Include="Shared\FormsUtilities.cs" />
     <Compile Include="Shared\LookupKeyUtilities.cs" />
     <Compile Include="Shared\MathUtils.cs" />
-    <Compile Include="Shared\RasterUtilities.cs" />
     <Compile Include="Shared\TerminologyUtilities.cs" />
     <Compile Include="Updates\SFUpdates.cs" />
   </ItemGroup>
@@ -286,9 +284,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="DataFeedViews\OutputOptionsDataFeedView.resx">
       <DependentUpon>OutputOptionsDataFeedView.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="DataFeedViews\SpatialMultiplierDataFeedView.resx">
-      <DependentUpon>SpatialMultiplierDataFeedView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="DataFeedViews\StockTypeQuickView.resx">
       <DependentUpon>StockTypeQuickView.cs</DependentUpon>

@@ -2,8 +2,8 @@
 // Copyright © 2007-2019 Apex Resource Management Solutions Ltd. (ApexRMS). All rights reserved.
 
 using SyncroSim.Core;
-using System.Globalization;
 using System.Reflection;
+using System.Globalization;
 
 namespace SyncroSim.STSimStockFlow
 {
@@ -23,7 +23,12 @@ namespace SyncroSim.STSimStockFlow
 			this.Columns[Constants.FROM_STRATUM_ID_COLUMN_NAME].DisplayName = string.Format(CultureInfo.InvariantCulture, "From {0}", s);
 			this.Columns[Constants.FROM_SECONDARY_STRATUM_ID_COLUMN_NAME].DisplayName = string.Format(CultureInfo.InvariantCulture, "From {0}", ss);
 			this.Columns[Constants.FROM_TERTIARY_STRATUM_ID_COLUMN_NAME].DisplayName = string.Format(CultureInfo.InvariantCulture, "From {0}", ts);
+
 			this.Columns[Constants.TO_STRATUM_ID_COLUMN_NAME].DisplayName = string.Format(CultureInfo.InvariantCulture, "To {0}", s);
+
+			this.Columns[Constants.END_STRATUM_ID_COLUMN_NAME].DisplayName = string.Format(CultureInfo.InvariantCulture, "Transfer to {0}", s);
+			this.Columns[Constants.END_SECONDARY_STRATUM_ID_COLUMN_NAME].DisplayName = string.Format(CultureInfo.InvariantCulture, "Transfer to {0}", ss);
+			this.Columns[Constants.END_TERTIARY_STRATUM_ID_COLUMN_NAME].DisplayName = string.Format(CultureInfo.InvariantCulture, "Transfer to {0}", ts);
 		}
 	}
 }

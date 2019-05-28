@@ -17,8 +17,13 @@ namespace SyncroSim.STSimStockFlow
         private FlowMultiplierMap m_FlowMultiplierMap;
         private FlowSpatialMultiplierCollection m_FlowSpatialMultipliers = new FlowSpatialMultiplierCollection();
         private FlowSpatialMultiplierMap m_FlowSpatialMultiplierMap;
+        private FlowLateralMultiplierCollection m_FlowLateralMultipliers = new FlowLateralMultiplierCollection();
+        private FlowLateralMultiplierMap m_FlowLateralMultiplierMap;
 
-        public FlowMultiplierType(int? flowMultiplierTypeId, Scenario scenario, STSimDistributionProvider provider)
+        public FlowMultiplierType(
+            int? flowMultiplierTypeId, 
+            Scenario scenario, 
+            STSimDistributionProvider provider)
         {
             this.m_FlowMultiplierTypeId = flowMultiplierTypeId;
             this.m_Scenario = scenario;
@@ -49,6 +54,14 @@ namespace SyncroSim.STSimStockFlow
             }
         }
 
+        internal FlowLateralMultiplierMap FlowLateralMultiplierMap
+        {
+            get
+            {
+                return this.m_FlowLateralMultiplierMap;
+            }
+        }
+
         internal void AddFlowMultiplier(FlowMultiplier multiplier)
         {
             if (multiplier.FlowMultiplierTypeId != this.m_FlowMultiplierTypeId)
@@ -69,16 +82,32 @@ namespace SyncroSim.STSimStockFlow
             this.m_FlowSpatialMultipliers.Add(multiplier);
         }
 
+        internal void AddFlowLateralMultiplier(FlowLateralMultiplier multiplier)
+        {
+            if (multiplier.FlowMultiplierTypeId != this.m_FlowMultiplierTypeId)
+            {
+                throw new ArgumentException("The flow multiplier type is not correct.");
+            }
+
+            this.m_FlowLateralMultipliers.Add(multiplier);
+        }
+
         internal void ClearFlowMultiplierMap()
         {
             this.m_FlowMultipliers.Clear();
             this.m_FlowMultiplierMap = null;
         }
 
-         internal void ClearFlowSpatialMultiplierMap()
+        internal void ClearFlowSpatialMultiplierMap()
         {
             this.m_FlowSpatialMultipliers.Clear();
             this.m_FlowSpatialMultiplierMap = null;
+        }
+
+        internal void ClearFlowLateralMultiplierMap()
+        {
+            this.m_FlowLateralMultipliers.Clear();
+            this.m_FlowLateralMultiplierMap = null;
         }
 
         internal void CreateFlowMultiplierMap()
@@ -100,6 +129,17 @@ namespace SyncroSim.STSimStockFlow
 
                 this.m_FlowSpatialMultiplierMap = new FlowSpatialMultiplierMap(
                     this.m_Scenario, this.m_FlowSpatialMultipliers);
+            }
+        }
+
+        internal void CreateLateralFlowMultiplierMap()
+        {
+            if (this.m_FlowLateralMultipliers.Count > 0)
+            {
+                Debug.Assert(this.m_FlowLateralMultiplierMap == null);
+
+                this.m_FlowLateralMultiplierMap = new FlowLateralMultiplierMap(
+                    this.m_Scenario, this.m_FlowLateralMultipliers);
             }
         }
     }

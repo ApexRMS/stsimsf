@@ -8,6 +8,8 @@ namespace SyncroSim.STSimStockFlow
 		private int? m_Iteration;
 		private int? m_Timestep;
 		private int? m_FromStratumId;
+		private int? m_FromSecondaryStratumId;
+		private int? m_FromTertiaryStratumId;
 		private int? m_FromStateClassId;
 		private int? m_FromMinimumAge;
 		private int m_FromStockTypeId;
@@ -19,13 +21,42 @@ namespace SyncroSim.STSimStockFlow
 		private int? m_StateAttributeTypeId;
 		private int m_FlowTypeId;
 		private double m_Multiplier;
-		private double m_FlowAmount;
+        private int? m_TransferToStratumId;
+        private int? m_TransferToSecondaryStratumId;
+        private int? m_TransferToTertiaryStratumId;
+        private int? m_TransferToStateClassId;
+        private int? m_TransferToMinimumAge;
+        private double m_FlowAmount;
+        private bool m_IsLateral;
 
-		public FlowPathway(int? iteration, int? timestep, int? fromStratumId, int? fromStateClassId, int? fromMinimumAge, int fromStockTypeId, int? toStratumId, int? toStateClassId, int? toMinimumAge, int toStockTypeId, int transitionGroupId, int? stateAttributeTypeId, int flowTypeId, double multiplier)
+		public FlowPathway(
+            int? iteration, 
+            int? timestep, 
+            int? fromStratumId,
+            int? fromSecondaryStratumId,
+            int? fromTertiaryStratumId, 
+            int? fromStateClassId, 
+            int? fromMinimumAge, 
+            int fromStockTypeId, 
+            int? toStratumId, 
+            int? toStateClassId, 
+            int? toMinimumAge, 
+            int toStockTypeId, 
+            int transitionGroupId, 
+            int? stateAttributeTypeId, 
+            int flowTypeId, 
+            double multiplier,
+            int? transferToStratumId,
+            int? transferToSecondaryStratumId,
+            int? transferToTertiaryStratumId,
+            int? transferToStateClassId,
+            int? transferToMinimumAge)
 		{
 			this.m_Iteration = iteration;
 			this.m_Timestep = timestep;
 			this.m_FromStratumId = fromStratumId;
+            this.m_FromSecondaryStratumId = fromSecondaryStratumId;
+            this.m_FromTertiaryStratumId = fromTertiaryStratumId;
 			this.m_FromStateClassId = fromStateClassId;
 			this.m_FromMinimumAge = fromMinimumAge;
 			this.m_FromStockTypeId = fromStockTypeId;
@@ -37,7 +68,21 @@ namespace SyncroSim.STSimStockFlow
 			this.m_StateAttributeTypeId = stateAttributeTypeId;
 			this.m_FlowTypeId = flowTypeId;
 			this.m_Multiplier = multiplier;
-		}
+            this.m_TransferToStratumId = transferToStratumId;
+            this.m_TransferToSecondaryStratumId = transferToSecondaryStratumId;
+            this.m_TransferToTertiaryStratumId = transferToTertiaryStratumId;
+            this.m_TransferToStateClassId = transferToStateClassId;
+            this.m_TransferToMinimumAge = transferToMinimumAge;
+
+            if (this.m_TransferToStratumId.HasValue ||
+                this.m_TransferToSecondaryStratumId.HasValue ||
+                this.m_TransferToTertiaryStratumId.HasValue ||
+                this.m_TransferToStateClassId.HasValue ||
+                this.m_TransferToMinimumAge.HasValue)
+            {
+                this.m_IsLateral = true;
+            }
+        }
 
 		public int? Iteration
 		{
@@ -94,8 +139,23 @@ namespace SyncroSim.STSimStockFlow
 				return this.m_ToStratumId;
 			}
 		}
+        public int? FromSecondaryStratumId
+        {
+            get
+            {
+                return this.m_FromSecondaryStratumId;
+            }
+        }
 
-		public int? ToStateClassId
+        public int? FromTertiaryStratumId
+        {
+            get
+            {
+                return this.m_FromTertiaryStratumId;
+            }
+        }
+
+        public int? ToStateClassId
 		{
 			get
 			{
@@ -162,5 +222,53 @@ namespace SyncroSim.STSimStockFlow
 				this.m_FlowAmount = value;
 			}
 		}
-	}
+
+        public int? TransferToStratumId
+        {
+            get
+            {
+                return this.m_TransferToStratumId;
+            }
+        }
+
+        public int? TransferToSecondaryStratumId
+        {
+            get
+            {
+                return this.m_TransferToSecondaryStratumId;
+            }
+        }
+
+        public int? TransferToTertiaryStratumId
+        {
+            get
+            {
+                return this.m_TransferToTertiaryStratumId;
+            }
+        }
+
+        public int? TransferToStateClassId
+        {
+            get
+            {
+                return this.m_TransferToStateClassId;
+            }
+        }
+
+        public int? TransferToMinimumAge
+        {
+            get
+            {
+                return this.m_TransferToMinimumAge;
+            }
+        }
+
+        public bool IsLateral
+        {
+            get
+            {
+                return m_IsLateral;
+            }
+        }
+    }
 }
