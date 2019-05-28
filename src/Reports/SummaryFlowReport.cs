@@ -64,10 +64,16 @@ namespace SyncroSim.STSimStockFlow
 			c.Add(new ExportColumn("ToStateClass", "To State Class"));
 			c.Add(new ExportColumn("ToStock", "To Stock"));
 			c.Add(new ExportColumn("FlowGroup", "Flow Group"));
+			c.Add(new ExportColumn("EndStratum", "End " + PrimaryStratumLabel));
+			c.Add(new ExportColumn("EndSecondaryStratum", "End " + SecondaryStratumLabel));
+			c.Add(new ExportColumn("EndTertiaryStratum", "End " + TertiaryStratumLabel));
+			c.Add(new ExportColumn("EndStateClass", "End State Class"));
+			c.Add(new ExportColumn("EndMinAge", "End Min Age"));
+
 			c.Add(new ExportColumn("Amount", TotalValue));
 
 			c["Amount"].DecimalPlaces = 2;
-			c["Amount"].Alignment = Core.ColumnAlignment.Right;
+			c["Amount"].Alignment = ColumnAlignment.Right;
 
 			return c;
 		}
@@ -76,81 +82,79 @@ namespace SyncroSim.STSimStockFlow
 		{
 			string ScenFilter = this.CreateActiveResultScenarioFilter();
 
-			if (isCSV)
-			{
-				return string.Format(CultureInfo.InvariantCulture, 
-                    "SELECT " + "SF_OutputFlow.ScenarioID, " + 
-                    "SF_OutputFlow.Iteration,  " + 
-                    "SF_OutputFlow.Timestep,  " + 
-                    "ST1.Name AS FromStratum, " + 
-                    "SS1.Name AS FromSecondaryStratum, " + 
-                    "TS1.Name AS FromTertiaryStratum, " + 
-                    "SC1.Name AS FromStateClass, " + 
-                    "STK1.Name AS FromStock, " + 
-                    "STSim_TransitionType.Name AS TransitionType, " + 
-                    "ST2.Name AS ToStratum, " + 
-                    "SC2.Name AS ToStateClass, " + 
-                    "STK2.Name AS ToStock, " + 
-                    "SF_FlowGroup.Name as FlowGroup, " + 
-                    "SF_OutputFlow.Amount " + 
-                    "FROM SF_OutputFlow " + 
-                    "INNER JOIN STSim_Stratum AS ST1 ON ST1.StratumID = SF_OutputFlow.FromStratumID " + 
-                    "INNER JOIN STSim_Stratum AS ST2 ON ST2.StratumID = SF_OutputFlow.ToStratumID " + 
-                    "LEFT JOIN STSim_SecondaryStratum AS SS1 ON SS1.SecondaryStratumID = SF_OutputFlow.FromSecondaryStratumID " + 
-                    "LEFT JOIN STSim_TertiaryStratum AS TS1 ON TS1.TertiaryStratumID = SF_OutputFlow.FromTertiaryStratumID " + 
-                    "INNER JOIN STSim_StateClass AS SC1 ON SC1.StateClassID = SF_OutputFlow.FromStateClassID " + 
-                    "INNER JOIN STSim_StateClass AS SC2 ON SC2.StateClassID = SF_OutputFlow.ToStateClassID " + 
-                    "INNER JOIN SF_StockType AS STK1 ON STK1.StockTypeID = SF_OutputFlow.FromStockTypeID " + 
-                    "INNER JOIN SF_StockType AS STK2 ON STK2.StockTypeID = SF_OutputFlow.ToStockTypeID " + 
-                    "INNER JOIN SF_FlowGroup ON SF_FlowGroup.FlowGroupID = SF_OutputFlow.FlowGroupID " + 
-                    "LEFT JOIN STSim_TransitionType ON STSim_TransitionType.TransitionTypeID = SF_OutputFlow.TransitionTypeID " + 
-                    "WHERE SF_OutputFlow.ScenarioID IN ({0})  " + 
-                    "ORDER BY " + 
-                    "SF_OutputFlow.ScenarioID, " + 
-                    "SF_OutputFlow.Iteration, " + 
-                    "SF_OutputFlow.Timestep, " + 
-                    "ST1.Name, " + "SS1.Name, " + "TS1.Name, " + "SC1.Name, " + "STK1.Name, " + 
-                    "STSim_TransitionType.Name, " + "ST2.Name, " + "SC2.Name, " + "STK2.Name, " + "SF_FlowGroup.Name", 
-                    ScenFilter);
-			}
-			else
-			{
-				return string.Format(CultureInfo.InvariantCulture, 
-                    "SELECT " + "SF_OutputFlow.ScenarioID, " + "SSim_Scenario.Name AS ScenarioName, " + 
-                    "SF_OutputFlow.Iteration,  " + 
-                    "SF_OutputFlow.Timestep,  " + 
-                    "ST1.Name AS FromStratum, " + 
-                    "SS1.Name AS FromSecondaryStratum, " + 
-                    "TS1.Name AS FromTertiaryStratum, " + 
-                    "SC1.Name AS FromStateClass, " + 
-                    "STK1.Name AS FromStock, " + 
-                    "STSim_TransitionType.Name AS TransitionType, " + 
-                    "ST2.Name AS ToStratum, " + 
-                    "SC2.Name AS ToStateClass, " + "STK2.Name AS ToStock, " + 
-                    "SF_FlowGroup.Name as FlowGroup, " +
-                    "SF_OutputFlow.Amount " + 
-                    "FROM SF_OutputFlow " + 
-                    "INNER JOIN SSim_Scenario ON SSim_Scenario.ScenarioID = SF_OutputFlow.ScenarioID " + 
-                    "INNER JOIN STSim_Stratum AS ST1 ON ST1.StratumID = SF_OutputFlow.FromStratumID " + 
-                    "INNER JOIN STSim_Stratum AS ST2 ON ST2.StratumID = SF_OutputFlow.ToStratumID " + 
-                    "LEFT JOIN STSim_SecondaryStratum AS SS1 ON SS1.SecondaryStratumID = SF_OutputFlow.FromSecondaryStratumID " + 
-                    "LEFT JOIN STSim_TertiaryStratum AS TS1 ON TS1.TertiaryStratumID = SF_OutputFlow.FromTertiaryStratumID " + 
-                    "INNER JOIN STSim_StateClass AS SC1 ON SC1.StateClassID = SF_OutputFlow.FromStateClassID " + 
-                    "INNER JOIN STSim_StateClass AS SC2 ON SC2.StateClassID = SF_OutputFlow.ToStateClassID " + 
-                    "INNER JOIN SF_StockType AS STK1 ON STK1.StockTypeID = SF_OutputFlow.FromStockTypeID " + 
-                    "INNER JOIN SF_StockType AS STK2 ON STK2.StockTypeID = SF_OutputFlow.ToStockTypeID " + 
-                    "INNER JOIN SF_FlowGroup ON SF_FlowGroup.FlowGroupID = SF_OutputFlow.FlowGroupID " + 
-                    "LEFT JOIN STSim_TransitionType ON STSim_TransitionType.TransitionTypeID = SF_OutputFlow.TransitionTypeID " + 
-                    "WHERE SF_OutputFlow.ScenarioID IN ({0})  " + 
-                    "ORDER BY " + 
-                    "SF_OutputFlow.ScenarioID, " + 
-                    "SSim_Scenario.Name, " + 
-                    "SF_OutputFlow.Iteration, " + 
-                    "SF_OutputFlow.Timestep, " + 
-                    "ST1.Name, " + "SS1.Name, " + "TS1.Name, " + "SC1.Name, " + "STK1.Name, " + "STSim_TransitionType.Name, " + 
-                    "ST2.Name, " + "SC2.Name, " + "STK2.Name, " + "SF_FlowGroup.Name", 
-                    ScenFilter);
-			}
+            string Query =
+                "SELECT " +
+                "SF_OutputFlow.ScenarioID, ";
+
+            if (!isCSV)
+            {
+                Query += "SSim_Scenario.Name AS ScenarioName, ";
+            }
+
+            Query += string.Format(CultureInfo.InvariantCulture,
+                "SF_OutputFlow.Iteration,  " +
+                "SF_OutputFlow.Timestep,  " +
+                "ST1.Name AS FromStratum, " +
+                "SS1.Name AS FromSecondaryStratum, " +
+                "TS1.Name AS FromTertiaryStratum, " +
+                "SC1.Name AS FromStateClass, " +
+                "STK1.Name AS FromStock, " +
+                "STSim_TransitionType.Name AS TransitionType, " +
+                "ST2.Name AS ToStratum, " +
+                "SC2.Name AS ToStateClass, " +
+                "STK2.Name AS ToStock, " +
+                "SF_FlowGroup.Name as FlowGroup, " +
+                "ST3.Name AS EndStratum, " +
+                "SS2.Name AS EndSecondaryStratum, " +
+                "TS2.Name AS EndTertiaryStratum, " +
+                "SC3.Name AS EndStateClass, " +
+                "SF_OutputFlow.EndMinAge, " +
+                "SF_OutputFlow.Amount " +
+                "FROM SF_OutputFlow " +
+                "INNER JOIN SSim_Scenario ON SSim_Scenario.ScenarioID = SF_OutputFlow.ScenarioID " +
+                "INNER JOIN STSim_Stratum AS ST1 ON ST1.StratumID = SF_OutputFlow.FromStratumID " +
+                "INNER JOIN STSim_Stratum AS ST2 ON ST2.StratumID = SF_OutputFlow.ToStratumID " +
+                "INNER JOIN STSim_Stratum AS ST3 ON ST3.StratumID = SF_OutputFlow.EndStratumID " +
+                "LEFT JOIN STSim_SecondaryStratum AS SS1 ON SS1.SecondaryStratumID = SF_OutputFlow.FromSecondaryStratumID " +
+                "LEFT JOIN STSim_SecondaryStratum AS SS2 ON SS2.SecondaryStratumID = SF_OutputFlow.EndSecondaryStratumID " +
+                "LEFT JOIN STSim_TertiaryStratum AS TS1 ON TS1.TertiaryStratumID = SF_OutputFlow.FromTertiaryStratumID " +
+                "LEFT JOIN STSim_TertiaryStratum AS TS2 ON TS2.TertiaryStratumID = SF_OutputFlow.EndTertiaryStratumID " +
+                "INNER JOIN STSim_StateClass AS SC1 ON SC1.StateClassID = SF_OutputFlow.FromStateClassID " +
+                "INNER JOIN STSim_StateClass AS SC2 ON SC2.StateClassID = SF_OutputFlow.ToStateClassID " +
+                "INNER JOIN STSim_StateClass AS SC3 ON SC3.StateClassID = SF_OutputFlow.EndStateClassID " +
+                "INNER JOIN SF_StockType AS STK1 ON STK1.StockTypeID = SF_OutputFlow.FromStockTypeID " +
+                "INNER JOIN SF_StockType AS STK2 ON STK2.StockTypeID = SF_OutputFlow.ToStockTypeID " +
+                "INNER JOIN SF_FlowGroup ON SF_FlowGroup.FlowGroupID = SF_OutputFlow.FlowGroupID " +
+                "LEFT JOIN STSim_TransitionType ON STSim_TransitionType.TransitionTypeID = SF_OutputFlow.TransitionTypeID " +
+                "WHERE SF_OutputFlow.ScenarioID IN ({0})  " +
+                "ORDER BY " +
+                "SF_OutputFlow.ScenarioID, ", ScenFilter);
+
+            if (!isCSV)
+            {
+                Query += "SSim_Scenario.Name, ";
+            }
+             
+            Query +=       
+                "SF_OutputFlow.Iteration, " + 
+                "SF_OutputFlow.Timestep, " + 
+                "ST1.Name, " + 
+                "SS1.Name, " + 
+                "TS1.Name, " + 
+                "SC1.Name, " + 
+                "STK1.Name, " + 
+                "STSim_TransitionType.Name, " + 
+                "ST2.Name, " + 
+                "SC2.Name, " +
+                "STK2.Name, " + 
+                "SF_FlowGroup.Name, " + 
+                "ST3.Name, " +
+                "SS2.Name, " +
+                "TS2.Name, " +
+                "SC3.Name, " +
+                "SF_OutputFlow.EndMinAge";
+
+            return Query;
 		}
 	}
 }

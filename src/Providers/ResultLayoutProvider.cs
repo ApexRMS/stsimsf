@@ -29,6 +29,7 @@ namespace SyncroSim.STSimStockFlow
 				{
 					MapsGroup.Items.Add(new SyncroSimLayoutItem("stsim-stockflow:stock-raster-map", "Stock Type/Group", false));
 					MapsGroup.Items.Add(new SyncroSimLayoutItem("stsim-stockflow:flow-raster-map", "Flow Type/Group", false));
+					MapsGroup.Items.Add(new SyncroSimLayoutItem("stsim-stockflow:lateral-flow-raster-map", "Lateral Flow Type/Group", false));
 				}
 			}        
 		}

@@ -6,15 +6,15 @@ using System.Collections.ObjectModel;
 
 namespace SyncroSim.STSimStockFlow
 {
-	internal class OutputFlowCollection : KeyedCollection<TenIntegerLookupKey, OutputFlow>
+	internal class OutputFlowCollection : KeyedCollection<FifteenIntegerLookupKey, OutputFlow>
 	{
-		public OutputFlowCollection() : base(new TenIntegerLookupKeyEqualityComparer())
+		public OutputFlowCollection() : base(new FifteenIntegerLookupKeyEqualityComparer())
 		{
 		}
 
-		protected override TenIntegerLookupKey GetKeyForItem(OutputFlow item)
+		protected override FifteenIntegerLookupKey GetKeyForItem(OutputFlow item)
 		{
-			return new TenIntegerLookupKey(
+			return new FifteenIntegerLookupKey(
                 item.FromStratumId, 
                 LookupKeyUtilities.GetOutputCollectionKey(item.FromSecondaryStratumId), 
                 LookupKeyUtilities.GetOutputCollectionKey(item.FromTertiaryStratumId), 
@@ -24,7 +24,12 @@ namespace SyncroSim.STSimStockFlow
                 item.ToStratumId, 
                 item.ToStateClassId, 
                 item.ToStockTypeId, 
-                item.FlowGroupId);
+                item.FlowGroupId,
+                LookupKeyUtilities.GetOutputCollectionKey(item.TransferToStratumId),
+                LookupKeyUtilities.GetOutputCollectionKey(item.TransferToSecondaryStratumId),
+                LookupKeyUtilities.GetOutputCollectionKey(item.TransferToTertiaryStratumId),
+                LookupKeyUtilities.GetOutputCollectionKey(item.TransferToStateClassId),
+                LookupKeyUtilities.GetOutputCollectionKey(item.TransferToMinimumAge));
 		}
 	}
 }

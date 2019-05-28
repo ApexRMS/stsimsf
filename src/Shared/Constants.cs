@@ -49,6 +49,7 @@ namespace SyncroSim.STSimStockFlow
 		public const string DATASHEET_OUTPUT_STOCK_NAME = "SF_OutputStock";
 		public const string DATASHEET_OUTPUT_SPATIAL_STOCK_GROUP = "SF_OutputSpatialStockGroup";
 		public const string DATASHEET_OUTPUT_SPATIAL_FLOW_GROUP = "SF_OutputSpatialFlowGroup";
+		public const string DATASHEET_OUTPUT_LATERAL_FLOW_GROUP = "SF_OutputLateralFlowGroup";
 
 		//Common column names
 		public const string NAME_COLUMN_NAME = "Name";
@@ -104,7 +105,7 @@ namespace SyncroSim.STSimStockFlow
 		public const string END_SECONDARY_STRATUM_ID_COLUMN_NAME = "EndSecondaryStratumID";
 		public const string END_TERTIARY_STRATUM_ID_COLUMN_NAME = "EndTertiaryStratumID";
 		public const string END_STATECLASS_ID_COLUMN_NAME = "EndStateClassID";
-		public const string END_MIN_AGE_COLUMN_NAME = "EndAgeMin";
+		public const string END_MIN_AGE_COLUMN_NAME = "EndMinAge";
 
         public const string IS_AUTO_COLUMN_NAME = "IsAuto";
         public const string AUTO_COLUMN_SUFFIX = "[Type]";
@@ -138,6 +139,8 @@ namespace SyncroSim.STSimStockFlow
 		public const string DATASHEET_OO_SPATIAL_OUTPUT_ST_TIMESTEPS_COLUMN_NAME = "SpatialOutputSTTimesteps";
 		public const string DATASHEET_OO_SPATIAL_OUTPUT_FL_COLUMN_NAME = "SpatialOutputFL";
 		public const string DATASHEET_OO_SPATIAL_OUTPUT_FL_TIMESTEPS_COLUMN_NAME = "SpatialOutputFLTimesteps";
+		public const string DATASHEET_OO_LATERAL_OUTPUT_FL_COLUMN_NAME = "LateralOutputFL";
+		public const string DATASHEET_OO_LATERAL_OUTPUT_FL_TIMESTEPS_COLUMN_NAME = "LateralOutputFLTimesteps";
 
 		//Messages
 		public const string NO_SUMMARY_OUTPUT_OPTIONS_INFORMATION = "No summary output options specified for stocks and flows.  Using defaults.";
@@ -152,10 +155,9 @@ namespace SyncroSim.STSimStockFlow
 		public const string SPATIAL_PROCESS_WARNING = "The Flow Spatial Multiplier file '{0}' did not load, and will be ignored.";
 
         //Spatial Map file naming constants - Stock and Flow Group
-        public const string SPATIAL_MAP_EXPORT_STOCK_GROUP_VARIABLE_PREFIX = "Stkg";
 		public const string SPATIAL_MAP_STOCK_GROUP_VARIABLE_PREFIX = "stkg";
-		public const string SPATIAL_MAP_EXPORT_FLOW_GROUP_VARIABLE_PREFIX = "Flog";
 		public const string SPATIAL_MAP_FLOW_GROUP_VARIABLE_PREFIX = "flog";
+		public const string SPATIAL_MAP_LATERAL_FLOW_GROUP_VARIABLE_PREFIX = "lflog";
 
 		//Spatial Map file naming Regex filter, containing 1 ID value
 		public const string FILE_FILTER_ID_REGEX = "^(.*){0}-([\\d]*)\\.(tif|vrt)$";

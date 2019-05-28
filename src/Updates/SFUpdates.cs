@@ -1006,7 +1006,7 @@ namespace SyncroSim.STSimStockFlow
         /// <param name="store"></param>
         /// <remarks>
         /// This update adds new fields to SF_FlowPathway and SF_OutputFlow to support the
-        /// Lateral Flows feature.
+        /// Lateral Flows feature.  It also adds new fields to SF_OutputOptions for this.
         /// </remarks>
         private static void SF0000101(DataStore store)
         {
@@ -1110,6 +1110,12 @@ namespace SyncroSim.STSimStockFlow
                 };
 
                 UpdateProvider.CreateIndex(store, "SF_OutputFlow", cols);
+            }
+
+            if (store.TableExists("SF_OutputOptions"))
+            {
+                store.ExecuteNonQuery("ALTER TABLE SF_OutputOptions ADD COLUMN LateralOutputFL INTEGER");
+                store.ExecuteNonQuery("ALTER TABLE SF_OutputOptions ADD COLUMN LateralOutputFLTimesteps INTEGER");
             }
         }
     }

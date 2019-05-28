@@ -159,6 +159,8 @@
     <Compile Include="Runtime\InitialStockSpatialMap.cs" />
     <Compile Include="Runtime\LateralFlowAmountMap.cs" />
     <Compile Include="Runtime\LateralFlowAmountRecord.cs" />
+    <Compile Include="Runtime\LateralFlowCouplet.cs" />
+    <Compile Include="Runtime\LateralFlowCoupletMap.cs" />
     <Compile Include="Runtime\OutputFlow.cs" />
     <Compile Include="Runtime\OutputFlowCollection.cs" />
     <Compile Include="Runtime\OutputStock.cs" />

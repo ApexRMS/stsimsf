@@ -52,6 +52,7 @@ namespace SyncroSim.STSimStockFlow
                 r = new LateralFlowAmountRecord();
 
                 r.StockTypeId = stockTypeId;
+                r.FlowTypeId = flowTypeId;
                 r.StockAmount = amount;
                 m.AddItem(minimumAge, r);
 

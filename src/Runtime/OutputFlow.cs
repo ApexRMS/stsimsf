@@ -15,11 +15,30 @@ namespace SyncroSim.STSimStockFlow
 		private int m_ToStateClassId;
 		private int m_ToStockTypeId;
 		private int m_FlowGroupId;
+        private int? m_TransferToStratumId;
+        private int? m_TransferToSecondaryStratumId;
+        private int? m_TransferToTertiaryStratumId;
+        private int? m_TransferToStateClassId;
+        private int? m_TransferToMinimumAge;
 		private double m_Amount;
 
 		public OutputFlow(
-            int fromStratumId, int? fromSecondaryStratumId, int? fromTertiaryStratumId, int fromStateClassId, int fromStockTypeId, 
-            int? transitionTypeId, int toStratumId, int toStateClassId, int toStockTypeId, int flowGroupId, double amount)
+            int fromStratumId, 
+            int? fromSecondaryStratumId, 
+            int? fromTertiaryStratumId, 
+            int fromStateClassId, 
+            int fromStockTypeId, 
+            int? transitionTypeId, 
+            int toStratumId, 
+            int toStateClassId, 
+            int toStockTypeId, 
+            int flowGroupId, 
+            int? transferToStratumId, 
+            int? transferToSecondaryStratumId, 
+            int? transferToTertiaryStratumId, 
+            int? transferToStateClassId, 
+            int? transferToMinimumAge,
+            double amount)
 		{
 			this.m_FromStratumId = fromStratumId;
 			this.m_FromSecondaryStratumId = fromSecondaryStratumId;
@@ -31,6 +50,12 @@ namespace SyncroSim.STSimStockFlow
 			this.m_ToStateClassId = toStateClassId;
 			this.m_ToStockTypeId = toStockTypeId;
 			this.m_FlowGroupId = flowGroupId;
+            this.m_TransferToStratumId = transferToStratumId;
+            this.m_TransferToSecondaryStratumId = transferToSecondaryStratumId;
+            this.m_TransferToTertiaryStratumId = transferToTertiaryStratumId;
+            this.m_TransferToStateClassId = transferToStateClassId;
+            this.m_TransferToMinimumAge = transferToMinimumAge;
+
 			this.m_Amount = amount;
 		}
 
@@ -114,16 +139,56 @@ namespace SyncroSim.STSimStockFlow
 			}
 		}
 
-		public double Amount
-		{
-			get
-			{
-				return this.m_Amount;
-			}
-			set
-			{
-				this.m_Amount = value;
-			}
-		}
-	}
+        public int? TransferToStratumId
+        {
+            get
+            {
+                return this.m_TransferToStratumId;
+            }
+        }
+
+        public int? TransferToSecondaryStratumId
+        {
+            get
+            {
+                return this.m_TransferToSecondaryStratumId;
+            }
+        }
+
+        public int? TransferToTertiaryStratumId
+        {
+            get
+            {
+                return this.m_TransferToTertiaryStratumId;
+            }
+        }
+
+        public int? TransferToStateClassId
+        {
+            get
+            {
+                return this.m_TransferToStateClassId;
+            }
+        }
+
+        public int? TransferToMinimumAge
+        {
+            get
+            {
+                return this.m_TransferToMinimumAge;
+            }
+        }
+
+        public double Amount
+        {
+            get
+            {
+                return this.m_Amount;
+            }
+            set
+            {
+                this.m_Amount = value;
+            }
+        }
+    }
 }

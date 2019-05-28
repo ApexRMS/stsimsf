@@ -59,7 +59,7 @@ namespace SyncroSim.STSimStockFlow
 			SyncroSimLayoutItem FlowGroupsGroup = new SyncroSimLayoutItem("FlowGroups", "Flows", true);
 
 			FlowGroupsGroup.Properties.Add(new MetaDataProperty("dataSheet", "SF_OutputFlow"));
-			FlowGroupsGroup.Properties.Add(new MetaDataProperty("filter", "FromStratumID|FromSecondaryStratumID|FromTertiaryStratumID|FromStateClassID|FromStockTypeID|TransitionTypeID|ToStratumID|ToStateClassID|ToStockTypeID|FlowGroupID"));
+			FlowGroupsGroup.Properties.Add(new MetaDataProperty("filter", "FromStratumID|FromSecondaryStratumID|FromTertiaryStratumID|FromStateClassID|FromStockTypeID|TransitionTypeID|ToStratumID|ToStateClassID|ToStockTypeID|FlowGroupID|EndStratumID|EndSecondaryStratumID|EndTertiaryStratumID|EndStateClassID"));
 
 			AddFlowGroupChartVariables(project, FlowGroupsGroup.Items);
 

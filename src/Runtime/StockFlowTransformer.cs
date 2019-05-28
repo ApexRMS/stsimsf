@@ -337,9 +337,9 @@ namespace SyncroSim.STSimStockFlow
 			{
 				foreach (FlowType ft in this.m_FlowTypes)
 				{             
-					if (this.GetOutputFlowDictionary().ContainsKey(ft.Id))
+					if (this.GetSpatialOutputFlowDictionary().ContainsKey(ft.Id))
 					{
-						double[] arr = GetOutputFlowDictionary()[ft.Id];
+						double[] arr = GetSpatialOutputFlowDictionary()[ft.Id];
 
 						for (var i = 0; i <= arr.GetUpperBound(0); i++)
 						{
@@ -371,6 +371,8 @@ namespace SyncroSim.STSimStockFlow
 		/// <remarks></remarks>
 		private void OnSTSimAfterTimestep(object sender, TimestepEventArgs e)
 		{
+            this.DistributeLateralFlows(e.Iteration, e.Timestep);
+
 			if (this.m_STSimTransformer.IsOutputTimestep(e.Timestep, this.m_SummaryStockOutputTimesteps, this.m_CreateSummaryStockOutput))
 			{
 				this.OnSummaryStockOutput();
@@ -392,6 +394,11 @@ namespace SyncroSim.STSimStockFlow
 				if (this.m_STSimTransformer.IsOutputTimestep(e.Timestep, this.m_SpatialFlowOutputTimesteps, this.m_CreateSpatialFlowOutput))
 				{
 					this.ProcessFlowGroupSpatialData(e.Iteration, e.Timestep);
+				}
+
+				if (this.m_STSimTransformer.IsOutputTimestep(e.Timestep, this.m_LateralFlowOutputTimesteps, this.m_CreateLateralFlowOutput))
+				{
+					this.ProcessLateralFlowGroupSpatialData(e.Iteration, e.Timestep);
 				}
 			}
 
@@ -593,121 +600,6 @@ namespace SyncroSim.STSimStockFlow
 			}
 		}
 
-		private void ValidateFlowSpatialMultipliers()
-		{
-			Debug.Assert(this.m_IsSpatial);
-			DataSheet ds = this.ResultScenario.GetDataSheet(Constants.DATASHEET_FLOW_SPATIAL_MULTIPLIER_NAME);
-
-			for (int i = this.m_FlowSpatialMultipliers.Count - 1; i >= 0; i--)
-			{
-				FlowSpatialMultiplier r = this.m_FlowSpatialMultipliers[i];
-
-				if (!this.m_FlowSpatialMultiplierRasters.ContainsKey(r.FileName))
-				{
-					string msg = string.Format(CultureInfo.InvariantCulture, Constants.SPATIAL_PROCESS_WARNING, r.FileName);
-					RecordStatus(StatusType.Warning, msg);
-
-					continue;
-				}
-
-				string cmpMsg = "";
-				var cmpRes = this.STSimTransformer.InputRasters.CompareMetadata(this.m_FlowSpatialMultiplierRasters[r.FileName], ref cmpMsg);
-				string FullFilename = Spatial.GetSpatialInputFileName(ds, r.FileName, false);
-
-				if (cmpRes == CompareMetadataResult.ImportantDifferences)
-				{
-					string msg = string.Format(CultureInfo.InvariantCulture, Constants.SPATIAL_METADATA_WARNING, FullFilename);
-					RecordStatus(StatusType.Warning, msg);
-
-					this.m_FlowSpatialMultipliers.RemoveAt(i);
-				}
-				else
-				{
-					if (cmpRes == CompareMetadataResult.UnimportantDifferences)
-					{
-						string msg = string.Format(CultureInfo.InvariantCulture, Constants.SPATIAL_METADATA_INFO, FullFilename, cmpMsg);
-						RecordStatus(StatusType.Information, msg);
-					}
-				}
-			}
-		}
-
-        private void ValidateFlowLateralMultipliers()
-        {
-            Debug.Assert(this.m_IsSpatial);
-            DataSheet ds = this.ResultScenario.GetDataSheet(Constants.DATASHEET_FLOW_LATERAL_MULTIPLIER_NAME);
-
-            for (int i = this.m_FlowLateralMultipliers.Count - 1; i >= 0; i--)
-            {
-                FlowLateralMultiplier r = this.m_FlowLateralMultipliers[i];
-
-                if (!this.m_FlowLateralMultiplierRasters.ContainsKey(r.FileName))
-                {
-                    string msg = string.Format(CultureInfo.InvariantCulture, Constants.SPATIAL_PROCESS_WARNING, r.FileName);
-                    RecordStatus(StatusType.Warning, msg);
-
-                    continue;
-                }
-
-                string cmpMsg = "";
-                var cmpRes = this.STSimTransformer.InputRasters.CompareMetadata(this.m_FlowLateralMultiplierRasters[r.FileName], ref cmpMsg);
-                string FullFilename = Spatial.GetSpatialInputFileName(ds, r.FileName, false);
-
-                if (cmpRes == CompareMetadataResult.ImportantDifferences)
-                {
-                    string msg = string.Format(CultureInfo.InvariantCulture, Constants.SPATIAL_METADATA_WARNING, FullFilename);
-                    RecordStatus(StatusType.Warning, msg);
-
-                    this.m_FlowLateralMultipliers.RemoveAt(i);
-                }
-                else
-                {
-                    if (cmpRes == CompareMetadataResult.UnimportantDifferences)
-                    {
-                        string msg = string.Format(CultureInfo.InvariantCulture, Constants.SPATIAL_METADATA_INFO, FullFilename, cmpMsg);
-                        RecordStatus(StatusType.Information, msg);
-                    }
-                }
-            }
-        }
-
-        private List<List<FlowType>> CreateListOfFlowTypeLists()
-		{
-			List<List<FlowType>> FlowTypeLists = new List<List<FlowType>>();
-
-			if (this.m_ApplyEquallyRankedSimultaneously)
-			{
-				SortedDictionary<double, List<FlowType>> FlowTypeOrderDictionary = new SortedDictionary<double, List<FlowType>>();
-
-				foreach (FlowType ft in this.m_ShufflableFlowTypes)
-				{
-					if (!FlowTypeOrderDictionary.ContainsKey(ft.Order))
-					{
-						FlowTypeOrderDictionary.Add(ft.Order, new List<FlowType>());
-					}
-
-					FlowTypeOrderDictionary[ft.Order].Add(ft);
-				}
-
-				foreach (double order in FlowTypeOrderDictionary.Keys)
-				{
-					List<FlowType> l = FlowTypeOrderDictionary[order];
-					FlowTypeLists.Add(l);
-				}
-			}
-			else
-			{
-				foreach (FlowType ft in this.m_ShufflableFlowTypes)
-				{
-					List<FlowType> l = new List<FlowType>();
-					l.Add(ft);
-					FlowTypeLists.Add(l);
-				}
-			}
-
-			return (FlowTypeLists);
-		}
-
 		private void ApplyAutomaticFlows(CellChangeEventArgs e)
 		{
 			if (!this.m_FlowPathwayMap.HasRecords)
@@ -724,21 +616,6 @@ namespace SyncroSim.STSimStockFlow
 				{
 					this.ApplyTransitionFlows(l, st, e.SimulationCell, e.Iteration, e.Timestep, e.DeterministicPathway, null);
 				}
-			}
-		}
-
-		private void ResampleFlowMultiplierValues(int iteration, int timestep, DistributionFrequency frequency)
-		{
-			try
-			{
-				foreach (FlowMultiplier t in this.m_FlowMultipliers)
-				{
-					t.Sample(iteration, timestep, this.m_STSimTransformer.DistributionProvider, frequency);
-				}
-			}
-			catch (Exception ex)
-			{
-				throw new ArgumentException("Flow Multipliers" + " -> " + ex.Message);
 			}
 		}
 
@@ -875,12 +752,13 @@ namespace SyncroSim.STSimStockFlow
 
 					if (limdst != null)
 					{
-                        //DEVTODO: Don't check stock limits on destination stock if this is a lateral flow
-
-						if ((d[fp.ToStockTypeId] + fa) > limdst.StockMaximum)
-						{
-							fa = limdst.StockMaximum - d[fp.ToStockTypeId];
-						}
+                        if (!fp.IsLateral)
+                        {
+						    if ((d[fp.ToStockTypeId] + fa) > limdst.StockMaximum)
+						    {
+							    fa = limdst.StockMaximum - d[fp.ToStockTypeId];
+						    }
+                        }
 					}
 
 					d[fp.FromStockTypeId] -= fa;
@@ -896,12 +774,32 @@ namespace SyncroSim.STSimStockFlow
 
 					this.OnSummaryFlowOutput(timestep, cell, dtPathway, ptPathway, fp, fa);
 					this.OnSpatialFlowOutput(timestep, cell, fp.FlowTypeId, fa);
+
+                    if (fp.IsLateral)
+                    {
+                        this.OnLateralFlowOutput(timestep, cell, fp.FlowTypeId, -fa);
+                    }
 				}
 			}
 		}
 
-        private void AccumulateLateralFlowAmounts(FlowPathway flowPathway, double flowAmount)
+        private void ResampleFlowMultiplierValues(int iteration, int timestep, DistributionFrequency frequency)
         {
+            try
+            {
+                foreach (FlowMultiplier t in this.m_FlowMultipliers)
+                {
+                    t.Sample(iteration, timestep, this.m_STSimTransformer.DistributionProvider, frequency);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new ArgumentException("Flow Multipliers" + " -> " + ex.Message);
+            }
+        }
+
+        private void AccumulateLateralFlowAmounts(FlowPathway flowPathway, double flowAmount)
+        {      
             this.m_LateralFlowAmountMap.AddOrUpdate(
                 flowPathway.ToStockTypeId, 
                 flowPathway.FlowTypeId, 
@@ -915,19 +813,27 @@ namespace SyncroSim.STSimStockFlow
 
         private void DistributeLateralFlows(int iteration, int timestep)
         {
-            foreach (Cell cell in this.m_STSimTransformer.Cells)
+            foreach (LateralFlowCouplet couplet in this.m_LateralFlowCoupletMap.Couplets)
             {
-                foreach (StockType st in this.m_StockTypes)
+                foreach (Cell cell in this.m_STSimTransformer.Cells)
                 {
-                    foreach (FlowType ft in this.m_FlowTypes)
-                    {
-                        LateralFlowAmountRecord rec = this.m_LateralFlowAmountMap.GetRecord(
-                            st.Id, ft.Id, cell.StratumId, cell.SecondaryStratumId, cell.TertiaryStratumId, cell.StateClassId, cell.Age);
+                    LateralFlowAmountRecord rec = this.m_LateralFlowAmountMap.GetRecord(
+                        couplet.StockTypeId, 
+                        couplet.FlowTypeId, 
+                        cell.StratumId, 
+                        cell.SecondaryStratumId, 
+                        cell.TertiaryStratumId, 
+                        cell.StateClassId, 
+                        cell.Age);
 
-                        if (rec != null)
+                    if (rec != null)
+                    {
+                        double InvMult = this.GetFlowLateralMultiplier(couplet.FlowTypeId, cell, iteration, timestep); 
+
+                        if (InvMult > 0.0)
                         {
                             rec.Cells.Add(cell);
-                            rec.InverseMultiplier += this.GetFlowLateralMultiplier(ft, cell, iteration, timestep); 
+                            rec.InverseMultiplier += InvMult;
                         }
                     }
                 }
@@ -937,38 +843,15 @@ namespace SyncroSim.STSimStockFlow
             {
                 foreach (Cell RecCell in rec.Cells)
                 {
-                    foreach (FlowType ft in this.m_FlowTypes)
-                    {
-                        Dictionary<int, double> d = GetStockAmountDictionary(RecCell);
-                        double LateralFlowMultiplier = this.GetFlowLateralMultiplier(ft, RecCell, iteration, timestep);
+                    Dictionary<int, double> d = GetStockAmountDictionary(RecCell);
+                    double LateralFlowMultiplier = this.GetFlowLateralMultiplier(rec.FlowTypeId, RecCell, iteration, timestep);
 
-                        d[rec.StockTypeId] += ((LateralFlowMultiplier / rec.InverseMultiplier) * rec.StockAmount);
-                    }
+                    double FlowAmount = ((LateralFlowMultiplier / rec.InverseMultiplier) * rec.StockAmount);
+
+                    d[rec.StockTypeId] += FlowAmount;
+                    this.OnLateralFlowOutput(timestep, RecCell, rec.FlowTypeId, FlowAmount);
                 }
             }
-        }
-
-        private double GetFlowLateralMultiplier(FlowType flowType, Cell cell, int iteration, int timestep)
-        {
-            double Multiplier = 1.0;
-
-            foreach (FlowMultiplierType mt in this.m_FlowMultiplierTypes)
-            {
-                foreach (FlowGroupLinkage fgl in flowType.FlowGroupLinkages)
-                {
-                    if (this.m_IsSpatial && mt.FlowSpatialMultiplierMap != null)
-                    {
-                        Multiplier *= this.GetFlowLateralMultiplier(
-                            cell.CellId, 
-                            mt.FlowLateralMultiplierMap, 
-                            fgl.FlowGroup.Id, 
-                            iteration, 
-                            timestep);
-                    }
-                }
-            }
-
-            return Multiplier;
         }
 
 		private static double GetLimitBasedInitialStock(double value, StockLimit limit)

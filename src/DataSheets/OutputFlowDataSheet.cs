@@ -26,9 +26,9 @@ namespace SyncroSim.STSimStockFlow
 
 			this.Columns[Constants.TO_STRATUM_ID_COLUMN_NAME].DisplayName = string.Format(CultureInfo.InvariantCulture, "To {0}", s);
 
-			this.Columns[Constants.END_STRATUM_ID_COLUMN_NAME].DisplayName = string.Format(CultureInfo.InvariantCulture, "Transfer to {0}", s);
-			this.Columns[Constants.END_SECONDARY_STRATUM_ID_COLUMN_NAME].DisplayName = string.Format(CultureInfo.InvariantCulture, "Transfer to {0}", ss);
-			this.Columns[Constants.END_TERTIARY_STRATUM_ID_COLUMN_NAME].DisplayName = string.Format(CultureInfo.InvariantCulture, "Transfer to {0}", ts);
+			this.Columns[Constants.END_STRATUM_ID_COLUMN_NAME].DisplayName = string.Format(CultureInfo.InvariantCulture, "End {0}", s);
+			this.Columns[Constants.END_SECONDARY_STRATUM_ID_COLUMN_NAME].DisplayName = string.Format(CultureInfo.InvariantCulture, "End {0}", ss);
+			this.Columns[Constants.END_TERTIARY_STRATUM_ID_COLUMN_NAME].DisplayName = string.Format(CultureInfo.InvariantCulture, "End {0}", ts);
 		}
 	}
 }

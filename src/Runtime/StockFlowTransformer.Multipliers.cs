@@ -3,6 +3,9 @@
 
 using System;
 using System.Diagnostics;
+using System.Globalization;
+using SyncroSim.Core;
+using SyncroSim.STSim;
 using SyncroSim.StochasticTime;
 
 namespace SyncroSim.STSimStockFlow
@@ -90,6 +93,109 @@ namespace SyncroSim.STSimStockFlow
             else
             {
                 return v;
+            }
+        }
+
+        private double GetFlowLateralMultiplier(int flowTypeId, Cell cell, int iteration, int timestep)
+        {
+            double Multiplier = 1.0;
+            FlowType ft = this.m_FlowTypes[flowTypeId];
+
+            foreach (FlowMultiplierType mt in this.m_FlowMultiplierTypes)
+            {
+                foreach (FlowGroupLinkage fgl in ft.FlowGroupLinkages)
+                {
+                    if (this.m_IsSpatial && mt.FlowLateralMultiplierMap != null)
+                    {
+                        Multiplier *= this.GetFlowLateralMultiplier(
+                            cell.CellId,
+                            mt.FlowLateralMultiplierMap,
+                            fgl.FlowGroup.Id,
+                            iteration,
+                            timestep);
+                    }
+                }
+            }
+
+            Debug.Assert(Multiplier >= 0.0);
+            return Multiplier;
+        }
+
+        private void ValidateFlowSpatialMultipliers()
+        {
+            Debug.Assert(this.m_IsSpatial);
+            DataSheet ds = this.ResultScenario.GetDataSheet(Constants.DATASHEET_FLOW_SPATIAL_MULTIPLIER_NAME);
+
+            for (int i = this.m_FlowSpatialMultipliers.Count - 1; i >= 0; i--)
+            {
+                FlowSpatialMultiplier r = this.m_FlowSpatialMultipliers[i];
+
+                if (!this.m_FlowSpatialMultiplierRasters.ContainsKey(r.FileName))
+                {
+                    string msg = string.Format(CultureInfo.InvariantCulture, Constants.SPATIAL_PROCESS_WARNING, r.FileName);
+                    RecordStatus(StatusType.Warning, msg);
+
+                    continue;
+                }
+
+                string cmpMsg = "";
+                var cmpRes = this.STSimTransformer.InputRasters.CompareMetadata(this.m_FlowSpatialMultiplierRasters[r.FileName], ref cmpMsg);
+                string FullFilename = Spatial.GetSpatialInputFileName(ds, r.FileName, false);
+
+                if (cmpRes == CompareMetadataResult.ImportantDifferences)
+                {
+                    string msg = string.Format(CultureInfo.InvariantCulture, Constants.SPATIAL_METADATA_WARNING, FullFilename);
+                    RecordStatus(StatusType.Warning, msg);
+
+                    this.m_FlowSpatialMultipliers.RemoveAt(i);
+                }
+                else
+                {
+                    if (cmpRes == CompareMetadataResult.UnimportantDifferences)
+                    {
+                        string msg = string.Format(CultureInfo.InvariantCulture, Constants.SPATIAL_METADATA_INFO, FullFilename, cmpMsg);
+                        RecordStatus(StatusType.Information, msg);
+                    }
+                }
+            }
+        }
+
+        private void ValidateFlowLateralMultipliers()
+        {
+            Debug.Assert(this.m_IsSpatial);
+            DataSheet ds = this.ResultScenario.GetDataSheet(Constants.DATASHEET_FLOW_LATERAL_MULTIPLIER_NAME);
+
+            for (int i = this.m_FlowLateralMultipliers.Count - 1; i >= 0; i--)
+            {
+                FlowLateralMultiplier r = this.m_FlowLateralMultipliers[i];
+
+                if (!this.m_FlowLateralMultiplierRasters.ContainsKey(r.FileName))
+                {
+                    string msg = string.Format(CultureInfo.InvariantCulture, Constants.SPATIAL_PROCESS_WARNING, r.FileName);
+                    RecordStatus(StatusType.Warning, msg);
+
+                    continue;
+                }
+
+                string cmpMsg = "";
+                var cmpRes = this.STSimTransformer.InputRasters.CompareMetadata(this.m_FlowLateralMultiplierRasters[r.FileName], ref cmpMsg);
+                string FullFilename = Spatial.GetSpatialInputFileName(ds, r.FileName, false);
+
+                if (cmpRes == CompareMetadataResult.ImportantDifferences)
+                {
+                    string msg = string.Format(CultureInfo.InvariantCulture, Constants.SPATIAL_METADATA_WARNING, FullFilename);
+                    RecordStatus(StatusType.Warning, msg);
+
+                    this.m_FlowLateralMultipliers.RemoveAt(i);
+                }
+                else
+                {
+                    if (cmpRes == CompareMetadataResult.UnimportantDifferences)
+                    {
+                        string msg = string.Format(CultureInfo.InvariantCulture, Constants.SPATIAL_METADATA_INFO, FullFilename, cmpMsg);
+                        RecordStatus(StatusType.Information, msg);
+                    }
+                }
             }
         }
     }

@@ -30,6 +30,8 @@ namespace SyncroSim.STSimStockFlow
 			this.SetTextBoxBinding(this.TextBoxSpatialSTTimesteps, Constants.DATASHEET_OO_SPATIAL_OUTPUT_ST_TIMESTEPS_COLUMN_NAME);
 			this.SetCheckBoxBinding(this.CheckBoxSpatialFL, Constants.DATASHEET_OO_SPATIAL_OUTPUT_FL_COLUMN_NAME);
 			this.SetTextBoxBinding(this.TextBoxSpatialFLTimesteps, Constants.DATASHEET_OO_SPATIAL_OUTPUT_FL_TIMESTEPS_COLUMN_NAME);
+			this.SetCheckBoxBinding(this.CheckBoxLateralFL, Constants.DATASHEET_OO_LATERAL_OUTPUT_FL_COLUMN_NAME);
+			this.SetTextBoxBinding(this.TextBoxLateralFLTimesteps, Constants.DATASHEET_OO_LATERAL_OUTPUT_FL_TIMESTEPS_COLUMN_NAME);
 
 			this.MonitorDataSheet("STSim_Terminology", this.OnTerminologyChanged, true);
 			this.AddStandardCommands();

@@ -11,11 +11,11 @@ namespace SyncroSim.STSimStockFlow
 {
 	internal static class LookupKeyUtilities
 	{
-		public static int GetOutputCollectionKey(int? stratumId)
+		public static int GetOutputCollectionKey(int? id)
 		{
-			if (stratumId.HasValue)
+			if (id.HasValue)
 			{
-				return stratumId.Value;
+				return id.Value;
 			}
 			else
 			{

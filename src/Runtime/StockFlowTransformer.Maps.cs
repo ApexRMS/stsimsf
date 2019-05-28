@@ -12,6 +12,7 @@ namespace SyncroSim.STSimStockFlow
 		private StockTransitionMultiplierMap m_StockTransitionMultiplierMap;
 		private FlowPathwayMap m_FlowPathwayMap;
 		private FlowOrderMap m_FlowOrderMap;
+        private LateralFlowCoupletMap m_LateralFlowCoupletMap;
 
 		private void CreateStockLimitMap()
 		{

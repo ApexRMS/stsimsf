@@ -22,8 +22,11 @@ namespace SyncroSim.STSimStockFlow
 		private bool m_CreateSpatialStockOutput;
 		private int m_SpatialStockOutputTimesteps;
 		private bool m_CreateSpatialFlowOutput;
+        private bool m_CreateLateralFlowOutput;
 		private int m_SpatialFlowOutputTimesteps;
+        private int m_LateralFlowOutputTimesteps;
 		private Dictionary<int, double[]> m_SpatialOutputFlowDict;
+		private Dictionary<int, double[]> m_LateralOutputFlowDict;
 		private OutputFlowCollection m_SummaryOutputFlowRecords = new OutputFlowCollection();
 		private OutputStockCollection m_SummaryOutputStockRecords = new OutputStockCollection();
 
@@ -169,7 +172,7 @@ namespace SyncroSim.STSimStockFlow
 
                 foreach (FlowGroupLinkage l in t.FlowGroupLinkages)
                 {
-                    TenIntegerLookupKey k = new TenIntegerLookupKey(
+                    FifteenIntegerLookupKey k = new FifteenIntegerLookupKey(
                         cell.StratumId,
                         GetSecondaryStratumIdKey(cell),
                         GetTertiaryStratumIdKey(cell),
@@ -179,7 +182,12 @@ namespace SyncroSim.STSimStockFlow
                         StratumIdDest,
                         StateClassIdDest,
                         flowPathway.ToStockTypeId,
-                        l.FlowGroup.Id);
+                        l.FlowGroup.Id, 
+                        LookupKeyUtilities.GetOutputCollectionKey(flowPathway.TransferToStratumId),
+                        LookupKeyUtilities.GetOutputCollectionKey(flowPathway.TransferToSecondaryStratumId),
+                        LookupKeyUtilities.GetOutputCollectionKey(flowPathway.TransferToTertiaryStratumId),
+                        LookupKeyUtilities.GetOutputCollectionKey(flowPathway.TransferToStateClassId),
+                        LookupKeyUtilities.GetOutputCollectionKey(flowPathway.TransferToMinimumAge));
 
                     if (this.m_SummaryOutputFlowRecords.Contains(k))
                     {
@@ -199,6 +207,11 @@ namespace SyncroSim.STSimStockFlow
                             StateClassIdDest,
                             flowPathway.ToStockTypeId,
                             l.FlowGroup.Id,
+                            flowPathway.TransferToStratumId,
+                            flowPathway.TransferToSecondaryStratumId,
+                            flowPathway.TransferToTertiaryStratumId,
+                            flowPathway.TransferToStateClassId,
+                            flowPathway.TransferToMinimumAge,
                             flowAmount * l.Value);
 
                         this.m_SummaryOutputFlowRecords.Add(r);
@@ -229,6 +242,12 @@ namespace SyncroSim.STSimStockFlow
 				dr[Constants.TO_STATECLASS_ID_COLUMN_NAME] = r.ToStateClassId;
 				dr[Constants.TO_STOCK_TYPE_ID_COLUMN_NAME] = r.ToStockTypeId;
                 dr[Constants.FLOW_GROUP_ID_COLUMN_NAME] = r.FlowGroupId;
+				dr[Constants.END_STRATUM_ID_COLUMN_NAME] = DataTableUtilities.GetNullableDatabaseValue(r.TransferToStratumId);
+				dr[Constants.END_SECONDARY_STRATUM_ID_COLUMN_NAME] = DataTableUtilities.GetNullableDatabaseValue(r.TransferToSecondaryStratumId);
+				dr[Constants.END_TERTIARY_STRATUM_ID_COLUMN_NAME] = DataTableUtilities.GetNullableDatabaseValue(r.TransferToTertiaryStratumId);
+				dr[Constants.END_STATECLASS_ID_COLUMN_NAME] = DataTableUtilities.GetNullableDatabaseValue(r.TransferToStateClassId);
+				dr[Constants.END_MIN_AGE_COLUMN_NAME] = DataTableUtilities.GetNullableDatabaseValue(r.TransferToMinimumAge);
+
                 dr[Constants.AMOUNT_COLUMN_NAME] = r.Amount;
 
 				this.m_OutputFlowTable.Rows.Add(dr);
@@ -285,7 +304,7 @@ namespace SyncroSim.STSimStockFlow
                 {
                     StochasticTimeRaster rastFlowType = this.STSimTransformer.InputRasters.CreateOutputRaster(RasterDataType.DTDouble);
 
-                    rastFlowType.DblCells = (double[])(GetOutputFlowDictionary()[l.FlowType.Id].Clone());
+                    rastFlowType.DblCells = (double[])(GetSpatialOutputFlowDictionary()[l.FlowType.Id].Clone());
                     rastFlowType.ScaleDblCells(l.Value);
                     rastOutput.AddDblCells(rastFlowType);
                 }
@@ -301,15 +320,47 @@ namespace SyncroSim.STSimStockFlow
             }
         }
 
-		/// <summary>
-		/// Adds to the flow summary result collection
-		/// </summary>
-		/// <param name="timestep"></param>
-		/// <param name="cell"></param>
-		/// <param name="flowTypeId"></param>
-		/// <param name="flowAmount"></param>
-		/// <remarks></remarks>
-		private void OnSpatialFlowOutput(int timestep, Cell cell, int flowTypeId, double flowAmount)
+        /// <summary>
+        /// Processes the current lateral flow group spatial data
+        /// </summary>
+        /// <remarks></remarks>
+        private void ProcessLateralFlowGroupSpatialData(int iteration, int timestep)
+        {
+            Debug.Assert(this.m_IsSpatial);
+
+            foreach (FlowGroup g in this.m_FlowGroups)
+            {
+                StochasticTimeRaster rastOutput = this.STSimTransformer.InputRasters.CreateOutputRaster(RasterDataType.DTDouble);
+
+                foreach (FlowTypeLinkage l in g.FlowTypeLinkages)
+                {
+                    StochasticTimeRaster rastFlowType = this.STSimTransformer.InputRasters.CreateOutputRaster(RasterDataType.DTDouble);
+
+                    rastFlowType.DblCells = (double[])(GetLateralOutputFlowDictionary()[l.FlowType.Id].Clone());
+                    rastFlowType.ScaleDblCells(l.Value);
+                    rastOutput.AddDblCells(rastFlowType);
+                }
+
+                Spatial.WriteRasterData(
+                    rastOutput,
+                    this.ResultScenario.GetDataSheet(Constants.DATASHEET_OUTPUT_LATERAL_FLOW_GROUP),
+                    iteration,
+                    timestep,
+                    g.Id,
+                    Constants.SPATIAL_MAP_LATERAL_FLOW_GROUP_VARIABLE_PREFIX,
+                    Constants.DATASHEET_OUTPUT_SPATIAL_FILENAME_COLUMN);
+            }
+        }
+
+        /// <summary>
+        /// Adds to the spatial flow summary result collection
+        /// </summary>
+        /// <param name="timestep"></param>
+        /// <param name="cell"></param>
+        /// <param name="flowTypeId"></param>
+        /// <param name="flowAmount"></param>
+        /// <remarks></remarks>
+        private void OnSpatialFlowOutput(int timestep, Cell cell, int flowTypeId, double flowAmount)
 		{
 			if (this.m_STSimTransformer.IsOutputTimestep(
                 timestep, 
@@ -317,9 +368,9 @@ namespace SyncroSim.STSimStockFlow
                 this.m_CreateSpatialFlowOutput) 
                 && this.m_IsSpatial)
 			{
-				if (GetOutputFlowDictionary().ContainsKey(flowTypeId))
+				if (GetSpatialOutputFlowDictionary().ContainsKey(flowTypeId))
 				{
-					double amt = GetOutputFlowDictionary()[flowTypeId][cell.CellId];
+					double amt = GetSpatialOutputFlowDictionary()[flowTypeId][cell.CellId];
 
 					if (amt.Equals(Spatial.DefaultNoDataValue))
 					{
@@ -327,7 +378,7 @@ namespace SyncroSim.STSimStockFlow
 					}
 
 					amt += (flowAmount / this.m_STSimTransformer.AmountPerCell);
-					GetOutputFlowDictionary()[flowTypeId][cell.CellId] = amt;
+					GetSpatialOutputFlowDictionary()[flowTypeId][cell.CellId] = amt;
 				}
 				else
 				{
@@ -336,7 +387,41 @@ namespace SyncroSim.STSimStockFlow
 			}
 		}
 
-		internal int GetSecondaryStratumIdKey(int? value)
+        /// <summary>
+        /// Adds to the lateral flow summary result collection
+        /// </summary>
+        /// <param name="timestep"></param>
+        /// <param name="cell"></param>
+        /// <param name="flowTypeId"></param>
+        /// <param name="flowAmount"></param>
+        /// <remarks></remarks>
+        private void OnLateralFlowOutput(int timestep, Cell cell, int flowTypeId, double flowAmount)
+        {
+            if (this.m_STSimTransformer.IsOutputTimestep(
+                timestep,
+                this.m_LateralFlowOutputTimesteps,
+                this.m_CreateLateralFlowOutput))
+            {
+                if (GetLateralOutputFlowDictionary().ContainsKey(flowTypeId))
+                {
+                    double amt = GetLateralOutputFlowDictionary()[flowTypeId][cell.CellId];
+
+                    if (amt.Equals(Spatial.DefaultNoDataValue))
+                    {
+                        amt = 0;
+                    }
+
+                    amt += (flowAmount / this.m_STSimTransformer.AmountPerCell);
+                    GetLateralOutputFlowDictionary()[flowTypeId][cell.CellId] = amt;
+                }
+                else
+                {
+                    Debug.Assert(false, "I think we expected to find a m_LateralOutputFlow object for the flowType " + flowTypeId.ToString("0000", CultureInfo.InvariantCulture));
+                }
+            }
+        }
+
+        internal int GetSecondaryStratumIdKey(int? value)
 		{
 			if (this.m_SummaryOmitSecondaryStrata)
 			{

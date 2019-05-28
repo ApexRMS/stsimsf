@@ -53,14 +53,14 @@ namespace SyncroSim.STSimStockFlow
 		}
 
         /// <summary>
-        /// Gets the output flow dictionary
+        /// Gets the spatial output flow dictionary
         /// </summary>
         /// <returns></returns>
         /// <remarks>
         /// We must lazy-load this dictionary because this transformer runs before ST-Sim's
         /// and so the cell data is not there yet.
         /// </remarks>
-        private Dictionary<int, double[]> GetOutputFlowDictionary()
+        private Dictionary<int, double[]> GetSpatialOutputFlowDictionary()
         {
             if (this.m_SpatialOutputFlowDict == null)
             {
@@ -75,6 +75,31 @@ namespace SyncroSim.STSimStockFlow
             }
 
             return this.m_SpatialOutputFlowDict;
+        }
+
+        /// <summary>
+        /// Gets the lateral output flow dictionary
+        /// </summary>
+        /// <returns></returns>
+        /// <remarks>
+        /// We must lazy-load this dictionary because this transformer runs before ST-Sim's
+        /// and so the cell data is not there yet.
+        /// </remarks>
+        private Dictionary<int, double[]> GetLateralOutputFlowDictionary()
+        {
+            if (this.m_LateralOutputFlowDict == null)
+            {
+                this.m_LateralOutputFlowDict = new Dictionary<int, double[]>();
+
+                foreach (FlowType ft in this.m_FlowTypes)
+                {
+                    double[] flowVals = null;
+                    flowVals = new double[this.STSimTransformer.InputRasters.NumberCells];
+                    this.m_LateralOutputFlowDict.Add(ft.Id, flowVals);
+                }
+            }
+
+            return this.m_LateralOutputFlowDict;
         }
 
         /// <summary>
@@ -141,7 +166,8 @@ namespace SyncroSim.STSimStockFlow
                 dr, Constants.DATASHEET_OO_SUMMARY_OUTPUT_ST_COLUMN_NAME) || 
                 DataTableUtilities.GetDataBool(dr, Constants.DATASHEET_OO_SUMMARY_OUTPUT_FL_COLUMN_NAME) || 
                 DataTableUtilities.GetDataBool(dr, Constants.DATASHEET_OO_SPATIAL_OUTPUT_ST_COLUMN_NAME) ||
-                DataTableUtilities.GetDataBool(dr, Constants.DATASHEET_OO_SPATIAL_OUTPUT_FL_COLUMN_NAME))
+                DataTableUtilities.GetDataBool(dr, Constants.DATASHEET_OO_SPATIAL_OUTPUT_FL_COLUMN_NAME) ||
+                DataTableUtilities.GetDataBool(dr, Constants.DATASHEET_OO_LATERAL_OUTPUT_FL_COLUMN_NAME))
 			{
 				return true;
 			}
@@ -176,5 +202,42 @@ namespace SyncroSim.STSimStockFlow
 
 			return true;
 		}
-	}
+
+        private List<List<FlowType>> CreateListOfFlowTypeLists()
+        {
+            List<List<FlowType>> FlowTypeLists = new List<List<FlowType>>();
+
+            if (this.m_ApplyEquallyRankedSimultaneously)
+            {
+                SortedDictionary<double, List<FlowType>> FlowTypeOrderDictionary = new SortedDictionary<double, List<FlowType>>();
+
+                foreach (FlowType ft in this.m_ShufflableFlowTypes)
+                {
+                    if (!FlowTypeOrderDictionary.ContainsKey(ft.Order))
+                    {
+                        FlowTypeOrderDictionary.Add(ft.Order, new List<FlowType>());
+                    }
+
+                    FlowTypeOrderDictionary[ft.Order].Add(ft);
+                }
+
+                foreach (double order in FlowTypeOrderDictionary.Keys)
+                {
+                    List<FlowType> l = FlowTypeOrderDictionary[order];
+                    FlowTypeLists.Add(l);
+                }
+            }
+            else
+            {
+                foreach (FlowType ft in this.m_ShufflableFlowTypes)
+                {
+                    List<FlowType> l = new List<FlowType>();
+                    l.Add(ft);
+                    FlowTypeLists.Add(l);
+                }
+            }
+
+            return (FlowTypeLists);
+        }
+    }
 }

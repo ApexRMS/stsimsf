@@ -517,12 +517,20 @@ namespace SyncroSim.STSimStockFlow
 		private void FillFlowPathways()
 		{      
 			Debug.Assert(this.m_FlowPathways.Count == 0);
+            Debug.Assert(this.m_LateralFlowCoupletMap == null);
+
+            this.m_LateralFlowCoupletMap = new LateralFlowCoupletMap();
 			DataSheet ds = this.ResultScenario.GetDataSheet(Constants.DATASHEET_FLOW_PATHWAY_NAME);
 
 			foreach (DataRow dr in ds.GetData().Rows)
 			{
                 FlowPathway fp = DataTableUtilities.CreateFlowPathway(dr);
                 this.m_FlowPathways.Add(fp);
+
+                if (fp.IsLateral)
+                {
+                    this.m_LateralFlowCoupletMap.AddCouplet(fp.ToStockTypeId, fp.FlowTypeId);
+                }
 			}      
 		}
 
