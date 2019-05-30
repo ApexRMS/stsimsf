@@ -60,17 +60,21 @@ namespace SyncroSim.STSimStockFlow
         /// We must lazy-load this dictionary because this transformer runs before ST-Sim's
         /// and so the cell data is not there yet.
         /// </remarks>
-        private Dictionary<int, double[]> GetSpatialOutputFlowDictionary()
+        private Dictionary<int, SpatialOutputFlowRecord> GetSpatialOutputFlowDictionary()
         {
             if (this.m_SpatialOutputFlowDict == null)
             {
-                this.m_SpatialOutputFlowDict = new Dictionary<int, double[]>();
+                this.m_SpatialOutputFlowDict = new Dictionary<int, SpatialOutputFlowRecord>();
 
                 foreach (FlowType ft in this.m_FlowTypes)
                 {
-                    double[] flowVals = null;
-                    flowVals = new double[this.STSimTransformer.InputRasters.NumberCells];
-                    this.m_SpatialOutputFlowDict.Add(ft.Id, flowVals);
+                    SpatialOutputFlowRecord rec = new SpatialOutputFlowRecord();
+
+                    rec.FlowTypeId = ft.Id;
+                    rec.Data = new double[this.STSimTransformer.InputRasters.NumberCells];
+                    rec.HasOutputData = false;
+
+                    this.m_SpatialOutputFlowDict.Add(ft.Id, rec);
                 }
             }
 
@@ -85,17 +89,21 @@ namespace SyncroSim.STSimStockFlow
         /// We must lazy-load this dictionary because this transformer runs before ST-Sim's
         /// and so the cell data is not there yet.
         /// </remarks>
-        private Dictionary<int, double[]> GetLateralOutputFlowDictionary()
+        private Dictionary<int, SpatialOutputFlowRecord> GetLateralOutputFlowDictionary()
         {
             if (this.m_LateralOutputFlowDict == null)
             {
-                this.m_LateralOutputFlowDict = new Dictionary<int, double[]>();
+                this.m_LateralOutputFlowDict = new Dictionary<int, SpatialOutputFlowRecord>();
 
                 foreach (FlowType ft in this.m_FlowTypes)
                 {
-                    double[] flowVals = null;
-                    flowVals = new double[this.STSimTransformer.InputRasters.NumberCells];
-                    this.m_LateralOutputFlowDict.Add(ft.Id, flowVals);
+                    SpatialOutputFlowRecord rec = new SpatialOutputFlowRecord();
+
+                    rec.FlowTypeId = ft.Id;
+                    rec.Data = new double[this.STSimTransformer.InputRasters.NumberCells];
+                    rec.HasOutputData = false;
+
+                    this.m_LateralOutputFlowDict.Add(ft.Id, rec);
                 }
             }
 

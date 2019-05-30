@@ -330,46 +330,81 @@ namespace SyncroSim.STSimStockFlow
 		/// <remarks></remarks>
 		private void OnSTSimBeforeTimestep(object sender, TimestepEventArgs e)
 		{
-			//Is it spatial flow output timestep.  If so, then iterate over flow types and initialize an output raster 
-			//for each flow type Initialize to DEFAULT_NODATA_VALUE
+            //Is it spatial flow output timestep.  If so, then iterate over flow types and initialize an output raster 
+            //for each flow type Initialize to DEFAULT_NODATA_VALUE.  Note that we need to do this for lateral rasters also.
+            //Note also that we need to set each SpatialOutputFlowRecord.HasOutputData to FALSE before each timestep.
 
-			if (this.m_STSimTransformer.IsOutputTimestep(e.Timestep, this.m_SpatialFlowOutputTimesteps, this.m_CreateSpatialFlowOutput))
-			{
-				foreach (FlowType ft in this.m_FlowTypes)
-				{             
-					if (this.GetSpatialOutputFlowDictionary().ContainsKey(ft.Id))
-					{
-						double[] arr = GetSpatialOutputFlowDictionary()[ft.Id];
+            if (this.m_STSimTransformer.IsOutputTimestep(e.Timestep, this.m_SpatialFlowOutputTimesteps, this.m_CreateSpatialFlowOutput))
+            {
+                foreach (FlowType ft in this.m_FlowTypes)
+                {
+                    //Spatial
+                    if (this.GetSpatialOutputFlowDictionary().ContainsKey(ft.Id))
+                    {
+                        SpatialOutputFlowRecord rec = GetSpatialOutputFlowDictionary()[ft.Id];
+                        Debug.Assert(rec.FlowTypeId == ft.Id);
 
-						for (var i = 0; i <= arr.GetUpperBound(0); i++)
-						{
-							arr[i] = Spatial.DefaultNoDataValue;
-						}
+                        for (var i = 0; i <= rec.Data.GetUpperBound(0); i++)
+                        {
+                            rec.Data[i] = Spatial.DefaultNoDataValue;
+                        }
 
+                        rec.HasOutputData = false;
+                    }
+
+                    //Spatial
+                    if (this.GetLateralOutputFlowDictionary().ContainsKey(ft.Id))
+                    {
+                        SpatialOutputFlowRecord rec = GetLateralOutputFlowDictionary()[ft.Id];
+                        Debug.Assert(rec.FlowTypeId == ft.Id);
+
+                        for (var i = 0; i <= rec.Data.GetUpperBound(0); i++)
+                        {
+                            rec.Data[i] = Spatial.DefaultNoDataValue;
+                        }
+
+                        rec.HasOutputData = false;
+                    }
+                }
 #if DEBUG
-						if (arr.Length > 0)
-						{
-							Debug.Assert(arr[0] == Spatial.DefaultNoDataValue);
-							Debug.Assert(arr[arr.Length - 1] == Spatial.DefaultNoDataValue);
-						}
+                VALIDATE_SPATIAL_OUTPUT_RECORDS(GetSpatialOutputFlowDictionary());
+                VALIDATE_SPATIAL_OUTPUT_RECORDS(GetLateralOutputFlowDictionary());
 #endif
-					}
-				}           
-			}
+            }
 
+            //Resample the multiplier values
 			this.ResampleFlowMultiplierValues(e.Iteration, e.Timestep, DistributionFrequency.Timestep);
 
+            //Clear the lateral flow amount map
             Debug.Assert(this.m_LateralFlowAmountMap == null);
             this.m_LateralFlowAmountMap = new LateralFlowAmountMap();
-		}
+        }
 
-		/// <summary>
-		/// Handles the AfterTimestep event
-		/// </summary>
-		/// <param name="sender"></param>
-		/// <param name="e"></param>
-		/// <remarks></remarks>
-		private void OnSTSimAfterTimestep(object sender, TimestepEventArgs e)
+#if DEBUG
+        private static void VALIDATE_SPATIAL_OUTPUT_RECORDS(Dictionary<int, SpatialOutputFlowRecord> recs)
+        {
+            foreach (KeyValuePair<int, SpatialOutputFlowRecord> kvp in recs)
+            {
+                Debug.Assert(kvp.Key != 0);
+
+                if (kvp.Value.Data.Length > 0)
+                {
+                    Debug.Assert(kvp.Value.Data[0] == Spatial.DefaultNoDataValue);
+                    Debug.Assert(kvp.Value.Data[kvp.Value.Data.Length - 1] == Spatial.DefaultNoDataValue);
+                }
+
+                Debug.Assert(kvp.Value.HasOutputData == false);
+            }
+        }
+#endif
+
+        /// <summary>
+        /// Handles the AfterTimestep event
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        /// <remarks></remarks>
+        private void OnSTSimAfterTimestep(object sender, TimestepEventArgs e)
 		{
             this.DistributeLateralFlows(e.Iteration, e.Timestep);
 
@@ -844,8 +879,8 @@ namespace SyncroSim.STSimStockFlow
                 foreach (Cell RecCell in rec.Cells)
                 {
                     Dictionary<int, double> d = GetStockAmountDictionary(RecCell);
-                    double LateralFlowMultiplier = this.GetFlowLateralMultiplier(rec.FlowTypeId, RecCell, iteration, timestep);
 
+                    double LateralFlowMultiplier = this.GetFlowLateralMultiplier(rec.FlowTypeId, RecCell, iteration, timestep);
                     double FlowAmount = ((LateralFlowMultiplier / rec.InverseMultiplier) * rec.StockAmount);
 
                     d[rec.StockTypeId] += FlowAmount;

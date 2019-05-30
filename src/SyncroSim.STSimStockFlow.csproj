@@ -165,6 +165,7 @@
     <Compile Include="Runtime\OutputFlowCollection.cs" />
     <Compile Include="Runtime\OutputStock.cs" />
     <Compile Include="Runtime\OutputStockCollection.cs" />
+    <Compile Include="Runtime\SpatialOutputFlowRecord.cs" />
     <Compile Include="Runtime\StockFlowMapBase.cs" />
     <Compile Include="Runtime\StockFlowMapBase1.cs" />
     <Compile Include="Runtime\StockFlowMapBase6.cs" />

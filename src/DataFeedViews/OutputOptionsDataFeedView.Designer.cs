@@ -35,6 +35,9 @@
             this.CheckBoxSpatialFL = new System.Windows.Forms.CheckBox();
             this.CheckBoxSpatialST = new System.Windows.Forms.CheckBox();
             this.GroupBoxSpatial = new System.Windows.Forms.GroupBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.TextBoxLateralFLTimesteps = new System.Windows.Forms.TextBox();
+            this.CheckBoxLateralFL = new System.Windows.Forms.CheckBox();
             this.LabelSummaryFLTimesteps = new System.Windows.Forms.Label();
             this.LabelSummarySTTimesteps = new System.Windows.Forms.Label();
             this.TextBoxSummaryFLTimesteps = new System.Windows.Forms.TextBox();
@@ -42,9 +45,6 @@
             this.TextBoxSummarySTTimesteps = new System.Windows.Forms.TextBox();
             this.CheckBoxSummaryFL = new System.Windows.Forms.CheckBox();
             this.CheckBoxSummaryST = new System.Windows.Forms.CheckBox();
-            this.CheckBoxLateralFL = new System.Windows.Forms.CheckBox();
-            this.TextBoxLateralFLTimesteps = new System.Windows.Forms.TextBox();
-            this.label1 = new System.Windows.Forms.Label();
             this.GroupBoxSpatial.SuspendLayout();
             this.GroupBoxSummary.SuspendLayout();
             this.SuspendLayout();
@@ -121,6 +121,33 @@
             this.GroupBoxSpatial.TabStop = false;
             this.GroupBoxSpatial.Text = "Spatial output";
             // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(206, 69);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(51, 13);
+            this.label1.TabIndex = 5;
+            this.label1.Text = "timesteps";
+            // 
+            // TextBoxLateralFLTimesteps
+            // 
+            this.TextBoxLateralFLTimesteps.Location = new System.Drawing.Point(144, 67);
+            this.TextBoxLateralFLTimesteps.Name = "TextBoxLateralFLTimesteps";
+            this.TextBoxLateralFLTimesteps.Size = new System.Drawing.Size(56, 20);
+            this.TextBoxLateralFLTimesteps.TabIndex = 5;
+            this.TextBoxLateralFLTimesteps.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            // 
+            // CheckBoxLateralFL
+            // 
+            this.CheckBoxLateralFL.AutoSize = true;
+            this.CheckBoxLateralFL.Location = new System.Drawing.Point(15, 70);
+            this.CheckBoxLateralFL.Name = "CheckBoxLateralFL";
+            this.CheckBoxLateralFL.Size = new System.Drawing.Size(117, 17);
+            this.CheckBoxLateralFL.TabIndex = 4;
+            this.CheckBoxLateralFL.Text = "Lateral Flows every";
+            this.CheckBoxLateralFL.UseVisualStyleBackColor = true;
+            // 
             // LabelSummaryFLTimesteps
             // 
             this.LabelSummaryFLTimesteps.AutoSize = true;
@@ -189,33 +216,6 @@
             this.CheckBoxSummaryST.TabIndex = 0;
             this.CheckBoxSummaryST.Text = "Stocks every";
             this.CheckBoxSummaryST.UseVisualStyleBackColor = true;
-            // 
-            // CheckBoxLateralFL
-            // 
-            this.CheckBoxLateralFL.AutoSize = true;
-            this.CheckBoxLateralFL.Location = new System.Drawing.Point(15, 70);
-            this.CheckBoxLateralFL.Name = "CheckBoxLateralFL";
-            this.CheckBoxLateralFL.Size = new System.Drawing.Size(82, 17);
-            this.CheckBoxLateralFL.TabIndex = 4;
-            this.CheckBoxLateralFL.Text = "Flows every";
-            this.CheckBoxLateralFL.UseVisualStyleBackColor = true;
-            // 
-            // TextBoxLateralFLTimesteps
-            // 
-            this.TextBoxLateralFLTimesteps.Location = new System.Drawing.Point(144, 67);
-            this.TextBoxLateralFLTimesteps.Name = "TextBoxLateralFLTimesteps";
-            this.TextBoxLateralFLTimesteps.Size = new System.Drawing.Size(56, 20);
-            this.TextBoxLateralFLTimesteps.TabIndex = 5;
-            this.TextBoxLateralFLTimesteps.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(206, 69);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(51, 13);
-            this.label1.TabIndex = 5;
-            this.label1.Text = "timesteps";
             // 
             // OutputOptionsDataFeedView
             // 

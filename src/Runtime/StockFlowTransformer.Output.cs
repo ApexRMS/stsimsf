@@ -25,8 +25,8 @@ namespace SyncroSim.STSimStockFlow
         private bool m_CreateLateralFlowOutput;
 		private int m_SpatialFlowOutputTimesteps;
         private int m_LateralFlowOutputTimesteps;
-		private Dictionary<int, double[]> m_SpatialOutputFlowDict;
-		private Dictionary<int, double[]> m_LateralOutputFlowDict;
+		private Dictionary<int, SpatialOutputFlowRecord> m_SpatialOutputFlowDict;
+		private Dictionary<int, SpatialOutputFlowRecord> m_LateralOutputFlowDict;
 		private OutputFlowCollection m_SummaryOutputFlowRecords = new OutputFlowCollection();
 		private OutputStockCollection m_SummaryOutputStockRecords = new OutputStockCollection();
 
@@ -298,25 +298,39 @@ namespace SyncroSim.STSimStockFlow
 
             foreach (FlowGroup g in this.m_FlowGroups)
             {
+                bool AtLeastOne = false;
                 StochasticTimeRaster rastOutput = this.STSimTransformer.InputRasters.CreateOutputRaster(RasterDataType.DTDouble);
 
                 foreach (FlowTypeLinkage l in g.FlowTypeLinkages)
                 {
-                    StochasticTimeRaster rastFlowType = this.STSimTransformer.InputRasters.CreateOutputRaster(RasterDataType.DTDouble);
+                    if (GetSpatialOutputFlowDictionary().ContainsKey(l.FlowType.Id))
+                    {
+                        SpatialOutputFlowRecord rec = GetSpatialOutputFlowDictionary()[l.FlowType.Id];
 
-                    rastFlowType.DblCells = (double[])(GetSpatialOutputFlowDictionary()[l.FlowType.Id].Clone());
-                    rastFlowType.ScaleDblCells(l.Value);
-                    rastOutput.AddDblCells(rastFlowType);
+                        if (rec.HasOutputData)
+                        {
+                            StochasticTimeRaster rastFlowType = this.STSimTransformer.InputRasters.CreateOutputRaster(RasterDataType.DTDouble);
+
+                            rastFlowType.DblCells = (double[])rec.Data.Clone();
+                            rastFlowType.ScaleDblCells(l.Value);
+                            rastOutput.AddDblCells(rastFlowType);
+
+                            AtLeastOne = true;
+                        }
+                    }
                 }
 
-                Spatial.WriteRasterData(
-                    rastOutput,
-                    this.ResultScenario.GetDataSheet(Constants.DATASHEET_OUTPUT_SPATIAL_FLOW_GROUP),
-                    iteration,
-                    timestep,
-                    g.Id,
-                    Constants.SPATIAL_MAP_FLOW_GROUP_VARIABLE_PREFIX,
-                    Constants.DATASHEET_OUTPUT_SPATIAL_FILENAME_COLUMN);
+                if (AtLeastOne)
+                {
+                    Spatial.WriteRasterData(
+                        rastOutput,
+                        this.ResultScenario.GetDataSheet(Constants.DATASHEET_OUTPUT_SPATIAL_FLOW_GROUP),
+                        iteration,
+                        timestep,
+                        g.Id,
+                        Constants.SPATIAL_MAP_FLOW_GROUP_VARIABLE_PREFIX,
+                        Constants.DATASHEET_OUTPUT_SPATIAL_FILENAME_COLUMN);
+                }
             }
         }
 
@@ -330,25 +344,39 @@ namespace SyncroSim.STSimStockFlow
 
             foreach (FlowGroup g in this.m_FlowGroups)
             {
+                bool AtLeastOne = false;
                 StochasticTimeRaster rastOutput = this.STSimTransformer.InputRasters.CreateOutputRaster(RasterDataType.DTDouble);
 
                 foreach (FlowTypeLinkage l in g.FlowTypeLinkages)
                 {
-                    StochasticTimeRaster rastFlowType = this.STSimTransformer.InputRasters.CreateOutputRaster(RasterDataType.DTDouble);
+                    if (GetLateralOutputFlowDictionary().ContainsKey(l.FlowType.Id))
+                    {
+                        SpatialOutputFlowRecord rec = GetLateralOutputFlowDictionary()[l.FlowType.Id];
 
-                    rastFlowType.DblCells = (double[])(GetLateralOutputFlowDictionary()[l.FlowType.Id].Clone());
-                    rastFlowType.ScaleDblCells(l.Value);
-                    rastOutput.AddDblCells(rastFlowType);
+                        if (rec.HasOutputData)
+                        {
+                            StochasticTimeRaster rastFlowType = this.STSimTransformer.InputRasters.CreateOutputRaster(RasterDataType.DTDouble);
+
+                            rastFlowType.DblCells = (double[])rec.Data.Clone();
+                            rastFlowType.ScaleDblCells(l.Value);
+                            rastOutput.AddDblCells(rastFlowType);
+
+                            AtLeastOne = true;
+                        }
+                    }
                 }
 
-                Spatial.WriteRasterData(
-                    rastOutput,
-                    this.ResultScenario.GetDataSheet(Constants.DATASHEET_OUTPUT_LATERAL_FLOW_GROUP),
-                    iteration,
-                    timestep,
-                    g.Id,
-                    Constants.SPATIAL_MAP_LATERAL_FLOW_GROUP_VARIABLE_PREFIX,
-                    Constants.DATASHEET_OUTPUT_SPATIAL_FILENAME_COLUMN);
+                if (AtLeastOne)
+                {
+                    Spatial.WriteRasterData(
+                        rastOutput,
+                        this.ResultScenario.GetDataSheet(Constants.DATASHEET_OUTPUT_LATERAL_FLOW_GROUP),
+                        iteration,
+                        timestep,
+                        g.Id,
+                        Constants.SPATIAL_MAP_LATERAL_FLOW_GROUP_VARIABLE_PREFIX,
+                        Constants.DATASHEET_OUTPUT_SPATIAL_FILENAME_COLUMN);
+                }
             }
         }
 
@@ -370,7 +398,8 @@ namespace SyncroSim.STSimStockFlow
 			{
 				if (GetSpatialOutputFlowDictionary().ContainsKey(flowTypeId))
 				{
-					double amt = GetSpatialOutputFlowDictionary()[flowTypeId][cell.CellId];
+                    SpatialOutputFlowRecord rec = GetSpatialOutputFlowDictionary()[flowTypeId];
+					double amt = rec.Data[cell.CellId];
 
 					if (amt.Equals(Spatial.DefaultNoDataValue))
 					{
@@ -378,7 +407,9 @@ namespace SyncroSim.STSimStockFlow
 					}
 
 					amt += (flowAmount / this.m_STSimTransformer.AmountPerCell);
-					GetSpatialOutputFlowDictionary()[flowTypeId][cell.CellId] = amt;
+
+					rec.Data[cell.CellId] = amt;
+                    rec.HasOutputData = true;
 				}
 				else
 				{
@@ -404,7 +435,8 @@ namespace SyncroSim.STSimStockFlow
             {
                 if (GetLateralOutputFlowDictionary().ContainsKey(flowTypeId))
                 {
-                    double amt = GetLateralOutputFlowDictionary()[flowTypeId][cell.CellId];
+                    SpatialOutputFlowRecord rec = GetLateralOutputFlowDictionary()[flowTypeId];
+                    double amt = rec.Data[cell.CellId];
 
                     if (amt.Equals(Spatial.DefaultNoDataValue))
                     {
@@ -412,7 +444,9 @@ namespace SyncroSim.STSimStockFlow
                     }
 
                     amt += (flowAmount / this.m_STSimTransformer.AmountPerCell);
-                    GetLateralOutputFlowDictionary()[flowTypeId][cell.CellId] = amt;
+
+                    rec.Data[cell.CellId] = amt;
+                    rec.HasOutputData = true;
                 }
                 else
                 {
