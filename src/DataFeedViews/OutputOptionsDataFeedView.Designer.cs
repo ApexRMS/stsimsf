@@ -35,7 +35,7 @@
             this.CheckBoxSpatialFL = new System.Windows.Forms.CheckBox();
             this.CheckBoxSpatialST = new System.Windows.Forms.CheckBox();
             this.GroupBoxSpatial = new System.Windows.Forms.GroupBox();
-            this.label1 = new System.Windows.Forms.Label();
+            this.LabelLateralFLTimesteps = new System.Windows.Forms.Label();
             this.TextBoxLateralFLTimesteps = new System.Windows.Forms.TextBox();
             this.CheckBoxLateralFL = new System.Windows.Forms.CheckBox();
             this.LabelSummaryFLTimesteps = new System.Windows.Forms.Label();
@@ -105,7 +105,7 @@
             // 
             // GroupBoxSpatial
             // 
-            this.GroupBoxSpatial.Controls.Add(this.label1);
+            this.GroupBoxSpatial.Controls.Add(this.LabelLateralFLTimesteps);
             this.GroupBoxSpatial.Controls.Add(this.LabelSpatialFLTimesteps);
             this.GroupBoxSpatial.Controls.Add(this.LabelSpatialSTTimesteps);
             this.GroupBoxSpatial.Controls.Add(this.TextBoxLateralFLTimesteps);
@@ -121,14 +121,14 @@
             this.GroupBoxSpatial.TabStop = false;
             this.GroupBoxSpatial.Text = "Spatial output";
             // 
-            // label1
+            // LabelLateralFLTimesteps
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(206, 69);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(51, 13);
-            this.label1.TabIndex = 5;
-            this.label1.Text = "timesteps";
+            this.LabelLateralFLTimesteps.AutoSize = true;
+            this.LabelLateralFLTimesteps.Location = new System.Drawing.Point(206, 69);
+            this.LabelLateralFLTimesteps.Name = "LabelLateralFLTimesteps";
+            this.LabelLateralFLTimesteps.Size = new System.Drawing.Size(51, 13);
+            this.LabelLateralFLTimesteps.TabIndex = 5;
+            this.LabelLateralFLTimesteps.Text = "timesteps";
             // 
             // TextBoxLateralFLTimesteps
             // 
@@ -246,7 +246,7 @@
 		internal System.Windows.Forms.TextBox TextBoxSummarySTTimesteps;
 		internal System.Windows.Forms.CheckBox CheckBoxSummaryFL;
 		internal System.Windows.Forms.CheckBox CheckBoxSummaryST;
-        internal System.Windows.Forms.Label label1;
+        internal System.Windows.Forms.Label LabelLateralFLTimesteps;
         internal System.Windows.Forms.TextBox TextBoxLateralFLTimesteps;
         internal System.Windows.Forms.CheckBox CheckBoxLateralFL;
     }

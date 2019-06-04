@@ -99,6 +99,10 @@ namespace SyncroSim.STSimStockFlow
 			{
 				this.SetTextBoxData(this.TextBoxSpatialFLTimesteps, DEFAULT_TIMESTEP_VALUE);
 			}
+			else if (checkBox == this.CheckBoxLateralFL && this.CheckBoxLateralFL.Checked & string.IsNullOrEmpty(this.TextBoxLateralFLTimesteps.Text))
+			{
+				this.SetTextBoxData(this.TextBoxLateralFLTimesteps, DEFAULT_TIMESTEP_VALUE);
+			}
 
 			this.EnableControls();
 		}
@@ -110,12 +114,14 @@ namespace SyncroSim.STSimStockFlow
 			this.TextBoxSummaryFLTimesteps.Enabled = this.CheckBoxSummaryFL.Checked;
 			this.TextBoxSpatialSTTimesteps.Enabled = this.CheckBoxSpatialST.Checked;
 			this.TextBoxSpatialFLTimesteps.Enabled = this.CheckBoxSpatialFL.Checked;
+			this.TextBoxLateralFLTimesteps.Enabled = this.CheckBoxLateralFL.Checked;
 
 			//Timesteps labels
 			this.LabelSummarySTTimesteps.Enabled = this.CheckBoxSummaryST.Checked;
 			this.LabelSummaryFLTimesteps.Enabled = this.CheckBoxSummaryFL.Checked;
 			this.LabelSpatialSTTimesteps.Enabled = this.CheckBoxSpatialST.Checked;
 			this.LabelSpatialFLTimesteps.Enabled = this.CheckBoxSpatialFL.Checked;
+			this.LabelLateralFLTimesteps.Enabled = this.CheckBoxLateralFL.Checked;
 		}
 	}
 }
