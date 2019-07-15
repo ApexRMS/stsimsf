@@ -22,7 +22,7 @@ namespace SyncroSim.STSimStockFlow
 
 		public override DataTable GetData(DataStore store, ChartDescriptor descriptor, DataSheet dataSheet)
 		{
-			if (descriptor.DatasheetName == "SF_OutputStock" || descriptor.DatasheetName == "SF_OutputFlow")
+			if (descriptor.DatasheetName == "stsim_stockflow__OutputStock" || descriptor.DatasheetName == "stsim_stockflow__OutputFlow")
 			{
 				string[] v = descriptor.VariableName.Split('-');
 				string VarName = v[0];
@@ -45,7 +45,7 @@ namespace SyncroSim.STSimStockFlow
 			//Stock Groups
 			SyncroSimLayoutItem StockGroupsGroup = new SyncroSimLayoutItem("StockGroups", "Stocks", true);
 
-			StockGroupsGroup.Properties.Add(new MetaDataProperty("dataSheet", "SF_OutputStock"));
+			StockGroupsGroup.Properties.Add(new MetaDataProperty("dataSheet", "stsim_stockflow__OutputStock"));
 			StockGroupsGroup.Properties.Add(new MetaDataProperty("filter", "StratumID|SecondaryStratumID|TertiaryStratumID|StateClassID|StockGroupID"));
 
 			AddStockGroupChartVariables(project, StockGroupsGroup.Items);
@@ -58,7 +58,7 @@ namespace SyncroSim.STSimStockFlow
 			//Flow Groups
 			SyncroSimLayoutItem FlowGroupsGroup = new SyncroSimLayoutItem("FlowGroups", "Flows", true);
 
-			FlowGroupsGroup.Properties.Add(new MetaDataProperty("dataSheet", "SF_OutputFlow"));
+			FlowGroupsGroup.Properties.Add(new MetaDataProperty("dataSheet", "stsim_stockflow__OutputFlow"));
 			FlowGroupsGroup.Properties.Add(new MetaDataProperty("filter", "FromStratumID|FromSecondaryStratumID|FromTertiaryStratumID|FromStateClassID|FromStockTypeID|TransitionTypeID|ToStratumID|ToStateClassID|ToStockTypeID|FlowGroupID|EndStratumID|EndSecondaryStratumID|EndTertiaryStratumID|EndStateClassID"));
 
 			AddFlowGroupChartVariables(project, FlowGroupsGroup.Items);
@@ -78,7 +78,7 @@ namespace SyncroSim.STSimStockFlow
 				//Normal
 				SyncroSimLayoutItem ItemNormal = new SyncroSimLayoutItem("stockgroup", "Total", false);
 
-				ItemNormal.Properties.Add(new MetaDataProperty("dataSheet", "SF_OutputStock"));
+				ItemNormal.Properties.Add(new MetaDataProperty("dataSheet", "stsim_stockflow__OutputStock"));
 				ItemNormal.Properties.Add(new MetaDataProperty("column", "Amount"));
 				ItemNormal.Properties.Add(new MetaDataProperty("defaultValue", "0.0"));
 
@@ -87,7 +87,7 @@ namespace SyncroSim.STSimStockFlow
 				//Density
 				SyncroSimLayoutItem ItemDensity = new SyncroSimLayoutItem("stockgroupdensity", "Density", false);
 
-				ItemDensity.Properties.Add(new MetaDataProperty("dataSheet", "SF_OutputStock"));
+				ItemDensity.Properties.Add(new MetaDataProperty("dataSheet", "stsim_stockflow__OutputStock"));
 				ItemDensity.Properties.Add(new MetaDataProperty("column", "Amount"));
 				ItemDensity.Properties.Add(new MetaDataProperty("defaultValue", "0.0"));
 
@@ -103,7 +103,7 @@ namespace SyncroSim.STSimStockFlow
             {
 				SyncroSimLayoutItem ItemNormal = new SyncroSimLayoutItem("flowgroup", "Total", false);
 
-				ItemNormal.Properties.Add(new MetaDataProperty("dataSheet", "SF_OutputFlow"));
+				ItemNormal.Properties.Add(new MetaDataProperty("dataSheet", "stsim_stockflow__OutputFlow"));
 				ItemNormal.Properties.Add(new MetaDataProperty("column", "Amount"));
 				ItemNormal.Properties.Add(new MetaDataProperty("skipTimestepZero", "True"));
 				ItemNormal.Properties.Add(new MetaDataProperty("defaultValue", "0.0"));
@@ -113,7 +113,7 @@ namespace SyncroSim.STSimStockFlow
 				//Density
 				SyncroSimLayoutItem ItemDensity = new SyncroSimLayoutItem("flowgroupdensity", "Density", false);
 
-				ItemDensity.Properties.Add(new MetaDataProperty("dataSheet", "SF_OutputFlow"));
+				ItemDensity.Properties.Add(new MetaDataProperty("dataSheet", "stsim_stockflow__OutputFlow"));
 				ItemDensity.Properties.Add(new MetaDataProperty("column", "Amount"));
 				ItemDensity.Properties.Add(new MetaDataProperty("skipTimestepZero", "True"));
 				ItemDensity.Properties.Add(new MetaDataProperty("defaultValue", "0.0"));
@@ -262,7 +262,7 @@ namespace SyncroSim.STSimStockFlow
 			}
 
 			string query = string.Format(CultureInfo.InvariantCulture, 
-                "SELECT Iteration, Timestep, SUM(Amount) AS SumOfAmount FROM STSim_OutputStratum WHERE ({0}) GROUP BY Iteration, Timestep", 
+                "SELECT Iteration, Timestep, SUM(Amount) AS SumOfAmount FROM stsim__OutputStratum WHERE ({0}) GROUP BY Iteration, Timestep", 
                 WhereClause);
 
 			return query;

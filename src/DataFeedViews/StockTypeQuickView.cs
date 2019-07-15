@@ -621,7 +621,7 @@ namespace SyncroSim.STSimStockFlow
 		private string GetStratumLabelTerminology()
 		{
 			string l = "Stratum";
-			DataRow dr = this.m_DataFeed.Project.GetDataSheet("STSim_Terminology").GetDataRow();
+			DataRow dr = this.m_DataFeed.Project.GetDataSheet(Constants.DATASHEET_STSIM_TERMINOLOGY).GetDataRow();
 
 			if (dr != null)
 			{
@@ -637,7 +637,7 @@ namespace SyncroSim.STSimStockFlow
         private string GetSecondaryStratumLabelTerminology()
         {
             string l = "Secondary Stratum";
-            DataRow dr = this.m_DataFeed.Project.GetDataSheet("STSim_Terminology").GetDataRow();
+            DataRow dr = this.m_DataFeed.Project.GetDataSheet(Constants.DATASHEET_STSIM_TERMINOLOGY).GetDataRow();
 
             if (dr != null)
             {
@@ -653,7 +653,7 @@ namespace SyncroSim.STSimStockFlow
         private string GetTertiaryStratumLabelTerminology()
         {
             string l = "Tertiary Stratum";
-            DataRow dr = this.m_DataFeed.Project.GetDataSheet("STSim_Terminology").GetDataRow();
+            DataRow dr = this.m_DataFeed.Project.GetDataSheet(Constants.DATASHEET_STSIM_TERMINOLOGY).GetDataRow();
 
             if (dr != null)
             {

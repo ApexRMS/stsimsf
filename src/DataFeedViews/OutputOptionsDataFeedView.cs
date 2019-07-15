@@ -33,7 +33,7 @@ namespace SyncroSim.STSimStockFlow
 			this.SetCheckBoxBinding(this.CheckBoxLateralFL, Constants.DATASHEET_OO_LATERAL_OUTPUT_FL_COLUMN_NAME);
 			this.SetTextBoxBinding(this.TextBoxLateralFLTimesteps, Constants.DATASHEET_OO_LATERAL_OUTPUT_FL_TIMESTEPS_COLUMN_NAME);
 
-			this.MonitorDataSheet("STSim_Terminology", this.OnTerminologyChanged, true);
+			this.MonitorDataSheet(Constants.DATASHEET_STSIM_TERMINOLOGY, this.OnTerminologyChanged, true);
 			this.AddStandardCommands();
 		}
 

@@ -23,7 +23,7 @@ namespace SyncroSim.STSimStockFlow
 		{
 			foreach (Transformer t in this.Transformers)
 			{
-				if (t.Name == "stsim:runtime")
+				if (t.Name == "stsim__runtime")
 				{
 					return (STSim.STSimTransformer)t;
 				}

@@ -18,7 +18,7 @@ namespace SyncroSim.STSimStockFlow
 			string ss = null;
 			string ts = null;
 
-			TerminologyUtilities.GetStratumLabelStrings(this.Project.GetDataSheet("STSim_Terminology"), ref s, ref ss, ref ts);
+			TerminologyUtilities.GetStratumLabelStrings(this.Project.GetDataSheet(Constants.DATASHEET_STSIM_TERMINOLOGY), ref s, ref ss, ref ts);
 
 			this.Columns[Constants.FROM_STRATUM_ID_COLUMN_NAME].DisplayName = string.Format(CultureInfo.InvariantCulture, "From {0}", s);
 			this.Columns[Constants.FROM_SECONDARY_STRATUM_ID_COLUMN_NAME].DisplayName = string.Format(CultureInfo.InvariantCulture, "From {0}", ss);

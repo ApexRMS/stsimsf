@@ -27,7 +27,7 @@ namespace SyncroSim.STSimStockFlow
 
 		public static string GetTimestepUnits(Project project)
 		{
-			DataRow dr = project.GetDataSheet("STSim_Terminology").GetDataRow();
+			DataRow dr = project.GetDataSheet(Constants.DATASHEET_STSIM_TERMINOLOGY).GetDataRow();
 
 			if (dr == null || dr["TimestepUnits"] == DBNull.Value)
 			{

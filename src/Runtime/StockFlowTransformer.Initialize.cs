@@ -17,7 +17,7 @@ namespace SyncroSim.STSimStockFlow
 		/// <remarks></remarks>
 		private void InitializeSpatialRunFlag()
 		{
-			DataRow drrc = this.ResultScenario.GetDataSheet("STSim_RunControl").GetDataRow();
+			DataRow drrc = this.ResultScenario.GetDataSheet(Constants.DATASHEET_STSIM_RUN_CONTROL).GetDataRow();
 			this.m_IsSpatial = DataTableUtilities.GetDataBool(drrc["IsSpatial"]);
 		}
 
@@ -26,7 +26,7 @@ namespace SyncroSim.STSimStockFlow
 		/// </summary>
 		private void Initialize_SS_TS_Flags()
 		{
-			DataRow dr = this.ResultScenario.GetDataSheet("STSim_OutputOptions").GetDataRow();
+			DataRow dr = this.ResultScenario.GetDataSheet(Constants.DATASHEET_STSIM_OUTPUT_OPTIONS).GetDataRow();
 
 			if (dr != null)
 			{

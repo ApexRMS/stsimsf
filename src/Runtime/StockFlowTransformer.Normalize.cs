@@ -19,7 +19,7 @@ namespace SyncroSim.STSimStockFlow
 		/// <remarks></remarks>
 		private void NormalizeOutputOptions()
 		{
-			DataRow drrc = this.ResultScenario.GetDataSheet("STSim_RunControl").GetDataRow();
+			DataRow drrc = this.ResultScenario.GetDataSheet(Constants.DATASHEET_STSIM_RUN_CONTROL).GetDataRow();
 			int MaxTimestep = Convert.ToInt32(drrc["MaximumTimestep"], CultureInfo.InvariantCulture);
 			DataSheet dsoo = this.ResultScenario.GetDataSheet(Constants.DATASHEET_OO_NAME);
 			DataRow droo = dsoo.GetDataRow();

@@ -40,7 +40,7 @@ namespace SyncroSim.STSimStockFlow
 		{
 			ExportColumnCollection c = new ExportColumnCollection();
 			DataSheet dsterm = this.Project.GetDataSheet(Constants.DATASHEET_TERMINOLOGY_NAME);
-			DataSheet dstermSTSim = this.Project.GetDataSheet("STSim_Terminology");
+			DataSheet dstermSTSim = this.Project.GetDataSheet(Constants.DATASHEET_STSIM_TERMINOLOGY);
 			string StockUnits = TerminologyUtilities.GetTerminology(dsterm, Constants.STOCK_UNITS_COLUMN_NAME);
 			string TimestepLabel = TerminologyUtilities.GetTimestepUnits(this.Project);
 			string PrimaryStratumLabel = null;
@@ -73,47 +73,47 @@ namespace SyncroSim.STSimStockFlow
 
             string Query =
                 "SELECT " +
-                "SF_OutputStock.ScenarioID, ";
+                "stsim_stockflow__OutputStock.ScenarioID, ";
            
             if (!isCSV)
             {
-                Query += "SSim_Scenario.Name AS ScenarioName, ";
+                Query += "system__Scenario.Name AS ScenarioName, ";
             }
 
             Query += string.Format(CultureInfo.InvariantCulture,
-                "SF_OutputStock.Iteration, " +
-                "SF_OutputStock.Timestep, " +
+                "stsim_stockflow__OutputStock.Iteration, " +
+                "stsim_stockflow__OutputStock.Timestep, " +
                 "ST1.Name AS Stratum, " +
                 "ST2.Name AS SecondaryStratum, " +
                 "ST3.Name AS TertiaryStratum, " +
                 "SC1.Name AS StateClass, " +
-                "SF_StockGroup.Name as StockGroup, " +
-                "SF_OutputStock.Amount " +
-                "FROM SF_OutputStock " +
-                "INNER JOIN SSim_Scenario ON SSim_Scenario.ScenarioID = SF_OutputStock.ScenarioID " +
-                "INNER JOIN STSim_Stratum AS ST1 ON ST1.StratumID = SF_OutputStock.StratumID " +
-                "LEFT JOIN STSim_SecondaryStratum AS ST2 ON ST2.SecondaryStratumID = SF_OutputStock.SecondaryStratumID " +
-                "LEFT JOIN STSim_TertiaryStratum AS ST3 ON ST3.TertiaryStratumID = SF_OutputStock.TertiaryStratumID " +
-                "INNER JOIN STSim_StateClass AS SC1 ON SC1.StateClassID = SF_OutputStock.StateClassID " +
-                "INNER JOIN SF_StockGroup ON SF_StockGroup.StockGroupID = SF_OutputStock.StockGroupID " +
-                "WHERE SF_OutputStock.ScenarioID IN ({0}) " +
+                "stsim_stockflow__StockGroup.Name as StockGroup, " +
+                "stsim_stockflow__OutputStock.Amount " +
+                "FROM stsim_stockflow__OutputStock " +
+                "INNER JOIN system__Scenario ON system__Scenario.ScenarioID = stsim_stockflow__OutputStock.ScenarioID " +
+                "INNER JOIN stsim__Stratum AS ST1 ON ST1.StratumID = stsim_stockflow__OutputStock.StratumID " +
+                "LEFT JOIN stsim__SecondaryStratum AS ST2 ON ST2.SecondaryStratumID = stsim_stockflow__OutputStock.SecondaryStratumID " +
+                "LEFT JOIN stsim__TertiaryStratum AS ST3 ON ST3.TertiaryStratumID = stsim_stockflow__OutputStock.TertiaryStratumID " +
+                "INNER JOIN stsim__StateClass AS SC1 ON SC1.StateClassID = stsim_stockflow__OutputStock.StateClassID " +
+                "INNER JOIN stsim_stockflow__StockGroup ON stsim_stockflow__StockGroup.StockGroupID = stsim_stockflow__OutputStock.StockGroupID " +
+                "WHERE stsim_stockflow__OutputStock.ScenarioID IN ({0}) " +
                 "ORDER BY " +
-                "SF_OutputStock.ScenarioID, ", 
+                "stsim_stockflow__OutputStock.ScenarioID, ", 
                 ScenFilter);
 
             if (!isCSV)
             {
-                Query += "SSim_Scenario.Name, ";
+                Query += "system__Scenario.Name, ";
             }
 
             Query += string.Format(CultureInfo.InvariantCulture, 
-                "SF_OutputStock.Iteration, " + 
-                "SF_OutputStock.Timestep, " + 
+                "stsim_stockflow__OutputStock.Iteration, " + 
+                "stsim_stockflow__OutputStock.Timestep, " + 
                 "ST1.Name, " + 
                 "ST2.Name, " + 
                 "ST3.Name, " + 
                 "SC1.Name, " + 
-                "SF_StockGroup.Name", 
+                "stsim_stockflow__StockGroup.Name", 
                 ScenFilter);
 
             return Query;

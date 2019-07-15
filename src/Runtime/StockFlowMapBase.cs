@@ -20,7 +20,7 @@ namespace SyncroSim.STSimStockFlow
             this.m_Scenario = scenario;
 
 			TerminologyUtilities.GetStratumLabelStrings(
-                scenario.Project.GetDataSheet("STSim_Terminology"), 
+                scenario.Project.GetDataSheet(Constants.DATASHEET_STSIM_TERMINOLOGY), 
                 ref this.m_PrimaryStratumLabel, 
                 ref this.m_SecondaryStratumLabel, 
                 ref this.m_TertiaryStratumLabel);
@@ -82,22 +82,22 @@ namespace SyncroSim.STSimStockFlow
 
 		protected string GetStratumName(int? id)
 		{
-			return this.GetProjectItemName("STSim_Stratum", id);
+			return this.GetProjectItemName(Constants.DATASHEET_STSIM_STRATUM, id);
 		}
 
 		protected string GetSecondaryStratumName(int? id)
 		{
-			return this.GetProjectItemName("STSim_SecondaryStratum", id);
+			return this.GetProjectItemName(Constants.DATASHEET_STSIM_SECONDARY_STRATUM, id);
 		}
 
 		protected string GetTertiaryStratumName(int? id)
 		{
-			return this.GetProjectItemName("STSim_TertiaryStratum", id);
+			return this.GetProjectItemName(Constants.DATASHEET_STSIM_TERTIARY_STRATUM, id);
 		}
 
 		protected string GetStateClassName(int? id)
 		{
-			return this.GetProjectItemName("STSim_StateClass", id);
+			return this.GetProjectItemName(Constants.DATASHEET_STSIM_STATE_CLASS, id);
 		}
 
 		protected string GetStockTypeName(int? id)

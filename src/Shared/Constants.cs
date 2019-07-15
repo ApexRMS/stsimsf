@@ -26,30 +26,38 @@ namespace SyncroSim.STSimStockFlow
 		public const string GROUP_ANALYZER_MAPS_NAME = "Maps";
 
 		//Data Feeds
-		public const string DATASHEET_STOCK_TYPE_NAME = "SF_StockType";
-		public const string DATASHEET_STOCK_GROUP_NAME = "SF_StockGroup";
-		public const string DATASHEET_FLOW_TYPE_NAME = "SF_FlowType";
-		public const string DATASHEET_FLOW_MULTIPLIER_TYPE_NAME = "SF_FlowMultiplierType";
-		public const string DATASHEET_FLOW_GROUP_NAME = "SF_FlowGroup";
-		public const string DATASHEET_TERMINOLOGY_NAME = "SF_Terminology";
-		public const string DATASHEET_INITIAL_STOCK_NON_SPATIAL = "SF_InitialStockNonSpatial";
-		public const string DATASHEET_INITIAL_STOCK_SPATIAL = "SF_InitialStockSpatial";
-		public const string DATASHEET_STOCK_LIMIT_NAME = "SF_StockLimit";
-		public const string DATASHEET_STOCK_TRANSITION_MULTIPLIER_NAME = "SF_StockTransitionMultiplier";
-		public const string DATASHEET_STOCK_TYPE_GROUP_MEMBERSHIP_NAME = "SF_StockTypeGroupMembership";
-		public const string DATASHEET_FLOW_PATHWAY_NAME = "SF_FlowPathway";
-		public const string DATASHEET_FLOW_PATHWAY_DIAGRAM_NAME = "SF_FlowPathwayDiagram";
-		public const string DATASHEET_FLOW_MULTIPLIER_NAME = "SF_FlowMultiplier";
-		public const string DATASHEET_FLOW_SPATIAL_MULTIPLIER_NAME = "SF_FlowSpatialMultiplier";
-		public const string DATASHEET_FLOW_LATERAL_MULTIPLIER_NAME = "SF_FlowLateralMultiplier";
-		public const string DATASHEET_FLOW_TYPE_GROUP_MEMBERSHIP_NAME = "SF_FlowTypeGroupMembership";
-		public const string DATASHEET_FLOW_ORDER = "SF_FlowOrder";
-		public const string DATASHEET_FLOW_ORDER_OPTIONS = "SF_FlowOrderOptions";
-		public const string DATASHEET_OUTPUT_FLOW_NAME = "SF_OutputFlow";
-		public const string DATASHEET_OUTPUT_STOCK_NAME = "SF_OutputStock";
-		public const string DATASHEET_OUTPUT_SPATIAL_STOCK_GROUP = "SF_OutputSpatialStockGroup";
-		public const string DATASHEET_OUTPUT_SPATIAL_FLOW_GROUP = "SF_OutputSpatialFlowGroup";
-		public const string DATASHEET_OUTPUT_LATERAL_FLOW_GROUP = "SF_OutputLateralFlowGroup";
+		public const string DATASHEET_STOCK_TYPE_NAME = "stsim_stockflow__StockType";
+		public const string DATASHEET_STOCK_GROUP_NAME = "stsim_stockflow__StockGroup";
+		public const string DATASHEET_FLOW_TYPE_NAME = "stsim_stockflow__FlowType";
+		public const string DATASHEET_FLOW_MULTIPLIER_TYPE_NAME = "stsim_stockflow__FlowMultiplierType";
+		public const string DATASHEET_FLOW_GROUP_NAME = "stsim_stockflow__FlowGroup";
+		public const string DATASHEET_TERMINOLOGY_NAME = "stsim_stockflow__Terminology";
+		public const string DATASHEET_INITIAL_STOCK_NON_SPATIAL = "stsim_stockflow__InitialStockNonSpatial";
+		public const string DATASHEET_INITIAL_STOCK_SPATIAL = "stsim_stockflow__InitialStockSpatial";
+		public const string DATASHEET_STOCK_LIMIT_NAME = "stsim_stockflow__StockLimit";
+		public const string DATASHEET_STOCK_TRANSITION_MULTIPLIER_NAME = "stsim_stockflow__StockTransitionMultiplier";
+		public const string DATASHEET_STOCK_TYPE_GROUP_MEMBERSHIP_NAME = "stsim_stockflow__StockTypeGroupMembership";
+		public const string DATASHEET_FLOW_PATHWAY_NAME = "stsim_stockflow__FlowPathway";
+		public const string DATASHEET_FLOW_PATHWAY_DIAGRAM_NAME = "stsim_stockflow__FlowPathwayDiagram";
+		public const string DATASHEET_FLOW_MULTIPLIER_NAME = "stsim_stockflow__FlowMultiplier";
+		public const string DATASHEET_FLOW_SPATIAL_MULTIPLIER_NAME = "stsim_stockflow__FlowSpatialMultiplier";
+		public const string DATASHEET_FLOW_LATERAL_MULTIPLIER_NAME = "stsim_stockflow__FlowLateralMultiplier";
+		public const string DATASHEET_FLOW_TYPE_GROUP_MEMBERSHIP_NAME = "stsim_stockflow__FlowTypeGroupMembership";
+		public const string DATASHEET_FLOW_ORDER = "stsim_stockflow__FlowOrder";
+		public const string DATASHEET_FLOW_ORDER_OPTIONS = "stsim_stockflow__FlowOrderOptions";
+		public const string DATASHEET_OUTPUT_FLOW_NAME = "stsim_stockflow__OutputFlow";
+		public const string DATASHEET_OUTPUT_STOCK_NAME = "stsim_stockflow__OutputStock";
+		public const string DATASHEET_OUTPUT_SPATIAL_STOCK_GROUP = "stsim_stockflow__OutputSpatialStockGroup";
+		public const string DATASHEET_OUTPUT_SPATIAL_FLOW_GROUP = "stsim_stockflow__OutputSpatialFlowGroup";
+		public const string DATASHEET_OUTPUT_LATERAL_FLOW_GROUP = "stsim_stockflow__OutputLateralFlowGroup";
+
+        public const string DATASHEET_STSIM_STRATUM = "stsim__Stratum";
+        public const string DATASHEET_STSIM_SECONDARY_STRATUM = "stsim__SecondaryStratum";
+        public const string DATASHEET_STSIM_TERTIARY_STRATUM = "stsim__TertiaryStratum";
+        public const string DATASHEET_STSIM_STATE_CLASS = "stsim__StateClass";
+        public const string DATASHEET_STSIM_TERMINOLOGY = "stsim__Terminology";
+        public const string DATASHEET_STSIM_RUN_CONTROL = "stsim__RunControl";
+        public const string DATASHEET_STSIM_OUTPUT_OPTIONS = "stsim__OutputOptions";
 
 		//Common column names
 		public const string NAME_COLUMN_NAME = "Name";
@@ -129,7 +137,7 @@ namespace SyncroSim.STSimStockFlow
 		public const string DATASHEET_FLOW_ORDER_ORDER_COLUMN_NAME = "Order";
 
 		//Output Options
-		public const string DATASHEET_OO_NAME = "SF_OutputOptions";
+		public const string DATASHEET_OO_NAME = "stsim_stockflow__OutputOptions";
 		public const string DATASHEET_OO_DISPLAY_NAME = "Output Options";
 		public const string DATASHEET_OO_SUMMARY_OUTPUT_ST_COLUMN_NAME = "SummaryOutputST";
 		public const string DATASHEET_OO_SUMMARY_OUTPUT_ST_TIMESTEPS_COLUMN_NAME = "SummaryOutputSTTimesteps";
