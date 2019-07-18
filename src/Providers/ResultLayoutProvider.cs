@@ -21,15 +21,15 @@ namespace SyncroSim.STSimStockFlow
 
 				if (ReportsGroup != null)
 				{
-					ReportsGroup.Items.Add(new SyncroSimLayoutItem("stsim_stockflow__summary-stock-report", "Stock Type/Group", false));
-					ReportsGroup.Items.Add(new SyncroSimLayoutItem("stsim_stockflow__summary-flow-report", "Flow Type/Group", false));
+					ReportsGroup.Items.Add(new SyncroSimLayoutItem("stsimsf_SummaryStockReport", "Stock Type/Group", false));
+					ReportsGroup.Items.Add(new SyncroSimLayoutItem("stsimsf_SummaryFlowReport", "Flow Type/Group", false));
 				}
 
 				if (MapsGroup != null)
 				{
-					MapsGroup.Items.Add(new SyncroSimLayoutItem("stsim_stockflow__stock-raster-map", "Stock Type/Group", false));
-					MapsGroup.Items.Add(new SyncroSimLayoutItem("stsim_stockflow__flow-raster-map", "Flow Type/Group", false));
-					MapsGroup.Items.Add(new SyncroSimLayoutItem("stsim_stockflow__lateral-flow-raster-map", "Lateral Flow Type/Group", false));
+					MapsGroup.Items.Add(new SyncroSimLayoutItem("stsimsf_StockRasterMap", "Stock Type/Group", false));
+					MapsGroup.Items.Add(new SyncroSimLayoutItem("stsimsf_FlowRasterMap", "Flow Type/Group", false));
+					MapsGroup.Items.Add(new SyncroSimLayoutItem("stsimsf_LateralFlowRasterMap", "Lateral Flow Type/Group", false));
 				}
 			}        
 		}

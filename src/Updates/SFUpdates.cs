@@ -23,13 +23,13 @@ namespace SyncroSim.STSimStockFlow
 			//Verify that all expected indexes exist after the update because it is easy to forget to recreate them after 
 			//adding a column to an existing table (which requires the table to be recreated if you want to preserve column order.)
 
-			ASSERT_INDEX_EXISTS(store, "SF_FlowPathway");
-			ASSERT_INDEX_EXISTS(store, "SF_OutputFlow");
-			ASSERT_INDEX_EXISTS(store, "SF_OutputStock");
-			ASSERT_INDEX_EXISTS(store, "SF_StockTypeGroupMembership");
-			ASSERT_INDEX_EXISTS(store, "SF_FlowTypeGroupMembership");
-			ASSERT_INDEX_EXISTS(store, "SF_StockTransitionMultiplier");
-			ASSERT_INDEX_EXISTS(store, "SF_FlowMultiplier");
+			ASSERT_INDEX_EXISTS(store, "stsimsf_FlowPathway");
+			ASSERT_INDEX_EXISTS(store, "stsimsf_OutputFlow");
+			ASSERT_INDEX_EXISTS(store, "stsimsf_OutputStock");
+			ASSERT_INDEX_EXISTS(store, "stsimsf_StockTypeGroupMembership");
+			ASSERT_INDEX_EXISTS(store, "stsimsf_FlowTypeGroupMembership");
+			ASSERT_INDEX_EXISTS(store, "stsimsf_StockTransitionMultiplier");
+			ASSERT_INDEX_EXISTS(store, "stsimsf_FlowMultiplier");
 #endif
 
 		}
@@ -316,7 +316,7 @@ namespace SyncroSim.STSimStockFlow
 
 			//Get the existing scenarios there are no scenarios there is nothing to do
 
-			DataTable Scenarios = store.CreateDataTable("system__Scenario");
+			DataTable Scenarios = store.CreateDataTable("core_Scenario");
 
 			if (Scenarios.Rows.Count == 0)
 			{
@@ -408,14 +408,14 @@ namespace SyncroSim.STSimStockFlow
 		/// </remarks>
 		private static void SF0000011(DataStore store)
 		{
-			DataTable Projects = store.CreateDataTable("system__Project");
-			DataTable Scenarios = store.CreateDataTable("system__Scenario");
+			DataTable Projects = store.CreateDataTable("core_Project");
+			DataTable Scenarios = store.CreateDataTable("core_Scenario");
 			Dictionary<int, DataTable> DistTables = new Dictionary<int, DataTable>();
 
 			foreach (DataRow ProjectRow in Projects.Rows)
 			{
 				int ProjectId = Convert.ToInt32(ProjectRow["ProjectID"], CultureInfo.InvariantCulture);
-				DataTable DistributionTypes = store.CreateDataTableFromQuery(string.Format(CultureInfo.InvariantCulture, "SELECT * FROM stime__DistributionType WHERE ProjectID={0}", ProjectId), "DistributionTypes");
+				DataTable DistributionTypes = store.CreateDataTableFromQuery(string.Format(CultureInfo.InvariantCulture, "SELECT * FROM corestime_DistributionType WHERE ProjectID={0}", ProjectId), "DistributionTypes");
 
 				Debug.Assert(DistributionTypes.Rows.Count == 4);
 				DistTables.Add(ProjectId, DistributionTypes);
@@ -694,7 +694,7 @@ namespace SyncroSim.STSimStockFlow
 
             //(2.) Above
 
-            DataTable Projects = store.CreateDataTable("system__Project");
+            DataTable Projects = store.CreateDataTable("core_Project");
             Dictionary<int, int> StockIDTranslator = new Dictionary<int, int>();
             Dictionary<int, int> FlowIDTranslator = new Dictionary<int, int>();
 
@@ -965,7 +965,7 @@ namespace SyncroSim.STSimStockFlow
 
             if (!store.TableExists(TableName))
             {
-                TableName = "system__SysFolder";
+                TableName = "core_SysFolder";
             }
 
             if (store.TableExists(TableName))
@@ -1136,9 +1136,9 @@ namespace SyncroSim.STSimStockFlow
         /// <remarks></remarks>
         private static void SF0000102(DataStore store)
         {
-            UpdateProvider.RenameTablesWithPrefix(store, "SF_", "stsim_stockflow__");
-            UpdateProvider.RenameInputFoldersWithPrefix(store, "SF_", "stsim_stockflow__");
-            UpdateProvider.RenameOutputFoldersWithPrefix(store, "SF_", "stsim_stockflow__");
+            UpdateProvider.RenameTablesWithPrefix(store, "SF_", "stsimsf_");
+            UpdateProvider.RenameInputFoldersWithPrefix(store, "SF_", "stsimsf_");
+            UpdateProvider.RenameOutputFoldersWithPrefix(store, "SF_", "stsimsf_");
 
             store.ExecuteNonQuery("DROP INDEX IF EXISTS SF_FlowPathway_Index");
             store.ExecuteNonQuery("DROP INDEX IF EXISTS SF_FlowMultiplier_Index");
@@ -1148,25 +1148,25 @@ namespace SyncroSim.STSimStockFlow
             store.ExecuteNonQuery("DROP INDEX IF EXISTS SF_OutputFlow_Index");
             store.ExecuteNonQuery("DROP INDEX IF EXISTS SF_OutputStock_Index");
 
-            UpdateProvider.CreateIndex(store, "stsim_stockflow__FlowPathway", new[] { "ScenarioID" });
-            UpdateProvider.CreateIndex(store, "stsim_stockflow__FlowMultiplier", new[] { "ScenarioID" });
-            UpdateProvider.CreateIndex(store, "stsim_stockflow__StockTransitionMultiplier", new[] { "ScenarioID" });
-            UpdateProvider.CreateIndex(store, "stsim_stockflow__StockTypeGroupMembership", new[] { "StockTypeID", "StockGroupID" });
-            UpdateProvider.CreateIndex(store, "stsim_stockflow__FlowTypeGroupMembership", new[] { "FlowTypeID", "FlowGroupID" });
-            UpdateProvider.CreateIndex(store, "stsim_stockflow__OutputFlow", new[] { "ScenarioID", "Iteration", "Timestep", "FromStratumID", "FromSecondaryStratumID", "FromTertiaryStratumID", "FromStateClassID", "FromStockTypeID", "TransitionTypeID", "ToStratumID", "ToStateClassID", "ToStockTypeID", "FlowGroupID", "EndStratumID", "EndSecondaryStratumID", "EndTertiaryStratumID", "EndStateClassID", "EndMinAge" });
-            UpdateProvider.CreateIndex(store, "stsim_stockflow__OutputStock", new[] { "ScenarioID", "Iteration", "Timestep", "StratumID", "SecondaryStratumID", "TertiaryStratumID", "StateClassID", "StockGroupID" });
+            UpdateProvider.CreateIndex(store, "stsimsf_FlowPathway", new[] { "ScenarioID" });
+            UpdateProvider.CreateIndex(store, "stsimsf_FlowMultiplier", new[] { "ScenarioID" });
+            UpdateProvider.CreateIndex(store, "stsimsf_StockTransitionMultiplier", new[] { "ScenarioID" });
+            UpdateProvider.CreateIndex(store, "stsimsf_StockTypeGroupMembership", new[] { "StockTypeID", "StockGroupID" });
+            UpdateProvider.CreateIndex(store, "stsimsf_FlowTypeGroupMembership", new[] { "FlowTypeID", "FlowGroupID" });
+            UpdateProvider.CreateIndex(store, "stsimsf_OutputFlow", new[] { "ScenarioID", "Iteration", "Timestep", "FromStratumID", "FromSecondaryStratumID", "FromTertiaryStratumID", "FromStateClassID", "FromStockTypeID", "TransitionTypeID", "ToStratumID", "ToStateClassID", "ToStockTypeID", "FlowGroupID", "EndStratumID", "EndSecondaryStratumID", "EndTertiaryStratumID", "EndStateClassID", "EndMinAge" });
+            UpdateProvider.CreateIndex(store, "stsimsf_OutputStock", new[] { "ScenarioID", "Iteration", "Timestep", "StratumID", "SecondaryStratumID", "TertiaryStratumID", "StateClassID", "StockGroupID" });
 
-            if (store.TableExists("stime__Chart"))
+            if (store.TableExists("corestime_Charts"))
             {
-                store.ExecuteNonQuery("UPDATE stime__Chart SET Criteria = REPLACE(Criteria, 'SF_', 'stsim_stockflow__')");
+                store.ExecuteNonQuery("UPDATE corestime_Charts SET Criteria = REPLACE(Criteria, 'SF_', 'stsimsf_')");
             }
 
-            if (store.TableExists("stime__Map"))
+            if (store.TableExists("corestime_Maps"))
             {
-                store.ExecuteNonQuery("UPDATE stime__Map SET Criteria = REPLACE(Criteria, 'SF_', 'stsim_stockflow__')");
-                store.ExecuteNonQuery("UPDATE stime__Map SET Criteria = REPLACE(Criteria, 'stkg', 'stsim_stockflow__stkg')");
-                store.ExecuteNonQuery("UPDATE stime__Map SET Criteria = REPLACE(Criteria, 'flog', 'stsim_stockflow__flog')");
-                store.ExecuteNonQuery("UPDATE stime__Map SET Criteria = REPLACE(Criteria, 'lflog', 'stsim_stockflow__lflog')");
+                store.ExecuteNonQuery("UPDATE corestime_Maps SET Criteria = REPLACE(Criteria, 'SF_', 'stsimsf_')");
+                store.ExecuteNonQuery("UPDATE corestime_Maps SET Criteria = REPLACE(Criteria, 'stkg', 'stsimsf_stkg')");
+                store.ExecuteNonQuery("UPDATE corestime_Maps SET Criteria = REPLACE(Criteria, 'flog', 'stsimsf_flog')");
+                store.ExecuteNonQuery("UPDATE corestime_Maps SET Criteria = REPLACE(Criteria, 'lflog', 'stsimsf_lflog')");
             }
         }
     }

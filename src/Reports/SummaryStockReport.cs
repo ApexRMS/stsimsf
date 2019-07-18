@@ -73,47 +73,47 @@ namespace SyncroSim.STSimStockFlow
 
             string Query =
                 "SELECT " +
-                "stsim_stockflow__OutputStock.ScenarioID, ";
+                "stsimsf_OutputStock.ScenarioID, ";
            
             if (!isCSV)
             {
-                Query += "system__Scenario.Name AS ScenarioName, ";
+                Query += "core_Scenario.Name AS ScenarioName, ";
             }
 
             Query += string.Format(CultureInfo.InvariantCulture,
-                "stsim_stockflow__OutputStock.Iteration, " +
-                "stsim_stockflow__OutputStock.Timestep, " +
+                "stsimsf_OutputStock.Iteration, " +
+                "stsimsf_OutputStock.Timestep, " +
                 "ST1.Name AS Stratum, " +
                 "ST2.Name AS SecondaryStratum, " +
                 "ST3.Name AS TertiaryStratum, " +
                 "SC1.Name AS StateClass, " +
-                "stsim_stockflow__StockGroup.Name as StockGroup, " +
-                "stsim_stockflow__OutputStock.Amount " +
-                "FROM stsim_stockflow__OutputStock " +
-                "INNER JOIN system__Scenario ON system__Scenario.ScenarioID = stsim_stockflow__OutputStock.ScenarioID " +
-                "INNER JOIN stsim__Stratum AS ST1 ON ST1.StratumID = stsim_stockflow__OutputStock.StratumID " +
-                "LEFT JOIN stsim__SecondaryStratum AS ST2 ON ST2.SecondaryStratumID = stsim_stockflow__OutputStock.SecondaryStratumID " +
-                "LEFT JOIN stsim__TertiaryStratum AS ST3 ON ST3.TertiaryStratumID = stsim_stockflow__OutputStock.TertiaryStratumID " +
-                "INNER JOIN stsim__StateClass AS SC1 ON SC1.StateClassID = stsim_stockflow__OutputStock.StateClassID " +
-                "INNER JOIN stsim_stockflow__StockGroup ON stsim_stockflow__StockGroup.StockGroupID = stsim_stockflow__OutputStock.StockGroupID " +
-                "WHERE stsim_stockflow__OutputStock.ScenarioID IN ({0}) " +
+                "stsimsf_StockGroup.Name as StockGroup, " +
+                "stsimsf_OutputStock.Amount " +
+                "FROM stsimsf_OutputStock " +
+                "INNER JOIN core_Scenario ON core_Scenario.ScenarioID = stsimsf_OutputStock.ScenarioID " +
+                "INNER JOIN stsim_Stratum AS ST1 ON ST1.StratumID = stsimsf_OutputStock.StratumID " +
+                "LEFT JOIN stsim_SecondaryStratum AS ST2 ON ST2.SecondaryStratumID = stsimsf_OutputStock.SecondaryStratumID " +
+                "LEFT JOIN stsim_TertiaryStratum AS ST3 ON ST3.TertiaryStratumID = stsimsf_OutputStock.TertiaryStratumID " +
+                "INNER JOIN stsim_StateClass AS SC1 ON SC1.StateClassID = stsimsf_OutputStock.StateClassID " +
+                "INNER JOIN stsimsf_StockGroup ON stsimsf_StockGroup.StockGroupID = stsimsf_OutputStock.StockGroupID " +
+                "WHERE stsimsf_OutputStock.ScenarioID IN ({0}) " +
                 "ORDER BY " +
-                "stsim_stockflow__OutputStock.ScenarioID, ", 
+                "stsimsf_OutputStock.ScenarioID, ", 
                 ScenFilter);
 
             if (!isCSV)
             {
-                Query += "system__Scenario.Name, ";
+                Query += "core_Scenario.Name, ";
             }
 
             Query += string.Format(CultureInfo.InvariantCulture, 
-                "stsim_stockflow__OutputStock.Iteration, " + 
-                "stsim_stockflow__OutputStock.Timestep, " + 
+                "stsimsf_OutputStock.Iteration, " + 
+                "stsimsf_OutputStock.Timestep, " + 
                 "ST1.Name, " + 
                 "ST2.Name, " + 
                 "ST3.Name, " + 
                 "SC1.Name, " + 
-                "stsim_stockflow__StockGroup.Name", 
+                "stsimsf_StockGroup.Name", 
                 ScenFilter);
 
             return Query;
