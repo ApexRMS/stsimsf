@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <package name="stsimsf" displayName="Integrates stocks and flows into the ST-Sim simulation model" version="3.2.4"  isAddOn="True" extendsPackage="stsim" url="https://github.com/ApexRMS/stsimsf">
   <transformers>
-    <transformer name="primary" displayName="Stocks and Flows" className="SyncroSim.STSimStockFlow.StockFlowTransformer" classAssembly="SyncroSim.STSimStockFlow" isPrimary="True" extendsTransformer="stsim_Runtime">
+    <transformer name="Primary" displayName="Stocks and Flows" className="SyncroSim.STSimStockFlow.StockFlowTransformer" classAssembly="SyncroSim.STSimStockFlow" isPrimary="True" extendsTransformer="stsim_Runtime">
       <datafeeds>
         <datafeed name="StockType" displayName="Stock Type" dataScope="Project">
           <datasheets>
