@@ -71,7 +71,9 @@ namespace SyncroSim.STSimStockFlow
 		public const string SECONDARY_STRATUM_ID_COLUMN_NAME = "SecondaryStratumID";
 		public const string TERTIARY_STRATUM_ID_COLUMN_NAME = "TertiaryStratumID";
 		public const string STATECLASS_ID_COLUMN_NAME = "StateClassID";
-		public const string STOCK_TYPE_ID_COLUMN_NAME = "StockTypeID";
+        public const string AGE_MIN_COLUMN_NAME = "AgeMin";
+        public const string AGE_MAX_COLUMN_NAME = "AgeMax";
+        public const string STOCK_TYPE_ID_COLUMN_NAME = "StockTypeID";
 		public const string STOCK_GROUP_ID_COLUMN_NAME = "StockGroupID";
 		public const string FLOW_TYPE_ID_COLUMN_NAME = "FlowTypeID";
 		public const string FLOW_GROUP_ID_COLUMN_NAME = "FlowGroupID";

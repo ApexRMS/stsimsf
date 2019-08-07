@@ -547,6 +547,8 @@ namespace SyncroSim.STSimStockFlow
 				int? SecondaryStratumId = null;
 				int? TertiaryStratumId = null;
 				int? StateClassId = null;
+                int AgeMinimum = 0;
+                int AgeMaximum = int.MaxValue;
                 int? FlowMultiplierTypeId = null;
 				int FlowGroupId = 0;
 				double? MultiplierAmount = null;
@@ -586,7 +588,17 @@ namespace SyncroSim.STSimStockFlow
 					StateClassId = Convert.ToInt32(dr[Constants.STATECLASS_ID_COLUMN_NAME], CultureInfo.InvariantCulture);
 				}
 
-				if (dr[Constants.FLOW_MULTIPLIER_TYPE_ID_COLUMN_NAME] != DBNull.Value)
+                if (dr[Constants.AGE_MIN_COLUMN_NAME] != DBNull.Value)
+                {
+                    AgeMinimum = Convert.ToInt32(dr[Constants.AGE_MIN_COLUMN_NAME], CultureInfo.InvariantCulture);
+                }
+
+                if (dr[Constants.AGE_MAX_COLUMN_NAME] != DBNull.Value)
+                {
+                    AgeMaximum = Convert.ToInt32(dr[Constants.AGE_MAX_COLUMN_NAME], CultureInfo.InvariantCulture);
+                }
+
+                if (dr[Constants.FLOW_MULTIPLIER_TYPE_ID_COLUMN_NAME] != DBNull.Value)
 				{
 					FlowMultiplierTypeId = Convert.ToInt32(dr[Constants.FLOW_MULTIPLIER_TYPE_ID_COLUMN_NAME], CultureInfo.InvariantCulture);
 				}
@@ -626,9 +638,11 @@ namespace SyncroSim.STSimStockFlow
 				try
 				{
 					FlowMultiplier Item = new FlowMultiplier(
-                        Iteration, Timestep, StratumId, SecondaryStratumId, TertiaryStratumId, StateClassId, 
-                        FlowMultiplierTypeId, FlowGroupId, MultiplierAmount, DistributionTypeId, DistributionFrequency, 
-                        DistributionSD, DistributionMin, DistributionMax);
+                        Iteration, Timestep, 
+                        StratumId, SecondaryStratumId, TertiaryStratumId, 
+                        StateClassId, AgeMinimum, AgeMaximum,
+                        FlowMultiplierTypeId, FlowGroupId, MultiplierAmount, 
+                        DistributionTypeId, DistributionFrequency, DistributionSD, DistributionMin, DistributionMax);
 
 					this.m_STSimTransformer.DistributionProvider.Validate(
                         Item.DistributionTypeId, Item.DistributionValue, Item.DistributionSD, 

@@ -943,7 +943,7 @@ namespace SyncroSim.STSimStockFlow
                     {
 				        FlowAmount *= mt.FlowMultiplierMap.GetFlowMultiplier(
                             fgl.FlowGroup.Id, cell.StratumId, cell.SecondaryStratumId, cell.TertiaryStratumId, 
-                            cell.StateClassId, iteration, timestep);
+                            cell.StateClassId, iteration, timestep, cell.Age);
 			        }
 
                     if (this.m_IsSpatial && mt.FlowSpatialMultiplierMap != null)

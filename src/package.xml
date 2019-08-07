@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<package name="stsimsf" displayName="Integrates stocks and flows into the ST-Sim simulation model" version="3.2.5"  isAddOn="True" extendsPackage="stsim" url="https://github.com/ApexRMS/stsimsf">
+<package name="stsimsf" displayName="Integrates stocks and flows into the ST-Sim simulation model" version="3.2.6"  isAddOn="True" extendsPackage="stsim" url="https://github.com/ApexRMS/stsimsf">
   <transformers>
     <transformer name="Primary" displayName="Stocks and Flows" className="SyncroSim.STSimStockFlow.StockFlowTransformer" classAssembly="SyncroSim.STSimStockFlow" isPrimary="True" extendsTransformer="stsim_Runtime">
       <datafeeds>
@@ -270,6 +270,8 @@
                 <column name="SecondaryStratumID" dataType="Integer" displayName="Secondary Stratum" validationType="Datasheet" formula1="stsim_SecondaryStratum" isOptional="True" displayNameSource="stsim_Terminology" displayNameColumn="SecondaryStratumLabel"/>
                 <column name="TertiaryStratumID" dataType="Integer" displayName="Tertiary Stratum" validationType="Datasheet" formula1="stsim_TertiaryStratum" isOptional="True" displayNameSource="stsim_Terminology" displayNameColumn="TertiaryStratumLabel"/>
                 <column name="StateClassID" dataType="Integer" displayName="State Class" validationType="Datasheet" formula1="stsim_StateClass" isOptional="True"/>
+                <column name="AgeMin" displayName="Age Min" dataType="Integer" isOptional="True" validationType="WholeNumber" validationCondition="GreaterEqual" formula1="0"/>
+                <column name="AgeMax" displayName="Age Max" dataType="Integer" isOptional="True" validationType="WholeNumber" validationCondition="GreaterEqual" formula1="0"/>
                 <column name="FlowGroupID" dataType="Integer" displayName="Flow Type/Group" validationType="Datasheet" formula1="FlowGroup" allowDbNull="False"/>
                 <column name="FlowMultiplierTypeID" dataType="Integer" displayName="Flow Multiplier Type" validationType="Datasheet" formula1="FlowMultiplierType" isOptional="True"/>
                 <column name="Value" displayName="Multiplier" dataType="Double" validationType="Decimal" validationCondition="GreaterEqual" formula1="0.0"/>
@@ -280,6 +282,7 @@
                 <column name="DistributionMax" displayName="Multiplier Max" dataType="Double" validationType="Decimal" validationCondition="GreaterEqual" formula1="0.0" isOptional="True"/>
               </columns>
               <validations>
+                <validation validationType="LessEqual" columns="AgeMin|AgeMax"/>
                 <validation validationType="LessEqual" columns="DistributionMin|DistributionMax"/>
               </validations>
             </datasheet>
@@ -491,8 +494,8 @@
     </layout>
   </layouts>
   <updateProvider
-    schemaVersion="102"
-    minPackageVersion="3.2.3"
+    schemaVersion="103"
+    minPackageVersion="3.2.6"
     className="SyncroSim.STSimStockFlow.SFUpdates"
     classAssembly="SyncroSim.STSimStockFlow"/>
   <console

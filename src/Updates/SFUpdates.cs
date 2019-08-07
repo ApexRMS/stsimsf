@@ -160,6 +160,11 @@ namespace SyncroSim.STSimStockFlow
             {
                 SF0000102(store);
             }
+
+            if (currentSchemaVersion < 103)
+            {
+                SF0000103(store);
+            }
         }
 
 		/// <summary>
@@ -1167,6 +1172,26 @@ namespace SyncroSim.STSimStockFlow
                 store.ExecuteNonQuery("UPDATE corestime_Maps SET Criteria = REPLACE(Criteria, 'stkg', 'stsimsf_stkg')");
                 store.ExecuteNonQuery("UPDATE corestime_Maps SET Criteria = REPLACE(Criteria, 'flog', 'stsimsf_flog')");
                 store.ExecuteNonQuery("UPDATE corestime_Maps SET Criteria = REPLACE(Criteria, 'lflog', 'stsimsf_lflog')");
+            }
+        }
+
+        /// <summary>
+        /// SF0000103
+        /// </summary>
+        /// <param name="store"></param>
+        /// <remarks>
+        /// This update adds AgeMin and AgeMax fields to the Flow Multipliers table.
+        /// </remarks>
+        private static void SF0000103(DataStore store)
+        {
+            if (store.TableExists("stsimsf_FlowMultiplier"))
+            {
+                store.ExecuteNonQuery("ALTER TABLE stsimsf_FlowMultiplier RENAME TO TEMP_TABLE");
+                store.ExecuteNonQuery("CREATE TABLE stsimsf_FlowMultiplier(FlowMultiplierID INTEGER PRIMARY KEY AUTOINCREMENT, ScenarioID INTEGER, Iteration INTEGER, Timestep INTEGER, StratumID INTEGER, SecondaryStratumID INTEGER, TertiaryStratumID INTEGER, StateClassID INTEGER, AgeMin INTEGER, AgeMax INTEGER, FlowGroupID INTEGER, FlowMultiplierTypeID INTEGER, Value DOUBLE, DistributionType INTEGER, DistributionFrequencyID INTEGER, DistributionSD DOUBLE, DistributionMin DOUBLE, DistributionMax DOUBLE)");
+                store.ExecuteNonQuery("INSERT INTO stsimsf_FlowMultiplier(ScenarioID, Iteration, Timestep, StratumID, SecondaryStratumID, TertiaryStratumID, StateClassID, FlowGroupID, FlowMultiplierTypeID, Value, DistributionType, DistributionFrequencyID, DistributionSD, DistributionMin, DistributionMax) SELECT ScenarioID, Iteration, Timestep, StratumID, SecondaryStratumID, TertiaryStratumID, StateClassID, FlowGroupID, FlowMultiplierTypeID, Value, DistributionType, DistributionFrequencyID, DistributionSD, DistributionMin, DistributionMax FROM TEMP_TABLE");
+                store.ExecuteNonQuery("DROP TABLE TEMP_TABLE");
+
+                UpdateProvider.CreateIndex(store, "stsimsf_FlowMultiplier", new[] { "ScenarioID" });
             }
         }
     }

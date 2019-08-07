@@ -9,16 +9,35 @@ namespace SyncroSim.STSimStockFlow
 	internal class FlowMultiplier : STSimDistributionBase
     {
 		private int? m_StateClassId;
+        private int m_AgeMin;
+        private int m_AgeMax = int.MaxValue;
         private int? m_FlowMultiplierTypeId;
 		private int m_FlowGroupId;
 
 		public FlowMultiplier(
-            int? iteration, int? timestep, int? stratumId, int? secondaryStratumId, int? tertiaryStratumId, 
-            int? stateClassId, int? flowMultiplierTypeId, int flowGroupId, double? multiplierValue, int? distributionTypeId, 
-            DistributionFrequency? distributionFrequency, double? distributionSD, 
-            double? distributionMin, double? distributionMax) : base(iteration, timestep, stratumId, secondaryStratumId, tertiaryStratumId, multiplierValue, distributionTypeId, distributionFrequency, distributionSD, distributionMin, distributionMax)
+            int? iteration, 
+            int? timestep, 
+            int? stratumId, 
+            int? secondaryStratumId, 
+            int? tertiaryStratumId, 
+            int? stateClassId,
+            int ageMin,
+            int ageMax, 
+            int? flowMultiplierTypeId, 
+            int flowGroupId, 
+            double? multiplierValue, 
+            int? distributionTypeId, 
+            DistributionFrequency? distributionFrequency, 
+            double? distributionSD, 
+            double? distributionMin, 
+            double? distributionMax) : base(
+                iteration, timestep, stratumId, secondaryStratumId, 
+                tertiaryStratumId, multiplierValue, distributionTypeId, 
+                distributionFrequency, distributionSD, distributionMin, distributionMax)
 		{
 			this.m_StateClassId = stateClassId;
+            this.m_AgeMin = ageMin;
+            this.m_AgeMax = ageMax;
             this.m_FlowMultiplierTypeId = flowMultiplierTypeId;
 			this.m_FlowGroupId = flowGroupId;
 		}
@@ -31,7 +50,23 @@ namespace SyncroSim.STSimStockFlow
 			}
 		}
 
-		public int? FlowMultiplierTypeId
+        public int AgeMin
+        {
+            get
+            {
+                return this.m_AgeMin;
+            }
+        }
+
+        public int AgeMax
+        {
+            get
+            {
+                return this.m_AgeMax;
+            }
+        }
+
+        public int? FlowMultiplierTypeId
 		{
 			get
 			{
@@ -47,12 +82,14 @@ namespace SyncroSim.STSimStockFlow
 			}
 		}
 
-		public override STSimDistributionBase Clone()
+        public override STSimDistributionBase Clone()
 		{
 			return new FlowMultiplier(
-                this.Iteration, this.Timestep, this.StratumId, this.SecondaryStratumId, this.TertiaryStratumId, 
-                this.StateClassId, this.FlowMultiplierTypeId, this.FlowGroupId, this.DistributionValue, this.DistributionTypeId, 
-                this.DistributionFrequency, this.DistributionSD, this.DistributionMin, this.DistributionMax);
+                this.Iteration, this.Timestep, 
+                this.StratumId, this.SecondaryStratumId, this.TertiaryStratumId, 
+                this.StateClassId, this.AgeMin, this.AgeMax, this.FlowMultiplierTypeId, this.FlowGroupId, 
+                this.DistributionValue, this.DistributionTypeId, this.DistributionFrequency, 
+                this.DistributionSD, this.DistributionMin, this.DistributionMax);
 		}
 	}
 }
