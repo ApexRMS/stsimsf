@@ -298,11 +298,8 @@
                 <column name="Timestep" dataType="Integer" validationType="WholeNumber" validationCondition="GreaterEqual" formula1="0" isOptional="True" displayNameSource="stsim_Terminology" displayNameColumn="TimestepUnits" format="d"/>
                 <column name="FlowGroupID" dataType="Integer" displayName="Flow Type/Group" validationType="Datasheet" formula1="FlowGroup" allowDbNull="False"/>
                 <column name="FlowMultiplierTypeID" dataType="Integer" displayName="Flow Multiplier Type" validationType="Datasheet" formula1="FlowMultiplierType" isOptional="True"/>
-                <column name="MultiplierFileName" displayName="Multiplier File Name" dataType="String" isExternalFile="True" allowDbNull="False" isRaster="True"/>
+                <column name="MultiplierFileName" displayName="Multiplier File Name" dataType="String" isExternalFile="True" allowDbNull="False" isRaster="True" externalFileFilter="GeoTIFF Files|*.tif|All Files|*.*"/>
               </columns>
-              <validations>
-                <validation validationType="Unique" columns="Iteration|Timestep|FlowGroupID"/>
-              </validations>
             </datasheet>
           </datasheets>
         </datafeed>
@@ -316,11 +313,8 @@
                 <column name="Timestep" dataType="Integer" validationType="WholeNumber" validationCondition="GreaterEqual" formula1="0" isOptional="True" displayNameSource="stsim_Terminology" displayNameColumn="TimestepUnits" format="d"/>
                 <column name="FlowGroupID" dataType="Integer" displayName="Flow Type/Group" validationType="Datasheet" formula1="FlowGroup" allowDbNull="False"/>
                 <column name="FlowMultiplierTypeID" dataType="Integer" displayName="Flow Multiplier Type" validationType="Datasheet" formula1="FlowMultiplierType" isOptional="True"/>
-                <column name="MultiplierFileName" displayName="Multiplier File Name" dataType="String" isExternalFile="True" allowDbNull="False" isRaster="True"/>
+                <column name="MultiplierFileName" displayName="Multiplier File Name" dataType="String" isExternalFile="True" allowDbNull="False" isRaster="True" externalFileFilter="GeoTIFF Files|*.tif|All Files|*.*"/>
               </columns>
-              <validations>
-                <validation validationType="Unique" columns="Iteration|Timestep|FlowGroupID"/>
-              </validations>
             </datasheet>
           </datasheets>
         </datafeed>
