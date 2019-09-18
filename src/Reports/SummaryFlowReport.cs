@@ -114,14 +114,14 @@ namespace SyncroSim.STSimStockFlow
                 "INNER JOIN core_Scenario ON core_Scenario.ScenarioID = stsimsf_OutputFlow.ScenarioID " +
                 "INNER JOIN stsim_Stratum AS ST1 ON ST1.StratumID = stsimsf_OutputFlow.FromStratumID " +
                 "INNER JOIN stsim_Stratum AS ST2 ON ST2.StratumID = stsimsf_OutputFlow.ToStratumID " +
-                "INNER JOIN stsim_Stratum AS ST3 ON ST3.StratumID = stsimsf_OutputFlow.EndStratumID " +
+                "LEFT JOIN stsim_Stratum AS ST3 ON ST3.StratumID = stsimsf_OutputFlow.EndStratumID " +
                 "LEFT JOIN stsim_SecondaryStratum AS SS1 ON SS1.SecondaryStratumID = stsimsf_OutputFlow.FromSecondaryStratumID " +
                 "LEFT JOIN stsim_SecondaryStratum AS SS2 ON SS2.SecondaryStratumID = stsimsf_OutputFlow.EndSecondaryStratumID " +
                 "LEFT JOIN stsim_TertiaryStratum AS TS1 ON TS1.TertiaryStratumID = stsimsf_OutputFlow.FromTertiaryStratumID " +
                 "LEFT JOIN stsim_TertiaryStratum AS TS2 ON TS2.TertiaryStratumID = stsimsf_OutputFlow.EndTertiaryStratumID " +
                 "INNER JOIN stsim_StateClass AS SC1 ON SC1.StateClassID = stsimsf_OutputFlow.FromStateClassID " +
                 "INNER JOIN stsim_StateClass AS SC2 ON SC2.StateClassID = stsimsf_OutputFlow.ToStateClassID " +
-                "INNER JOIN stsim_StateClass AS SC3 ON SC3.StateClassID = stsimsf_OutputFlow.EndStateClassID " +
+                "LEFT JOIN stsim_StateClass AS SC3 ON SC3.StateClassID = stsimsf_OutputFlow.EndStateClassID " +
                 "INNER JOIN stsimsf_StockType AS STK1 ON STK1.StockTypeID = stsimsf_OutputFlow.FromStockTypeID " +
                 "INNER JOIN stsimsf_StockType AS STK2 ON STK2.StockTypeID = stsimsf_OutputFlow.ToStockTypeID " +
                 "INNER JOIN stsimsf_FlowGroup ON stsimsf_FlowGroup.FlowGroupID = stsimsf_OutputFlow.FlowGroupID " +
