@@ -548,7 +548,7 @@ namespace SyncroSim.STSimStockFlow
 							}
 
 							v = GetLimitBasedInitialStock(v, lim);
-							StockAmounts[s.StockTypeId] = v;
+							StockAmounts[s.StockTypeId] = v*this.m_STSimTransformer.AmountPerCell;
 						}
 						else
 						{
