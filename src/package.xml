@@ -461,8 +461,8 @@
     </layout>
     <layout name="coreforms_ScenarioDatafeeds" appendTo="stsim_Advanced">
       <group name="StocksAndFlowsGroup" displayName="Stocks and Flows">
+        <item name="FlowPathways"/>       
         <item name="InitialStocks"/>
-        <item name="FlowPathways"/>
         <item name="OutputOptions"/>
         <group name="Advanced">
           <item name="StockGroupMembership"/>
