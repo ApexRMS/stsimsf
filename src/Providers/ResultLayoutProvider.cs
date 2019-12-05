@@ -12,12 +12,12 @@ namespace SyncroSim.STSimStockFlow
 	{
 		protected override void ModifyLayout(SyncroSimLayout layout)
 		{
-			SyncroSimLayoutItem ExportGroup = layout.Items.GetItem("Export");
+			SyncroSimLayoutItem ExportGroup = layout.Items.GetItem("stsim_Export");
 
 			if (ExportGroup != null)
 			{
-				SyncroSimLayoutItem ReportsGroup = ExportGroup.Items.GetItem("Reports");
-				SyncroSimLayoutItem MapsGroup = ExportGroup.Items.GetItem("Maps");
+				SyncroSimLayoutItem ReportsGroup = ExportGroup.Items.GetItem("stsim_Reports");
+				SyncroSimLayoutItem MapsGroup = ExportGroup.Items.GetItem("stsim_Maps");
 
 				if (ReportsGroup != null)
 				{
