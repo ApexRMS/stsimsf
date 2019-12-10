@@ -126,7 +126,7 @@ namespace SyncroSim.STSimStockFlow
 
                 if (StockAmounts.Count > 0)
                 {
-                    rastStockType.DblCells[c.CellId] = (StockAmounts[stockTypeId] / AmountPerCell);
+                    rastStockType.SetDoubleValue(c.CellId, (StockAmounts[stockTypeId] / AmountPerCell));
                 }
                 else
                 {
