@@ -165,6 +165,11 @@ namespace SyncroSim.STSimStockFlow
             {
                 SF0000103(store);
             }
+
+            if (currentSchemaVersion < 104)
+            {
+                SF0000104(store);
+            }
         }
 
 		/// <summary>
@@ -794,7 +799,7 @@ namespace SyncroSim.STSimStockFlow
 
         private static void MigrateStockTypeSpatialData(Dictionary<int, int> stockIDTranslator, DataStore store)
         {
-            string BaseOutputFolderName = GetOutputFolderName(store);
+            string BaseOutputFolderName = GetOutputFolderNameCheckLegacy(store);
 
             if (BaseOutputFolderName == null || !Directory.Exists(BaseOutputFolderName))
             {
@@ -879,7 +884,7 @@ namespace SyncroSim.STSimStockFlow
 
         private static void MigrateFlowTypeSpatialData(Dictionary<int, int> flowIDTranslator, DataStore store)
         {
-            string BaseOutputFolderName = GetOutputFolderName(store);
+            string BaseOutputFolderName = GetOutputFolderNameCheckLegacy(store);
 
             if (BaseOutputFolderName == null || !Directory.Exists(BaseOutputFolderName))
             {
@@ -962,7 +967,7 @@ namespace SyncroSim.STSimStockFlow
             }
         }
 
-        private static string GetOutputFolderName(DataStore store)
+        private static string GetOutputFolderNameCheckLegacy(DataStore store)
         {
             DataRow SysFolderRow = null;
             string ColName = "OutputFolderName";
@@ -1193,6 +1198,31 @@ namespace SyncroSim.STSimStockFlow
 
                 UpdateProvider.CreateIndex(store, "stsimsf_FlowMultiplier", new[] { "ScenarioID" });
             }
+        }
+
+        /// <summary>
+        /// SF0000104
+        /// </summary>
+        /// <param name="store"></param>
+        /// <remarks>
+        /// This update will apply namespace prefixes to chart and map criteria.
+        /// </remarks>
+        private static void SF0000104(DataStore store)
+        {
+            if (store.TableExists("corestime_Charts"))
+            {
+                store.ExecuteNonQuery("UPDATE corestime_Charts SET Criteria = REPLACE(Criteria, 'StockGroups', 'stsimsf_StockVariablesGroup')");
+                store.ExecuteNonQuery("UPDATE corestime_Charts SET Criteria = REPLACE(Criteria, 'FlowGroups', 'stsimsf_FlowVariablesGroup')");
+            }
+
+            UpdateProvider.RenameChartVariable(store, "stockgroupdensity", "stsimsf_StockGroupDensityVariable");
+            UpdateProvider.RenameChartVariable(store, "stockgroup", "stsimsf_StockGroupVariable");
+            UpdateProvider.RenameChartVariable(store, "flowgroupdensity", "stsimsf_FlowGroupDensityVariable");
+            UpdateProvider.RenameChartVariable(store, "flowgroup", "stsimsf_FlowGroupVariable");
+
+            UpdateProvider.RenameMapVariable(store, "stkg", "stsimsf_stkg");
+            UpdateProvider.RenameMapVariable(store, "flog", "stsimsf_flog");
+            UpdateProvider.RenameMapVariable(store, "lflog", "stsimsf_lflog");
         }
     }
 }

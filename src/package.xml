@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<package name="stsimsf" displayName="Integrates stocks and flows into the ST-Sim simulation model" version="3.2.8"  isAddOn="True" extendsPackage="stsim" url="https://github.com/ApexRMS/stsimsf">
+<package name="stsimsf" displayName="Integrates stocks and flows into the ST-Sim simulation model" version="3.2.10"  isAddOn="True" extendsPackage="stsim" url="https://github.com/ApexRMS/stsimsf">
   <transformers>
     <transformer name="Primary" displayName="Stocks and Flows" className="SyncroSim.STSimStockFlow.StockFlowTransformer" classAssembly="SyncroSim.STSimStockFlow" isPrimary="True" extendsTransformer="stsim_Runtime">
       <datafeeds>
@@ -66,9 +66,9 @@
             </datasheet>
           </datasheets>
         </datafeed>
-        <datafeed name="Terminology" displayName="Terminology" dataScope="Project">
+        <datafeed name="Terminology" dataScope="Project">
           <datasheets>
-            <datasheet name="Terminology" displayName="Terminology" isSingleRow="True">
+            <datasheet name="Terminology" isSingleRow="True">
               <columns>
                 <column name="TerminologyID" dataType="Integer" isPrimary="True"/>
                 <column name="ProjectID" dataType="Integer"/>
@@ -449,8 +449,8 @@
       className="SyncroSim.STSimStockFlow.ResultLayoutProvider"
       classAssembly="SyncroSim.STSimStockFlow">
     </layout>
-    <layout name ="coreforms_ProjectDatafeeds" appendTo="Advanced">
-      <group name="Stocks and Flows">
+    <layout name ="coreforms_ProjectDatafeeds" appendTo="stsim_Advanced">
+      <group name="StocksAndFlowsGroup" displayName="Stocks and Flows">
         <item name="StockType"/>
         <item name="StockGroup"/>
         <item name="FlowType"/>
@@ -459,10 +459,10 @@
         <item name="Terminology"/>
       </group>
     </layout>
-    <layout name="coreforms_ScenarioDatafeeds" appendTo="Advanced">
-      <group name="Stocks and Flows">
+    <layout name="coreforms_ScenarioDatafeeds" appendTo="stsim_Advanced">
+      <group name="StocksAndFlowsGroup" displayName="Stocks and Flows">
+        <item name="FlowPathways"/>       
         <item name="InitialStocks"/>
-        <item name="FlowPathways"/>
         <item name="OutputOptions"/>
         <group name="Advanced">
           <item name="StockGroupMembership"/>
@@ -488,8 +488,8 @@
     </layout>
   </layouts>
   <updateProvider
-    schemaVersion="103"
-    minPackageVersion="3.2.3"
+    schemaVersion="104"
+    minPackageVersion="3.2.10"
     className="SyncroSim.STSimStockFlow.SFUpdates"
     classAssembly="SyncroSim.STSimStockFlow"/>
   <console

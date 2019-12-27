@@ -17,21 +17,26 @@ namespace SyncroSim.STSimStockFlow
 	[ObfuscationAttribute(Exclude=true, ApplyToMembers=false)]
 	internal class SFChartProvider : ChartProvider
 	{
-        private const string TOTAL_GROUP_NAME = "stockflow_total_group";
-		private const string DENSITY_GROUP_NAME = "stockflow_density_group";
+        private const string STOCK_GROUP_NAME = "stsimsf_StockVariablesGroup";
+        private const string STOCK_GROUP_VAR_NAME = "stsimsf_StockGroupVariable";
+        private const string STOCK_GROUP_DENSITY_VAR_NAME = "stsimsf_StockGroupDensityVariable";
+        private const string FLOW_GROUP_NAME = "stsimsf_FlowVariablesGroup";
+		private const string FLOW_GROUP_VAR_NAME = "stsimsf_FlowGroupVariable";
+		private const string FLOW_GROUP_DENSITY_VAR_NAME = "stsimsf_FlowGroupDensityVariable";
 
 		public override DataTable GetData(DataStore store, ChartDescriptor descriptor, DataSheet dataSheet)
 		{
-			if (descriptor.DatasheetName == "stsimsf_OutputStock" || descriptor.DatasheetName == "stsimsf_OutputFlow")
+			if (descriptor.DatasheetName == Constants.DATASHEET_OUTPUT_STOCK_NAME || 
+                descriptor.DatasheetName == Constants.DATASHEET_OUTPUT_FLOW_NAME)
 			{
 				string[] v = descriptor.VariableName.Split('-');
 				string VarName = v[0];
 
 				if (
-                    VarName == "stockgroup" || 
-                    VarName == "stockgroupdensity" || 
-                    VarName == "flowgroup" || 
-                    VarName == "flowgroupdensity")
+                    VarName == STOCK_GROUP_VAR_NAME || 
+                    VarName == STOCK_GROUP_DENSITY_VAR_NAME || 
+                    VarName == FLOW_GROUP_VAR_NAME || 
+                    VarName == FLOW_GROUP_DENSITY_VAR_NAME)
 				{
 					return CreateRawChartData(dataSheet, descriptor, store, VarName);
 				}
@@ -43,9 +48,9 @@ namespace SyncroSim.STSimStockFlow
 		public override void RefreshCriteria(SyncroSimLayout layout, Project project)
 		{
 			//Stock Groups
-			SyncroSimLayoutItem StockGroupsGroup = new SyncroSimLayoutItem("StockGroups", "Stocks", true);
+			SyncroSimLayoutItem StockGroupsGroup = new SyncroSimLayoutItem(STOCK_GROUP_NAME, "Stocks", true);
 
-			StockGroupsGroup.Properties.Add(new MetaDataProperty("dataSheet", "stsimsf_OutputStock"));
+			StockGroupsGroup.Properties.Add(new MetaDataProperty("dataSheet", Constants.DATASHEET_OUTPUT_STOCK_NAME));
 			StockGroupsGroup.Properties.Add(new MetaDataProperty("filter", "StratumID|SecondaryStratumID|TertiaryStratumID|StateClassID|StockGroupID"));
 
 			AddStockGroupChartVariables(project, StockGroupsGroup.Items);
@@ -56,9 +61,9 @@ namespace SyncroSim.STSimStockFlow
 			}
 
 			//Flow Groups
-			SyncroSimLayoutItem FlowGroupsGroup = new SyncroSimLayoutItem("FlowGroups", "Flows", true);
+			SyncroSimLayoutItem FlowGroupsGroup = new SyncroSimLayoutItem(FLOW_GROUP_NAME, "Flows", true);
 
-			FlowGroupsGroup.Properties.Add(new MetaDataProperty("dataSheet", "stsimsf_OutputFlow"));
+			FlowGroupsGroup.Properties.Add(new MetaDataProperty("dataSheet", Constants.DATASHEET_OUTPUT_FLOW_NAME));
 			FlowGroupsGroup.Properties.Add(new MetaDataProperty("filter", "FromStratumID|FromSecondaryStratumID|FromTertiaryStratumID|FromStateClassID|FromStockTypeID|TransitionTypeID|ToStratumID|ToStateClassID|ToStockTypeID|FlowGroupID|EndStratumID|EndSecondaryStratumID|EndTertiaryStratumID|EndStateClassID"));
 
 			AddFlowGroupChartVariables(project, FlowGroupsGroup.Items);
@@ -76,18 +81,18 @@ namespace SyncroSim.STSimStockFlow
             if (ds.HasData())
             {
 				//Normal
-				SyncroSimLayoutItem ItemNormal = new SyncroSimLayoutItem("stockgroup", "Total", false);
+				SyncroSimLayoutItem ItemNormal = new SyncroSimLayoutItem(STOCK_GROUP_VAR_NAME, "Total", false);
 
-				ItemNormal.Properties.Add(new MetaDataProperty("dataSheet", "stsimsf_OutputStock"));
+				ItemNormal.Properties.Add(new MetaDataProperty("dataSheet", Constants.DATASHEET_OUTPUT_STOCK_NAME));
 				ItemNormal.Properties.Add(new MetaDataProperty("column", "Amount"));
 				ItemNormal.Properties.Add(new MetaDataProperty("defaultValue", "0.0"));
 
 				items.Add(ItemNormal);
 
 				//Density
-				SyncroSimLayoutItem ItemDensity = new SyncroSimLayoutItem("stockgroupdensity", "Density", false);
+				SyncroSimLayoutItem ItemDensity = new SyncroSimLayoutItem(STOCK_GROUP_DENSITY_VAR_NAME, "Density", false);
 
-				ItemDensity.Properties.Add(new MetaDataProperty("dataSheet", "stsimsf_OutputStock"));
+				ItemDensity.Properties.Add(new MetaDataProperty("dataSheet", Constants.DATASHEET_OUTPUT_STOCK_NAME));
 				ItemDensity.Properties.Add(new MetaDataProperty("column", "Amount"));
 				ItemDensity.Properties.Add(new MetaDataProperty("defaultValue", "0.0"));
 
@@ -101,9 +106,9 @@ namespace SyncroSim.STSimStockFlow
 
             if (ds.HasData())
             {
-				SyncroSimLayoutItem ItemNormal = new SyncroSimLayoutItem("flowgroup", "Total", false);
+				SyncroSimLayoutItem ItemNormal = new SyncroSimLayoutItem(FLOW_GROUP_VAR_NAME, "Total", false);
 
-				ItemNormal.Properties.Add(new MetaDataProperty("dataSheet", "stsimsf_OutputFlow"));
+				ItemNormal.Properties.Add(new MetaDataProperty("dataSheet", Constants.DATASHEET_OUTPUT_FLOW_NAME));
 				ItemNormal.Properties.Add(new MetaDataProperty("column", "Amount"));
 				ItemNormal.Properties.Add(new MetaDataProperty("skipTimestepZero", "True"));
 				ItemNormal.Properties.Add(new MetaDataProperty("defaultValue", "0.0"));
@@ -111,9 +116,9 @@ namespace SyncroSim.STSimStockFlow
                 items.Add(ItemNormal);
 
 				//Density
-				SyncroSimLayoutItem ItemDensity = new SyncroSimLayoutItem("flowgroupdensity", "Density", false);
+				SyncroSimLayoutItem ItemDensity = new SyncroSimLayoutItem(FLOW_GROUP_DENSITY_VAR_NAME, "Density", false);
 
-				ItemDensity.Properties.Add(new MetaDataProperty("dataSheet", "stsimsf_OutputFlow"));
+				ItemDensity.Properties.Add(new MetaDataProperty("dataSheet", Constants.DATASHEET_OUTPUT_FLOW_NAME));
 				ItemDensity.Properties.Add(new MetaDataProperty("column", "Amount"));
 				ItemDensity.Properties.Add(new MetaDataProperty("skipTimestepZero", "True"));
 				ItemDensity.Properties.Add(new MetaDataProperty("defaultValue", "0.0"));
@@ -129,10 +134,10 @@ namespace SyncroSim.STSimStockFlow
             string variableName)
 		{
             Debug.Assert(
-                variableName == "stockgroup" ||
-                variableName == "stockgroupdensity" ||
-                variableName == "flowgroup" ||
-                variableName == "flowgroupdensity");
+                variableName == STOCK_GROUP_VAR_NAME ||
+                variableName == STOCK_GROUP_DENSITY_VAR_NAME ||
+                variableName == FLOW_GROUP_VAR_NAME ||
+                variableName == FLOW_GROUP_DENSITY_VAR_NAME);
 
             string query = CreateRawChartDataQueryForGroup(dataSheet, descriptor, variableName);		
             DataTable dt = StochasticTime.ChartCache.GetCachedData(dataSheet.Scenario, query, null);
@@ -143,7 +148,7 @@ namespace SyncroSim.STSimStockFlow
                 StochasticTime.ChartCache.SetCachedData(dataSheet.Scenario, query, dt, null);
             }
                               
-			if (variableName.EndsWith("density", StringComparison.Ordinal))
+			if (variableName.EndsWith("DensityVariable", StringComparison.Ordinal))
 			{
 				Dictionary<string, double> dict = CreateAmountDictionary(dataSheet.Scenario, descriptor, variableName, store);
 
@@ -151,11 +156,14 @@ namespace SyncroSim.STSimStockFlow
 				{
 					foreach (DataRow dr in dt.Rows)
 					{
-						int it = Convert.ToInt32(dr["Iteration"], CultureInfo.InvariantCulture);
-						int ts = Convert.ToInt32(dr["Timestep"], CultureInfo.InvariantCulture);
+						int it = Convert.ToInt32(dr[Constants.ITERATION_COLUMN_NAME], CultureInfo.InvariantCulture);
+						int ts = Convert.ToInt32(dr[Constants.TIMESTEP_COLUMN_NAME], CultureInfo.InvariantCulture);
 
 						string k = string.Format(CultureInfo.InvariantCulture, "{0}-{1}", it, ts);
-						dr["SumOfAmount"] = Convert.ToDouble(dr["SumOfAmount"], CultureInfo.InvariantCulture) / dict[k];
+
+						dr[Constants.SUM_OF_AMOUNT_COLUMN_NAME] = 
+                            Convert.ToDouble(dr[Constants.SUM_OF_AMOUNT_COLUMN_NAME], 
+                            CultureInfo.InvariantCulture) / dict[k];
 					}
 				}
 			}
@@ -170,9 +178,11 @@ namespace SyncroSim.STSimStockFlow
 		{
             Debug.Assert(dataSheet.Scenario.Id > 0);
 
-			Debug.Assert(
-                variableName == "stockgroup" || variableName == "stockgroupdensity" || 
-                variableName == "flowgroup" || variableName == "flowgroupdensity");
+            Debug.Assert(
+                variableName == STOCK_GROUP_VAR_NAME ||
+                variableName == STOCK_GROUP_DENSITY_VAR_NAME ||
+                variableName == FLOW_GROUP_VAR_NAME ||
+                variableName == FLOW_GROUP_DENSITY_VAR_NAME);
 
             string ScenarioClause = string.Format(CultureInfo.InvariantCulture,
                 "([{0}]={1})",
@@ -229,11 +239,13 @@ namespace SyncroSim.STSimStockFlow
                              
 			foreach (DataRow dr in dt.Rows)
 			{
-				int it = Convert.ToInt32(dr["Iteration"], CultureInfo.InvariantCulture);
-				int ts = Convert.ToInt32(dr["Timestep"], CultureInfo.InvariantCulture);
+				int it = Convert.ToInt32(dr[Constants.ITERATION_COLUMN_NAME], CultureInfo.InvariantCulture);
+				int ts = Convert.ToInt32(dr[Constants.TIMESTEP_COLUMN_NAME], CultureInfo.InvariantCulture);
 				string k = string.Format(CultureInfo.InvariantCulture, "{0}-{1}", it, ts);
 
-				dict.Add(k, Convert.ToDouble(dr["SumOfAmount"], CultureInfo.InvariantCulture));
+				dict.Add(k, Convert.ToDouble
+                    (dr[Constants.SUM_OF_AMOUNT_COLUMN_NAME], 
+                    CultureInfo.InvariantCulture));
 			}
 
 			return dict;
@@ -241,7 +253,7 @@ namespace SyncroSim.STSimStockFlow
 
 		private static string CreateAmountQuery(Scenario scenario, ChartDescriptor descriptor, string variableName)
 		{
-			Debug.Assert(variableName.EndsWith("density", StringComparison.Ordinal));
+			Debug.Assert(variableName.EndsWith("DensityVariable", StringComparison.Ordinal));
 
 			string ScenarioClause = string.Format(CultureInfo.InvariantCulture, 
                 "([{0}]={1})", 
@@ -278,7 +290,7 @@ namespace SyncroSim.STSimStockFlow
 			string[] AndSplit = filter.Split(new[] {" AND "}, StringSplitOptions.None);
 			StringBuilder sb = new StringBuilder();
 
-			if (variableName.StartsWith("flow", StringComparison.Ordinal))
+			if (variableName.StartsWith("stsimsf_Flow", StringComparison.Ordinal))
 			{
 				foreach (string s in AndSplit)
 				{
@@ -305,7 +317,9 @@ namespace SyncroSim.STSimStockFlow
 			{
 				foreach (string s in AndSplit)
 				{
-					if (s.Contains("StratumID") || s.Contains("SecondaryStratumID") | s.Contains("TertiaryStratumID"))
+					if (s.Contains(Constants.STRATUM_ID_COLUMN_NAME) || 
+                        s.Contains(Constants.SECONDARY_STRATUM_ID_COLUMN_NAME) || 
+                        s.Contains(Constants.TERTIARY_STRATUM_ID_COLUMN_NAME))
 					{
 						sb.AppendFormat(CultureInfo.InvariantCulture, "{0} AND ", s);
 					}
