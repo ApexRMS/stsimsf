@@ -15,7 +15,7 @@ using SyncroSim.StochasticTime;
 namespace SyncroSim.STSimStockFlow
 {
 	[ObfuscationAttribute(Exclude=true, ApplyToMembers=false)]
-	internal partial class StockFlowTransformer : Transformer
+	internal partial class StockFlowTransformer : StochasticTimeTransformer
 	{
 		private bool m_IsSpatial;
 		private bool m_ApplyBeforeTransitions;
