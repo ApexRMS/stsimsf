@@ -15,7 +15,7 @@ using SyncroSim.StochasticTime;
 namespace SyncroSim.STSimStockFlow
 {
 	[ObfuscationAttribute(Exclude=true, ApplyToMembers=false)]
-	internal partial class StockFlowTransformer : StochasticTimeTransformer
+	internal partial class StockFlowTransformer : Transformer
 	{
 		private bool m_IsSpatial;
 		private bool m_ApplyBeforeTransitions;
@@ -538,7 +538,7 @@ namespace SyncroSim.STSimStockFlow
 
 						if (this.m_InitialStockSpatialRasters.ContainsKey(s.Filename))
 						{
-							double v = this.m_InitialStockSpatialRasters[s.Filename].GetDoubleValue(e.SimulationCell.CellId);
+							double v = this.m_InitialStockSpatialRasters[s.Filename].DblCells[e.SimulationCell.CellId];
 
 							//If a cell is a no data cell or if there is a -INF value for a cell, initialize the stock value to zero
 

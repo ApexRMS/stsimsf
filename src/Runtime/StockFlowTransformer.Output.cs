@@ -311,7 +311,7 @@ namespace SyncroSim.STSimStockFlow
                         {
                             StochasticTimeRaster rastFlowType = this.STSimTransformer.InputRasters.CreateOutputRaster(RasterDataType.DTDouble);
 
-                            rastFlowType.SetDoubleValues((double[])rec.Data.Clone());
+                            rastFlowType.DblCells = (double[])rec.Data.Clone();
                             rastFlowType.ScaleDblCells(l.Value);
                             rastOutput.AddDblCells(rastFlowType);
 
@@ -357,7 +357,7 @@ namespace SyncroSim.STSimStockFlow
                         {
                             StochasticTimeRaster rastFlowType = this.STSimTransformer.InputRasters.CreateOutputRaster(RasterDataType.DTDouble);
 
-                            rastFlowType.SetDoubleValues((double[])rec.Data.Clone());
+                            rastFlowType.DblCells = (double[])rec.Data.Clone();
                             rastFlowType.ScaleDblCells(l.Value);
                             rastOutput.AddDblCells(rastFlowType);
 

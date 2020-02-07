@@ -304,17 +304,9 @@ namespace SyncroSim.STSimStockFlow
 
 				try
 				{
-                    Stopwatch sw = Stopwatch.StartNew();
-                    raster = this.LoadMaskedInputRaster(fullFilename, RasterDataType.DTDouble);
-                    sw.Stop();
-                    // DEVNOTE: Debug Message
-                    String msg1 = string.Format(CultureInfo.InvariantCulture, "Loaded InitialStocksSpatial raster file {0}. Number of valid cells:{1}, Mem:{2:N0},, # of msec:{3}",
-                        fullFilename, raster.GetNumberValidCells(), Process.GetCurrentProcess().PrivateMemorySize64,sw.ElapsedMilliseconds);
-//                    RecordStatus(StatusType.Information, msg1);
-
-
-                }
-                catch (Exception)
+					raster = new StochasticTimeRaster(fullFilename, RasterDataType.DTDouble);
+				}
+				catch (Exception)
 				{
 					string message = string.Format(CultureInfo.InvariantCulture, Constants.SPATIAL_FILE_STOCK_LOAD_WARNING, stockFileName);
 					throw new ArgumentException(message);
@@ -743,16 +735,9 @@ namespace SyncroSim.STSimStockFlow
 
 				try
 				{
-                    Stopwatch sw = Stopwatch.StartNew();
-                    MultiplierRaster = this.LoadMaskedInputRaster(FullFilename, RasterDataType.DTDouble);
-                    sw.Stop();
-                    // DEVNOTE: Debug Message
-                    String msg1 = string.Format(CultureInfo.InvariantCulture, "Loaded FlowSpatialMultiplier raster file {0}. Number of valid cells:{1}, Mem:{2:N0}, # of msec:{3}",
-                        FullFilename, MultiplierRaster.GetNumberValidCells(), Process.GetCurrentProcess().PrivateMemorySize64, sw.ElapsedMilliseconds);
-//                    RecordStatus(StatusType.Information, msg1);
-
-                }
-                catch (Exception)
+					MultiplierRaster = new StochasticTimeRaster(FullFilename, RasterDataType.DTDouble);
+				}
+				catch (Exception)
 				{
 					string msg = string.Format(CultureInfo.InvariantCulture, Constants.SPATIAL_PROCESS_WARNING, FullFilename);
 					throw new ArgumentException(msg);
@@ -760,9 +745,9 @@ namespace SyncroSim.STSimStockFlow
 
 				this.m_FlowSpatialMultipliers.Add(Multiplier);
 
-                //Only load a single instance of a each unique filename to conserve memory
-                // DEVNOTE: This check could go higher up so we dont have to waste time opening the raster file
-                if (!this.m_FlowSpatialMultiplierRasters.ContainsKey(FileName))
+				//Only load a single instance of a each unique filename to conserve memory
+
+				if (!this.m_FlowSpatialMultiplierRasters.ContainsKey(FileName))
 				{
 					this.m_FlowSpatialMultiplierRasters.Add(FileName, MultiplierRaster);
 				}
@@ -775,7 +760,7 @@ namespace SyncroSim.STSimStockFlow
             Debug.Assert(this.m_FlowLateralMultipliers.Count == 0);
             Debug.Assert(this.m_FlowLateralMultiplierRasters.Count == 0);
             DataSheet ds = this.ResultScenario.GetDataSheet(Constants.DATASHEET_FLOW_LATERAL_MULTIPLIER_NAME);
-            
+
             foreach (DataRow dr in ds.GetData().Rows)
             {
                 int FlowGroupId = Convert.ToInt32(dr[Constants.FLOW_GROUP_ID_COLUMN_NAME], CultureInfo.InvariantCulture);
@@ -805,13 +790,7 @@ namespace SyncroSim.STSimStockFlow
 
                 try
                 {
-                    Stopwatch sw = Stopwatch.StartNew();
-                    MultiplierRaster = this.LoadMaskedInputRaster(FullFilename, RasterDataType.DTDouble);
-                    sw.Stop();
-                    // DEVNOTE: Debug Message
-                    String msg1 = string.Format(CultureInfo.InvariantCulture, "Loaded FlowLateralMultiplier raster file {0}. Number of valid cells:{1}, Mem:{2:N0}, # of msec:{3}",
-                        FullFilename, MultiplierRaster.GetNumberValidCells(), Process.GetCurrentProcess().PrivateMemorySize64,sw.ElapsedMilliseconds);
-//                    RecordStatus(StatusType.Information, msg1);
+                    MultiplierRaster = new StochasticTimeRaster(FullFilename, RasterDataType.DTDouble);
                 }
                 catch (Exception)
                 {
@@ -822,7 +801,7 @@ namespace SyncroSim.STSimStockFlow
                 this.m_FlowLateralMultipliers.Add(Multiplier);
 
                 //Only load a single instance of a each unique filename to conserve memory
-                // DEVNOTE: This check could go higher up so we dont have to waste time opening the raster file
+
                 if (!this.m_FlowLateralMultiplierRasters.ContainsKey(FileName))
                 {
                     this.m_FlowLateralMultiplierRasters.Add(FileName, MultiplierRaster);
