@@ -749,6 +749,7 @@ namespace SyncroSim.STSimStockFlow
 
 				if (!this.m_FlowSpatialMultiplierRasters.ContainsKey(FileName))
 				{
+                    this.STSimTransformer.CompressRasterForCellCollection(MultiplierRaster);
 					this.m_FlowSpatialMultiplierRasters.Add(FileName, MultiplierRaster);
 				}
 			}
@@ -804,6 +805,7 @@ namespace SyncroSim.STSimStockFlow
 
                 if (!this.m_FlowLateralMultiplierRasters.ContainsKey(FileName))
                 {
+                    this.STSimTransformer.CompressRasterForCellCollection(MultiplierRaster);
                     this.m_FlowLateralMultiplierRasters.Add(FileName, MultiplierRaster);
                 }
             }

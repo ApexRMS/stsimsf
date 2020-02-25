@@ -27,7 +27,7 @@ namespace SyncroSim.STSimStockFlow
         }
 
         private double GetFlowSpatialMultiplier(
-            int cellId,
+            Cell cell,
             FlowSpatialMultiplierMap map,
             int flowGroupId,
             int iteration,
@@ -49,7 +49,7 @@ namespace SyncroSim.STSimStockFlow
             }
 
             StochasticTimeRaster raster = this.m_FlowSpatialMultiplierRasters[m.FileName];
-            double v = raster.DblCells[cellId];
+            double v = raster.DblCells[cell.CollectionIndex];
 
             if ((v < 0.0) || (MathUtils.CompareDoublesEqual(v, raster.NoDataValue, double.Epsilon)))
             {
@@ -62,7 +62,7 @@ namespace SyncroSim.STSimStockFlow
         }
 
         private double GetFlowLateralMultiplier(
-            int cellId,
+            Cell cell,
             FlowLateralMultiplierMap map,
             int flowGroupId,
             int iteration,
@@ -84,7 +84,7 @@ namespace SyncroSim.STSimStockFlow
             }
 
             StochasticTimeRaster raster = this.m_FlowLateralMultiplierRasters[m.FileName];
-            double v = raster.DblCells[cellId];
+            double v = raster.DblCells[cell.CollectionIndex];
 
             if ((v < 0.0) || (MathUtils.CompareDoublesEqual(v, raster.NoDataValue, double.Epsilon)))
             {
@@ -108,7 +108,7 @@ namespace SyncroSim.STSimStockFlow
                     if (this.m_IsSpatial && mt.FlowLateralMultiplierMap != null)
                     {
                         Multiplier *= this.GetFlowLateralMultiplier(
-                            cell.CellId,
+                            cell,
                             mt.FlowLateralMultiplierMap,
                             fgl.FlowGroup.Id,
                             iteration,
