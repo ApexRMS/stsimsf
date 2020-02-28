@@ -71,7 +71,7 @@ namespace SyncroSim.STSimStockFlow
                     SpatialOutputFlowRecord rec = new SpatialOutputFlowRecord();
 
                     rec.FlowTypeId = ft.Id;
-                    rec.Data = new double[this.STSimTransformer.InputRasters.NumberCells];
+                    rec.Data = new double[this.STSimTransformer.Cells.Count];
                     rec.HasOutputData = false;
 
                     this.m_SpatialOutputFlowDict.Add(ft.Id, rec);
@@ -100,7 +100,7 @@ namespace SyncroSim.STSimStockFlow
                     SpatialOutputFlowRecord rec = new SpatialOutputFlowRecord();
 
                     rec.FlowTypeId = ft.Id;
-                    rec.Data = new double[this.STSimTransformer.InputRasters.NumberCells];
+                    rec.Data = new double[this.STSimTransformer.Cells.Count];
                     rec.HasOutputData = false;
 
                     this.m_LateralOutputFlowDict.Add(ft.Id, rec);
