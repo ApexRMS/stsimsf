@@ -426,8 +426,6 @@ namespace SyncroSim.STSimStockFlow
 			{
 				int ProjectId = Convert.ToInt32(ProjectRow["ProjectID"], CultureInfo.InvariantCulture);
 				DataTable DistributionTypes = store.CreateDataTableFromQuery(string.Format(CultureInfo.InvariantCulture, "SELECT * FROM corestime_DistributionType WHERE ProjectID={0}", ProjectId), "DistributionTypes");
-
-				Debug.Assert(DistributionTypes.Rows.Count == 4);
 				DistTables.Add(ProjectId, DistributionTypes);
 			}
 
