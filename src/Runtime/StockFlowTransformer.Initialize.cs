@@ -80,6 +80,10 @@ namespace SyncroSim.STSimStockFlow
 			this.m_SpatialFlowOutputTimesteps = SafeInt(droo[Constants.DATASHEET_OO_SPATIAL_OUTPUT_FL_TIMESTEPS_COLUMN_NAME]);
 			this.m_CreateLateralFlowOutput = DataTableUtilities.GetDataBool(droo[Constants.DATASHEET_OO_LATERAL_OUTPUT_FL_COLUMN_NAME]);
 			this.m_LateralFlowOutputTimesteps = SafeInt(droo[Constants.DATASHEET_OO_LATERAL_OUTPUT_FL_TIMESTEPS_COLUMN_NAME]);
+			this.m_CreateAvgSpatialStockOutput = DataTableUtilities.GetDataBool(droo[Constants.DATASHEET_OO_AVG_SPATIAL_OUTPUT_ST_COLUMN_NAME]);
+			this.m_AvgSpatialStockOutputTimesteps = SafeInt(droo[Constants.DATASHEET_OO_AVG_SPATIAL_OUTPUT_ST_TIMESTEPS_COLUMN_NAME]);
+			this.m_CreateAvgSpatialFlowOutput = DataTableUtilities.GetDataBool(droo[Constants.DATASHEET_OO_AVG_SPATIAL_OUTPUT_FL_COLUMN_NAME]);
+			this.m_AvgSpatialFlowOutputTimesteps = SafeInt(droo[Constants.DATASHEET_OO_AVG_SPATIAL_OUTPUT_FL_TIMESTEPS_COLUMN_NAME]);
 		}
 
 		/// <summary>

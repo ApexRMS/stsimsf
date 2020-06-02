@@ -30,6 +30,8 @@ namespace SyncroSim.STSimStockFlow
 					MapsGroup.Items.Add(new SyncroSimLayoutItem("stsimsf_StockRasterMap", "Stock Type/Group", false));
 					MapsGroup.Items.Add(new SyncroSimLayoutItem("stsimsf_FlowRasterMap", "Flow Type/Group", false));
 					MapsGroup.Items.Add(new SyncroSimLayoutItem("stsimsf_LateralFlowRasterMap", "Lateral Flow Type/Group", false));
+					MapsGroup.Items.Add(new SyncroSimLayoutItem("stsimsf_AvgStockRasterMap", "Average Stock Type/Group", false));
+					MapsGroup.Items.Add(new SyncroSimLayoutItem("stsimsf_AvgFlowRasterMap", "Average Flow Type/Group", false));
 				}
 			}        
 		}

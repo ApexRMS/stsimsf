@@ -154,6 +154,10 @@ namespace SyncroSim.STSimStockFlow
 		public const string DATASHEET_OO_SPATIAL_OUTPUT_FL_TIMESTEPS_COLUMN_NAME = "SpatialOutputFLTimesteps";
 		public const string DATASHEET_OO_LATERAL_OUTPUT_FL_COLUMN_NAME = "LateralOutputFL";
 		public const string DATASHEET_OO_LATERAL_OUTPUT_FL_TIMESTEPS_COLUMN_NAME = "LateralOutputFLTimesteps";
+		public const string DATASHEET_OO_AVG_SPATIAL_OUTPUT_ST_COLUMN_NAME = "AvgSpatialOutputST";
+		public const string DATASHEET_OO_AVG_SPATIAL_OUTPUT_ST_TIMESTEPS_COLUMN_NAME = "AvgSpatialOutputSTTimesteps";
+		public const string DATASHEET_OO_AVG_SPATIAL_OUTPUT_FL_COLUMN_NAME = "AvgSpatialOutputFL";
+		public const string DATASHEET_OO_AVG_SPATIAL_OUTPUT_FL_TIMESTEPS_COLUMN_NAME = "AvgSpatialOutputFLTimesteps";
 
 		//Messages
 		public const string NO_SUMMARY_OUTPUT_OPTIONS_INFORMATION = "No summary output options specified for stocks and flows.  Using defaults.";
@@ -171,6 +175,8 @@ namespace SyncroSim.STSimStockFlow
 		public const string SPATIAL_MAP_STOCK_GROUP_VARIABLE_PREFIX = "stkg";
 		public const string SPATIAL_MAP_FLOW_GROUP_VARIABLE_PREFIX = "flog";
 		public const string SPATIAL_MAP_LATERAL_FLOW_GROUP_VARIABLE_PREFIX = "lflog";
+		public const string SPATIAL_MAP_AVG_STOCK_GROUP_VARIABLE_PREFIX = "avgstkg";
+		public const string SPATIAL_MAP_AVG_FLOW_GROUP_VARIABLE_PREFIX = "avgflog";
 
 		//Spatial Map file naming Regex filter, containing 1 ID value
 		public const string FILE_FILTER_ID_REGEX = "^(.*){0}-([\\d]*)\\.(tif|vrt)$";

@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<package name="stsimsf" displayName="Integrates stocks and flows into the ST-Sim simulation model" version="3.2.12"  isAddOn="True" extendsPackage="stsim" url="https://github.com/ApexRMS/stsimsf">
+<package name="stsimsf" displayName="Integrates stocks and flows into the ST-Sim simulation model" version="3.2.13"  isAddOn="True" extendsPackage="stsim" url="https://github.com/ApexRMS/stsimsf">
   <transformers>
     <transformer name="Primary" displayName="Stocks and Flows" className="SyncroSim.STSimStockFlow.StockFlowTransformer" classAssembly="SyncroSim.STSimStockFlow" isPrimary="True" extendsTransformer="stsim_Runtime">
       <datafeeds>
@@ -334,7 +334,11 @@
                 <column name="SpatialOutputFLTimesteps" dataType="Integer" validationType="WholeNumber" validationCondition="GreaterEqual" formula1="0" format="d"/>
                 <column name="LateralOutputFL" dataType="Boolean"/>
                 <column name="LateralOutputFLTimesteps" dataType="Integer" validationType="WholeNumber" validationCondition="GreaterEqual" formula1="0" format="d"/>
-              </columns>
+                <column name="AvgSpatialOutputST" dataType="Boolean"/>
+                <column name="AvgSpatialOutputSTTimesteps" dataType="Integer" validationType="WholeNumber" validationCondition="GreaterEqual" formula1="0" format="d"/>              
+                <column name="AvgSpatialOutputFL" dataType="Boolean"/>
+                <column name="AvgSpatialOutputFLTimesteps" dataType="Integer" validationType="WholeNumber" validationCondition="GreaterEqual" formula1="0" format="d"/>                         
+        </columns>
             </datasheet>
           </datasheets>
         </datafeed>
@@ -424,6 +428,34 @@
             </datasheet>
           </datasheets>
         </datafeed>
+        <datafeed name="OutputAverageSpatialStockGroup" displayName="Output Average Spatial Stock Group" dataScope="Scenario" isOutput="True" >
+          <datasheets>
+            <datasheet name="OutputAverageSpatialStockGroup" displayName="Output Average Spatial Stock Group" spatialMultiProcessing="True">
+              <columns>
+                <column name="ScenarioID" dataType="Integer" />
+                <column name="Iteration" dataType="Integer" format="d"/>
+                <column name="Timestep" dataType="Integer" displayNameSource="stsim_Terminology" displayNameColumn="TimestepUnits" format="d"/>
+                <column name="StockGroupID" dataType="Integer" displayName="Stock Group" validationType="Datasheet" formula1="StockGroup" allowDbNull="False"/>
+                <column name="Filename" displayName="Average Spatial Stock Group Map" dataType="String" allowDbNull="False" isExternalFile="True" isRaster="True" bandColumn="Band" bandFilterColumn="StockGroupID" filenameCode="avgstkg" />
+                <column name="Band" displayName="Band" dataType="Integer" allowDbNull="True" isOptional="True"/>
+              </columns>
+            </datasheet>
+          </datasheets>
+        </datafeed>        
+        <datafeed name="OutputAverageSpatialFlowGroup" displayName="Output Average Spatial Flow Group" dataScope="Scenario" isOutput="True" >
+          <datasheets>
+            <datasheet name="OutputAverageSpatialFlowGroup" displayName="Output Average Spatial Flow Group" spatialMultiProcessing="True">
+              <columns>
+                <column name="ScenarioID" dataType="Integer" />
+                <column name="Iteration" dataType="Integer" format="d"/>
+                <column name="Timestep" dataType="Integer" displayNameSource="stsim_Terminology" displayNameColumn="TimestepUnits" format="d"/>
+                <column name="FlowGroupID" dataType="Integer" displayName="Flow Group" validationType="Datasheet" formula1="FlowGroup" allowDbNull="False"/>
+                <column name="Filename" displayName="Average Spatial Flow Group Map" dataType="String" allowDbNull="False" isExternalFile="True" isRaster="True" bandColumn="Band" bandFilterColumn="FlowGroupID" filenameCode="avgflog" />
+                <column name="Band" displayName="Band" dataType="Integer" allowDbNull="True" isOptional="True"/>
+              </columns>
+            </datasheet>
+          </datasheets>
+        </datafeed>                      
       </datafeeds>
     </transformer>
     <transformer name="SummaryStockReport" displayName="Stocks" className="SyncroSim.STSimStockFlow.SummaryStockReport" classAssembly="SyncroSim.STSimStockFlow">
@@ -435,7 +467,11 @@
     <transformer name="FlowRasterMap" displayName="Flow Groups" className="SyncroSim.StochasticTime.Forms.StochasticTimeExportTransformer" classAssembly="SyncroSim.StochasticTime.Forms" dataSheet="OutputSpatialFlowGroup" column="Filename" isFolderExport="True">
     </transformer>
     <transformer name="LateralFlowRasterMap" displayName="Lateral Flow Groups" className="SyncroSim.StochasticTime.Forms.StochasticTimeExportTransformer" classAssembly="SyncroSim.StochasticTime.Forms" dataSheet="OutputLateralFlowGroup" column="Filename" isFolderExport="True">
+    </transformer>  
+    <transformer name="AvgStockRasterMap" displayName="Average Stock Groups" className="SyncroSim.StochasticTime.Forms.StochasticTimeExportTransformer" classAssembly="SyncroSim.StochasticTime.Forms" dataSheet="OutputAverageSpatialStockGroup" column="Filename" isFolderExport="True">
     </transformer>
+    <transformer name="AvgFlowRasterMap" displayName="Average Flow Groups" className="SyncroSim.StochasticTime.Forms.StochasticTimeExportTransformer" classAssembly="SyncroSim.StochasticTime.Forms" dataSheet="OutputAverageSpatialFlowGroup" column="Filename" isFolderExport="True">
+    </transformer>            
   </transformers>
   <views>
     <view name="FlowOrderDatafeedView" target="FlowOrder" className="SyncroSim.STSimStockFlow.FlowOrderDataFeedView" classAssembly="SyncroSim.STSimStockFlow"/>
@@ -485,11 +521,13 @@
       <item name="stkg" displayName="Stock Groups" dataSheet="OutputSpatialStockGroup" column="Filename" filter="StockGroupID"></item>
       <item name="flog" displayName="Flow Groups" dataSheet="OutputSpatialFlowGroup" column="Filename" filter="FlowGroupID"></item>
       <item name="lflog" displayName="Lateral Flow Groups" dataSheet="OutputLateralFlowGroup" column="Filename" filter="FlowGroupID"></item>
+      <item name="avgstkg" displayName="Average Stock Groups" dataSheet="OutputAverageSpatialStockGroup" column="Filename" filter="StockGroupID"></item>
+      <item name="avgflog" displayName="Average Flow Groups" dataSheet="OutputAverageSpatialFlowGroup" column="Filename" filter="FlowGroupID"></item>      
     </layout>
   </layouts>
   <updateProvider
-    schemaVersion="104"
-    minPackageVersion="3.2.10"
+    schemaVersion="105"
+    minPackageVersion="3.2.13"
     className="SyncroSim.STSimStockFlow.SFUpdates"
     classAssembly="SyncroSim.STSimStockFlow"/>
   <console

@@ -22,9 +22,14 @@ namespace SyncroSim.STSimStockFlow
 		private bool m_CreateSpatialStockOutput;
 		private int m_SpatialStockOutputTimesteps;
 		private bool m_CreateSpatialFlowOutput;
-        private bool m_CreateLateralFlowOutput;
 		private int m_SpatialFlowOutputTimesteps;
+        private bool m_CreateLateralFlowOutput;
         private int m_LateralFlowOutputTimesteps;
+		private bool m_CreateAvgSpatialStockOutput;
+		private int m_AvgSpatialStockOutputTimesteps;
+		private bool m_CreateAvgSpatialFlowOutput;
+		private int m_AvgSpatialFlowOutputTimesteps;
+
 		private Dictionary<int, SpatialOutputFlowRecord> m_SpatialOutputFlowDict;
 		private Dictionary<int, SpatialOutputFlowRecord> m_LateralOutputFlowDict;
 		private OutputFlowCollection m_SummaryOutputFlowRecords = new OutputFlowCollection();
