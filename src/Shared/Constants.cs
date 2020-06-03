@@ -53,6 +53,8 @@ namespace SyncroSim.STSimStockFlow
 		public const string DATASHEET_OUTPUT_SPATIAL_STOCK_GROUP = "stsimsf_OutputSpatialStockGroup";
 		public const string DATASHEET_OUTPUT_SPATIAL_FLOW_GROUP = "stsimsf_OutputSpatialFlowGroup";
 		public const string DATASHEET_OUTPUT_LATERAL_FLOW_GROUP = "stsimsf_OutputLateralFlowGroup";
+		public const string DATASHEET_OUTPUT_AVG_SPATIAL_STOCK_GROUP = "stsimsf_OutputAverageSpatialStockGroup";
+		public const string DATASHEET_OUTPUT_AVG_SPATIAL_FLOW_GROUP = "stsimsf_OutputAverageSpatialFlowGroup";
 
         public const string DATASHEET_STSIM_STRATUM = "stsim_Stratum";
         public const string DATASHEET_STSIM_SECONDARY_STRATUM = "stsim_SecondaryStratum";
@@ -156,8 +158,10 @@ namespace SyncroSim.STSimStockFlow
 		public const string DATASHEET_OO_LATERAL_OUTPUT_FL_TIMESTEPS_COLUMN_NAME = "LateralOutputFLTimesteps";
 		public const string DATASHEET_OO_AVG_SPATIAL_OUTPUT_ST_COLUMN_NAME = "AvgSpatialOutputST";
 		public const string DATASHEET_OO_AVG_SPATIAL_OUTPUT_ST_TIMESTEPS_COLUMN_NAME = "AvgSpatialOutputSTTimesteps";
+		public const string DATASHEET_OO_AVG_SPATIAL_OUTPUT_ST_ACROSS_TIMESTEPS_COLUMN_NAME = "AvgSpatialOutputSTAcrossTimesteps";
 		public const string DATASHEET_OO_AVG_SPATIAL_OUTPUT_FL_COLUMN_NAME = "AvgSpatialOutputFL";
 		public const string DATASHEET_OO_AVG_SPATIAL_OUTPUT_FL_TIMESTEPS_COLUMN_NAME = "AvgSpatialOutputFLTimesteps";
+		public const string DATASHEET_OO_AVG_SPATIAL_OUTPUT_FL_ACROSS_TIMESTEPS_COLUMN_NAME = "AvgSpatialOutputFLAcrossTimesteps";
 
 		//Messages
 		public const string NO_SUMMARY_OUTPUT_OPTIONS_INFORMATION = "No summary output options specified for stocks and flows.  Using defaults.";

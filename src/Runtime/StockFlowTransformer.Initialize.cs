@@ -5,6 +5,7 @@ using System;
 using System.Data;
 using System.Diagnostics;
 using System.Globalization;
+using System.Collections.Generic;
 using SyncroSim.Core;
 
 namespace SyncroSim.STSimStockFlow
@@ -82,14 +83,16 @@ namespace SyncroSim.STSimStockFlow
 			this.m_LateralFlowOutputTimesteps = SafeInt(droo[Constants.DATASHEET_OO_LATERAL_OUTPUT_FL_TIMESTEPS_COLUMN_NAME]);
 			this.m_CreateAvgSpatialStockOutput = DataTableUtilities.GetDataBool(droo[Constants.DATASHEET_OO_AVG_SPATIAL_OUTPUT_ST_COLUMN_NAME]);
 			this.m_AvgSpatialStockOutputTimesteps = SafeInt(droo[Constants.DATASHEET_OO_AVG_SPATIAL_OUTPUT_ST_TIMESTEPS_COLUMN_NAME]);
+            this.m_AvgSpatialStockOutputAcrossTimesteps = DataTableUtilities.GetDataBool(droo[Constants.DATASHEET_OO_AVG_SPATIAL_OUTPUT_ST_ACROSS_TIMESTEPS_COLUMN_NAME]);
 			this.m_CreateAvgSpatialFlowOutput = DataTableUtilities.GetDataBool(droo[Constants.DATASHEET_OO_AVG_SPATIAL_OUTPUT_FL_COLUMN_NAME]);
 			this.m_AvgSpatialFlowOutputTimesteps = SafeInt(droo[Constants.DATASHEET_OO_AVG_SPATIAL_OUTPUT_FL_TIMESTEPS_COLUMN_NAME]);
-		}
+            this.m_AvgSpatialFlowOutputAcrossTimesteps = DataTableUtilities.GetDataBool(droo[Constants.DATASHEET_OO_AVG_SPATIAL_OUTPUT_FL_ACROSS_TIMESTEPS_COLUMN_NAME]);
+        }
 
-		/// <summary>
-		/// Initializes all distribution values
-		/// </summary>
-		private void InitializeDistributionValues()
+        /// <summary>
+        /// Initializes all distribution values
+        /// </summary>
+        private void InitializeDistributionValues()
 		{
 			this.InitializeFlowMultiplierDistributionValues();
 			this.InitializeStockTransitionMultiplierDistributionValues();
@@ -226,6 +229,86 @@ namespace SyncroSim.STSimStockFlow
             }
 
             throw new ArgumentException("Auto-generated group not found for flow type: " + t.Name);
+        }
+
+        private void InitializeAverageStockMap()
+        {
+            Debug.Assert(this.STSimTransformer.IsSpatial);
+            Debug.Assert(this.STSimTransformer.MinimumTimestep > 0);
+
+            if (!this.m_CreateAvgSpatialStockOutput)
+            {
+                return;
+            }
+
+            // Loop thru stock groups. 
+            foreach (StockGroup sg in this.m_StockGroups)
+            {
+                Dictionary<int, double[]> dict = new Dictionary<int, double[]>();
+
+                // Loop thru timesteps
+                for (var timestep = this.STSimTransformer.MinimumTimestep; timestep <= this.STSimTransformer.MaximumTimestep; timestep++)
+                {
+                    // Create a dictionary for this stock group
+                    // Create a values array object on Maximum Timestep and intervals of user spec'd freq.
+
+                    if ((timestep == this.STSimTransformer.MaximumTimestep) || ((timestep - this.STSimTransformer.TimestepZero) % this.m_AvgSpatialStockOutputTimesteps) == 0)
+                    {
+                        double[] values = null;
+                        values = new double[this.STSimTransformer.Cells.Count];
+
+                        // Initialize cells values
+                        for (var i = 0; i < this.STSimTransformer.Cells.Count; i++)
+                        {
+                            values[i] = 0;
+                        }
+
+                        dict.Add(timestep, values);
+                    }
+                }
+
+                this.m_AvgStockMap.Add(sg.Id, dict);
+            }
+        }
+
+        private void InitializeAverageFlowMap()
+        {
+            Debug.Assert(this.STSimTransformer.IsSpatial);
+            Debug.Assert(this.STSimTransformer.MinimumTimestep > 0);
+
+            if (!this.m_CreateAvgSpatialFlowOutput)
+            {
+                return;
+            }
+
+            // Loop thru flow groups. 
+            foreach (FlowGroup fg in this.m_FlowGroups)
+            {
+                Dictionary<int, double[]> dict = new Dictionary<int, double[]>();
+
+                // Loop thru timesteps
+                for (var timestep = this.STSimTransformer.MinimumTimestep; timestep <= this.STSimTransformer.MaximumTimestep; timestep++)
+                {
+                    // Create a dictionary for this flow group
+                    // Create a values array object on Maximum Timestep and intervals of user spec'd freq.
+
+                    if ((timestep == this.STSimTransformer.MaximumTimestep) || ((timestep - this.STSimTransformer.TimestepZero) % this.m_AvgSpatialStockOutputTimesteps) == 0)
+                    {
+                        double[] values = null;
+                        values = new double[this.STSimTransformer.Cells.Count];
+
+                        // Initialize cells values
+                        for (var i = 0; i < this.STSimTransformer.Cells.Count; i++)
+                        {
+                            values[i] = 0;
+                        }
+
+                        dict.Add(timestep, values);
+                    }
+                }
+
+                this.m_AvgFlowMap.Add(fg.Id, dict);
+            }
         }
     }
 }

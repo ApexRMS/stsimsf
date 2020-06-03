@@ -27,6 +27,7 @@ namespace SyncroSim.STSimStockFlow
 		private RandomGenerator m_RandomGenerator = new RandomGenerator();
 		private List<FlowType> m_ShufflableFlowTypes = new List<FlowType>();
         private LateralFlowAmountMap m_LateralFlowAmountMap;
+        private int m_TotalIterations;
 
 		/// <summary>
 		/// Gets the ST-Sim Transformer
@@ -122,6 +123,10 @@ namespace SyncroSim.STSimStockFlow
 				this.CreateInitialStockSpatialMap();
 			}
 
+            this.m_TotalIterations = (
+                this.STSimTransformer.MaximumIteration - 
+                this.STSimTransformer.MinimumIteration + 1);
+
 #if DEBUG
             foreach (StockType t in this.m_StockTypes) { Debug.Assert(t.StockGroupLinkages.Count > 0); }
             foreach (FlowType t in this.m_FlowTypes) { Debug.Assert(t.FlowGroupLinkages.Count > 0); }
@@ -151,19 +156,22 @@ namespace SyncroSim.STSimStockFlow
 			this.STSimTransformer.IterationStarted += this.OnSTSimBeforeIteration;
 			this.STSimTransformer.TimestepStarted += this.OnSTSimBeforeTimestep;
 			this.STSimTransformer.TimestepCompleted += this.OnSTSimAfterTimestep;
+            this.STSimTransformer.ModelRunComplete += this.OnSTSimModelRunComplete;
+            this.STSimTransformer.BeginNormalSpatialMerge += this.OnSTSimBeginNormalSpatialMerge;
+            this.STSimTransformer.NormalSpatialMergeComplete += this.OnSTSimNormalSpatialMergeComplete;
 
-			if (this.m_StockTransitionMultipliers.Count > 0)
+            if (this.m_StockTransitionMultipliers.Count > 0)
 			{
 				this.STSimTransformer.ApplyingTransitionMultipliers += this.OnApplyingTransitionMultipliers;
 			}
 		}
 
-		/// <summary>
-		/// Disposes this instance
-		/// </summary>
-		/// <param name="disposing"></param>
-		/// <remarks></remarks>
-		protected override void Dispose(bool disposing)
+        /// <summary>
+        /// Disposes this instance
+        /// </summary>
+        /// <param name="disposing"></param>
+        /// <remarks></remarks>
+        protected override void Dispose(bool disposing)
 		{
 			if (disposing && !this.IsDisposed)
 			{
@@ -176,8 +184,11 @@ namespace SyncroSim.STSimStockFlow
 					this.STSimTransformer.IterationStarted -= this.OnSTSimBeforeIteration;
 					this.STSimTransformer.TimestepStarted -= this.OnSTSimBeforeTimestep;
 					this.STSimTransformer.TimestepCompleted -= this.OnSTSimAfterTimestep;
+                    this.STSimTransformer.ModelRunComplete -= this.OnSTSimModelRunComplete;
+                    this.STSimTransformer.BeginNormalSpatialMerge -= this.OnSTSimBeginNormalSpatialMerge;
+                    this.STSimTransformer.NormalSpatialMergeComplete -= this.OnSTSimNormalSpatialMergeComplete;
 
-					if (this.m_StockTransitionMultipliers.Count > 0)
+                    if (this.m_StockTransitionMultipliers.Count > 0)
 					{
 						this.STSimTransformer.ApplyingTransitionMultipliers -= this.OnApplyingTransitionMultipliers;
 					}
@@ -419,26 +430,72 @@ namespace SyncroSim.STSimStockFlow
 				this.ProcessFlowSummaryData(e.Iteration, e.Timestep);
 			}
 
-			if (this.m_IsSpatial)
-			{
-				if (this.m_STSimTransformer.IsOutputTimestep(e.Timestep, this.m_SpatialStockOutputTimesteps, this.m_CreateSpatialStockOutput))
-				{
-					this.ProcessStockGroupSpatialData(e.Iteration, e.Timestep);
-				}
+            if (this.m_IsSpatial)
+            {
+                if (this.m_STSimTransformer.IsOutputTimestep(e.Timestep, this.m_SpatialStockOutputTimesteps, this.m_CreateSpatialStockOutput))
+                {
+                    this.ProcessStockGroupSpatialData(e.Iteration, e.Timestep);
+                }
 
-				if (this.m_STSimTransformer.IsOutputTimestep(e.Timestep, this.m_SpatialFlowOutputTimesteps, this.m_CreateSpatialFlowOutput))
-				{
-					this.ProcessFlowGroupSpatialData(e.Iteration, e.Timestep);
-				}
+                if (this.m_STSimTransformer.IsOutputTimestep(e.Timestep, this.m_SpatialFlowOutputTimesteps, this.m_CreateSpatialFlowOutput))
+                {
+                    this.ProcessFlowGroupSpatialData(e.Iteration, e.Timestep);
+                }
 
-				if (this.m_STSimTransformer.IsOutputTimestep(e.Timestep, this.m_LateralFlowOutputTimesteps, this.m_CreateLateralFlowOutput))
-				{
-					this.ProcessLateralFlowGroupSpatialData(e.Iteration, e.Timestep);
-				}
-			}
+                if (this.m_STSimTransformer.IsOutputTimestep(e.Timestep, this.m_LateralFlowOutputTimesteps, this.m_CreateLateralFlowOutput))
+                {
+                    this.ProcessLateralFlowGroupSpatialData(e.Iteration, e.Timestep);
+                }
+
+                if (this.m_STSimTransformer.IsOutputTimestep(e.Timestep, this.m_AvgSpatialStockOutputTimesteps, this.m_CreateAvgSpatialStockOutput) ||
+                    this.m_AvgSpatialStockOutputAcrossTimesteps)
+                {
+                    foreach (StockGroup g in this.m_StockGroups)
+                    {
+                        this.RecordAverageStockValues(e.Timestep, g);
+                    }
+                }
+
+                if (this.m_STSimTransformer.IsOutputTimestep(e.Timestep, this.m_AvgSpatialFlowOutputTimesteps, this.m_CreateAvgSpatialFlowOutput) ||
+                    this.m_AvgSpatialFlowOutputAcrossTimesteps)
+                {
+                    foreach (FlowGroup g in this.m_FlowGroups)
+                    {
+                        this.RecordAverageFlowValues(e.Timestep, g);
+                    }
+                }
+            }
 
             this.m_LateralFlowAmountMap = null;
-		}
+        }
+
+        private void OnSTSimModelRunComplete(object sender, EventArgs e)
+        {
+            if (!this.STSimTransformer.IsSpatial)
+            {
+                return;
+            }
+
+            if (this.m_CreateAvgSpatialStockOutput)
+            {
+                this.CreateAvgSpatialStockOutput();
+            }
+
+            if (this.m_CreateAvgSpatialFlowOutput)
+            {
+                this.CreateAvgSpatialFlowOutput();
+            }
+        }
+
+        private void OnSTSimBeginNormalSpatialMerge(object sender, EventArgs e)
+        {
+
+        }
+
+        private void OnSTSimNormalSpatialMergeComplete(object sender, EventArgs e)
+        {
+
+        }
 
 		/// <summary>
 		/// Called when (non-spatial) multipliers are being applied
@@ -579,7 +636,13 @@ namespace SyncroSim.STSimStockFlow
 				{
 					this.ProcessStockGroupSpatialData(e.Iteration, e.Timestep);
 				}
-			}
+
+                if (e.Iteration == this.m_STSimTransformer.MinimumIteration)
+                {
+                    this.InitializeAverageStockMap();
+                    this.InitializeAverageFlowMap();
+                }
+            }
 		}
 
 		/// <summary>
@@ -701,7 +764,6 @@ namespace SyncroSim.STSimStockFlow
 			{
 				if (dtPathway == null)
 				{
-
 					DestStrat = cell.StratumId;
 					DestStateClass = cell.StateClassId;
 					ToAge = cell.Age + 1;

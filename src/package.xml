@@ -335,10 +335,12 @@
                 <column name="LateralOutputFL" dataType="Boolean"/>
                 <column name="LateralOutputFLTimesteps" dataType="Integer" validationType="WholeNumber" validationCondition="GreaterEqual" formula1="0" format="d"/>
                 <column name="AvgSpatialOutputST" dataType="Boolean"/>
-                <column name="AvgSpatialOutputSTTimesteps" dataType="Integer" validationType="WholeNumber" validationCondition="GreaterEqual" formula1="0" format="d"/>              
+                <column name="AvgSpatialOutputSTTimesteps" dataType="Integer" validationType="WholeNumber" validationCondition="GreaterEqual" formula1="0" format="d"/>
+                <column name="AvgSpatialOutputSTAcrossTimesteps" dataType="Boolean"/>
                 <column name="AvgSpatialOutputFL" dataType="Boolean"/>
-                <column name="AvgSpatialOutputFLTimesteps" dataType="Integer" validationType="WholeNumber" validationCondition="GreaterEqual" formula1="0" format="d"/>                         
-        </columns>
+                <column name="AvgSpatialOutputFLTimesteps" dataType="Integer" validationType="WholeNumber" validationCondition="GreaterEqual" formula1="0" format="d"/>
+                <column name="AvgSpatialOutputFLAcrossTimesteps" dataType="Boolean"/>
+              </columns>
             </datasheet>
           </datasheets>
         </datafeed>

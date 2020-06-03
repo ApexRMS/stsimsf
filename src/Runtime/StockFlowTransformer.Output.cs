@@ -1,7 +1,9 @@
 ﻿// stsim-stockflow: SyncroSim Add-On Package (to stsim) for integrating stocks and flows into state-and-transition simulation models in ST-Sim.
 // Copyright © 2007-2019 Apex Resource Management Solutions Ltd. (ApexRMS). All rights reserved.
 
+using System;
 using System.Data;
+using System.Linq;
 using System.Diagnostics;
 using System.Globalization;
 using System.Collections.Generic;
@@ -27,8 +29,10 @@ namespace SyncroSim.STSimStockFlow
         private int m_LateralFlowOutputTimesteps;
 		private bool m_CreateAvgSpatialStockOutput;
 		private int m_AvgSpatialStockOutputTimesteps;
+        private bool m_AvgSpatialStockOutputAcrossTimesteps;
 		private bool m_CreateAvgSpatialFlowOutput;
 		private int m_AvgSpatialFlowOutputTimesteps;
+        private bool m_AvgSpatialFlowOutputAcrossTimesteps;
 
 		private Dictionary<int, SpatialOutputFlowRecord> m_SpatialOutputFlowDict;
 		private Dictionary<int, SpatialOutputFlowRecord> m_LateralOutputFlowDict;
@@ -468,6 +472,191 @@ namespace SyncroSim.STSimStockFlow
                     Debug.Assert(false, "I think we expected to find a m_LateralOutputFlow object for the flowType " + flowTypeId.ToString("0000", CultureInfo.InvariantCulture));
                 }
             }
+        }
+
+        private void CreateAvgSpatialStockOutput()
+        {
+            Debug.Assert(this.STSimTransformer.IsSpatial);
+
+            foreach (int id in this.m_AvgStockMap.Keys)
+            {
+                Dictionary<int, double[]> dict = this.m_AvgStockMap[id];
+
+                // Now lets loop thru the timestep arrays in the dictionary
+                foreach (int timestep in dict.Keys)
+                {
+                    double[] values = dict[timestep];
+
+                    //Dont bother writing out any array thats all DEFAULT_NO_DATA_VALUEs or 0's
+                    var dist = values.Distinct();
+
+                    if (dist.Count() == 1)
+                    {
+                        Debug.Print("Skipping Average Stock Group output for SG {0} / Timestep {1} as no non-DEFAULT_NO_DATA_VALUE values found.", id, timestep);
+                        continue;
+                    }
+                    else if (dist.Count() == 2)
+                    {
+                        if (dist.ElementAt(0) <= 0 && dist.ElementAt(1) <= 0)
+                        {
+                            Debug.Print("Skipping Average Stock Group output for SG {0} / Timestep {1} as no non-DEFAULT_NO_DATA_VALUE values found.", id, timestep);
+                            continue;
+                        }
+                    }
+
+                    StochasticTimeRaster rast = this.STSimTransformer.InputRasters.CreateOutputRaster(RasterDataType.DTDouble);
+                    double[] arr = rast.DblCells;
+
+                    foreach (Cell c in this.STSimTransformer.Cells)
+                    {
+                        arr[c.CellId] = values[c.CollectionIndex];
+                    }
+
+                    Spatial.WriteRasterData(
+                        rast,
+                        this.ResultScenario.GetDataSheet(Constants.DATASHEET_OUTPUT_AVG_SPATIAL_STOCK_GROUP),
+                        0,
+                        timestep,
+                        id,
+                        Constants.SPATIAL_MAP_AVG_STOCK_GROUP_VARIABLE_PREFIX,
+                        Constants.DATASHEET_OUTPUT_SPATIAL_FILENAME_COLUMN);
+                }
+            }
+        }
+
+        private void CreateAvgSpatialFlowOutput()
+        {
+            Debug.Assert(this.STSimTransformer.IsSpatial);
+
+            foreach (int id in this.m_AvgFlowMap.Keys)
+            {
+                Dictionary<int, double[]> dict = this.m_AvgFlowMap[id];
+
+                // Now lets loop thru the timestep arrays in the dictionary
+                foreach (int timestep in dict.Keys)
+                {
+                    double[] values = dict[timestep];
+
+                    //Dont bother writing out any array thats all DEFAULT_NO_DATA_VALUEs or 0's
+                    var dist = values.Distinct();
+
+                    if (dist.Count() == 1)
+                    {
+                        Debug.Print("Skipping Average Flow Group output for FG {0} / Timestep {1} as no non-DEFAULT_NO_DATA_VALUE values found.", id, timestep);
+                        continue;
+                    }
+                    else if (dist.Count() == 2)
+                    {
+                        if (dist.ElementAt(0) <= 0 && dist.ElementAt(1) <= 0)
+                        {
+                            Debug.Print("Skipping Average Flow Group output for FG {0} / Timestep {1} as no non-DEFAULT_NO_DATA_VALUE values found.", id, timestep);
+                            continue;
+                        }
+                    }
+
+                    StochasticTimeRaster rast = this.STSimTransformer.InputRasters.CreateOutputRaster(RasterDataType.DTDouble);
+                    double[] arr = rast.DblCells;
+
+                    foreach (Cell c in this.STSimTransformer.Cells)
+                    {
+                        arr[c.CellId] = values[c.CollectionIndex];
+                    }
+
+                    Spatial.WriteRasterData(
+                        rast,
+                        this.ResultScenario.GetDataSheet(Constants.DATASHEET_OUTPUT_AVG_SPATIAL_FLOW_GROUP),
+                        0,
+                        timestep,
+                        id,
+                        Constants.SPATIAL_MAP_AVG_FLOW_GROUP_VARIABLE_PREFIX,
+                        Constants.DATASHEET_OUTPUT_SPATIAL_FILENAME_COLUMN);
+                }
+            }
+        }
+
+        private void RecordAverageStockValues(int timestep, StockGroup stockGroup)
+        {
+            Dictionary<int, double[]> dict = this.m_AvgStockMap[stockGroup.Id];
+            int timestepKey = this.GetTimestepKeyForAverage(timestep, this.m_AvgSpatialStockOutputTimesteps);
+            double[] Values = dict[timestepKey];
+
+            foreach (Cell c in this.STSimTransformer.Cells)
+            {
+                double Amount = 0;
+                int i = c.CollectionIndex;
+                Dictionary<int, double> StockAmounts = GetStockAmountDictionary(c);
+
+                foreach (StockTypeLinkage l in stockGroup.StockTypeLinkages)
+                {
+                   Amount += StockAmounts[l.StockType.Id];
+                }
+
+                if ((timestepKey == this.STSimTransformer.MaximumTimestep) && (((timestepKey - this.STSimTransformer.TimestepZero) % this.m_AvgSpatialStockOutputTimesteps) != 0))
+                {
+                    Values[i] += Amount / (double)((timestepKey - this.STSimTransformer.TimestepZero) % this.m_AvgSpatialStockOutputTimesteps * this.m_TotalIterations);
+                }
+                else
+                {
+                    Values[i] += Amount / (double)(this.m_AvgSpatialStockOutputTimesteps * this.m_TotalIterations);
+                }
+            }
+        }
+
+        private void RecordAverageFlowValues(int timestep, FlowGroup flowGroup)
+        {
+            Dictionary<int, double[]> dict = this.m_AvgFlowMap[flowGroup.Id];
+            int timestepKey = this.GetTimestepKeyForAverage(timestep, this.m_AvgSpatialFlowOutputTimesteps);
+            double[] Values = dict[timestepKey];
+
+            foreach (Cell c in this.m_STSimTransformer.Cells)
+            {
+                double Amount = 0;
+                int i = c.CollectionIndex;
+
+                foreach (FlowTypeLinkage l in flowGroup.FlowTypeLinkages)
+                {
+                    SpatialOutputFlowRecord rec = GetSpatialOutputFlowDictionary()[l.FlowType.Id];
+
+                    if (rec.HasOutputData)
+                    {
+                        Amount += rec.Data[i];
+                    }
+                }
+
+                if ((timestepKey == this.STSimTransformer.MaximumTimestep) && (((timestepKey - this.STSimTransformer.TimestepZero) % this.m_AvgSpatialFlowOutputTimesteps) != 0))
+                {
+                    Values[i] += Amount / (double)((timestepKey - this.STSimTransformer.TimestepZero) % this.m_AvgSpatialFlowOutputTimesteps * this.m_TotalIterations);
+                }
+                else
+                {
+                    Values[i] += Amount / (double)(this.m_AvgSpatialFlowOutputTimesteps * this.m_TotalIterations);
+                }
+            }
+        }
+
+        private int GetTimestepKeyForAverage(int currentTimestep, int everyNthTimestep)
+        {
+            int timestepKey = 0;
+
+            if (currentTimestep == this.STSimTransformer.MaximumTimestep)
+            {
+                timestepKey = this.STSimTransformer.MaximumTimestep;
+            }
+            else
+            {
+                //We're looking for the the timestep which is the first one that is >= to the current timestep
+
+                timestepKey = Convert.ToInt32(Math.Ceiling(
+                    Convert.ToDouble(currentTimestep - this.STSimTransformer.TimestepZero) / everyNthTimestep) * everyNthTimestep) +
+                        this.STSimTransformer.TimestepZero;
+
+                if (timestepKey > this.STSimTransformer.MaximumTimestep)
+                {
+                    timestepKey = this.STSimTransformer.MaximumTimestep;
+                }
+            }
+
+            return timestepKey;
         }
 
         internal int GetSecondaryStratumIdKey(int? value)

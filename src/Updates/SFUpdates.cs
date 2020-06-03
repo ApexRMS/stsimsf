@@ -1238,8 +1238,10 @@ namespace SyncroSim.STSimStockFlow
             {
                 store.ExecuteNonQuery("ALTER TABLE stsimsf_OutputOptions ADD COLUMN AvgSpatialOutputST INTEGER");
                 store.ExecuteNonQuery("ALTER TABLE stsimsf_OutputOptions ADD COLUMN AvgSpatialOutputSTTimesteps INTEGER");
+                store.ExecuteNonQuery("ALTER TABLE stsimsf_OutputOptions ADD COLUMN AvgSpatialOutputSTAcrossTimesteps INTEGER");
                 store.ExecuteNonQuery("ALTER TABLE stsimsf_OutputOptions ADD COLUMN AvgSpatialOutputFL INTEGER");
                 store.ExecuteNonQuery("ALTER TABLE stsimsf_OutputOptions ADD COLUMN AvgSpatialOutputFLTimesteps INTEGER");
+                store.ExecuteNonQuery("ALTER TABLE stsimsf_OutputOptions ADD COLUMN AvgSpatialOutputFLAcrossTimesteps INTEGER");
             }
         }
     }

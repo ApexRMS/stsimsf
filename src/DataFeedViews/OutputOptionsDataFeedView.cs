@@ -34,8 +34,10 @@ namespace SyncroSim.STSimStockFlow
 			this.SetTextBoxBinding(this.TextBoxLateralFLTimesteps, Constants.DATASHEET_OO_LATERAL_OUTPUT_FL_TIMESTEPS_COLUMN_NAME);
             this.SetCheckBoxBinding(this.CheckBoxAvgSpatialST, Constants.DATASHEET_OO_AVG_SPATIAL_OUTPUT_ST_COLUMN_NAME);
             this.SetTextBoxBinding(this.TextBoxAvgSpatialSTTimesteps, Constants.DATASHEET_OO_AVG_SPATIAL_OUTPUT_ST_TIMESTEPS_COLUMN_NAME);
+            this.SetCheckBoxBinding(this.CheckBoxAvgSpatialSTAcrossTimesteps, Constants.DATASHEET_OO_AVG_SPATIAL_OUTPUT_ST_ACROSS_TIMESTEPS_COLUMN_NAME);
             this.SetCheckBoxBinding(this.CheckBoxAvgSpatialFL, Constants.DATASHEET_OO_AVG_SPATIAL_OUTPUT_FL_COLUMN_NAME);
             this.SetTextBoxBinding(this.TextBoxAvgSpatialFLTimesteps, Constants.DATASHEET_OO_AVG_SPATIAL_OUTPUT_FL_TIMESTEPS_COLUMN_NAME);
+            this.SetCheckBoxBinding(this.CheckBoxAvgSpatialFLAcrossTimesteps, Constants.DATASHEET_OO_AVG_SPATIAL_OUTPUT_FL_ACROSS_TIMESTEPS_COLUMN_NAME);
 
 			this.MonitorDataSheet(Constants.DATASHEET_STSIM_TERMINOLOGY, this.OnTerminologyChanged, true);
 			this.AddStandardCommands();
@@ -141,6 +143,10 @@ namespace SyncroSim.STSimStockFlow
 			this.LabelLateralFLTimesteps.Enabled = this.CheckBoxLateralFL.Checked;
 			this.LabelAvgSpatialSTTimesteps.Enabled = this.CheckBoxAvgSpatialST.Checked;
 			this.LabelAvgSpatialFLTimesteps.Enabled = this.CheckBoxAvgSpatialFL.Checked;
+
+            //Secondary Check Boxes
+            this.CheckBoxAvgSpatialSTAcrossTimesteps.Enabled = this.CheckBoxAvgSpatialST.Checked;
+            this.CheckBoxAvgSpatialFLAcrossTimesteps.Enabled = this.CheckBoxAvgSpatialFL.Checked;
 		}
 	}
 }
