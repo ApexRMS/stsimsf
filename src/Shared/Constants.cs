@@ -7,6 +7,9 @@ namespace SyncroSim.STSimStockFlow
 {
 	internal static class Constants
 	{
+        //SQLite Datastore name
+        public const string SQLITE_DATASTORE_NAME = "SQLite";
+
         //ST-Sim Transformer
         public const string STSIM_TRANSFORMER_NAME = "stsim_Runtime";
 

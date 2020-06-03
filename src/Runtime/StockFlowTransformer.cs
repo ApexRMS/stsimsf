@@ -57,7 +57,11 @@ namespace SyncroSim.STSimStockFlow
 			if (this.m_CanComputeStocksAndFlows)
 			{
 				this.NormalizeOutputOptions();
-			}
+
+                //These events must be subscribed locally since they are for merging
+                this.STSimTransformer.BeginNormalSpatialMerge += this.OnSTSimBeginNormalSpatialMerge;
+                this.STSimTransformer.NormalSpatialMergeComplete += this.OnSTSimNormalSpatialMergeComplete;
+            }
 		}
 
 		/// <summary>
@@ -157,8 +161,6 @@ namespace SyncroSim.STSimStockFlow
 			this.STSimTransformer.TimestepStarted += this.OnSTSimBeforeTimestep;
 			this.STSimTransformer.TimestepCompleted += this.OnSTSimAfterTimestep;
             this.STSimTransformer.ModelRunComplete += this.OnSTSimModelRunComplete;
-            this.STSimTransformer.BeginNormalSpatialMerge += this.OnSTSimBeginNormalSpatialMerge;
-            this.STSimTransformer.NormalSpatialMergeComplete += this.OnSTSimNormalSpatialMergeComplete;
 
             if (this.m_StockTransitionMultipliers.Count > 0)
 			{
@@ -489,12 +491,14 @@ namespace SyncroSim.STSimStockFlow
 
         private void OnSTSimBeginNormalSpatialMerge(object sender, EventArgs e)
         {
-
+            this.ProcessAveragedStockGroupOutputFiles();
+            this.ProcessAveragedFlowGroupOutputFiles();
         }
 
         private void OnSTSimNormalSpatialMergeComplete(object sender, EventArgs e)
         {
-
+            this.ProcessAveragedStockGroupDatasheet();
+            this.ProcessAveragedFlowGroupDatasheet();
         }
 
 		/// <summary>
