@@ -449,21 +449,47 @@ namespace SyncroSim.STSimStockFlow
                     this.ProcessLateralFlowGroupSpatialData(e.Iteration, e.Timestep);
                 }
 
-                if (this.m_STSimTransformer.IsOutputTimestep(e.Timestep, this.m_AvgSpatialStockOutputTimesteps, this.m_CreateAvgSpatialStockOutput) ||
-                    this.m_AvgSpatialStockOutputAcrossTimesteps)
+                if (this.m_CreateAvgSpatialStockOutput)
                 {
-                    foreach (StockGroup g in this.m_StockGroups)
+                    if (this.m_AvgSpatialStockOutputAcrossTimesteps)
                     {
-                        this.RecordAverageStockValues(e.Timestep, g);
+                        foreach (StockGroup g in this.m_StockGroups)
+                        {
+                            this.RecordAverageStockValuesAcrossTimesteps(e.Timestep, g);
+                        }
+                    }
+                    else
+                    {
+                        if ((e.Timestep == this.STSimTransformer.MaximumTimestep) ||
+                            ((e.Timestep - this.STSimTransformer.TimestepZero) % this.m_AvgSpatialStockOutputTimesteps) == 0)
+                        {
+                            foreach (StockGroup g in this.m_StockGroups)
+                            {
+                                this.RecordAverageStockValuesNormalMethod(e.Timestep, g);
+                            }
+                        }
                     }
                 }
 
-                if (this.m_STSimTransformer.IsOutputTimestep(e.Timestep, this.m_AvgSpatialFlowOutputTimesteps, this.m_CreateAvgSpatialFlowOutput) ||
-                    this.m_AvgSpatialFlowOutputAcrossTimesteps)
+                if (this.m_CreateAvgSpatialFlowOutput)
                 {
-                    foreach (FlowGroup g in this.m_FlowGroups)
+                    if (this.m_AvgSpatialFlowOutputAcrossTimesteps)
                     {
-                        this.RecordAverageFlowValues(e.Timestep, g);
+                        foreach (FlowGroup g in this.m_FlowGroups)
+                        {
+                            this.RecordAverageFlowValuesAcrossTimesteps(e.Timestep, g);
+                        }
+                    }
+                    else
+                    {
+                        if ((e.Timestep == this.STSimTransformer.MaximumTimestep) ||
+                            ((e.Timestep - this.STSimTransformer.TimestepZero) % this.m_AvgSpatialStockOutputTimesteps) == 0)
+                        {
+                            foreach (FlowGroup g in this.m_FlowGroups)
+                            {
+                                this.RecordAverageFlowValuesNormalMethod(e.Timestep, g);
+                            }
+                        }
                     }
                 }
             }

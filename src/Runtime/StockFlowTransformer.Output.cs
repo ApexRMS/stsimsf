@@ -574,7 +574,27 @@ namespace SyncroSim.STSimStockFlow
             }
         }
 
-        private void RecordAverageStockValues(int timestep, StockGroup stockGroup)
+        private void RecordAverageStockValuesNormalMethod(int timestep, StockGroup stockGroup)
+        {
+            Dictionary<int, double[]> dict = this.m_AvgStockMap[stockGroup.Id];
+            double[] Values = dict[timestep];
+
+            foreach (Cell c in this.STSimTransformer.Cells)
+            {
+                double Amount = 0;
+                int i = c.CollectionIndex;
+                Dictionary<int, double> StockAmounts = GetStockAmountDictionary(c);
+
+                foreach (StockTypeLinkage l in stockGroup.StockTypeLinkages)
+                {
+                   Amount += StockAmounts[l.StockType.Id];
+                }
+
+                Values[i] += Amount / this.m_TotalIterations;
+            }
+        }
+
+        private void RecordAverageStockValuesAcrossTimesteps(int timestep, StockGroup stockGroup)
         {
             Dictionary<int, double[]> dict = this.m_AvgStockMap[stockGroup.Id];
             int timestepKey = this.GetTimestepKeyForAverage(timestep, this.m_AvgSpatialStockOutputTimesteps);
@@ -588,7 +608,7 @@ namespace SyncroSim.STSimStockFlow
 
                 foreach (StockTypeLinkage l in stockGroup.StockTypeLinkages)
                 {
-                   Amount += StockAmounts[l.StockType.Id];
+                    Amount += StockAmounts[l.StockType.Id];
                 }
 
                 if ((timestepKey == this.STSimTransformer.MaximumTimestep) && (((timestepKey - this.STSimTransformer.TimestepZero) % this.m_AvgSpatialStockOutputTimesteps) != 0))
@@ -602,7 +622,31 @@ namespace SyncroSim.STSimStockFlow
             }
         }
 
-        private void RecordAverageFlowValues(int timestep, FlowGroup flowGroup)
+        private void RecordAverageFlowValuesNormalMethod(int timestep, FlowGroup flowGroup)
+        {
+            Dictionary<int, double[]> dict = this.m_AvgFlowMap[flowGroup.Id];
+            double[] Values = dict[timestep];
+
+            foreach (Cell c in this.m_STSimTransformer.Cells)
+            {
+                double Amount = 0;
+                int i = c.CollectionIndex;
+
+                foreach (FlowTypeLinkage l in flowGroup.FlowTypeLinkages)
+                {
+                    SpatialOutputFlowRecord rec = GetSpatialOutputFlowDictionary()[l.FlowType.Id];
+
+                    if (rec.HasOutputData)
+                    {
+                        Amount += rec.Data[i];
+                    }
+                }
+
+                Values[i] += Amount / this.m_TotalIterations;
+            }
+        }
+
+        private void RecordAverageFlowValuesAcrossTimesteps(int timestep, FlowGroup flowGroup)
         {
             Dictionary<int, double[]> dict = this.m_AvgFlowMap[flowGroup.Id];
             int timestepKey = this.GetTimestepKeyForAverage(timestep, this.m_AvgSpatialFlowOutputTimesteps);

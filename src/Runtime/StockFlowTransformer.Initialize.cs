@@ -236,11 +236,6 @@ namespace SyncroSim.STSimStockFlow
             Debug.Assert(this.STSimTransformer.IsSpatial);
             Debug.Assert(this.STSimTransformer.MinimumTimestep > 0);
 
-            if (!this.m_CreateAvgSpatialStockOutput)
-            {
-                return;
-            }
-
             // Loop thru stock groups. 
             foreach (StockGroup sg in this.m_StockGroups)
             {
@@ -252,7 +247,8 @@ namespace SyncroSim.STSimStockFlow
                     // Create a dictionary for this stock group
                     // Create a values array object on Maximum Timestep and intervals of user spec'd freq.
 
-                    if ((timestep == this.STSimTransformer.MaximumTimestep) || ((timestep - this.STSimTransformer.TimestepZero) % this.m_AvgSpatialStockOutputTimesteps) == 0)
+                    if ((timestep == this.STSimTransformer.MaximumTimestep) || 
+                        ((timestep - this.STSimTransformer.TimestepZero) % this.m_AvgSpatialStockOutputTimesteps) == 0)
                     {
                         double[] values = null;
                         values = new double[this.STSimTransformer.Cells.Count];
@@ -276,11 +272,6 @@ namespace SyncroSim.STSimStockFlow
             Debug.Assert(this.STSimTransformer.IsSpatial);
             Debug.Assert(this.STSimTransformer.MinimumTimestep > 0);
 
-            if (!this.m_CreateAvgSpatialFlowOutput)
-            {
-                return;
-            }
-
             // Loop thru flow groups. 
             foreach (FlowGroup fg in this.m_FlowGroups)
             {
@@ -292,7 +283,8 @@ namespace SyncroSim.STSimStockFlow
                     // Create a dictionary for this flow group
                     // Create a values array object on Maximum Timestep and intervals of user spec'd freq.
 
-                    if ((timestep == this.STSimTransformer.MaximumTimestep) || ((timestep - this.STSimTransformer.TimestepZero) % this.m_AvgSpatialStockOutputTimesteps) == 0)
+                    if ((timestep == this.STSimTransformer.MaximumTimestep) || 
+                        ((timestep - this.STSimTransformer.TimestepZero) % this.m_AvgSpatialFlowOutputTimesteps) == 0)
                     {
                         double[] values = null;
                         values = new double[this.STSimTransformer.Cells.Count];
