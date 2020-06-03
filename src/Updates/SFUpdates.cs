@@ -170,6 +170,11 @@ namespace SyncroSim.STSimStockFlow
             {
                 SF0000104(store);
             }
+
+            if (currentSchemaVersion < 105)
+            {
+                SF0000105(store);
+            }
         }
 
 		/// <summary>
@@ -1221,6 +1226,23 @@ namespace SyncroSim.STSimStockFlow
             UpdateProvider.RenameMapVariable(store, "stkg", "stsimsf_stkg");
             UpdateProvider.RenameMapVariable(store, "flog", "stsimsf_flog");
             UpdateProvider.RenameMapVariable(store, "lflog", "stsimsf_lflog");
+        }
+
+        /// <summary>
+        /// SF0000105
+        /// </summary>
+        /// <param name="store"></param>
+        private static void SF0000105(DataStore store)
+        {
+            if (store.TableExists("stsimsf_OutputOptions"))
+            {
+                store.ExecuteNonQuery("ALTER TABLE stsimsf_OutputOptions ADD COLUMN AvgSpatialOutputST INTEGER");
+                store.ExecuteNonQuery("ALTER TABLE stsimsf_OutputOptions ADD COLUMN AvgSpatialOutputSTTimesteps INTEGER");
+                store.ExecuteNonQuery("ALTER TABLE stsimsf_OutputOptions ADD COLUMN AvgSpatialOutputSTAcrossTimesteps INTEGER");
+                store.ExecuteNonQuery("ALTER TABLE stsimsf_OutputOptions ADD COLUMN AvgSpatialOutputFL INTEGER");
+                store.ExecuteNonQuery("ALTER TABLE stsimsf_OutputOptions ADD COLUMN AvgSpatialOutputFLTimesteps INTEGER");
+                store.ExecuteNonQuery("ALTER TABLE stsimsf_OutputOptions ADD COLUMN AvgSpatialOutputFLAcrossTimesteps INTEGER");
+            }
         }
     }
 }

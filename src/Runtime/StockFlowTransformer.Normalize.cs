@@ -45,6 +45,8 @@ namespace SyncroSim.STSimStockFlow
 			this.ValidateTimesteps(droo, Constants.DATASHEET_OO_SPATIAL_OUTPUT_ST_COLUMN_NAME, Constants.DATASHEET_OO_SPATIAL_OUTPUT_ST_TIMESTEPS_COLUMN_NAME, "Spatial stocks", MaxTimestep);
 			this.ValidateTimesteps(droo, Constants.DATASHEET_OO_SPATIAL_OUTPUT_FL_COLUMN_NAME, Constants.DATASHEET_OO_SPATIAL_OUTPUT_FL_TIMESTEPS_COLUMN_NAME, "Spatial flows", MaxTimestep);
 			this.ValidateTimesteps(droo, Constants.DATASHEET_OO_LATERAL_OUTPUT_FL_COLUMN_NAME, Constants.DATASHEET_OO_LATERAL_OUTPUT_FL_TIMESTEPS_COLUMN_NAME, "Lateral flows", MaxTimestep);
+			this.ValidateTimesteps(droo, Constants.DATASHEET_OO_AVG_SPATIAL_OUTPUT_ST_COLUMN_NAME, Constants.DATASHEET_OO_AVG_SPATIAL_OUTPUT_ST_TIMESTEPS_COLUMN_NAME, "Average spatial stocks", MaxTimestep);
+			this.ValidateTimesteps(droo, Constants.DATASHEET_OO_AVG_SPATIAL_OUTPUT_FL_COLUMN_NAME, Constants.DATASHEET_OO_AVG_SPATIAL_OUTPUT_FL_TIMESTEPS_COLUMN_NAME, "Average spatial flows", MaxTimestep);
         }
 
 		/// <summary>

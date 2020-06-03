@@ -2,6 +2,7 @@
 // Copyright © 2007-2019 Apex Resource Management Solutions Ltd. (ApexRMS). All rights reserved.
 
 using System.Diagnostics;
+using System.Collections.Generic;
 
 namespace SyncroSim.STSimStockFlow
 {
@@ -13,8 +14,10 @@ namespace SyncroSim.STSimStockFlow
 		private FlowPathwayMap m_FlowPathwayMap;
 		private FlowOrderMap m_FlowOrderMap;
         private LateralFlowCoupletMap m_LateralFlowCoupletMap;
+        private Dictionary<int, Dictionary<int, double[]>> m_AvgStockMap = new Dictionary<int, Dictionary<int, double[]>>();
+        private Dictionary<int, Dictionary<int, double[]>> m_AvgFlowMap = new Dictionary<int, Dictionary<int, double[]>>();
 
-		private void CreateStockLimitMap()
+        private void CreateStockLimitMap()
 		{
 			Debug.Assert(this.m_StockLimitMap == null);
 			this.m_StockLimitMap = new StockLimitMap(this.ResultScenario, this.m_StockLimits);

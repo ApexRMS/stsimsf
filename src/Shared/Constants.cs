@@ -7,6 +7,9 @@ namespace SyncroSim.STSimStockFlow
 {
 	internal static class Constants
 	{
+        //SQLite Datastore name
+        public const string SQLITE_DATASTORE_NAME = "SQLite";
+
         //ST-Sim Transformer
         public const string STSIM_TRANSFORMER_NAME = "stsim_Runtime";
 
@@ -53,6 +56,8 @@ namespace SyncroSim.STSimStockFlow
 		public const string DATASHEET_OUTPUT_SPATIAL_STOCK_GROUP = "stsimsf_OutputSpatialStockGroup";
 		public const string DATASHEET_OUTPUT_SPATIAL_FLOW_GROUP = "stsimsf_OutputSpatialFlowGroup";
 		public const string DATASHEET_OUTPUT_LATERAL_FLOW_GROUP = "stsimsf_OutputLateralFlowGroup";
+		public const string DATASHEET_OUTPUT_AVG_SPATIAL_STOCK_GROUP = "stsimsf_OutputAverageSpatialStockGroup";
+		public const string DATASHEET_OUTPUT_AVG_SPATIAL_FLOW_GROUP = "stsimsf_OutputAverageSpatialFlowGroup";
 
         public const string DATASHEET_STSIM_STRATUM = "stsim_Stratum";
         public const string DATASHEET_STSIM_SECONDARY_STRATUM = "stsim_SecondaryStratum";
@@ -154,6 +159,12 @@ namespace SyncroSim.STSimStockFlow
 		public const string DATASHEET_OO_SPATIAL_OUTPUT_FL_TIMESTEPS_COLUMN_NAME = "SpatialOutputFLTimesteps";
 		public const string DATASHEET_OO_LATERAL_OUTPUT_FL_COLUMN_NAME = "LateralOutputFL";
 		public const string DATASHEET_OO_LATERAL_OUTPUT_FL_TIMESTEPS_COLUMN_NAME = "LateralOutputFLTimesteps";
+		public const string DATASHEET_OO_AVG_SPATIAL_OUTPUT_ST_COLUMN_NAME = "AvgSpatialOutputST";
+		public const string DATASHEET_OO_AVG_SPATIAL_OUTPUT_ST_TIMESTEPS_COLUMN_NAME = "AvgSpatialOutputSTTimesteps";
+		public const string DATASHEET_OO_AVG_SPATIAL_OUTPUT_ST_ACROSS_TIMESTEPS_COLUMN_NAME = "AvgSpatialOutputSTAcrossTimesteps";
+		public const string DATASHEET_OO_AVG_SPATIAL_OUTPUT_FL_COLUMN_NAME = "AvgSpatialOutputFL";
+		public const string DATASHEET_OO_AVG_SPATIAL_OUTPUT_FL_TIMESTEPS_COLUMN_NAME = "AvgSpatialOutputFLTimesteps";
+		public const string DATASHEET_OO_AVG_SPATIAL_OUTPUT_FL_ACROSS_TIMESTEPS_COLUMN_NAME = "AvgSpatialOutputFLAcrossTimesteps";
 
 		//Messages
 		public const string NO_SUMMARY_OUTPUT_OPTIONS_INFORMATION = "No summary output options specified for stocks and flows.  Using defaults.";
@@ -171,6 +182,8 @@ namespace SyncroSim.STSimStockFlow
 		public const string SPATIAL_MAP_STOCK_GROUP_VARIABLE_PREFIX = "stkg";
 		public const string SPATIAL_MAP_FLOW_GROUP_VARIABLE_PREFIX = "flog";
 		public const string SPATIAL_MAP_LATERAL_FLOW_GROUP_VARIABLE_PREFIX = "lflog";
+		public const string SPATIAL_MAP_AVG_STOCK_GROUP_VARIABLE_PREFIX = "avgstkg";
+		public const string SPATIAL_MAP_AVG_FLOW_GROUP_VARIABLE_PREFIX = "avgflog";
 
 		//Spatial Map file naming Regex filter, containing 1 ID value
 		public const string FILE_FILTER_ID_REGEX = "^(.*){0}-([\\d]*)\\.(tif|vrt)$";
