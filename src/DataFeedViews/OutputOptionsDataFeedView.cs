@@ -86,7 +86,13 @@ namespace SyncroSim.STSimStockFlow
             this.LabelLateralFLTimesteps.Text = t;
             this.LabelAvgSpatialSTTimesteps.Text = t;
             this.LabelAvgSpatialFLTimesteps.Text = t;
-		}
+
+            string NewAverageAcrossText = string.Format(CultureInfo.CurrentCulture,
+                "Average across preceeding {0}s", t);
+
+            this.CheckBoxAvgSpatialSTAcrossTimesteps.Text = NewAverageAcrossText;
+            this.CheckBoxAvgSpatialFLAcrossTimesteps.Text = NewAverageAcrossText;
+        }
 
 		protected override void OnBoundCheckBoxChanged(System.Windows.Forms.CheckBox checkBox, string columnName)
 		{
