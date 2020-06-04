@@ -529,7 +529,7 @@
   </layouts>
   <updateProvider
     schemaVersion="105"
-    minPackageVersion="3.2.13"
+    minPackageVersion="3.2.10"
     className="SyncroSim.STSimStockFlow.SFUpdates"
     classAssembly="SyncroSim.STSimStockFlow"/>
   <console
