@@ -236,6 +236,11 @@ namespace SyncroSim.STSimStockFlow
             Debug.Assert(this.STSimTransformer.IsSpatial);
             Debug.Assert(this.STSimTransformer.MinimumTimestep > 0);
 
+            if (!this.m_CreateAvgSpatialStockOutput)
+            {
+                return;
+            }
+
             // Loop thru stock groups. 
             foreach (StockGroup sg in this.m_StockGroups)
             {
@@ -271,6 +276,11 @@ namespace SyncroSim.STSimStockFlow
         {
             Debug.Assert(this.STSimTransformer.IsSpatial);
             Debug.Assert(this.STSimTransformer.MinimumTimestep > 0);
+
+            if (!this.m_CreateAvgSpatialFlowOutput)
+            {
+                return;
+            }
 
             // Loop thru flow groups. 
             foreach (FlowGroup fg in this.m_FlowGroups)
