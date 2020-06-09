@@ -241,24 +241,20 @@ namespace SyncroSim.STSimStockFlow
                 return;
             }
 
-            // Loop thru stock groups. 
             foreach (StockGroup sg in this.m_StockGroups)
             {
                 Dictionary<int, double[]> dict = new Dictionary<int, double[]>();
 
-                // Loop thru timesteps
                 for (var timestep = this.STSimTransformer.MinimumTimestep; timestep <= this.STSimTransformer.MaximumTimestep; timestep++)
                 {
-                    // Create a dictionary for this stock group
-                    // Create a values array object on Maximum Timestep and intervals of user spec'd freq.
-
-                    if ((timestep == this.STSimTransformer.MaximumTimestep) || 
-                        ((timestep - this.STSimTransformer.TimestepZero) % this.m_AvgSpatialStockOutputTimesteps) == 0)
+                    if (this.m_STSimTransformer.IsOutputTimestepSkipMinimum(
+                        timestep, 
+                        this.m_AvgSpatialStockOutputTimesteps, 
+                        this.m_CreateAvgSpatialStockOutput))
                     {
                         double[] values = null;
                         values = new double[this.STSimTransformer.Cells.Count];
 
-                        // Initialize cells values
                         for (var i = 0; i < this.STSimTransformer.Cells.Count; i++)
                         {
                             values[i] = 0;
@@ -282,24 +278,20 @@ namespace SyncroSim.STSimStockFlow
                 return;
             }
 
-            // Loop thru flow groups. 
             foreach (FlowGroup fg in this.m_FlowGroups)
             {
                 Dictionary<int, double[]> dict = new Dictionary<int, double[]>();
 
-                // Loop thru timesteps
                 for (var timestep = this.STSimTransformer.MinimumTimestep; timestep <= this.STSimTransformer.MaximumTimestep; timestep++)
                 {
-                    // Create a dictionary for this flow group
-                    // Create a values array object on Maximum Timestep and intervals of user spec'd freq.
-
-                    if ((timestep == this.STSimTransformer.MaximumTimestep) || 
-                        ((timestep - this.STSimTransformer.TimestepZero) % this.m_AvgSpatialFlowOutputTimesteps) == 0)
-                    {
+                    if (this.m_STSimTransformer.IsOutputTimestepSkipMinimum(
+                        timestep,
+                        this.m_AvgSpatialFlowOutputTimesteps, 
+                        this.m_CreateAvgSpatialFlowOutput))
+                    { 
                         double[] values = null;
                         values = new double[this.STSimTransformer.Cells.Count];
 
-                        // Initialize cells values
                         for (var i = 0; i < this.STSimTransformer.Cells.Count; i++)
                         {
                             values[i] = 0;

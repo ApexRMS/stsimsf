@@ -347,7 +347,10 @@ namespace SyncroSim.STSimStockFlow
             //for each flow type Initialize to DEFAULT_NODATA_VALUE.  Note that we need to do this for lateral rasters also.
             //Note also that we need to set each SpatialOutputFlowRecord.HasOutputData to FALSE before each timestep.
 
-            if (this.m_STSimTransformer.IsOutputTimestep(e.Timestep, this.m_SpatialFlowOutputTimesteps, this.m_CreateSpatialFlowOutput))
+            if (this.m_STSimTransformer.IsOutputTimestep(
+                e.Timestep, 
+                this.m_SpatialFlowOutputTimesteps, 
+                this.m_CreateSpatialFlowOutput))
             {
                 foreach (FlowType ft in this.m_FlowTypes)
                 {
@@ -460,8 +463,10 @@ namespace SyncroSim.STSimStockFlow
                     }
                     else
                     {
-                        if ((e.Timestep == this.STSimTransformer.MaximumTimestep) ||
-                            ((e.Timestep - this.STSimTransformer.TimestepZero) % this.m_AvgSpatialStockOutputTimesteps) == 0)
+                        if (this.m_STSimTransformer.IsOutputTimestepSkipMinimum(
+                            e.Timestep,
+                            this.m_AvgSpatialStockOutputTimesteps,
+                            this.m_CreateAvgSpatialStockOutput))
                         {
                             foreach (StockGroup g in this.m_StockGroups)
                             {
@@ -482,8 +487,10 @@ namespace SyncroSim.STSimStockFlow
                     }
                     else
                     {
-                        if ((e.Timestep == this.STSimTransformer.MaximumTimestep) ||
-                            ((e.Timestep - this.STSimTransformer.TimestepZero) % this.m_AvgSpatialStockOutputTimesteps) == 0)
+                        if (this.m_STSimTransformer.IsOutputTimestepSkipMinimum(
+                            e.Timestep,
+                            this.m_AvgSpatialFlowOutputTimesteps,
+                            this.m_CreateAvgSpatialFlowOutput))
                         {
                             foreach (FlowGroup g in this.m_FlowGroups)
                             {

@@ -369,7 +369,9 @@ namespace SyncroSim.STSimStockFlow
 
                         if (rec.HasOutputData)
                         {
-                            StochasticTimeRaster rastFlowType = this.STSimTransformer.InputRasters.CreateOutputRaster(RasterDataType.DTDouble);
+                            StochasticTimeRaster rastFlowType = 
+                                this.STSimTransformer.InputRasters.CreateOutputRaster(RasterDataType.DTDouble);
+
                             double[] arr = rastFlowType.DblCells;
 
                             foreach (Cell c in this.m_STSimTransformer.Cells)
@@ -409,31 +411,42 @@ namespace SyncroSim.STSimStockFlow
         /// <remarks></remarks>
         private void OnSpatialFlowOutput(int timestep, Cell cell, int flowTypeId, double flowAmount)
 		{
-			if (this.m_STSimTransformer.IsOutputTimestep(
-                timestep, 
-                this.m_SpatialFlowOutputTimesteps, 
-                this.m_CreateSpatialFlowOutput) 
-                && this.m_IsSpatial)
+            if (!this.m_IsSpatial)
+            {
+                return;
+            }
+
+            bool IsNormalOutputTimestep = this.m_STSimTransformer.IsOutputTimestep(
+                timestep,
+                this.m_SpatialFlowOutputTimesteps,
+                this.m_CreateSpatialFlowOutput);
+
+            bool IsAverageOutputTimestep = this.m_STSimTransformer.IsOutputTimestep(
+                timestep,
+                this.m_SpatialFlowOutputTimesteps,
+                this.m_CreateSpatialFlowOutput);  
+            
+            if (!IsNormalOutputTimestep && !IsAverageOutputTimestep)
+            {
+                return;
+            }
+
+            Debug.Assert(GetSpatialOutputFlowDictionary().ContainsKey(flowTypeId)); 
+
+			if (GetSpatialOutputFlowDictionary().ContainsKey(flowTypeId))
 			{
-				if (GetSpatialOutputFlowDictionary().ContainsKey(flowTypeId))
+                SpatialOutputFlowRecord rec = GetSpatialOutputFlowDictionary()[flowTypeId];
+				double amt = rec.Data[cell.CollectionIndex];
+
+				if (amt.Equals(Spatial.DefaultNoDataValue))
 				{
-                    SpatialOutputFlowRecord rec = GetSpatialOutputFlowDictionary()[flowTypeId];
-					double amt = rec.Data[cell.CollectionIndex];
-
-					if (amt.Equals(Spatial.DefaultNoDataValue))
-					{
-						amt = 0;
-					}
-
-					amt += (flowAmount / this.m_STSimTransformer.AmountPerCell);
-
-					rec.Data[cell.CollectionIndex] = amt;
-                    rec.HasOutputData = true;
+					amt = 0;
 				}
-				else
-				{
-					Debug.Assert(false, "I think we expected to find a m_SpatialOutputFlow object for the flowType " + flowTypeId.ToString("0000", CultureInfo.InvariantCulture));
-				}
+
+				amt += (flowAmount / this.m_STSimTransformer.AmountPerCell);
+
+				rec.Data[cell.CollectionIndex] = amt;
+                rec.HasOutputData = true;
 			}
 		}
 
@@ -452,6 +465,8 @@ namespace SyncroSim.STSimStockFlow
                 this.m_LateralFlowOutputTimesteps,
                 this.m_CreateLateralFlowOutput))
             {
+                Debug.Assert(GetLateralOutputFlowDictionary().ContainsKey(flowTypeId));
+
                 if (GetLateralOutputFlowDictionary().ContainsKey(flowTypeId))
                 {
                     SpatialOutputFlowRecord rec = GetLateralOutputFlowDictionary()[flowTypeId];
@@ -467,10 +482,6 @@ namespace SyncroSim.STSimStockFlow
                     rec.Data[cell.CollectionIndex] = amt;
                     rec.HasOutputData = true;
                 }
-                else
-                {
-                    Debug.Assert(false, "I think we expected to find a m_LateralOutputFlow object for the flowType " + flowTypeId.ToString("0000", CultureInfo.InvariantCulture));
-                }
             }
         }
 
@@ -482,24 +493,17 @@ namespace SyncroSim.STSimStockFlow
             {
                 Dictionary<int, double[]> dict = this.m_AvgStockMap[id];
 
-                // Now lets loop thru the timestep arrays in the dictionary
                 foreach (int timestep in dict.Keys)
                 {
                     double[] values = dict[timestep];
+                    var distArray = values.Distinct();
 
-                    //Dont bother writing out any array thats all DEFAULT_NO_DATA_VALUEs or 0's
-                    var dist = values.Distinct();
+                    if (distArray.Count() == 1)
+                    {
+                        var el0 = distArray.ElementAt(0);
 
-                    if (dist.Count() == 1)
-                    {
-                        Debug.Print("Skipping Average Stock Group output for SG {0} / Timestep {1} as no non-DEFAULT_NO_DATA_VALUE values found.", id, timestep);
-                        continue;
-                    }
-                    else if (dist.Count() == 2)
-                    {
-                        if (dist.ElementAt(0) <= 0 && dist.ElementAt(1) <= 0)
+                        if (el0.Equals(Spatial.DefaultNoDataValue))
                         {
-                            Debug.Print("Skipping Average Stock Group output for SG {0} / Timestep {1} as no non-DEFAULT_NO_DATA_VALUE values found.", id, timestep);
                             continue;
                         }
                     }
@@ -532,24 +536,17 @@ namespace SyncroSim.STSimStockFlow
             {
                 Dictionary<int, double[]> dict = this.m_AvgFlowMap[id];
 
-                // Now lets loop thru the timestep arrays in the dictionary
                 foreach (int timestep in dict.Keys)
                 {
                     double[] values = dict[timestep];
+                    var distArray = values.Distinct();
 
-                    //Dont bother writing out any array thats all DEFAULT_NO_DATA_VALUEs or 0's
-                    var dist = values.Distinct();
+                    if (distArray.Count() == 1)
+                    {
+                        var el0 = distArray.ElementAt(0);
 
-                    if (dist.Count() == 1)
-                    {
-                        Debug.Print("Skipping Average Flow Group output for FG {0} / Timestep {1} as no non-DEFAULT_NO_DATA_VALUE values found.", id, timestep);
-                        continue;
-                    }
-                    else if (dist.Count() == 2)
-                    {
-                        if (dist.ElementAt(0) <= 0 && dist.ElementAt(1) <= 0)
+                        if (el0.Equals(Spatial.DefaultNoDataValue))
                         {
-                            Debug.Print("Skipping Average Flow Group output for FG {0} / Timestep {1} as no non-DEFAULT_NO_DATA_VALUE values found.", id, timestep);
                             continue;
                         }
                     }
