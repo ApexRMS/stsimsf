@@ -426,30 +426,30 @@ namespace SyncroSim.STSimStockFlow
 
 			if (this.m_STSimTransformer.IsOutputTimestep(e.Timestep, this.m_SummaryStockOutputTimesteps, this.m_CreateSummaryStockOutput))
 			{
-				this.OnSummaryStockOutput();
-				this.ProcessStockSummaryData(e.Iteration, e.Timestep);
+				this.RecordSummaryStockOutputData();
+				this.WriteTabularSummaryStockOutput(e.Iteration, e.Timestep);
 			}
 
 			if (this.m_STSimTransformer.IsOutputTimestep(e.Timestep, this.m_SummaryFlowOutputTimesteps, this.m_CreateSummaryFlowOutput))
 			{
-				this.ProcessFlowSummaryData(e.Iteration, e.Timestep);
+				this.WriteTabularSummaryFlowOutputData(e.Iteration, e.Timestep);
 			}
 
             if (this.m_IsSpatial)
             {
                 if (this.m_STSimTransformer.IsOutputTimestep(e.Timestep, this.m_SpatialStockOutputTimesteps, this.m_CreateSpatialStockOutput))
                 {
-                    this.ProcessStockGroupSpatialData(e.Iteration, e.Timestep);
+                    this.WriteStockGroupRasters(e.Iteration, e.Timestep);
                 }
 
                 if (this.m_STSimTransformer.IsOutputTimestep(e.Timestep, this.m_SpatialFlowOutputTimesteps, this.m_CreateSpatialFlowOutput))
                 {
-                    this.ProcessFlowGroupSpatialData(e.Iteration, e.Timestep);
+                    this.WriteFlowGroupRasters(e.Iteration, e.Timestep);
                 }
 
                 if (this.m_STSimTransformer.IsOutputTimestep(e.Timestep, this.m_LateralFlowOutputTimesteps, this.m_CreateLateralFlowOutput))
                 {
-                    this.ProcessLateralFlowGroupSpatialData(e.Iteration, e.Timestep);
+                    this.WriteLateralFlowRasters(e.Iteration, e.Timestep);
                 }
 
                 if (this.m_CreateAvgSpatialStockOutput)
@@ -513,12 +513,12 @@ namespace SyncroSim.STSimStockFlow
 
             if (this.m_CreateAvgSpatialStockOutput)
             {
-                this.CreateAvgSpatialStockOutput();
+                this.WriteAverageStockRasters();
             }
 
             if (this.m_CreateAvgSpatialFlowOutput)
             {
-                this.CreateAvgSpatialFlowOutput();
+                this.WriteAverageFlowRasters();
             }
         }
 
@@ -661,8 +661,8 @@ namespace SyncroSim.STSimStockFlow
 		/// <remarks></remarks>
 		private void OnSTSimAfterCellsInitialized(object sender, CellEventArgs e)
 		{
-			this.OnSummaryStockOutput();
-			this.ProcessStockSummaryData(e.Iteration, e.Timestep);
+			this.RecordSummaryStockOutputData();
+			this.WriteTabularSummaryStockOutput(e.Iteration, e.Timestep);
 
 			if (this.m_IsSpatial)
 			{
@@ -671,7 +671,7 @@ namespace SyncroSim.STSimStockFlow
                     this.m_SpatialStockOutputTimesteps, 
                     this.m_CreateSpatialStockOutput))
 				{
-					this.ProcessStockGroupSpatialData(e.Iteration, e.Timestep);
+					this.WriteStockGroupRasters(e.Iteration, e.Timestep);
 				}
 
                 if (e.Iteration == this.m_STSimTransformer.MinimumIteration)
@@ -906,12 +906,12 @@ namespace SyncroSim.STSimStockFlow
 					    d[fp.ToStockTypeId] += fa;
                     }
 
-					this.OnSummaryFlowOutput(timestep, cell, dtPathway, ptPathway, fp, fa);
-					this.OnSpatialFlowOutput(timestep, cell, fp.FlowTypeId, fa);
+					this.RecordSummaryFlowOutputData(timestep, cell, dtPathway, ptPathway, fp, fa);
+					this.RecordSpatialFlowOutputData(timestep, cell, fp.FlowTypeId, fa);
 
                     if (fp.IsLateral)
                     {
-                        this.OnLateralFlowOutput(timestep, cell, fp.FlowTypeId, -fa);
+                        this.RecordSpatialLateralFlowOutputData(timestep, cell, fp.FlowTypeId, -fa);
                     }
 				}
 			}
@@ -983,7 +983,7 @@ namespace SyncroSim.STSimStockFlow
                     double FlowAmount = ((LateralFlowMultiplier / rec.InverseMultiplier) * rec.StockAmount);
 
                     d[rec.StockTypeId] += FlowAmount;
-                    this.OnLateralFlowOutput(timestep, RecCell, rec.FlowTypeId, FlowAmount);
+                    this.RecordSpatialLateralFlowOutputData(timestep, RecCell, rec.FlowTypeId, FlowAmount);
                 }
             }
         }

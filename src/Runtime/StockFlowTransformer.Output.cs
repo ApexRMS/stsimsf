@@ -5,7 +5,6 @@ using System;
 using System.Data;
 using System.Linq;
 using System.Diagnostics;
-using System.Globalization;
 using System.Collections.Generic;
 using SyncroSim.STSim;
 using SyncroSim.Common;
@@ -39,10 +38,6 @@ namespace SyncroSim.STSimStockFlow
 		private OutputFlowCollection m_SummaryOutputFlowRecords = new OutputFlowCollection();
 		private OutputStockCollection m_SummaryOutputStockRecords = new OutputStockCollection();
 
-		/// <summary>
-		/// Initializes the output data tables
-		/// </summary>
-		/// <remarks></remarks>
 		private void InitializeOutputDataTables()
 		{
 			Debug.Assert(this.m_OutputStockTable == null);
@@ -55,11 +50,7 @@ namespace SyncroSim.STSimStockFlow
 			Debug.Assert(this.m_OutputFlowTable.Rows.Count == 0);
 		}
 
-        /// <summary>
-        /// Adds to the stock summary result collection
-        /// </summary>
-        /// <remarks></remarks>
-        private void OnSummaryStockOutput()
+        private void RecordSummaryStockOutputData()
         {
             foreach (Cell c in this.STSimTransformer.Cells)
             {
@@ -94,43 +85,7 @@ namespace SyncroSim.STSimStockFlow
             }
         }
 
-        /// <summary>
-        /// Processes the current stock summary data
-        /// </summary>
-        /// <remarks></remarks>
-        private void ProcessStockSummaryData(int iteration, int timestep)
-		{
-			foreach (OutputStock r in this.m_SummaryOutputStockRecords)
-			{
-				DataRow dr = this.m_OutputStockTable.NewRow();
-
-				dr[Constants.ITERATION_COLUMN_NAME] = iteration;
-				dr[Constants.TIMESTEP_COLUMN_NAME] = timestep;
-				dr[Constants.STRATUM_ID_COLUMN_NAME] = r.StratumId;
-				dr[Constants.SECONDARY_STRATUM_ID_COLUMN_NAME] = DataTableUtilities.GetNullableDatabaseValue(r.SecondaryStratumId);
-				dr[Constants.TERTIARY_STRATUM_ID_COLUMN_NAME] = DataTableUtilities.GetNullableDatabaseValue(r.TertiaryStratumId);
-				dr[Constants.STATECLASS_ID_COLUMN_NAME] = r.StateClassId;
-                dr[Constants.STOCK_GROUP_ID_COLUMN_NAME] = r.StockGroupId;
-                dr[Constants.AMOUNT_COLUMN_NAME] = r.Amount;
-
-				this.m_OutputStockTable.Rows.Add(dr);
-			}
-
-			this.m_SummaryOutputStockRecords.Clear();
-		}
-
-        /// <summary>
-        /// Adds to the flow summary result collection
-        /// </summary>
-        /// <param name="timestep"></param>
-        /// <param name="cell"></param>
-        /// <param name="stockTypeId"></param>
-        /// <param name="flowTypeId"></param>
-        /// <param name="flowAmount"></param>
-        /// <param name="transitionPathway"></param>
-        /// <param name="flowPathway"></param>
-        /// <remarks></remarks>
-        private void OnSummaryFlowOutput(
+        private void RecordSummaryFlowOutputData(
             int timestep,
             Cell cell,
             DeterministicTransition deterministicPathway,
@@ -229,11 +184,96 @@ namespace SyncroSim.STSimStockFlow
             }
         }
 
-        /// <summary>
-        /// Processes the current flow summary data
-        /// </summary>
-        /// <remarks></remarks>
-        private void ProcessFlowSummaryData(int iteration, int timestep)
+        private void RecordSpatialFlowOutputData(int timestep, Cell cell, int flowTypeId, double flowAmount)
+        {
+            if (!this.m_IsSpatial)
+            {
+                return;
+            }
+
+            bool IsNormalOutputTimestep = this.m_STSimTransformer.IsOutputTimestep(
+                timestep,
+                this.m_SpatialFlowOutputTimesteps,
+                this.m_CreateSpatialFlowOutput);
+
+            bool IsAverageOutputTimestep = this.m_STSimTransformer.IsOutputTimestep(
+                timestep,
+                this.m_SpatialFlowOutputTimesteps,
+                this.m_CreateSpatialFlowOutput);
+
+            if (!IsNormalOutputTimestep && !IsAverageOutputTimestep)
+            {
+                return;
+            }
+
+            Debug.Assert(GetSpatialOutputFlowDictionary().ContainsKey(flowTypeId));
+
+            if (GetSpatialOutputFlowDictionary().ContainsKey(flowTypeId))
+            {
+                SpatialOutputFlowRecord rec = GetSpatialOutputFlowDictionary()[flowTypeId];
+                double amt = rec.Data[cell.CollectionIndex];
+
+                if (amt.Equals(Spatial.DefaultNoDataValue))
+                {
+                    amt = 0;
+                }
+
+                amt += (flowAmount / this.m_STSimTransformer.AmountPerCell);
+
+                rec.Data[cell.CollectionIndex] = amt;
+                rec.HasOutputData = true;
+            }
+        }
+
+        private void RecordSpatialLateralFlowOutputData(int timestep, Cell cell, int flowTypeId, double flowAmount)
+        {
+            if (this.m_STSimTransformer.IsOutputTimestep(
+                timestep,
+                this.m_LateralFlowOutputTimesteps,
+                this.m_CreateLateralFlowOutput))
+            {
+                Debug.Assert(GetLateralOutputFlowDictionary().ContainsKey(flowTypeId));
+
+                if (GetLateralOutputFlowDictionary().ContainsKey(flowTypeId))
+                {
+                    SpatialOutputFlowRecord rec = GetLateralOutputFlowDictionary()[flowTypeId];
+                    double amt = rec.Data[cell.CollectionIndex];
+
+                    if (amt.Equals(Spatial.DefaultNoDataValue))
+                    {
+                        amt = 0;
+                    }
+
+                    amt += (flowAmount / this.m_STSimTransformer.AmountPerCell);
+
+                    rec.Data[cell.CollectionIndex] = amt;
+                    rec.HasOutputData = true;
+                }
+            }
+        }
+
+        private void WriteTabularSummaryStockOutput(int iteration, int timestep)
+        {
+            foreach (OutputStock r in this.m_SummaryOutputStockRecords)
+            {
+                DataRow dr = this.m_OutputStockTable.NewRow();
+
+                dr[Constants.ITERATION_COLUMN_NAME] = iteration;
+                dr[Constants.TIMESTEP_COLUMN_NAME] = timestep;
+                dr[Constants.STRATUM_ID_COLUMN_NAME] = r.StratumId;
+                dr[Constants.SECONDARY_STRATUM_ID_COLUMN_NAME] = DataTableUtilities.GetNullableDatabaseValue(r.SecondaryStratumId);
+                dr[Constants.TERTIARY_STRATUM_ID_COLUMN_NAME] = DataTableUtilities.GetNullableDatabaseValue(r.TertiaryStratumId);
+                dr[Constants.STATECLASS_ID_COLUMN_NAME] = r.StateClassId;
+                dr[Constants.STOCK_GROUP_ID_COLUMN_NAME] = r.StockGroupId;
+                dr[Constants.AMOUNT_COLUMN_NAME] = r.Amount;
+
+                this.m_OutputStockTable.Rows.Add(dr);
+            }
+
+            this.m_SummaryOutputStockRecords.Clear();
+        }
+
+        private void WriteTabularSummaryFlowOutputData(int iteration, int timestep)
 		{
 			foreach (OutputFlow r in this.m_SummaryOutputFlowRecords)
 			{
@@ -265,11 +305,7 @@ namespace SyncroSim.STSimStockFlow
 			this.m_SummaryOutputFlowRecords.Clear();
 		}
 
-		/// <summary>
-		/// Processes the Spatial Stock Group data.
-		/// </summary>
-		/// <remarks></remarks>
-		private void ProcessStockGroupSpatialData(int iteration, int timestep)
+		private void WriteStockGroupRasters(int iteration, int timestep)
 		{
 			Debug.Assert(this.m_IsSpatial);
 
@@ -297,11 +333,7 @@ namespace SyncroSim.STSimStockFlow
             }
 		}
 
-		/// <summary>
-		/// Processes the current flow group spatial data
-		/// </summary>
-		/// <remarks></remarks>
-		private void ProcessFlowGroupSpatialData(int iteration, int timestep)
+		private void WriteFlowGroupRasters(int iteration, int timestep)
 		{
             Debug.Assert(this.m_IsSpatial);
 
@@ -348,11 +380,7 @@ namespace SyncroSim.STSimStockFlow
             }
         }
 
-        /// <summary>
-        /// Processes the current lateral flow group spatial data
-        /// </summary>
-        /// <remarks></remarks>
-        private void ProcessLateralFlowGroupSpatialData(int iteration, int timestep)
+        private void WriteLateralFlowRasters(int iteration, int timestep)
         {
             Debug.Assert(this.m_IsSpatial);
 
@@ -401,91 +429,7 @@ namespace SyncroSim.STSimStockFlow
             }
         }
 
-        /// <summary>
-        /// Adds to the spatial flow summary result collection
-        /// </summary>
-        /// <param name="timestep"></param>
-        /// <param name="cell"></param>
-        /// <param name="flowTypeId"></param>
-        /// <param name="flowAmount"></param>
-        /// <remarks></remarks>
-        private void OnSpatialFlowOutput(int timestep, Cell cell, int flowTypeId, double flowAmount)
-		{
-            if (!this.m_IsSpatial)
-            {
-                return;
-            }
-
-            bool IsNormalOutputTimestep = this.m_STSimTransformer.IsOutputTimestep(
-                timestep,
-                this.m_SpatialFlowOutputTimesteps,
-                this.m_CreateSpatialFlowOutput);
-
-            bool IsAverageOutputTimestep = this.m_STSimTransformer.IsOutputTimestep(
-                timestep,
-                this.m_SpatialFlowOutputTimesteps,
-                this.m_CreateSpatialFlowOutput);  
-            
-            if (!IsNormalOutputTimestep && !IsAverageOutputTimestep)
-            {
-                return;
-            }
-
-            Debug.Assert(GetSpatialOutputFlowDictionary().ContainsKey(flowTypeId)); 
-
-			if (GetSpatialOutputFlowDictionary().ContainsKey(flowTypeId))
-			{
-                SpatialOutputFlowRecord rec = GetSpatialOutputFlowDictionary()[flowTypeId];
-				double amt = rec.Data[cell.CollectionIndex];
-
-				if (amt.Equals(Spatial.DefaultNoDataValue))
-				{
-					amt = 0;
-				}
-
-				amt += (flowAmount / this.m_STSimTransformer.AmountPerCell);
-
-				rec.Data[cell.CollectionIndex] = amt;
-                rec.HasOutputData = true;
-			}
-		}
-
-        /// <summary>
-        /// Adds to the lateral flow summary result collection
-        /// </summary>
-        /// <param name="timestep"></param>
-        /// <param name="cell"></param>
-        /// <param name="flowTypeId"></param>
-        /// <param name="flowAmount"></param>
-        /// <remarks></remarks>
-        private void OnLateralFlowOutput(int timestep, Cell cell, int flowTypeId, double flowAmount)
-        {
-            if (this.m_STSimTransformer.IsOutputTimestep(
-                timestep,
-                this.m_LateralFlowOutputTimesteps,
-                this.m_CreateLateralFlowOutput))
-            {
-                Debug.Assert(GetLateralOutputFlowDictionary().ContainsKey(flowTypeId));
-
-                if (GetLateralOutputFlowDictionary().ContainsKey(flowTypeId))
-                {
-                    SpatialOutputFlowRecord rec = GetLateralOutputFlowDictionary()[flowTypeId];
-                    double amt = rec.Data[cell.CollectionIndex];
-
-                    if (amt.Equals(Spatial.DefaultNoDataValue))
-                    {
-                        amt = 0;
-                    }
-
-                    amt += (flowAmount / this.m_STSimTransformer.AmountPerCell);
-
-                    rec.Data[cell.CollectionIndex] = amt;
-                    rec.HasOutputData = true;
-                }
-            }
-        }
-
-        private void CreateAvgSpatialStockOutput()
+        private void WriteAverageStockRasters()
         {
             Debug.Assert(this.STSimTransformer.IsSpatial);
 
@@ -528,7 +472,7 @@ namespace SyncroSim.STSimStockFlow
             }
         }
 
-        private void CreateAvgSpatialFlowOutput()
+        private void WriteAverageFlowRasters()
         {
             Debug.Assert(this.STSimTransformer.IsSpatial);
 
