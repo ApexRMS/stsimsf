@@ -343,7 +343,7 @@ namespace SyncroSim.STSimStockFlow
 		/// <remarks></remarks>
 		private void OnSTSimBeforeTimestep(object sender, TimestepEventArgs e)
 		{
-            //Is it spatial flow output timestep.  If so, then iterate over flow types and initialize an output raster 
+            //Is it spatial flow output timestep?  If so, then iterate over flow types and initialize an output raster 
             //for each flow type Initialize to DEFAULT_NODATA_VALUE.  Note that we need to do this for lateral rasters also.
             //Note also that we need to set each SpatialOutputFlowRecord.HasOutputData to FALSE before each timestep.
 
@@ -368,7 +368,7 @@ namespace SyncroSim.STSimStockFlow
                         rec.HasOutputData = false;
                     }
 
-                    //Spatial
+                    //Lateral
                     if (this.GetLateralOutputFlowDictionary().ContainsKey(ft.Id))
                     {
                         SpatialOutputFlowRecord rec = GetLateralOutputFlowDictionary()[ft.Id];

@@ -196,10 +196,10 @@ namespace SyncroSim.STSimStockFlow
                 this.m_SpatialFlowOutputTimesteps,
                 this.m_CreateSpatialFlowOutput);
 
-            bool IsAverageOutputTimestep = this.m_STSimTransformer.IsOutputTimestep(
+            bool IsAverageOutputTimestep = this.m_STSimTransformer.IsOutputTimestepSkipMinimum(
                 timestep,
-                this.m_SpatialFlowOutputTimesteps,
-                this.m_CreateSpatialFlowOutput);
+                this.m_AvgSpatialFlowOutputTimesteps,
+                this.m_CreateAvgSpatialFlowOutput);
 
             if (!IsNormalOutputTimestep && !IsAverageOutputTimestep)
             {
