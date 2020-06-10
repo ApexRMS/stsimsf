@@ -523,8 +523,8 @@
       <item name="stkg" displayName="Stock Groups" dataSheet="OutputSpatialStockGroup" column="Filename" filter="StockGroupID"></item>
       <item name="flog" displayName="Flow Groups" dataSheet="OutputSpatialFlowGroup" column="Filename" filter="FlowGroupID"></item>
       <item name="lflog" displayName="Lateral Flow Groups" dataSheet="OutputLateralFlowGroup" column="Filename" filter="FlowGroupID"></item>
-      <item name="avgstkg" displayName="Average Stock Groups" dataSheet="OutputAverageSpatialStockGroup" column="Filename" filter="StockGroupID"></item>
-      <item name="avgflog" displayName="Average Flow Groups" dataSheet="OutputAverageSpatialFlowGroup" column="Filename" filter="FlowGroupID"></item>      
+      <item name="avgstkg" displayName="Average Stock Groups" dataSheet="OutputAverageSpatialStockGroup" column="Filename" filter="StockGroupID" extendedIdentifier="(Average for all Iterations)"></item>
+      <item name="avgflog" displayName="Average Flow Groups" dataSheet="OutputAverageSpatialFlowGroup" column="Filename" filter="FlowGroupID" extendedIdentifier="(Average for all Iterations)"></item>      
     </layout>
   </layouts>
   <updateProvider
