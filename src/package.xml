@@ -340,6 +340,9 @@
                 <column name="AvgSpatialOutputFL" dataType="Boolean"/>
                 <column name="AvgSpatialOutputFLTimesteps" dataType="Integer" validationType="WholeNumber" validationCondition="GreaterEqual" formula1="0" format="d"/>
                 <column name="AvgSpatialOutputFLAcrossTimesteps" dataType="Boolean"/>
+                <column name="AvgSpatialOutputLFL" dataType="Boolean"/>
+                <column name="AvgSpatialOutputLFLTimesteps" dataType="Integer" validationType="WholeNumber" validationCondition="GreaterEqual" formula1="0" format="d"/>
+                <column name="AvgSpatialOutputLFLAcrossTimesteps" dataType="Boolean"/>                
               </columns>
             </datasheet>
           </datasheets>
@@ -424,7 +427,7 @@
                 <column name="Iteration" dataType="Integer" format="d"/>
                 <column name="Timestep" dataType="Integer" displayNameSource="stsim_Terminology" displayNameColumn="TimestepUnits" format="d"/>
                 <column name="FlowGroupID" dataType="Integer" displayName="Flow Type/Group" validationType="Datasheet" formula1="FlowGroup" allowDbNull="False"/>
-                <column name="Filename" displayName="Flow Group Map" dataType="String" allowDbNull="False" isExternalFile="True" isRaster="True" bandColumn="Band" bandFilterColumn="FlowGroupID" filenameCode="flog"/>
+                <column name="Filename" displayName="Flow Group Map" dataType="String" allowDbNull="False" isExternalFile="True" isRaster="True" bandColumn="Band" bandFilterColumn="FlowGroupID" filenameCode="lflog"/>
                 <column name="Band" displayName="Band" dataType="Integer" allowDbNull="True"/>
               </columns>
             </datasheet>
@@ -457,7 +460,21 @@
               </columns>
             </datasheet>
           </datasheets>
-        </datafeed>                      
+        </datafeed>  
+        <datafeed name="OutputAverageLateralFlowGroup" displayName="Output Average Lateral Flow Group" dataScope="Scenario" isOutput="True" >
+          <datasheets>
+            <datasheet name="OutputAverageLateralFlowGroup" displayName="Output Average Lateral Flow Group" spatialMultiProcessing="True">
+              <columns>
+                <column name="ScenarioID" dataType="Integer" />
+                <column name="Iteration" dataType="Integer" format="d"/>
+                <column name="Timestep" dataType="Integer" displayNameSource="stsim_Terminology" displayNameColumn="TimestepUnits" format="d"/>
+                <column name="FlowGroupID" dataType="Integer" displayName="Flow Group" validationType="Datasheet" formula1="FlowGroup" allowDbNull="False"/>
+                <column name="Filename" displayName="Average Lateral Flow Group Map" dataType="String" allowDbNull="False" isExternalFile="True" isRaster="True" bandColumn="Band" bandFilterColumn="FlowGroupID" filenameCode="avglflog" />
+                <column name="Band" displayName="Band" dataType="Integer" allowDbNull="True" isOptional="True"/>
+              </columns>
+            </datasheet>
+          </datasheets>
+        </datafeed>       
       </datafeeds>
     </transformer>
     <transformer name="SummaryStockReport" displayName="Stocks" className="SyncroSim.STSimStockFlow.SummaryStockReport" classAssembly="SyncroSim.STSimStockFlow">

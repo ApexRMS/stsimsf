@@ -87,6 +87,9 @@ namespace SyncroSim.STSimStockFlow
 			this.m_CreateAvgSpatialFlowOutput = DataTableUtilities.GetDataBool(droo[Constants.DATASHEET_OO_AVG_SPATIAL_OUTPUT_FL_COLUMN_NAME]);
 			this.m_AvgSpatialFlowOutputTimesteps = SafeInt(droo[Constants.DATASHEET_OO_AVG_SPATIAL_OUTPUT_FL_TIMESTEPS_COLUMN_NAME]);
             this.m_AvgSpatialFlowOutputAcrossTimesteps = DataTableUtilities.GetDataBool(droo[Constants.DATASHEET_OO_AVG_SPATIAL_OUTPUT_FL_ACROSS_TIMESTEPS_COLUMN_NAME]);
+            this.m_CreateAvgSpatialLateralFlowOutput = DataTableUtilities.GetDataBool(droo[Constants.DATASHEET_OO_AVG_SPATIAL_OUTPUT_LFL_COLUMN_NAME]);
+			this.m_AvgSpatialLateralFlowOutputTimesteps = SafeInt(droo[Constants.DATASHEET_OO_AVG_SPATIAL_OUTPUT_LFL_TIMESTEPS_COLUMN_NAME]);
+            this.m_AvgSpatialLateralFlowOutputAcrossTimesteps = DataTableUtilities.GetDataBool(droo[Constants.DATASHEET_OO_AVG_SPATIAL_OUTPUT_LFL_ACROSS_TIMESTEPS_COLUMN_NAME]);
         }
 
         /// <summary>
@@ -252,8 +255,7 @@ namespace SyncroSim.STSimStockFlow
                         this.m_AvgSpatialStockOutputTimesteps, 
                         this.m_CreateAvgSpatialStockOutput))
                     {
-                        double[] values = null;
-                        values = new double[this.STSimTransformer.Cells.Count];
+                        double[] values = new double[this.STSimTransformer.Cells.Count];
 
                         for (var i = 0; i < this.STSimTransformer.Cells.Count; i++)
                         {
@@ -289,8 +291,7 @@ namespace SyncroSim.STSimStockFlow
                         this.m_AvgSpatialFlowOutputTimesteps, 
                         this.m_CreateAvgSpatialFlowOutput))
                     { 
-                        double[] values = null;
-                        values = new double[this.STSimTransformer.Cells.Count];
+                        double[] values = new double[this.STSimTransformer.Cells.Count];
 
                         for (var i = 0; i < this.STSimTransformer.Cells.Count; i++)
                         {
@@ -302,6 +303,42 @@ namespace SyncroSim.STSimStockFlow
                 }
 
                 this.m_AvgFlowMap.Add(fg.Id, dict);
+            }
+        }
+
+        private void InitializeAverageLateralFlowMap()
+        {
+            Debug.Assert(this.STSimTransformer.IsSpatial);
+            Debug.Assert(this.STSimTransformer.MinimumTimestep > 0);
+
+            if (!this.m_CreateAvgSpatialLateralFlowOutput)
+            {
+                return;
+            }
+
+            foreach (FlowGroup fg in this.m_FlowGroups)
+            {
+                Dictionary<int, double[]> dict = new Dictionary<int, double[]>();
+
+                for (var timestep = this.STSimTransformer.MinimumTimestep; timestep <= this.STSimTransformer.MaximumTimestep; timestep++)
+                {
+                    if (this.m_STSimTransformer.IsOutputTimestepSkipMinimum(
+                        timestep,
+                        this.m_AvgSpatialLateralFlowOutputTimesteps,
+                        this.m_CreateAvgSpatialLateralFlowOutput))
+                    {
+                        double[] values = new double[this.STSimTransformer.Cells.Count];
+
+                        for (var i = 0; i < this.STSimTransformer.Cells.Count; i++)
+                        {
+                            values[i] = 0;
+                        }
+
+                        dict.Add(timestep, values);
+                    }
+                }
+
+                this.m_AvgLateralFlowMap.Add(fg.Id, dict);
             }
         }
     }

@@ -499,6 +499,30 @@ namespace SyncroSim.STSimStockFlow
                         }
                     }
                 }
+
+                if (this.m_CreateAvgSpatialLateralFlowOutput)
+                {
+                    if (this.m_AvgSpatialLateralFlowOutputAcrossTimesteps)
+                    {
+                        foreach (FlowGroup g in this.m_FlowGroups)
+                        {
+                            this.RecordAverageLateralFlowValuesAcrossTimesteps(e.Timestep, g);
+                        }
+                    }
+                    else
+                    {
+                        if (this.m_STSimTransformer.IsOutputTimestepSkipMinimum(
+                            e.Timestep,
+                            this.m_AvgSpatialLateralFlowOutputTimesteps,
+                            this.m_CreateAvgSpatialLateralFlowOutput))
+                        {
+                            foreach (FlowGroup g in this.m_FlowGroups)
+                            {
+                                this.RecordAverageLateralFlowValuesNormalMethod(e.Timestep, g);
+                            }
+                        }
+                    }
+                }
             }
 
             this.m_LateralFlowAmountMap = null;
@@ -520,18 +544,25 @@ namespace SyncroSim.STSimStockFlow
             {
                 this.WriteAverageFlowRasters();
             }
+
+            if (this.m_CreateAvgSpatialLateralFlowOutput)
+            {
+                this.WriteAverageLateralFlowRasters();
+            }
         }
 
         private void OnSTSimBeginNormalSpatialMerge(object sender, EventArgs e)
         {
             this.ProcessAveragedStockGroupOutputFiles();
             this.ProcessAveragedFlowGroupOutputFiles();
+            this.ProcessAveragedLateralFlowGroupOutputFiles();
         }
 
         private void OnSTSimNormalSpatialMergeComplete(object sender, EventArgs e)
         {
             this.ProcessAveragedStockGroupDatasheet();
             this.ProcessAveragedFlowGroupDatasheet();
+            this.ProcessAveragedLateralFlowGroupDatasheet();
         }
 
 		/// <summary>
@@ -678,6 +709,7 @@ namespace SyncroSim.STSimStockFlow
                 {
                     this.InitializeAverageStockMap();
                     this.InitializeAverageFlowMap();
+                    this.InitializeAverageLateralFlowMap();
                 }
             }
 		}

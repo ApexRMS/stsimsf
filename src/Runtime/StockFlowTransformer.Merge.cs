@@ -27,6 +27,13 @@ namespace SyncroSim.STSimStockFlow
                 Constants.SPATIAL_MAP_AVG_FLOW_GROUP_VARIABLE_PREFIX + "*.tif");
         }
 
+        private void ProcessAveragedLateralFlowGroupOutputFiles()
+        {
+            this.ProcessAveragedOutputFiles(
+                Constants.DATASHEET_OUTPUT_AVG_SPATIAL_LATERAL_FLOW_GROUP,
+                Constants.SPATIAL_MAP_AVG_LATERAL_FLOW_GROUP_VARIABLE_PREFIX + "*.tif");
+        }
+
         private void ProcessAveragedStockGroupDatasheet()
         {
             this.ProcessAveragedValueDatasheet(
@@ -38,6 +45,13 @@ namespace SyncroSim.STSimStockFlow
         {
             this.ProcessAveragedValueDatasheet(
                 Constants.DATASHEET_OUTPUT_AVG_SPATIAL_FLOW_GROUP,
+                Constants.FLOW_GROUP_ID_COLUMN_NAME);
+        }
+
+        private void ProcessAveragedLateralFlowGroupDatasheet()
+        {
+            this.ProcessAveragedValueDatasheet(
+                Constants.DATASHEET_OUTPUT_AVG_SPATIAL_LATERAL_FLOW_GROUP,
                 Constants.FLOW_GROUP_ID_COLUMN_NAME);
         }
 

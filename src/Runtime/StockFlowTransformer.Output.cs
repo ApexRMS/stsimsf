@@ -32,6 +32,9 @@ namespace SyncroSim.STSimStockFlow
 		private bool m_CreateAvgSpatialFlowOutput;
 		private int m_AvgSpatialFlowOutputTimesteps;
         private bool m_AvgSpatialFlowOutputAcrossTimesteps;
+		private bool m_CreateAvgSpatialLateralFlowOutput;
+		private int m_AvgSpatialLateralFlowOutputTimesteps;
+        private bool m_AvgSpatialLateralFlowOutputAcrossTimesteps;
 
 		private Dictionary<int, SpatialOutputFlowRecord> m_SpatialOutputFlowDict;
 		private Dictionary<int, SpatialOutputFlowRecord> m_LateralOutputFlowDict;
@@ -227,28 +230,37 @@ namespace SyncroSim.STSimStockFlow
 
         private void RecordSpatialLateralFlowOutputData(int timestep, Cell cell, int flowTypeId, double flowAmount)
         {
-            if (this.m_STSimTransformer.IsOutputTimestep(
+            bool IsLFOutputTimestep = this.m_STSimTransformer.IsOutputTimestep(
                 timestep,
                 this.m_LateralFlowOutputTimesteps,
-                this.m_CreateLateralFlowOutput))
+                this.m_CreateLateralFlowOutput);
+
+            bool IsLFAverageOutputTimestep = this.m_STSimTransformer.IsOutputTimestepSkipMinimum(
+                timestep,
+                this.m_AvgSpatialLateralFlowOutputTimesteps,
+                this.m_CreateAvgSpatialLateralFlowOutput);
+
+            if (!IsLFOutputTimestep && !IsLFAverageOutputTimestep)
             {
-                Debug.Assert(GetLateralOutputFlowDictionary().ContainsKey(flowTypeId));
+                return;
+            }
 
-                if (GetLateralOutputFlowDictionary().ContainsKey(flowTypeId))
+            Debug.Assert(GetLateralOutputFlowDictionary().ContainsKey(flowTypeId));
+
+            if (GetLateralOutputFlowDictionary().ContainsKey(flowTypeId))
+            {
+                SpatialOutputFlowRecord rec = GetLateralOutputFlowDictionary()[flowTypeId];
+                double amt = rec.Data[cell.CollectionIndex];
+
+                if (amt.Equals(Spatial.DefaultNoDataValue))
                 {
-                    SpatialOutputFlowRecord rec = GetLateralOutputFlowDictionary()[flowTypeId];
-                    double amt = rec.Data[cell.CollectionIndex];
-
-                    if (amt.Equals(Spatial.DefaultNoDataValue))
-                    {
-                        amt = 0;
-                    }
-
-                    amt += (flowAmount / this.m_STSimTransformer.AmountPerCell);
-
-                    rec.Data[cell.CollectionIndex] = amt;
-                    rec.HasOutputData = true;
+                    amt = 0;
                 }
+
+                amt += (flowAmount / this.m_STSimTransformer.AmountPerCell);
+
+                rec.Data[cell.CollectionIndex] = amt;
+                rec.HasOutputData = true;
             }
         }
 
@@ -432,6 +444,7 @@ namespace SyncroSim.STSimStockFlow
         private void WriteAverageStockRasters()
         {
             Debug.Assert(this.STSimTransformer.IsSpatial);
+            Debug.Assert(this.m_CreateAvgSpatialStockOutput);
 
             foreach (int id in this.m_AvgStockMap.Keys)
             {
@@ -475,6 +488,7 @@ namespace SyncroSim.STSimStockFlow
         private void WriteAverageFlowRasters()
         {
             Debug.Assert(this.STSimTransformer.IsSpatial);
+            Debug.Assert(this.m_CreateAvgSpatialFlowOutput);
 
             foreach (int id in this.m_AvgFlowMap.Keys)
             {
@@ -515,8 +529,56 @@ namespace SyncroSim.STSimStockFlow
             }
         }
 
+        private void WriteAverageLateralFlowRasters()
+        {
+            Debug.Assert(this.STSimTransformer.IsSpatial);
+            Debug.Assert(this.m_CreateAvgSpatialLateralFlowOutput);
+
+            foreach (int id in this.m_AvgLateralFlowMap.Keys)
+            {
+                Dictionary<int, double[]> dict = this.m_AvgLateralFlowMap[id];
+
+                foreach (int timestep in dict.Keys)
+                {
+                    double[] values = dict[timestep];
+                    var distArray = values.Distinct();
+
+                    if (distArray.Count() == 1)
+                    {
+                        var el0 = distArray.ElementAt(0);
+
+                        if (el0.Equals(Spatial.DefaultNoDataValue))
+                        {
+                            continue;
+                        }
+                    }
+
+                    StochasticTimeRaster rast = this.STSimTransformer.InputRasters.CreateOutputRaster(RasterDataType.DTDouble);
+                    double[] arr = rast.DblCells;
+
+                    foreach (Cell c in this.STSimTransformer.Cells)
+                    {
+                        arr[c.CellId] = values[c.CollectionIndex];
+                    }
+
+                    Spatial.WriteRasterData(
+                        rast,
+                        this.ResultScenario.GetDataSheet(Constants.DATASHEET_OUTPUT_AVG_SPATIAL_LATERAL_FLOW_GROUP),
+                        0,
+                        timestep,
+                        id,
+                        Constants.SPATIAL_MAP_AVG_LATERAL_FLOW_GROUP_VARIABLE_PREFIX,
+                        Constants.DATASHEET_OUTPUT_SPATIAL_FILENAME_COLUMN);
+                }
+            }
+        }
+
         private void RecordAverageStockValuesNormalMethod(int timestep, StockGroup stockGroup)
         {
+            Debug.Assert(this.STSimTransformer.IsSpatial);
+            Debug.Assert(this.m_CreateAvgSpatialStockOutput);
+            Debug.Assert(!this.m_AvgSpatialStockOutputAcrossTimesteps);
+
             Dictionary<int, double[]> dict = this.m_AvgStockMap[stockGroup.Id];
             double[] Values = dict[timestep];
 
@@ -537,6 +599,10 @@ namespace SyncroSim.STSimStockFlow
 
         private void RecordAverageStockValuesAcrossTimesteps(int timestep, StockGroup stockGroup)
         {
+            Debug.Assert(this.STSimTransformer.IsSpatial);
+            Debug.Assert(this.m_CreateAvgSpatialStockOutput);
+            Debug.Assert(this.m_AvgSpatialStockOutputAcrossTimesteps);
+
             Dictionary<int, double[]> dict = this.m_AvgStockMap[stockGroup.Id];
             int timestepKey = this.GetTimestepKeyForAverage(timestep, this.m_AvgSpatialStockOutputTimesteps);
             double[] Values = dict[timestepKey];
@@ -565,6 +631,10 @@ namespace SyncroSim.STSimStockFlow
 
         private void RecordAverageFlowValuesNormalMethod(int timestep, FlowGroup flowGroup)
         {
+            Debug.Assert(this.STSimTransformer.IsSpatial);
+            Debug.Assert(this.m_CreateAvgSpatialFlowOutput);
+            Debug.Assert(!this.m_AvgSpatialFlowOutputAcrossTimesteps);
+
             Dictionary<int, double[]> dict = this.m_AvgFlowMap[flowGroup.Id];
             double[] Values = dict[timestep];
 
@@ -589,6 +659,10 @@ namespace SyncroSim.STSimStockFlow
 
         private void RecordAverageFlowValuesAcrossTimesteps(int timestep, FlowGroup flowGroup)
         {
+            Debug.Assert(this.STSimTransformer.IsSpatial);
+            Debug.Assert(this.m_CreateAvgSpatialFlowOutput);
+            Debug.Assert(this.m_AvgSpatialFlowOutputAcrossTimesteps);
+
             Dictionary<int, double[]> dict = this.m_AvgFlowMap[flowGroup.Id];
             int timestepKey = this.GetTimestepKeyForAverage(timestep, this.m_AvgSpatialFlowOutputTimesteps);
             double[] Values = dict[timestepKey];
@@ -615,6 +689,70 @@ namespace SyncroSim.STSimStockFlow
                 else
                 {
                     Values[i] += Amount / (double)(this.m_AvgSpatialFlowOutputTimesteps * this.m_TotalIterations);
+                }
+            }
+        }
+
+        private void RecordAverageLateralFlowValuesNormalMethod(int timestep, FlowGroup flowGroup)
+        {
+            Debug.Assert(this.STSimTransformer.IsSpatial);
+            Debug.Assert(this.m_CreateAvgSpatialLateralFlowOutput);
+            Debug.Assert(!this.m_AvgSpatialLateralFlowOutputAcrossTimesteps);
+
+            Dictionary<int, double[]> dict = this.m_AvgLateralFlowMap[flowGroup.Id];
+            double[] Values = dict[timestep];
+
+            foreach (Cell c in this.m_STSimTransformer.Cells)
+            {
+                double Amount = 0;
+                int i = c.CollectionIndex;
+
+                foreach (FlowTypeLinkage l in flowGroup.FlowTypeLinkages)
+                {
+                    SpatialOutputFlowRecord rec = GetLateralOutputFlowDictionary()[l.FlowType.Id];
+
+                    if (rec.HasOutputData)
+                    {
+                        Amount += rec.Data[i];
+                    }
+                }
+
+                Values[i] += Amount / this.m_TotalIterations;
+            }
+        }
+
+        private void RecordAverageLateralFlowValuesAcrossTimesteps(int timestep, FlowGroup flowGroup)
+        {
+            Debug.Assert(this.STSimTransformer.IsSpatial);
+            Debug.Assert(this.m_CreateAvgSpatialLateralFlowOutput);
+            Debug.Assert(this.m_AvgSpatialLateralFlowOutputAcrossTimesteps);
+
+            Dictionary<int, double[]> dict = this.m_AvgLateralFlowMap[flowGroup.Id];
+            int timestepKey = this.GetTimestepKeyForAverage(timestep, this.m_AvgSpatialLateralFlowOutputTimesteps);
+            double[] Values = dict[timestepKey];
+
+            foreach (Cell c in this.m_STSimTransformer.Cells)
+            {
+                double Amount = 0;
+                int i = c.CollectionIndex;
+
+                foreach (FlowTypeLinkage l in flowGroup.FlowTypeLinkages)
+                {
+                    SpatialOutputFlowRecord rec = GetLateralOutputFlowDictionary()[l.FlowType.Id];
+
+                    if (rec.HasOutputData)
+                    {
+                        Amount += rec.Data[i];
+                    }
+                }
+
+                if ((timestepKey == this.STSimTransformer.MaximumTimestep) && (((timestepKey - this.STSimTransformer.TimestepZero) % this.m_AvgSpatialLateralFlowOutputTimesteps) != 0))
+                {
+                    Values[i] += Amount / (double)((timestepKey - this.STSimTransformer.TimestepZero) % this.m_AvgSpatialLateralFlowOutputTimesteps * this.m_TotalIterations);
+                }
+                else
+                {
+                    Values[i] += Amount / (double)(this.m_AvgSpatialLateralFlowOutputTimesteps * this.m_TotalIterations);
                 }
             }
         }

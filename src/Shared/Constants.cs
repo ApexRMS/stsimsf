@@ -58,6 +58,7 @@ namespace SyncroSim.STSimStockFlow
 		public const string DATASHEET_OUTPUT_LATERAL_FLOW_GROUP = "stsimsf_OutputLateralFlowGroup";
 		public const string DATASHEET_OUTPUT_AVG_SPATIAL_STOCK_GROUP = "stsimsf_OutputAverageSpatialStockGroup";
 		public const string DATASHEET_OUTPUT_AVG_SPATIAL_FLOW_GROUP = "stsimsf_OutputAverageSpatialFlowGroup";
+		public const string DATASHEET_OUTPUT_AVG_SPATIAL_LATERAL_FLOW_GROUP = "stsimsf_OutputAverageLateralFlowGroup";
 
         public const string DATASHEET_STSIM_STRATUM = "stsim_Stratum";
         public const string DATASHEET_STSIM_SECONDARY_STRATUM = "stsim_SecondaryStratum";
@@ -165,6 +166,9 @@ namespace SyncroSim.STSimStockFlow
 		public const string DATASHEET_OO_AVG_SPATIAL_OUTPUT_FL_COLUMN_NAME = "AvgSpatialOutputFL";
 		public const string DATASHEET_OO_AVG_SPATIAL_OUTPUT_FL_TIMESTEPS_COLUMN_NAME = "AvgSpatialOutputFLTimesteps";
 		public const string DATASHEET_OO_AVG_SPATIAL_OUTPUT_FL_ACROSS_TIMESTEPS_COLUMN_NAME = "AvgSpatialOutputFLAcrossTimesteps";
+		public const string DATASHEET_OO_AVG_SPATIAL_OUTPUT_LFL_COLUMN_NAME = "AvgSpatialOutputLFL";
+		public const string DATASHEET_OO_AVG_SPATIAL_OUTPUT_LFL_TIMESTEPS_COLUMN_NAME = "AvgSpatialOutputLFLTimesteps";
+		public const string DATASHEET_OO_AVG_SPATIAL_OUTPUT_LFL_ACROSS_TIMESTEPS_COLUMN_NAME = "AvgSpatialOutputLFLAcrossTimesteps";
 
 		//Messages
 		public const string NO_SUMMARY_OUTPUT_OPTIONS_INFORMATION = "No summary output options specified for stocks and flows.  Using defaults.";
@@ -184,6 +188,7 @@ namespace SyncroSim.STSimStockFlow
 		public const string SPATIAL_MAP_LATERAL_FLOW_GROUP_VARIABLE_PREFIX = "lflog";
 		public const string SPATIAL_MAP_AVG_STOCK_GROUP_VARIABLE_PREFIX = "avgstkg";
 		public const string SPATIAL_MAP_AVG_FLOW_GROUP_VARIABLE_PREFIX = "avgflog";
+		public const string SPATIAL_MAP_AVG_LATERAL_FLOW_GROUP_VARIABLE_PREFIX = "avglflog";
 
 		//Spatial Map file naming Regex filter, containing 1 ID value
 		public const string FILE_FILTER_ID_REGEX = "^(.*){0}-([\\d]*)\\.(tif|vrt)$";
