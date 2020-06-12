@@ -490,7 +490,9 @@
     <transformer name="AvgStockRasterMap" displayName="Average Stock Groups" className="SyncroSim.StochasticTime.Forms.StochasticTimeExportTransformer" classAssembly="SyncroSim.StochasticTime.Forms" dataSheet="OutputAverageSpatialStockGroup" column="Filename" isFolderExport="True">
     </transformer>
     <transformer name="AvgFlowRasterMap" displayName="Average Flow Groups" className="SyncroSim.StochasticTime.Forms.StochasticTimeExportTransformer" classAssembly="SyncroSim.StochasticTime.Forms" dataSheet="OutputAverageSpatialFlowGroup" column="Filename" isFolderExport="True">
-    </transformer>            
+    </transformer>  
+    <transformer name="AvgLateralFlowRasterMap" displayName="Average Lateral Flow Groups" className="SyncroSim.StochasticTime.Forms.StochasticTimeExportTransformer" classAssembly="SyncroSim.StochasticTime.Forms" dataSheet="OutputAverageSpatialLateralFlowGroup" column="Filename" isFolderExport="True">
+    </transformer>     
   </transformers>
   <views>
     <view name="FlowOrderDatafeedView" target="FlowOrder" className="SyncroSim.STSimStockFlow.FlowOrderDataFeedView" classAssembly="SyncroSim.STSimStockFlow"/>
@@ -537,11 +539,16 @@
       classAssembly="SyncroSim.STSimStockFlow">
     </layout>
     <layout name="corestimeforms_Maps">
-      <item name="stkg" displayName="Stock Groups" dataSheet="OutputSpatialStockGroup" column="Filename" filter="StockGroupID"></item>
-      <item name="flog" displayName="Flow Groups" dataSheet="OutputSpatialFlowGroup" column="Filename" filter="FlowGroupID"></item>
-      <item name="lflog" displayName="Lateral Flow Groups" dataSheet="OutputLateralFlowGroup" column="Filename" filter="FlowGroupID"></item>
-      <item name="avgstkg" displayName="Average Stock Groups" dataSheet="OutputAverageSpatialStockGroup" column="Filename" filter="StockGroupID" extendedIdentifier="(Average for all Iterations)"></item>
-      <item name="avgflog" displayName="Average Flow Groups" dataSheet="OutputAverageSpatialFlowGroup" column="Filename" filter="FlowGroupID" extendedIdentifier="(Average for all Iterations)"></item>      
+      <group name="StockGroups" displayName="Stock Groups">
+        <item name="stkg" displayName="Iteration" dataSheet="OutputSpatialStockGroup" column="Filename" filter="StockGroupID"></item> 
+        <item name="avgstkg" displayName="Average" dataSheet="OutputAverageSpatialStockGroup" column="Filename" filter="StockGroupID" extendedIdentifier="(Average for all Iterations)"></item>        
+      </group>
+      <group name="FlowGroups" displayName="Flow Groups">
+        <item name="flog" displayName="Iteration" dataSheet="OutputSpatialFlowGroup" column="Filename" filter="FlowGroupID"></item>
+        <item name="lflog" displayName="Iteration - Lateral" dataSheet="OutputLateralFlowGroup" column="Filename" filter="FlowGroupID"></item>
+        <item name="avgflog" displayName="Average" dataSheet="OutputAverageSpatialFlowGroup" column="Filename" filter="FlowGroupID" extendedIdentifier="(Average for all Iterations)"></item>            
+        <item name="avglflog" displayName="Average - Lateral" dataSheet="OutputAverageLateralFlowGroup" column="Filename" filter="FlowGroupID" extendedIdentifier="(Average for all Iterations)"></item>                
+      </group>
     </layout>
   </layouts>
   <updateProvider

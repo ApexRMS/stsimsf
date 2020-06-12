@@ -27,16 +27,18 @@ namespace SyncroSim.STSimStockFlow
 
 				if (MapsGroup != null)
 				{
-                    SyncroSimLayoutItem SFGroup = 
-                        new SyncroSimLayoutItem("stsimsf_StockFlowMaps", "Stocks and Flows", true);
+                    SyncroSimLayoutItem StkGroup = new SyncroSimLayoutItem("stsimsf_StockGroups", "Stocks Groups", true);
+                    StkGroup.Items.Add(new SyncroSimLayoutItem("stsimsf_StockRasterMap", "Iteration", false));
+                    StkGroup.Items.Add(new SyncroSimLayoutItem("stsimsf_AvgStockRasterMap", "Average", false));
+                    MapsGroup.Items.Add(StkGroup);
 
-                    SFGroup.Items.Add(new SyncroSimLayoutItem("stsimsf_StockRasterMap", "Stock Type/Group", false));
-                    SFGroup.Items.Add(new SyncroSimLayoutItem("stsimsf_FlowRasterMap", "Flow Type/Group", false));
-                    SFGroup.Items.Add(new SyncroSimLayoutItem("stsimsf_LateralFlowRasterMap", "Lateral Flow Type/Group", false));
-                    SFGroup.Items.Add(new SyncroSimLayoutItem("stsimsf_AvgStockRasterMap", "Average Stock Type/Group", false));
-                    SFGroup.Items.Add(new SyncroSimLayoutItem("stsimsf_AvgFlowRasterMap", "Average Flow Type/Group", false));
+                    SyncroSimLayoutItem FloGroup = new SyncroSimLayoutItem("stsimsf_FlowGroups", "Flow Groups", true);
+                    FloGroup.Items.Add(new SyncroSimLayoutItem("stsimsf_FlowRasterMap", "Iteration", false));
+                    FloGroup.Items.Add(new SyncroSimLayoutItem("stsimsf_LateralFlowRasterMap", "Iteration - Lateral", false));
+                    FloGroup.Items.Add(new SyncroSimLayoutItem("stsimsf_AvgFlowRasterMap", "Average", false));
+                    FloGroup.Items.Add(new SyncroSimLayoutItem("stsimsf_AvgLateralFlowRasterMap", "Average - Lateral", false));
 
-                    MapsGroup.Items.Add(SFGroup);
+                    MapsGroup.Items.Add(FloGroup);
 				}
 			}        
 		}
