@@ -1085,11 +1085,6 @@ namespace SyncroSim.STSimStockFlow
                 }
             }
 
-			if (FlowAmount <= 0.0)
-			{
-				FlowAmount = 0.0;
-			}
-
 			return FlowAmount;
 		}
 

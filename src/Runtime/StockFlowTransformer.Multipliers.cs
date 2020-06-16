@@ -51,7 +51,7 @@ namespace SyncroSim.STSimStockFlow
             StochasticTimeRaster raster = this.m_FlowSpatialMultiplierRasters[m.FileName];
             double v = raster.DblCells[cell.CollectionIndex];
 
-            if ((v < 0.0) || (MathUtils.CompareDoublesEqual(v, raster.NoDataValue, double.Epsilon)))
+            if (MathUtils.CompareDoublesEqual(v, raster.NoDataValue, double.Epsilon))
             {
                 return 1.0;
             }

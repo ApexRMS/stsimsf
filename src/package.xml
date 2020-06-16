@@ -161,7 +161,7 @@
                 <column name="TransitionGroupID" dataType="Integer" displayName="Transition Group" validationType="Datasheet" formula1="stsim_TransitionGroup" isOptional="True"/>
                 <column name="StateAttributeTypeID" dataType="Integer" displayName="State Attribute Type" validationType="Datasheet" formula1="stsim_StateAttributeType" isOptional="True"/>
                 <column name="FlowTypeID" dataType="Integer" displayName="Flow Type" validationType="Datasheet" formula1="FlowType" allowDbNull="False"/>
-                <column name="Multiplier" displayName="Multiplier" dataType="Double" validationType="Decimal" validationCondition="GreaterEqual" formula1="0.0" allowDbNull="False"/>
+                <column name="Multiplier" displayName="Multiplier" dataType="Double" validationType="Decimal" allowDbNull="False"/>
                 <column name="TransferToStratumID" dataType="Integer" displayName="Transfer To Stratum" validationType="Datasheet" formula1="stsim_Stratum" isOptional="True" displayNameSource="stsim_Terminology" displayNameColumn="PrimaryStratumLabel"/>
                 <column name="TransferToSecondaryStratumID" dataType="Integer" displayName="Transfer To Secondary Stratum" validationType="Datasheet" formula1="stsim_SecondaryStratum" isOptional="True" displayNameSource="stsim_Terminology" displayNameColumn="SecondaryStratumLabel"/>
                 <column name="TransferToTertiaryStratumID" dataType="Integer" displayName="Transfer To Tertiary Stratum" validationType="Datasheet" formula1="stsim_TertiaryStratum" isOptional="True" displayNameSource="stsim_Terminology" displayNameColumn="TertiaryStratumLabel"/>
@@ -274,12 +274,12 @@
                 <column name="AgeMax" displayName="Age Max" dataType="Integer" isOptional="True" validationType="WholeNumber" validationCondition="GreaterEqual" formula1="0"/>
                 <column name="FlowGroupID" dataType="Integer" displayName="Flow Type/Group" validationType="Datasheet" formula1="FlowGroup" allowDbNull="False"/>
                 <column name="FlowMultiplierTypeID" dataType="Integer" displayName="Flow Multiplier Type" validationType="Datasheet" formula1="FlowMultiplierType" isOptional="True"/>
-                <column name="Value" displayName="Multiplier" dataType="Double" validationType="Decimal" validationCondition="GreaterEqual" formula1="0.0"/>
+                <column name="Value" displayName="Multiplier" dataType="Double" validationType="Decimal"/>
                 <column name="DistributionType" displayName="Multiplier Distribution" dataType="Integer" validationType="Datasheet" formula1="corestime_DistributionType" isOptional="True"/>
                 <column name="DistributionFrequencyID" displayName="Multiplier Sampling Frequency" dataType="Integer" validationType="List" formula1="0:Always|1:Iteration Only|2:Iteration and Timestep" isOptional="True"/>
                 <column name="DistributionSD" displayName="Multiplier SD" dataType="Double" validationType="Decimal" validationCondition="GreaterEqual" formula1="0.0" isOptional="True"/>
-                <column name="DistributionMin" displayName="Multiplier Min" dataType="Double" validationType="Decimal" validationCondition="GreaterEqual" formula1="0.0" isOptional="True"/>
-                <column name="DistributionMax" displayName="Multiplier Max" dataType="Double" validationType="Decimal" validationCondition="GreaterEqual" formula1="0.0" isOptional="True"/>
+                <column name="DistributionMin" displayName="Multiplier Min" dataType="Double" validationType="Decimal" isOptional="True"/>
+                <column name="DistributionMax" displayName="Multiplier Max" dataType="Double" validationType="Decimal" isOptional="True"/>
               </columns>
               <validations>
                 <validation validationType="LessEqual" columns="AgeMin|AgeMax"/>
