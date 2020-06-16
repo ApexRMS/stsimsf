@@ -463,7 +463,7 @@ namespace SyncroSim.STSimStockFlow
                     }
                     else
                     {
-                        if (this.m_STSimTransformer.IsOutputTimestepSkipMinimum(
+                        if (this.m_STSimTransformer.IsOutputTimestep(
                             e.Timestep,
                             this.m_AvgSpatialStockOutputTimesteps,
                             this.m_CreateAvgSpatialStockOutput))

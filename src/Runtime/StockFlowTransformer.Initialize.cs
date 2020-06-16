@@ -250,7 +250,7 @@ namespace SyncroSim.STSimStockFlow
 
                 for (var timestep = this.STSimTransformer.MinimumTimestep; timestep <= this.STSimTransformer.MaximumTimestep; timestep++)
                 {
-                    if (this.m_STSimTransformer.IsOutputTimestepSkipMinimum(
+                    if (this.m_STSimTransformer.IsOutputTimestep(
                         timestep, 
                         this.m_AvgSpatialStockOutputTimesteps, 
                         this.m_CreateAvgSpatialStockOutput))
