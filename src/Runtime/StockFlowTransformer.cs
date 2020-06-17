@@ -452,76 +452,19 @@ namespace SyncroSim.STSimStockFlow
                     this.WriteLateralFlowRasters(e.Iteration, e.Timestep);
                 }
 
-                if (this.m_CreateAvgSpatialStockOutput)
+                if (this.m_STSimTransformer.IsOutputTimestepAverage(e.Timestep, this.m_AvgSpatialStockOutputTimesteps, this.m_CreateAvgSpatialStockOutput))
                 {
-                    if (this.m_AvgSpatialStockOutputAcrossTimesteps)
-                    {
-                        foreach (StockGroup g in this.m_StockGroups)
-                        {
-                            this.RecordAverageStockValuesAcrossTimesteps(e.Timestep, g);
-                        }
-                    }
-                    else
-                    {
-                        if (this.m_STSimTransformer.IsOutputTimestep(
-                            e.Timestep,
-                            this.m_AvgSpatialStockOutputTimesteps,
-                            this.m_CreateAvgSpatialStockOutput))
-                        {
-                            foreach (StockGroup g in this.m_StockGroups)
-                            {
-                                this.RecordAverageStockValuesNormalMethod(e.Timestep, g);
-                            }
-                        }
-                    }
+                    this.RecordAverageStockValues(e.Timestep);
                 }
 
-                if (this.m_CreateAvgSpatialFlowOutput)
+                if (this.m_STSimTransformer.IsOutputTimestepAverage(e.Timestep, this.m_AvgSpatialFlowOutputTimesteps, this.m_CreateAvgSpatialFlowOutput))
                 {
-                    if (this.m_AvgSpatialFlowOutputAcrossTimesteps)
-                    {
-                        foreach (FlowGroup g in this.m_FlowGroups)
-                        {
-                            this.RecordAverageFlowValuesAcrossTimesteps(e.Timestep, g);
-                        }
-                    }
-                    else
-                    {
-                        if (this.m_STSimTransformer.IsOutputTimestepSkipMinimum(
-                            e.Timestep,
-                            this.m_AvgSpatialFlowOutputTimesteps,
-                            this.m_CreateAvgSpatialFlowOutput))
-                        {
-                            foreach (FlowGroup g in this.m_FlowGroups)
-                            {
-                                this.RecordAverageFlowValuesNormalMethod(e.Timestep, g);
-                            }
-                        }
-                    }
+                    this.RecordAverageFlowValues(e.Timestep);
                 }
 
-                if (this.m_CreateAvgSpatialLateralFlowOutput)
+                if (this.m_STSimTransformer.IsOutputTimestepAverage(e.Timestep, this.m_AvgSpatialLateralFlowOutputTimesteps, this.m_CreateAvgSpatialLateralFlowOutput))
                 {
-                    if (this.m_AvgSpatialLateralFlowOutputAcrossTimesteps)
-                    {
-                        foreach (FlowGroup g in this.m_FlowGroups)
-                        {
-                            this.RecordAverageLateralFlowValuesAcrossTimesteps(e.Timestep, g);
-                        }
-                    }
-                    else
-                    {
-                        if (this.m_STSimTransformer.IsOutputTimestepSkipMinimum(
-                            e.Timestep,
-                            this.m_AvgSpatialLateralFlowOutputTimesteps,
-                            this.m_CreateAvgSpatialLateralFlowOutput))
-                        {
-                            foreach (FlowGroup g in this.m_FlowGroups)
-                            {
-                                this.RecordAverageLateralFlowValuesNormalMethod(e.Timestep, g);
-                            }
-                        }
-                    }
+                    this.RecordAverageLateralFlowValues(e.Timestep);
                 }
             }
 
@@ -711,6 +654,8 @@ namespace SyncroSim.STSimStockFlow
                     this.InitializeAverageFlowMap();
                     this.InitializeAverageLateralFlowMap();
                 }
+
+                this.RecordAverageStockValuesTimestepZero();
             }
 		}
 

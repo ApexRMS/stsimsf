@@ -199,7 +199,7 @@ namespace SyncroSim.STSimStockFlow
                 this.m_SpatialFlowOutputTimesteps,
                 this.m_CreateSpatialFlowOutput);
 
-            bool IsAverageOutputTimestep = this.m_STSimTransformer.IsOutputTimestepSkipMinimum(
+            bool IsAverageOutputTimestep = this.m_STSimTransformer.IsOutputTimestepAverage(
                 timestep,
                 this.m_AvgSpatialFlowOutputTimesteps,
                 this.m_CreateAvgSpatialFlowOutput);
@@ -235,7 +235,7 @@ namespace SyncroSim.STSimStockFlow
                 this.m_LateralFlowOutputTimesteps,
                 this.m_CreateLateralFlowOutput);
 
-            bool IsLFAverageOutputTimestep = this.m_STSimTransformer.IsOutputTimestepSkipMinimum(
+            bool IsLFAverageOutputTimestep = this.m_STSimTransformer.IsOutputTimestepAverage(
                 timestep,
                 this.m_AvgSpatialLateralFlowOutputTimesteps,
                 this.m_CreateAvgSpatialLateralFlowOutput);
@@ -573,186 +573,285 @@ namespace SyncroSim.STSimStockFlow
             }
         }
 
-        private void RecordAverageStockValuesNormalMethod(int timestep, StockGroup stockGroup)
+        private void RecordAverageStockValues(int timestep)
+        {
+            if (!this.STSimTransformer.IsSpatial)
+            {
+                return;
+            }
+
+            if (!this.m_CreateAvgSpatialStockOutput)
+            {
+                return;
+            }
+
+            if (this.m_AvgSpatialStockOutputAcrossTimesteps)
+            {
+                this.RecordAverageStockValuesAcrossTimesteps(timestep);
+            }
+            else
+            {
+                this.RecordAverageStockValuesNormalMethod(timestep);
+            }
+        }
+
+        private void RecordAverageStockValuesTimestepZero()
+        {
+            if (!this.STSimTransformer.IsSpatial)
+            {
+                return;
+            }
+
+            if (!this.m_CreateAvgSpatialStockOutput)
+            {
+                return;
+            }
+
+            this.RecordAverageStockValuesNormalMethod(this.STSimTransformer.TimestepZero);
+        }
+
+        private void RecordAverageStockValuesNormalMethod(int timestep)
         {
             Debug.Assert(this.STSimTransformer.IsSpatial);
             Debug.Assert(this.m_CreateAvgSpatialStockOutput);
             Debug.Assert(!this.m_AvgSpatialStockOutputAcrossTimesteps);
 
-            Dictionary<int, double[]> dict = this.m_AvgStockMap[stockGroup.Id];
-            double[] Values = dict[timestep];
-
-            foreach (Cell c in this.STSimTransformer.Cells)
+            foreach (StockGroup g in this.m_StockGroups)
             {
-                double Amount = 0;
-                int i = c.CollectionIndex;
-                Dictionary<int, double> StockAmounts = GetStockAmountDictionary(c);
+                Dictionary<int, double[]> dict = this.m_AvgStockMap[g.Id];
+                double[] Values = dict[timestep];
 
-                foreach (StockTypeLinkage l in stockGroup.StockTypeLinkages)
+                foreach (Cell c in this.STSimTransformer.Cells)
                 {
-                   Amount += StockAmounts[l.StockType.Id];
-                }
+                    double Amount = 0;
+                    int i = c.CollectionIndex;
+                    Dictionary<int, double> StockAmounts = GetStockAmountDictionary(c);
 
-                Values[i] += Amount / this.m_TotalIterations;
+                    foreach (StockTypeLinkage l in g.StockTypeLinkages)
+                    {
+                       Amount += StockAmounts[l.StockType.Id];
+                    }
+
+                    Values[i] += Amount / this.m_TotalIterations;
+                }               
             }
         }
 
-        private void RecordAverageStockValuesAcrossTimesteps(int timestep, StockGroup stockGroup)
+        private void RecordAverageStockValuesAcrossTimesteps(int timestep)
         {
             Debug.Assert(this.STSimTransformer.IsSpatial);
             Debug.Assert(this.m_CreateAvgSpatialStockOutput);
             Debug.Assert(this.m_AvgSpatialStockOutputAcrossTimesteps);
 
-            Dictionary<int, double[]> dict = this.m_AvgStockMap[stockGroup.Id];
-            int timestepKey = this.GetTimestepKeyForAverage(timestep, this.m_AvgSpatialStockOutputTimesteps);
-            double[] Values = dict[timestepKey];
-
-            foreach (Cell c in this.STSimTransformer.Cells)
+            foreach (StockGroup g in this.m_StockGroups)
             {
-                double Amount = 0;
-                int i = c.CollectionIndex;
-                Dictionary<int, double> StockAmounts = GetStockAmountDictionary(c);
+                Dictionary<int, double[]> dict = this.m_AvgStockMap[g.Id];
+                int timestepKey = this.GetTimestepKeyForAverage(timestep, this.m_AvgSpatialStockOutputTimesteps);
+                double[] Values = dict[timestepKey];
 
-                foreach (StockTypeLinkage l in stockGroup.StockTypeLinkages)
+                foreach (Cell c in this.STSimTransformer.Cells)
                 {
-                    Amount += StockAmounts[l.StockType.Id];
-                }
+                    double Amount = 0;
+                    int i = c.CollectionIndex;
+                    Dictionary<int, double> StockAmounts = GetStockAmountDictionary(c);
 
-                if ((timestepKey == this.STSimTransformer.MaximumTimestep) && (((timestepKey - this.STSimTransformer.TimestepZero) % this.m_AvgSpatialStockOutputTimesteps) != 0))
-                {
-                    Values[i] += Amount / (double)((timestepKey - this.STSimTransformer.TimestepZero) % this.m_AvgSpatialStockOutputTimesteps * this.m_TotalIterations);
-                }
-                else
-                {
-                    Values[i] += Amount / (double)(this.m_AvgSpatialStockOutputTimesteps * this.m_TotalIterations);
+                    foreach (StockTypeLinkage l in g.StockTypeLinkages)
+                    {
+                        Amount += StockAmounts[l.StockType.Id];
+                    }
+
+                    if ((timestepKey == this.STSimTransformer.MaximumTimestep) && (((timestepKey - this.STSimTransformer.TimestepZero) % this.m_AvgSpatialStockOutputTimesteps) != 0))
+                    {
+                        Values[i] += Amount / (double)((timestepKey - this.STSimTransformer.TimestepZero) % this.m_AvgSpatialStockOutputTimesteps * this.m_TotalIterations);
+                    }
+                    else
+                    {
+                        Values[i] += Amount / (double)(this.m_AvgSpatialStockOutputTimesteps * this.m_TotalIterations);
+                    }
                 }
             }
         }
 
-        private void RecordAverageFlowValuesNormalMethod(int timestep, FlowGroup flowGroup)
+        private void RecordAverageFlowValues(int timestep)
+        {
+            if (!this.STSimTransformer.IsSpatial)
+            {
+                return;
+            }
+
+            if (!this.m_CreateAvgSpatialFlowOutput)
+            {
+                return;
+            }
+
+            if (this.m_AvgSpatialFlowOutputAcrossTimesteps)
+            {
+                this.RecordAverageFlowValuesAcrossTimesteps(timestep);
+            }
+            else
+            {
+                this.RecordAverageFlowValuesNormalMethod(timestep);
+            }
+        }
+
+        private void RecordAverageFlowValuesNormalMethod(int timestep)
         {
             Debug.Assert(this.STSimTransformer.IsSpatial);
             Debug.Assert(this.m_CreateAvgSpatialFlowOutput);
             Debug.Assert(!this.m_AvgSpatialFlowOutputAcrossTimesteps);
 
-            Dictionary<int, double[]> dict = this.m_AvgFlowMap[flowGroup.Id];
-            double[] Values = dict[timestep];
-
-            foreach (Cell c in this.m_STSimTransformer.Cells)
+            foreach (FlowGroup g in this.m_FlowGroups)
             {
-                double Amount = 0;
-                int i = c.CollectionIndex;
+                Dictionary<int, double[]> dict = this.m_AvgFlowMap[g.Id];
+                double[] Values = dict[timestep];
 
-                foreach (FlowTypeLinkage l in flowGroup.FlowTypeLinkages)
+                foreach (Cell c in this.m_STSimTransformer.Cells)
                 {
-                    SpatialOutputFlowRecord rec = GetSpatialOutputFlowDictionary()[l.FlowType.Id];
+                    double Amount = 0;
+                    int i = c.CollectionIndex;
 
-                    if (rec.HasOutputData)
+                    foreach (FlowTypeLinkage l in g.FlowTypeLinkages)
                     {
-                        Amount += rec.Data[i];
-                    }
-                }
+                        SpatialOutputFlowRecord rec = GetSpatialOutputFlowDictionary()[l.FlowType.Id];
 
-                Values[i] += Amount / this.m_TotalIterations;
+                        if (rec.HasOutputData)
+                        {
+                            Amount += rec.Data[i];
+                        }
+                    }
+
+                    Values[i] += Amount / this.m_TotalIterations;
+                }
             }
         }
 
-        private void RecordAverageFlowValuesAcrossTimesteps(int timestep, FlowGroup flowGroup)
+        private void RecordAverageFlowValuesAcrossTimesteps(int timestep)
         {
             Debug.Assert(this.STSimTransformer.IsSpatial);
             Debug.Assert(this.m_CreateAvgSpatialFlowOutput);
             Debug.Assert(this.m_AvgSpatialFlowOutputAcrossTimesteps);
 
-            Dictionary<int, double[]> dict = this.m_AvgFlowMap[flowGroup.Id];
-            int timestepKey = this.GetTimestepKeyForAverage(timestep, this.m_AvgSpatialFlowOutputTimesteps);
-            double[] Values = dict[timestepKey];
-
-            foreach (Cell c in this.m_STSimTransformer.Cells)
+            foreach (FlowGroup g in this.m_FlowGroups)
             {
-                double Amount = 0;
-                int i = c.CollectionIndex;
+                Dictionary<int, double[]> dict = this.m_AvgFlowMap[g.Id];
+                int timestepKey = this.GetTimestepKeyForAverage(timestep, this.m_AvgSpatialFlowOutputTimesteps);
+                double[] Values = dict[timestepKey];
 
-                foreach (FlowTypeLinkage l in flowGroup.FlowTypeLinkages)
+                foreach (Cell c in this.m_STSimTransformer.Cells)
                 {
-                    SpatialOutputFlowRecord rec = GetSpatialOutputFlowDictionary()[l.FlowType.Id];
+                    double Amount = 0;
+                    int i = c.CollectionIndex;
 
-                    if (rec.HasOutputData)
+                    foreach (FlowTypeLinkage l in g.FlowTypeLinkages)
                     {
-                        Amount += rec.Data[i];
-                    }
-                }
+                        SpatialOutputFlowRecord rec = GetSpatialOutputFlowDictionary()[l.FlowType.Id];
 
-                if ((timestepKey == this.STSimTransformer.MaximumTimestep) && (((timestepKey - this.STSimTransformer.TimestepZero) % this.m_AvgSpatialFlowOutputTimesteps) != 0))
-                {
-                    Values[i] += Amount / (double)((timestepKey - this.STSimTransformer.TimestepZero) % this.m_AvgSpatialFlowOutputTimesteps * this.m_TotalIterations);
-                }
-                else
-                {
-                    Values[i] += Amount / (double)(this.m_AvgSpatialFlowOutputTimesteps * this.m_TotalIterations);
+                        if (rec.HasOutputData)
+                        {
+                            Amount += rec.Data[i];
+                        }
+                    }
+
+                    if ((timestepKey == this.STSimTransformer.MaximumTimestep) && (((timestepKey - this.STSimTransformer.TimestepZero) % this.m_AvgSpatialFlowOutputTimesteps) != 0))
+                    {
+                        Values[i] += Amount / (double)((timestepKey - this.STSimTransformer.TimestepZero) % this.m_AvgSpatialFlowOutputTimesteps * this.m_TotalIterations);
+                    }
+                    else
+                    {
+                        Values[i] += Amount / (double)(this.m_AvgSpatialFlowOutputTimesteps * this.m_TotalIterations);
+                    }
                 }
             }
         }
 
-        private void RecordAverageLateralFlowValuesNormalMethod(int timestep, FlowGroup flowGroup)
+        private void RecordAverageLateralFlowValues(int timestep)
+        {
+            if (!this.STSimTransformer.IsSpatial)
+            {
+                return;
+            }
+
+            if (!this.m_CreateAvgSpatialLateralFlowOutput)
+            {
+                return;
+            }
+
+            if (this.m_AvgSpatialLateralFlowOutputAcrossTimesteps)
+            {
+                this.RecordAverageLateralFlowValuesAcrossTimesteps(timestep);
+            }
+            else
+            {
+                this.RecordAverageLateralFlowValuesNormalMethod(timestep);
+            }
+        }
+
+        private void RecordAverageLateralFlowValuesNormalMethod(int timestep)
         {
             Debug.Assert(this.STSimTransformer.IsSpatial);
             Debug.Assert(this.m_CreateAvgSpatialLateralFlowOutput);
             Debug.Assert(!this.m_AvgSpatialLateralFlowOutputAcrossTimesteps);
 
-            Dictionary<int, double[]> dict = this.m_AvgLateralFlowMap[flowGroup.Id];
-            double[] Values = dict[timestep];
-
-            foreach (Cell c in this.m_STSimTransformer.Cells)
+            foreach (FlowGroup g in this.m_FlowGroups)
             {
-                double Amount = 0;
-                int i = c.CollectionIndex;
+                Dictionary<int, double[]> dict = this.m_AvgLateralFlowMap[g.Id];
+                double[] Values = dict[timestep];
 
-                foreach (FlowTypeLinkage l in flowGroup.FlowTypeLinkages)
+                foreach (Cell c in this.m_STSimTransformer.Cells)
                 {
-                    SpatialOutputFlowRecord rec = GetLateralOutputFlowDictionary()[l.FlowType.Id];
+                    double Amount = 0;
+                    int i = c.CollectionIndex;
 
-                    if (rec.HasOutputData)
+                    foreach (FlowTypeLinkage l in g.FlowTypeLinkages)
                     {
-                        Amount += rec.Data[i];
-                    }
-                }
+                        SpatialOutputFlowRecord rec = GetLateralOutputFlowDictionary()[l.FlowType.Id];
 
-                Values[i] += Amount / this.m_TotalIterations;
+                        if (rec.HasOutputData)
+                        {
+                            Amount += rec.Data[i];
+                        }
+                    }
+
+                    Values[i] += Amount / this.m_TotalIterations;
+                }
             }
         }
 
-        private void RecordAverageLateralFlowValuesAcrossTimesteps(int timestep, FlowGroup flowGroup)
+        private void RecordAverageLateralFlowValuesAcrossTimesteps(int timestep)
         {
             Debug.Assert(this.STSimTransformer.IsSpatial);
             Debug.Assert(this.m_CreateAvgSpatialLateralFlowOutput);
             Debug.Assert(this.m_AvgSpatialLateralFlowOutputAcrossTimesteps);
 
-            Dictionary<int, double[]> dict = this.m_AvgLateralFlowMap[flowGroup.Id];
-            int timestepKey = this.GetTimestepKeyForAverage(timestep, this.m_AvgSpatialLateralFlowOutputTimesteps);
-            double[] Values = dict[timestepKey];
-
-            foreach (Cell c in this.m_STSimTransformer.Cells)
+            foreach (FlowGroup g in this.m_FlowGroups)
             {
-                double Amount = 0;
-                int i = c.CollectionIndex;
+                Dictionary<int, double[]> dict = this.m_AvgLateralFlowMap[g.Id];
+                int timestepKey = this.GetTimestepKeyForAverage(timestep, this.m_AvgSpatialLateralFlowOutputTimesteps);
+                double[] Values = dict[timestepKey];
 
-                foreach (FlowTypeLinkage l in flowGroup.FlowTypeLinkages)
+                foreach (Cell c in this.m_STSimTransformer.Cells)
                 {
-                    SpatialOutputFlowRecord rec = GetLateralOutputFlowDictionary()[l.FlowType.Id];
+                    double Amount = 0;
+                    int i = c.CollectionIndex;
 
-                    if (rec.HasOutputData)
+                    foreach (FlowTypeLinkage l in g.FlowTypeLinkages)
                     {
-                        Amount += rec.Data[i];
-                    }
-                }
+                        SpatialOutputFlowRecord rec = GetLateralOutputFlowDictionary()[l.FlowType.Id];
 
-                if ((timestepKey == this.STSimTransformer.MaximumTimestep) && (((timestepKey - this.STSimTransformer.TimestepZero) % this.m_AvgSpatialLateralFlowOutputTimesteps) != 0))
-                {
-                    Values[i] += Amount / (double)((timestepKey - this.STSimTransformer.TimestepZero) % this.m_AvgSpatialLateralFlowOutputTimesteps * this.m_TotalIterations);
-                }
-                else
-                {
-                    Values[i] += Amount / (double)(this.m_AvgSpatialLateralFlowOutputTimesteps * this.m_TotalIterations);
+                        if (rec.HasOutputData)
+                        {
+                            Amount += rec.Data[i];
+                        }
+                    }
+
+                    if ((timestepKey == this.STSimTransformer.MaximumTimestep) && (((timestepKey - this.STSimTransformer.TimestepZero) % this.m_AvgSpatialLateralFlowOutputTimesteps) != 0))
+                    {
+                        Values[i] += Amount / (double)((timestepKey - this.STSimTransformer.TimestepZero) % this.m_AvgSpatialLateralFlowOutputTimesteps * this.m_TotalIterations);
+                    }
+                    else
+                    {
+                        Values[i] += Amount / (double)(this.m_AvgSpatialLateralFlowOutputTimesteps * this.m_TotalIterations);
+                    }
                 }
             }
         }

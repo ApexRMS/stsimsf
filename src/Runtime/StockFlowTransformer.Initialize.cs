@@ -250,9 +250,9 @@ namespace SyncroSim.STSimStockFlow
 
                 for (var timestep = this.STSimTransformer.MinimumTimestep; timestep <= this.STSimTransformer.MaximumTimestep; timestep++)
                 {
-                    if (this.m_STSimTransformer.IsOutputTimestep(
-                        timestep, 
-                        this.m_AvgSpatialStockOutputTimesteps, 
+                    if (this.m_STSimTransformer.IsOutputTimestepAverage(
+                        timestep,
+                        this.m_AvgSpatialStockOutputTimesteps,
                         this.m_CreateAvgSpatialStockOutput))
                     {
                         double[] values = new double[this.STSimTransformer.Cells.Count];
@@ -264,6 +264,18 @@ namespace SyncroSim.STSimStockFlow
 
                         dict.Add(timestep, values);
                     }
+                }
+
+                if (!dict.ContainsKey(this.STSimTransformer.TimestepZero))
+                {
+                    double[] values = new double[this.STSimTransformer.Cells.Count];
+
+                    for (var i = 0; i < this.STSimTransformer.Cells.Count; i++)
+                    {
+                        values[i] = 0;
+                    }
+
+                    dict.Add(this.STSimTransformer.TimestepZero, values);
                 }
 
                 this.m_AvgStockMap.Add(sg.Id, dict);
@@ -286,7 +298,7 @@ namespace SyncroSim.STSimStockFlow
 
                 for (var timestep = this.STSimTransformer.MinimumTimestep; timestep <= this.STSimTransformer.MaximumTimestep; timestep++)
                 {
-                    if (this.m_STSimTransformer.IsOutputTimestepSkipMinimum(
+                    if (this.m_STSimTransformer.IsOutputTimestepAverage(
                         timestep,
                         this.m_AvgSpatialFlowOutputTimesteps, 
                         this.m_CreateAvgSpatialFlowOutput))
@@ -322,7 +334,7 @@ namespace SyncroSim.STSimStockFlow
 
                 for (var timestep = this.STSimTransformer.MinimumTimestep; timestep <= this.STSimTransformer.MaximumTimestep; timestep++)
                 {
-                    if (this.m_STSimTransformer.IsOutputTimestepSkipMinimum(
+                    if (this.m_STSimTransformer.IsOutputTimestepAverage(
                         timestep,
                         this.m_AvgSpatialLateralFlowOutputTimesteps,
                         this.m_CreateAvgSpatialLateralFlowOutput))
