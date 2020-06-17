@@ -470,7 +470,7 @@ namespace SyncroSim.STSimStockFlow
 
                     foreach (Cell c in this.STSimTransformer.Cells)
                     {
-                        arr[c.CellId] = values[c.CollectionIndex];
+                        arr[c.CellId] = values[c.CollectionIndex] / this.STSimTransformer.AmountPerCell;
                     }
 
                     Spatial.WriteRasterData(
@@ -519,7 +519,7 @@ namespace SyncroSim.STSimStockFlow
 
                     foreach (Cell c in this.STSimTransformer.Cells)
                     {
-                        arr[c.CellId] = values[c.CollectionIndex];
+                        arr[c.CellId] = values[c.CollectionIndex] / this.STSimTransformer.AmountPerCell;
                     }
 
                     Spatial.WriteRasterData(
@@ -568,7 +568,7 @@ namespace SyncroSim.STSimStockFlow
 
                     foreach (Cell c in this.STSimTransformer.Cells)
                     {
-                        arr[c.CellId] = values[c.CollectionIndex];
+                        arr[c.CellId] = values[c.CollectionIndex] / this.STSimTransformer.AmountPerCell;
                     }
 
                     Spatial.WriteRasterData(
@@ -601,7 +601,13 @@ namespace SyncroSim.STSimStockFlow
             }
             else
             {
-                this.RecordAverageStockValuesNormalMethod(timestep);
+                if (this.m_STSimTransformer.IsOutputTimestepAverage(
+                    timestep, 
+                    this.m_AvgSpatialStockOutputTimesteps, 
+                    this.m_CreateAvgSpatialStockOutput))
+                {
+                    this.RecordAverageStockValuesNormalMethod(timestep);
+                }
             }
         }
 
@@ -704,7 +710,13 @@ namespace SyncroSim.STSimStockFlow
             }
             else
             {
-                this.RecordAverageFlowValuesNormalMethod(timestep);
+                if (this.m_STSimTransformer.IsOutputTimestepAverage(
+                    timestep, 
+                    this.m_AvgSpatialFlowOutputTimesteps, 
+                    this.m_CreateAvgSpatialFlowOutput))
+                {
+                    this.RecordAverageFlowValuesNormalMethod(timestep);
+                }
             }
         }
 
@@ -797,7 +809,13 @@ namespace SyncroSim.STSimStockFlow
             }
             else
             {
-                this.RecordAverageLateralFlowValuesNormalMethod(timestep);
+                if (this.m_STSimTransformer.IsOutputTimestepAverage(
+                    timestep,
+                    this.m_AvgSpatialLateralFlowOutputTimesteps,
+                    this.m_CreateAvgSpatialLateralFlowOutput))
+                {
+                    this.RecordAverageLateralFlowValuesNormalMethod(timestep);
+                }
             }
         }
 
