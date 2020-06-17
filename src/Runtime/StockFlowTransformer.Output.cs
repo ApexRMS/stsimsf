@@ -199,7 +199,7 @@ namespace SyncroSim.STSimStockFlow
                 this.m_SpatialFlowOutputTimesteps,
                 this.m_CreateSpatialFlowOutput);
 
-            bool IsAverageOutputTimestep = this.m_STSimTransformer.IsOutputTimestepAverage(
+            bool IsAverageOutputTimestep = this.m_STSimTransformer.IsOutputTimestep(
                 timestep,
                 this.m_AvgSpatialFlowOutputTimesteps,
                 this.m_CreateAvgSpatialFlowOutput);
@@ -235,7 +235,7 @@ namespace SyncroSim.STSimStockFlow
                 this.m_LateralFlowOutputTimesteps,
                 this.m_CreateLateralFlowOutput);
 
-            bool IsLFAverageOutputTimestep = this.m_STSimTransformer.IsOutputTimestepAverage(
+            bool IsLFAverageOutputTimestep = this.m_STSimTransformer.IsOutputTimestep(
                 timestep,
                 this.m_AvgSpatialLateralFlowOutputTimesteps,
                 this.m_CreateAvgSpatialLateralFlowOutput);
@@ -496,6 +496,11 @@ namespace SyncroSim.STSimStockFlow
 
                 foreach (int timestep in dict.Keys)
                 {
+                    if (timestep == this.STSimTransformer.MinimumTimestep)
+                    {
+                        continue;
+                    }
+
                     double[] values = dict[timestep];
                     var distArray = values.Distinct();
 
@@ -540,6 +545,11 @@ namespace SyncroSim.STSimStockFlow
 
                 foreach (int timestep in dict.Keys)
                 {
+                    if (timestep == this.STSimTransformer.MinimumTimestep)
+                    {
+                        continue;
+                    }
+
                     double[] values = dict[timestep];
                     var distArray = values.Distinct();
 
@@ -646,10 +656,11 @@ namespace SyncroSim.STSimStockFlow
             Debug.Assert(this.m_CreateAvgSpatialStockOutput);
             Debug.Assert(this.m_AvgSpatialStockOutputAcrossTimesteps);
 
+            int timestepKey = this.GetTimestepKeyForAverage(timestep, this.m_AvgSpatialStockOutputTimesteps);
+
             foreach (StockGroup g in this.m_StockGroups)
             {
                 Dictionary<int, double[]> dict = this.m_AvgStockMap[g.Id];
-                int timestepKey = this.GetTimestepKeyForAverage(timestep, this.m_AvgSpatialStockOutputTimesteps);
                 double[] Values = dict[timestepKey];
 
                 foreach (Cell c in this.STSimTransformer.Cells)
@@ -734,10 +745,11 @@ namespace SyncroSim.STSimStockFlow
             Debug.Assert(this.m_CreateAvgSpatialFlowOutput);
             Debug.Assert(this.m_AvgSpatialFlowOutputAcrossTimesteps);
 
+            int timestepKey = this.GetTimestepKeyForAverage(timestep, this.m_AvgSpatialFlowOutputTimesteps);
+
             foreach (FlowGroup g in this.m_FlowGroups)
             {
                 Dictionary<int, double[]> dict = this.m_AvgFlowMap[g.Id];
-                int timestepKey = this.GetTimestepKeyForAverage(timestep, this.m_AvgSpatialFlowOutputTimesteps);
                 double[] Values = dict[timestepKey];
 
                 foreach (Cell c in this.m_STSimTransformer.Cells)
@@ -826,10 +838,11 @@ namespace SyncroSim.STSimStockFlow
             Debug.Assert(this.m_CreateAvgSpatialLateralFlowOutput);
             Debug.Assert(this.m_AvgSpatialLateralFlowOutputAcrossTimesteps);
 
+            int timestepKey = this.GetTimestepKeyForAverage(timestep, this.m_AvgSpatialLateralFlowOutputTimesteps);
+
             foreach (FlowGroup g in this.m_FlowGroups)
             {
                 Dictionary<int, double[]> dict = this.m_AvgLateralFlowMap[g.Id];
-                int timestepKey = this.GetTimestepKeyForAverage(timestep, this.m_AvgSpatialLateralFlowOutputTimesteps);
                 double[] Values = dict[timestepKey];
 
                 foreach (Cell c in this.m_STSimTransformer.Cells)

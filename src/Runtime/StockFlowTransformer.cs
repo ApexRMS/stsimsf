@@ -452,17 +452,17 @@ namespace SyncroSim.STSimStockFlow
                     this.WriteLateralFlowRasters(e.Iteration, e.Timestep);
                 }
 
-                if (this.m_STSimTransformer.IsOutputTimestepAverage(e.Timestep, this.m_AvgSpatialStockOutputTimesteps, this.m_CreateAvgSpatialStockOutput))
+                if (this.m_STSimTransformer.IsOutputTimestep(e.Timestep, this.m_AvgSpatialStockOutputTimesteps, this.m_CreateAvgSpatialStockOutput))
                 {
                     this.RecordAverageStockValues(e.Timestep);
                 }
 
-                if (this.m_STSimTransformer.IsOutputTimestepAverage(e.Timestep, this.m_AvgSpatialFlowOutputTimesteps, this.m_CreateAvgSpatialFlowOutput))
+                if (this.m_STSimTransformer.IsOutputTimestep(e.Timestep, this.m_AvgSpatialFlowOutputTimesteps, this.m_CreateAvgSpatialFlowOutput))
                 {
                     this.RecordAverageFlowValues(e.Timestep);
                 }
 
-                if (this.m_STSimTransformer.IsOutputTimestepAverage(e.Timestep, this.m_AvgSpatialLateralFlowOutputTimesteps, this.m_CreateAvgSpatialLateralFlowOutput))
+                if (this.m_STSimTransformer.IsOutputTimestep(e.Timestep, this.m_AvgSpatialLateralFlowOutputTimesteps, this.m_CreateAvgSpatialLateralFlowOutput))
                 {
                     this.RecordAverageLateralFlowValues(e.Timestep);
                 }

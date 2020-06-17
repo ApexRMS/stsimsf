@@ -250,7 +250,7 @@ namespace SyncroSim.STSimStockFlow
 
                 for (var timestep = this.STSimTransformer.MinimumTimestep; timestep <= this.STSimTransformer.MaximumTimestep; timestep++)
                 {
-                    if (this.m_STSimTransformer.IsOutputTimestepAverage(
+                    if (this.m_STSimTransformer.IsOutputTimestep(
                         timestep,
                         this.m_AvgSpatialStockOutputTimesteps,
                         this.m_CreateAvgSpatialStockOutput))
@@ -298,7 +298,7 @@ namespace SyncroSim.STSimStockFlow
 
                 for (var timestep = this.STSimTransformer.MinimumTimestep; timestep <= this.STSimTransformer.MaximumTimestep; timestep++)
                 {
-                    if (this.m_STSimTransformer.IsOutputTimestepAverage(
+                    if (this.m_STSimTransformer.IsOutputTimestep(
                         timestep,
                         this.m_AvgSpatialFlowOutputTimesteps, 
                         this.m_CreateAvgSpatialFlowOutput))
@@ -334,7 +334,7 @@ namespace SyncroSim.STSimStockFlow
 
                 for (var timestep = this.STSimTransformer.MinimumTimestep; timestep <= this.STSimTransformer.MaximumTimestep; timestep++)
                 {
-                    if (this.m_STSimTransformer.IsOutputTimestepAverage(
+                    if (this.m_STSimTransformer.IsOutputTimestep(
                         timestep,
                         this.m_AvgSpatialLateralFlowOutputTimesteps,
                         this.m_CreateAvgSpatialLateralFlowOutput))
