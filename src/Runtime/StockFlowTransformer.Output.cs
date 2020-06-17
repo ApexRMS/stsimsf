@@ -496,7 +496,7 @@ namespace SyncroSim.STSimStockFlow
 
                 foreach (int timestep in dict.Keys)
                 {
-                    if (timestep == this.STSimTransformer.MinimumTimestep)
+                    if (timestep == this.STSimTransformer.TimestepZero)
                     {
                         continue;
                     }
@@ -545,7 +545,7 @@ namespace SyncroSim.STSimStockFlow
 
                 foreach (int timestep in dict.Keys)
                 {
-                    if (timestep == this.STSimTransformer.MinimumTimestep)
+                    if (timestep == this.STSimTransformer.TimestepZero)
                     {
                         continue;
                     }
@@ -656,7 +656,7 @@ namespace SyncroSim.STSimStockFlow
             Debug.Assert(this.m_CreateAvgSpatialStockOutput);
             Debug.Assert(this.m_AvgSpatialStockOutputAcrossTimesteps);
 
-            int timestepKey = this.GetTimestepKeyForAverage(timestep, this.m_AvgSpatialStockOutputTimesteps);
+            int timestepKey = this.GetTimestepKeyForCumulativeAverage(timestep, this.m_AvgSpatialStockOutputTimesteps);
 
             foreach (StockGroup g in this.m_StockGroups)
             {
@@ -745,7 +745,7 @@ namespace SyncroSim.STSimStockFlow
             Debug.Assert(this.m_CreateAvgSpatialFlowOutput);
             Debug.Assert(this.m_AvgSpatialFlowOutputAcrossTimesteps);
 
-            int timestepKey = this.GetTimestepKeyForAverage(timestep, this.m_AvgSpatialFlowOutputTimesteps);
+            int timestepKey = this.GetTimestepKeyForCumulativeAverage(timestep, this.m_AvgSpatialFlowOutputTimesteps);
 
             foreach (FlowGroup g in this.m_FlowGroups)
             {
@@ -838,7 +838,7 @@ namespace SyncroSim.STSimStockFlow
             Debug.Assert(this.m_CreateAvgSpatialLateralFlowOutput);
             Debug.Assert(this.m_AvgSpatialLateralFlowOutputAcrossTimesteps);
 
-            int timestepKey = this.GetTimestepKeyForAverage(timestep, this.m_AvgSpatialLateralFlowOutputTimesteps);
+            int timestepKey = this.GetTimestepKeyForCumulativeAverage(timestep, this.m_AvgSpatialLateralFlowOutputTimesteps);
 
             foreach (FlowGroup g in this.m_FlowGroups)
             {
@@ -872,11 +872,11 @@ namespace SyncroSim.STSimStockFlow
             }
         }
 
-        private int GetTimestepKeyForAverage(int currentTimestep, int everyNthTimestep)
+        private int GetTimestepKeyForCumulativeAverage(int timestep, int frequency)
         {
             int timestepKey = 0;
 
-            if (currentTimestep == this.STSimTransformer.MaximumTimestep)
+            if (timestep == this.STSimTransformer.MaximumTimestep)
             {
                 timestepKey = this.STSimTransformer.MaximumTimestep;
             }
@@ -885,7 +885,7 @@ namespace SyncroSim.STSimStockFlow
                 //We're looking for the the timestep which is the first one that is >= to the current timestep
 
                 timestepKey = Convert.ToInt32(Math.Ceiling(
-                    Convert.ToDouble(currentTimestep - this.STSimTransformer.TimestepZero) / everyNthTimestep) * everyNthTimestep) +
+                    Convert.ToDouble(timestep - this.STSimTransformer.TimestepZero) / frequency) * frequency) +
                         this.STSimTransformer.TimestepZero;
 
                 if (timestepKey > this.STSimTransformer.MaximumTimestep)
