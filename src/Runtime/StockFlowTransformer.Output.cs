@@ -614,7 +614,10 @@ namespace SyncroSim.STSimStockFlow
         {
             Debug.Assert(this.STSimTransformer.IsSpatial);
             Debug.Assert(this.m_CreateAvgSpatialStockOutput);
-            Debug.Assert(!this.m_AvgSpatialStockOutputAcrossTimesteps);
+
+#if DEBUG
+            if (timestep != this.STSimTransformer.TimestepZero) { Debug.Assert(!this.m_AvgSpatialStockOutputAcrossTimesteps); }
+#endif
 
             foreach (StockGroup g in this.m_StockGroups)
             {
