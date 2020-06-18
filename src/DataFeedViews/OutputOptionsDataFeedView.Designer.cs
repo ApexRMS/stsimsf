@@ -48,15 +48,15 @@
             this.GroupBoxAvgSpatial = new System.Windows.Forms.GroupBox();
             this.LabelAvgSpatialLFLTimesteps = new System.Windows.Forms.Label();
             this.TextBoxAvgSpatialLFLTimesteps = new System.Windows.Forms.TextBox();
-            this.CheckBoxAvgSpatialLFLAcrossTimesteps = new System.Windows.Forms.CheckBox();
+            this.CheckBoxAvgSpatialLFLCumulative = new System.Windows.Forms.CheckBox();
             this.CheckBoxAvgSpatialLFL = new System.Windows.Forms.CheckBox();
             this.LabelAvgSpatialFLTimesteps = new System.Windows.Forms.Label();
             this.LabelAvgSpatialSTTimesteps = new System.Windows.Forms.Label();
             this.TextBoxAvgSpatialFLTimesteps = new System.Windows.Forms.TextBox();
             this.TextBoxAvgSpatialSTTimesteps = new System.Windows.Forms.TextBox();
-            this.CheckBoxAvgSpatialFLAcrossTimesteps = new System.Windows.Forms.CheckBox();
+            this.CheckBoxAvgSpatialFLCumulative = new System.Windows.Forms.CheckBox();
             this.CheckBoxAvgSpatialFL = new System.Windows.Forms.CheckBox();
-            this.CheckBoxAvgSpatialSTAcrossTimesteps = new System.Windows.Forms.CheckBox();
+            this.CheckBoxAvgSpatialSTCumulative = new System.Windows.Forms.CheckBox();
             this.CheckBoxAvgSpatialST = new System.Windows.Forms.CheckBox();
             this.GroupBoxSpatial.SuspendLayout();
             this.GroupBoxSummary.SuspendLayout();
@@ -138,7 +138,7 @@
             this.GroupBoxSpatial.Margin = new System.Windows.Forms.Padding(4);
             this.GroupBoxSpatial.Name = "GroupBoxSpatial";
             this.GroupBoxSpatial.Padding = new System.Windows.Forms.Padding(4);
-            this.GroupBoxSpatial.Size = new System.Drawing.Size(676, 123);
+            this.GroupBoxSpatial.Size = new System.Drawing.Size(502, 123);
             this.GroupBoxSpatial.TabIndex = 1;
             this.GroupBoxSpatial.TabStop = false;
             this.GroupBoxSpatial.Text = "Spatial output";
@@ -214,7 +214,7 @@
             this.GroupBoxSummary.Margin = new System.Windows.Forms.Padding(4);
             this.GroupBoxSummary.Name = "GroupBoxSummary";
             this.GroupBoxSummary.Padding = new System.Windows.Forms.Padding(4);
-            this.GroupBoxSummary.Size = new System.Drawing.Size(676, 95);
+            this.GroupBoxSummary.Size = new System.Drawing.Size(502, 95);
             this.GroupBoxSummary.TabIndex = 0;
             this.GroupBoxSummary.TabStop = false;
             this.GroupBoxSummary.Text = "Summary output";
@@ -254,19 +254,19 @@
             // 
             this.GroupBoxAvgSpatial.Controls.Add(this.LabelAvgSpatialLFLTimesteps);
             this.GroupBoxAvgSpatial.Controls.Add(this.TextBoxAvgSpatialLFLTimesteps);
-            this.GroupBoxAvgSpatial.Controls.Add(this.CheckBoxAvgSpatialLFLAcrossTimesteps);
+            this.GroupBoxAvgSpatial.Controls.Add(this.CheckBoxAvgSpatialLFLCumulative);
             this.GroupBoxAvgSpatial.Controls.Add(this.CheckBoxAvgSpatialLFL);
             this.GroupBoxAvgSpatial.Controls.Add(this.LabelAvgSpatialFLTimesteps);
             this.GroupBoxAvgSpatial.Controls.Add(this.LabelAvgSpatialSTTimesteps);
             this.GroupBoxAvgSpatial.Controls.Add(this.TextBoxAvgSpatialFLTimesteps);
             this.GroupBoxAvgSpatial.Controls.Add(this.TextBoxAvgSpatialSTTimesteps);
-            this.GroupBoxAvgSpatial.Controls.Add(this.CheckBoxAvgSpatialFLAcrossTimesteps);
+            this.GroupBoxAvgSpatial.Controls.Add(this.CheckBoxAvgSpatialFLCumulative);
             this.GroupBoxAvgSpatial.Controls.Add(this.CheckBoxAvgSpatialFL);
-            this.GroupBoxAvgSpatial.Controls.Add(this.CheckBoxAvgSpatialSTAcrossTimesteps);
+            this.GroupBoxAvgSpatial.Controls.Add(this.CheckBoxAvgSpatialSTCumulative);
             this.GroupBoxAvgSpatial.Controls.Add(this.CheckBoxAvgSpatialST);
             this.GroupBoxAvgSpatial.Location = new System.Drawing.Point(4, 257);
             this.GroupBoxAvgSpatial.Name = "GroupBoxAvgSpatial";
-            this.GroupBoxAvgSpatial.Size = new System.Drawing.Size(676, 128);
+            this.GroupBoxAvgSpatial.Size = new System.Drawing.Size(502, 128);
             this.GroupBoxAvgSpatial.TabIndex = 2;
             this.GroupBoxAvgSpatial.TabStop = false;
             this.GroupBoxAvgSpatial.Text = "Average spatial output";
@@ -290,16 +290,16 @@
             this.TextBoxAvgSpatialLFLTimesteps.TabIndex = 9;
             this.TextBoxAvgSpatialLFLTimesteps.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
-            // CheckBoxAvgSpatialLFLAcrossTimesteps
+            // CheckBoxAvgSpatialLFLCumulative
             // 
-            this.CheckBoxAvgSpatialLFLAcrossTimesteps.AutoSize = true;
-            this.CheckBoxAvgSpatialLFLAcrossTimesteps.Location = new System.Drawing.Point(386, 86);
-            this.CheckBoxAvgSpatialLFLAcrossTimesteps.Margin = new System.Windows.Forms.Padding(4);
-            this.CheckBoxAvgSpatialLFLAcrossTimesteps.Name = "CheckBoxAvgSpatialLFLAcrossTimesteps";
-            this.CheckBoxAvgSpatialLFLAcrossTimesteps.Size = new System.Drawing.Size(268, 21);
-            this.CheckBoxAvgSpatialLFLAcrossTimesteps.TabIndex = 11;
-            this.CheckBoxAvgSpatialLFLAcrossTimesteps.Text = "Average across preceeding timesteps";
-            this.CheckBoxAvgSpatialLFLAcrossTimesteps.UseVisualStyleBackColor = true;
+            this.CheckBoxAvgSpatialLFLCumulative.AutoSize = true;
+            this.CheckBoxAvgSpatialLFLCumulative.Location = new System.Drawing.Point(386, 86);
+            this.CheckBoxAvgSpatialLFLCumulative.Margin = new System.Windows.Forms.Padding(4);
+            this.CheckBoxAvgSpatialLFLCumulative.Name = "CheckBoxAvgSpatialLFLCumulative";
+            this.CheckBoxAvgSpatialLFLCumulative.Size = new System.Drawing.Size(99, 21);
+            this.CheckBoxAvgSpatialLFLCumulative.TabIndex = 11;
+            this.CheckBoxAvgSpatialLFLCumulative.Text = "Cumulative";
+            this.CheckBoxAvgSpatialLFLCumulative.UseVisualStyleBackColor = true;
             // 
             // CheckBoxAvgSpatialLFL
             // 
@@ -350,16 +350,16 @@
             this.TextBoxAvgSpatialSTTimesteps.TabIndex = 1;
             this.TextBoxAvgSpatialSTTimesteps.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
-            // CheckBoxAvgSpatialFLAcrossTimesteps
+            // CheckBoxAvgSpatialFLCumulative
             // 
-            this.CheckBoxAvgSpatialFLAcrossTimesteps.AutoSize = true;
-            this.CheckBoxAvgSpatialFLAcrossTimesteps.Location = new System.Drawing.Point(386, 58);
-            this.CheckBoxAvgSpatialFLAcrossTimesteps.Margin = new System.Windows.Forms.Padding(4);
-            this.CheckBoxAvgSpatialFLAcrossTimesteps.Name = "CheckBoxAvgSpatialFLAcrossTimesteps";
-            this.CheckBoxAvgSpatialFLAcrossTimesteps.Size = new System.Drawing.Size(268, 21);
-            this.CheckBoxAvgSpatialFLAcrossTimesteps.TabIndex = 7;
-            this.CheckBoxAvgSpatialFLAcrossTimesteps.Text = "Average across preceeding timesteps";
-            this.CheckBoxAvgSpatialFLAcrossTimesteps.UseVisualStyleBackColor = true;
+            this.CheckBoxAvgSpatialFLCumulative.AutoSize = true;
+            this.CheckBoxAvgSpatialFLCumulative.Location = new System.Drawing.Point(386, 58);
+            this.CheckBoxAvgSpatialFLCumulative.Margin = new System.Windows.Forms.Padding(4);
+            this.CheckBoxAvgSpatialFLCumulative.Name = "CheckBoxAvgSpatialFLCumulative";
+            this.CheckBoxAvgSpatialFLCumulative.Size = new System.Drawing.Size(99, 21);
+            this.CheckBoxAvgSpatialFLCumulative.TabIndex = 7;
+            this.CheckBoxAvgSpatialFLCumulative.Text = "Cumulative";
+            this.CheckBoxAvgSpatialFLCumulative.UseVisualStyleBackColor = true;
             // 
             // CheckBoxAvgSpatialFL
             // 
@@ -372,16 +372,16 @@
             this.CheckBoxAvgSpatialFL.Text = "Flows every";
             this.CheckBoxAvgSpatialFL.UseVisualStyleBackColor = true;
             // 
-            // CheckBoxAvgSpatialSTAcrossTimesteps
+            // CheckBoxAvgSpatialSTCumulative
             // 
-            this.CheckBoxAvgSpatialSTAcrossTimesteps.AutoSize = true;
-            this.CheckBoxAvgSpatialSTAcrossTimesteps.Location = new System.Drawing.Point(386, 30);
-            this.CheckBoxAvgSpatialSTAcrossTimesteps.Margin = new System.Windows.Forms.Padding(4);
-            this.CheckBoxAvgSpatialSTAcrossTimesteps.Name = "CheckBoxAvgSpatialSTAcrossTimesteps";
-            this.CheckBoxAvgSpatialSTAcrossTimesteps.Size = new System.Drawing.Size(268, 21);
-            this.CheckBoxAvgSpatialSTAcrossTimesteps.TabIndex = 3;
-            this.CheckBoxAvgSpatialSTAcrossTimesteps.Text = "Average across preceeding timesteps";
-            this.CheckBoxAvgSpatialSTAcrossTimesteps.UseVisualStyleBackColor = true;
+            this.CheckBoxAvgSpatialSTCumulative.AutoSize = true;
+            this.CheckBoxAvgSpatialSTCumulative.Location = new System.Drawing.Point(386, 30);
+            this.CheckBoxAvgSpatialSTCumulative.Margin = new System.Windows.Forms.Padding(4);
+            this.CheckBoxAvgSpatialSTCumulative.Name = "CheckBoxAvgSpatialSTCumulative";
+            this.CheckBoxAvgSpatialSTCumulative.Size = new System.Drawing.Size(99, 21);
+            this.CheckBoxAvgSpatialSTCumulative.TabIndex = 3;
+            this.CheckBoxAvgSpatialSTCumulative.Text = "Cumulative";
+            this.CheckBoxAvgSpatialSTCumulative.UseVisualStyleBackColor = true;
             // 
             // CheckBoxAvgSpatialST
             // 
@@ -403,7 +403,7 @@
             this.Controls.Add(this.GroupBoxSummary);
             this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "OutputOptionsDataFeedView";
-            this.Size = new System.Drawing.Size(693, 398);
+            this.Size = new System.Drawing.Size(513, 389);
             this.GroupBoxSpatial.ResumeLayout(false);
             this.GroupBoxSpatial.PerformLayout();
             this.GroupBoxSummary.ResumeLayout(false);
@@ -437,11 +437,11 @@
         internal System.Windows.Forms.TextBox TextBoxAvgSpatialSTTimesteps;
         internal System.Windows.Forms.CheckBox CheckBoxAvgSpatialFL;
         internal System.Windows.Forms.CheckBox CheckBoxAvgSpatialST;
-        internal System.Windows.Forms.CheckBox CheckBoxAvgSpatialFLAcrossTimesteps;
-        internal System.Windows.Forms.CheckBox CheckBoxAvgSpatialSTAcrossTimesteps;
+        internal System.Windows.Forms.CheckBox CheckBoxAvgSpatialFLCumulative;
+        internal System.Windows.Forms.CheckBox CheckBoxAvgSpatialSTCumulative;
         internal System.Windows.Forms.Label LabelAvgSpatialLFLTimesteps;
         internal System.Windows.Forms.TextBox TextBoxAvgSpatialLFLTimesteps;
-        internal System.Windows.Forms.CheckBox CheckBoxAvgSpatialLFLAcrossTimesteps;
+        internal System.Windows.Forms.CheckBox CheckBoxAvgSpatialLFLCumulative;
         internal System.Windows.Forms.CheckBox CheckBoxAvgSpatialLFL;
     }
 }
