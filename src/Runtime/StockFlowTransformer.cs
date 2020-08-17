@@ -569,8 +569,13 @@ namespace SyncroSim.STSimStockFlow
 
 			foreach (InitialStockNonSpatial s in this.m_InitialStocksNonSpatial)
 			{
-				StockLimit lim = this.m_StockLimitMap.GetStockLimit(s.StockTypeId, e.SimulationCell.StratumId, e.SimulationCell.SecondaryStratumId, e.SimulationCell.TertiaryStratumId, e.SimulationCell.StateClassId, e.Iteration, e.Timestep);
-				double val = this.GetAttributeValue(s.StateAttributeTypeId, e.SimulationCell.StratumId, e.SimulationCell.SecondaryStratumId, e.SimulationCell.TertiaryStratumId, e.SimulationCell.StateClassId, e.Iteration, e.Timestep, e.SimulationCell.Age);
+				StockLimit lim = this.m_StockLimitMap.GetStockLimit(
+                    s.StockTypeId, e.SimulationCell.StratumId, e.SimulationCell.SecondaryStratumId, e.SimulationCell.TertiaryStratumId, 
+                    e.SimulationCell.StateClassId, e.Iteration, e.Timestep);
+
+				double val = this.GetAttributeValue(
+                    s.StateAttributeTypeId, e.SimulationCell.StratumId, e.SimulationCell.SecondaryStratumId, e.SimulationCell.TertiaryStratumId, 
+                    e.SimulationCell.StateClassId, e.Iteration, e.Timestep, e.SimulationCell.Age, e.SimulationCell.TstValues);
 
 				double v = val * this.m_STSimTransformer.AmountPerCell;
 				v = GetLimitBasedInitialStock(v, lim);
@@ -982,7 +987,7 @@ namespace SyncroSim.STSimStockFlow
 			{
 				FlowAmount = this.GetAttributeValue(
                     fp.StateAttributeTypeId.Value, cell.StratumId, cell.SecondaryStratumId, 
-                    cell.TertiaryStratumId, cell.StateClassId, iteration, timestep, cell.Age);
+                    cell.TertiaryStratumId, cell.StateClassId, iteration, timestep, cell.Age, cell.TstValues);
 
 				FlowAmount *= this.m_STSimTransformer.AmountPerCell;
 			}

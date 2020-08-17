@@ -138,13 +138,13 @@ namespace SyncroSim.STSimStockFlow
 
         private double GetAttributeValue(
             int stateAttributeTypeId, int stratumId, int? secondaryStratumId, int? tertiaryStratumId,
-            int stateClassId, int iteration, int timestep, int age)
+            int stateClassId, int iteration, int timestep, int age, TstCollection cellTst)
         {
             double val = 0.0;
 
             double? v = this.STSimTransformer.GetAttributeValue(
                 stateAttributeTypeId, stratumId, secondaryStratumId, tertiaryStratumId,
-                stateClassId, iteration, timestep, age);
+                stateClassId, iteration, timestep, age, cellTst);
 
             if (v.HasValue)
             {
