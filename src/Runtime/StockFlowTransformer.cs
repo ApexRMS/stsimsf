@@ -868,6 +868,11 @@ namespace SyncroSim.STSimStockFlow
 
 					d[fp.FromStockTypeId] -= fa;
 
+                    if (MathUtils.CompareDoublesEqual(d[fp.FromStockTypeId], 0.0, 0.00000001))
+                    {
+                        d[fp.FromStockTypeId] = 0.0;
+                    }
+
                     if (fp.IsLateral)
                     {
                         this.AccumulateLateralFlowAmounts(fp, fa);
