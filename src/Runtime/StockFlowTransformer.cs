@@ -983,10 +983,25 @@ namespace SyncroSim.STSimStockFlow
 			return v;
 		}
 
-		private double CalculateFlowAmount(FlowPathway fp, Cell cell, int iteration, int timestep)
+        private double CalculateFlowAmount(FlowPathway fp, Cell cell, int iteration, int timestep)
+        {
+            if (fp.TargetType == Constants.TargetType.Flow)
+            {
+                return this.CalculateFlowAmountTargetTypeFlow(fp, cell, iteration, timestep);
+            }
+            else if (fp.TargetType == Constants.TargetType.FromStock)
+            {
+                return this.CalculateFlowAmountTargetTypeFromStock(fp, cell, iteration, timestep);
+            }
+            else
+            {
+                return this.CalculateFlowAmountTargetTypeToStock(fp, cell, iteration, timestep);
+            }
+        }
+
+        private double CalculateFlowAmountTargetTypeFlow(FlowPathway fp, Cell cell, int iteration, int timestep)
 		{      
 			double FlowAmount = 0.0;
-			FlowType ft = this.m_FlowTypes[fp.FlowTypeId];
 
 			if (fp.StateAttributeTypeId.HasValue)
 			{
@@ -1008,29 +1023,94 @@ namespace SyncroSim.STSimStockFlow
 				FlowAmount = d[fp.FromStockTypeId];
 			}
 
-			FlowAmount *= fp.Multiplier;
+            return this.ApplyFlowMultipliers(cell, fp, iteration, timestep, FlowAmount);
+        }
+
+        private double CalculateFlowAmountTargetTypeFromStock(FlowPathway fp, Cell cell, int iteration, int timestep)
+        {
+            Dictionary<int, double> d = GetStockAmountDictionary(cell);
+
+            if (!d.ContainsKey(fp.FromStockTypeId))
+            {
+                d.Add(fp.FromStockTypeId, 0.0);
+            }
+
+            double StockTargetAmount = 0.0;
+            double FromStockAmount = d[fp.FromStockTypeId];
+
+            if (fp.StateAttributeTypeId.HasValue)
+            {
+                double AttrVal = this.GetAttributeValue(
+                    fp.StateAttributeTypeId.Value, cell.StratumId, cell.SecondaryStratumId,
+                    cell.TertiaryStratumId, cell.StateClassId, iteration, timestep, cell.Age, cell.TstValues);
+
+                AttrVal *= this.m_STSimTransformer.AmountPerCell;
+                StockTargetAmount = this.ApplyFlowMultipliers(cell, fp, iteration, timestep, AttrVal);
+            }
+            else
+            {
+                StockTargetAmount = this.ApplyFlowMultipliers(cell, fp, iteration, timestep, FromStockAmount);
+            }
+
+            return (FromStockAmount - StockTargetAmount);
+        }
+
+        private double CalculateFlowAmountTargetTypeToStock(FlowPathway fp, Cell cell, int iteration, int timestep)
+        {
+            Dictionary<int, double> d = GetStockAmountDictionary(cell);
+
+            if (!d.ContainsKey(fp.ToStockTypeId))
+            {
+                d.Add(fp.ToStockTypeId, 0.0);
+            }
+
+            double StockTargetAmount = 0.0;
+            double ToStockAmount = d[fp.ToStockTypeId];
+
+            if (fp.StateAttributeTypeId.HasValue)
+            {
+                double AttrVal = this.GetAttributeValue(
+                    fp.StateAttributeTypeId.Value, cell.StratumId, cell.SecondaryStratumId,
+                    cell.TertiaryStratumId, cell.StateClassId, iteration, timestep, cell.Age, cell.TstValues);
+
+                AttrVal *= this.m_STSimTransformer.AmountPerCell;
+                StockTargetAmount = this.ApplyFlowMultipliers(cell, fp, iteration, timestep, AttrVal);
+            }
+            else
+            {
+                StockTargetAmount = this.ApplyFlowMultipliers(cell, fp, iteration, timestep, ToStockAmount);
+            }
+
+            return (StockTargetAmount - ToStockAmount);
+        }
+
+        private double ApplyFlowMultipliers(Cell cell, FlowPathway fp, int iteration, int timestep, double value)
+        {
+            value *= fp.Multiplier;
+
+            FlowType ft = this.m_FlowTypes[fp.FlowTypeId];
 
             foreach (FlowMultiplierType mt in this.m_FlowMultiplierTypes)
             {
-			    foreach (FlowGroupLinkage fgl in ft.FlowGroupLinkages)
-			    {
+                foreach (FlowGroupLinkage fgl in ft.FlowGroupLinkages)
+                {
                     if (mt.FlowMultiplierMap != null)
                     {
-				        FlowAmount *= mt.FlowMultiplierMap.GetFlowMultiplier(
-                            fgl.FlowGroup.Id, cell.StratumId, cell.SecondaryStratumId, cell.TertiaryStratumId, 
+                        value *= mt.FlowMultiplierMap.GetFlowMultiplier(
+                            fgl.FlowGroup.Id, cell.StratumId, cell.SecondaryStratumId, cell.TertiaryStratumId,
                             cell.StateClassId, iteration, timestep, cell.Age);
-			        }
+                    }
 
                     if (this.m_IsSpatial && mt.FlowSpatialMultiplierMap != null)
                     {
-                        FlowAmount *= this.GetFlowSpatialMultiplier(
+                        value *= this.GetFlowSpatialMultiplier(
                             cell, mt.FlowSpatialMultiplierMap, fgl.FlowGroup.Id, iteration, timestep);
                     }
                 }
             }
 
-			return FlowAmount;
-		}
+            return value;
+        }
 
 		/// <summary>
 		/// Reorders the list of shufflable flow types

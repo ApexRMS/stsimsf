@@ -161,13 +161,14 @@
                 <column name="TransitionGroupID" dataType="Integer" displayName="Transition Group" validationType="Datasheet" formula1="stsim_TransitionGroup" isOptional="True"/>
                 <column name="StateAttributeTypeID" dataType="Integer" displayName="State Attribute Type" validationType="Datasheet" formula1="stsim_StateAttributeType" isOptional="True"/>
                 <column name="FlowTypeID" dataType="Integer" displayName="Flow Type" validationType="Datasheet" formula1="FlowType" allowDbNull="False"/>
+                <column name="TargetType" dataType="Integer" displayName="Target Type" validationType="List" formula1="0:Flow|1:To Stock|2:From Stock" isOptional="True"/>
                 <column name="Multiplier" displayName="Multiplier" dataType="Double" validationType="Decimal" allowDbNull="False"/>
                 <column name="TransferToStratumID" dataType="Integer" displayName="Transfer To Stratum" validationType="Datasheet" formula1="stsim_Stratum" isOptional="True" displayNameSource="stsim_Terminology" displayNameColumn="PrimaryStratumLabel"/>
                 <column name="TransferToSecondaryStratumID" dataType="Integer" displayName="Transfer To Secondary Stratum" validationType="Datasheet" formula1="stsim_SecondaryStratum" isOptional="True" displayNameSource="stsim_Terminology" displayNameColumn="SecondaryStratumLabel"/>
                 <column name="TransferToTertiaryStratumID" dataType="Integer" displayName="Transfer To Tertiary Stratum" validationType="Datasheet" formula1="stsim_TertiaryStratum" isOptional="True" displayNameSource="stsim_Terminology" displayNameColumn="TertiaryStratumLabel"/>
                 <column name="TransferToStateClassID" dataType="Integer" displayName="Transfer To State Class" validationType="Datasheet" formula1="stsim_StateClass" isOptional="True"/>
                 <column name="TransferToAgeMin" dataType="Integer" displayName="Transfer To Min Age" validationType="WholeNumber" validationCondition="GreaterEqual" formula1="0" isOptional="True"/>
-              </columns>
+            </columns>
             </datasheet>
           </datasheets>
         </datafeed>
@@ -552,7 +553,7 @@
     </layout>
   </layouts>
   <updateProvider
-    schemaVersion="105"
+    schemaVersion="106"
     minPackageVersion="3.2.10"
     className="SyncroSim.STSimStockFlow.SFUpdates"
     classAssembly="SyncroSim.STSimStockFlow"/>

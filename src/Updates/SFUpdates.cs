@@ -175,6 +175,11 @@ namespace SyncroSim.STSimStockFlow
             {
                 SF0000105(store);
             }
+
+            if (currentSchemaVersion < 106)
+            {
+                SF0000106(store);
+            }
         }
 
 		/// <summary>
@@ -1245,6 +1250,99 @@ namespace SyncroSim.STSimStockFlow
                 store.ExecuteNonQuery("ALTER TABLE stsimsf_OutputOptions ADD COLUMN AvgSpatialOutputLFL INTEGER");
                 store.ExecuteNonQuery("ALTER TABLE stsimsf_OutputOptions ADD COLUMN AvgSpatialOutputLFLTimesteps INTEGER");
                 store.ExecuteNonQuery("ALTER TABLE stsimsf_OutputOptions ADD COLUMN AvgSpatialOutputLFLAcrossTimesteps INTEGER");
+            }
+        }
+
+        /// <summary>
+        /// SF0000106
+        /// </summary>
+        /// <remarks>
+        /// This update adds a TargetType field to the Flow Pathways table
+        /// </remarks>
+        /// <param name="store"></param>
+        private static void SF0000106(DataStore store)
+        {
+            if (store.TableExists("stsimsf_FlowPathway"))
+            {
+                store.ExecuteNonQuery("ALTER TABLE stsimsf_FlowPathway RENAME TO TEMP_TABLE");
+
+                store.ExecuteNonQuery("CREATE TABLE stsimsf_FlowPathway( " +
+                    "FlowPathwayID                INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    "ScenarioID                   INTEGER, " +
+                    "Iteration                    INTEGER, " +
+                    "Timestep                     INTEGER, " +
+                    "FromStratumID                INTEGER, " +
+                    "FromSecondaryStratumID       INTEGER, " +
+                    "FromTertiaryStratumID        INTEGER, " +
+                    "FromStateClassID             INTEGER, " +
+                    "FromAgeMin                   INTEGER, " +
+                    "FromStockTypeID              INTEGER, " +
+                    "ToStratumID                  INTEGER, " +
+                    "ToStateClassID               INTEGER, " +
+                    "ToAgeMin                     INTEGER, " +
+                    "ToStockTypeID                INTEGER, " +
+                    "TransitionGroupID            INTEGER, " +
+                    "StateAttributeTypeID         INTEGER, " +
+                    "FlowTypeID                   INTEGER, " +
+                    "TargetType                   INTEGER, " +
+                    "Multiplier                   DOUBLE, " +
+                    "TransferToStratumID          INTEGER, " +
+                    "TransferToSecondaryStratumID INTEGER, " +
+                    "TransferToTertiaryStratumID  INTEGER, " +
+                    "TransferToStateClassID       INTEGER, " +
+                    "TransferToAgeMin             INTEGER)"
+                );
+
+                store.ExecuteNonQuery("INSERT INTO stsimsf_FlowPathway( " +
+                    "ScenarioID, " +
+                    "Iteration, " +
+                    "Timestep, " +
+                    "FromStratumID, " +
+                    "FromSecondaryStratumID, " +
+                    "FromTertiaryStratumID, " +
+                    "FromStateClassID, " +
+                    "FromAgeMin, " +
+                    "FromStockTypeID, " +
+                    "ToStratumID, " +
+                    "ToStateClassID, " +
+                    "ToAgeMin, " +
+                    "ToStockTypeID, " +
+                    "TransitionGroupID, " +
+                    "StateAttributeTypeID, " +
+                    "FlowTypeID, " +
+                    "Multiplier, " +
+                    "TransferToStratumID, " +
+                    "TransferToSecondaryStratumID, " +
+                    "TransferToTertiaryStratumID, " +
+                    "TransferToStateClassID, " +
+                    "TransferToAgeMin) " + 
+                    "SELECT " +
+                    "ScenarioID, " +
+                    "Iteration, " +
+                    "Timestep, " +
+                    "FromStratumID, " +
+                    "FromSecondaryStratumID, " +
+                    "FromTertiaryStratumID, " +
+                    "FromStateClassID, " +
+                    "FromAgeMin, " +
+                    "FromStockTypeID, " +
+                    "ToStratumID, " +
+                    "ToStateClassID, " +
+                    "ToAgeMin, " +
+                    "ToStockTypeID, " +
+                    "TransitionGroupID, " +
+                    "StateAttributeTypeID, " +
+                    "FlowTypeID, " +
+                    "Multiplier, " +
+                    "TransferToStratumID, " +
+                    "TransferToSecondaryStratumID, " +
+                    "TransferToTertiaryStratumID, " +
+                    "TransferToStateClassID, " +
+                    "TransferToAgeMin " +
+                    "FROM TEMP_TABLE");
+
+                store.ExecuteNonQuery("DROP TABLE TEMP_TABLE");
+                UpdateProvider.CreateIndex(store, "stsimsf_FlowPathway", new[] { "ScenarioID" });
             }
         }
     }

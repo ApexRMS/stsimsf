@@ -123,6 +123,7 @@ namespace SyncroSim.STSimStockFlow
             int TransitionGroupId = 0;
             int? StateAttributeTypeId = null;
             int FlowTypeId = 0;
+            int? TargetType = null;
             double Multiplier = 0;
             int? TransferToStratumId = null;
             int? TransferToSecondaryStratumId = null;
@@ -199,6 +200,12 @@ namespace SyncroSim.STSimStockFlow
             }
 
             FlowTypeId = Convert.ToInt32(dr[Constants.FLOW_TYPE_ID_COLUMN_NAME], CultureInfo.InvariantCulture);
+
+            if (dr[Constants.TARGET_TYPE] != DBNull.Value)
+            {
+                TargetType = Convert.ToInt32(dr[Constants.TARGET_TYPE], CultureInfo.InvariantCulture);
+            }
+
             Multiplier = Convert.ToDouble(dr[Constants.MULTIPLIER_COLUMN_NAME], CultureInfo.InvariantCulture);
 
             if (dr[Constants.TRANSFER_TO_STRATUM_ID_COLUMN_NAME] != DBNull.Value)
@@ -230,7 +237,7 @@ namespace SyncroSim.STSimStockFlow
                 Iteration, Timestep,
                 FromStratumId, FromSecondaryStratumId, FromTertiaryStratumId, FromStateClassId, FromMinimumAge, FromStockTypeId,
                 ToStratumId, ToStateClassId, ToMinimumAge, ToStockTypeId,
-                TransitionGroupId, StateAttributeTypeId, FlowTypeId, Multiplier,
+                TransitionGroupId, StateAttributeTypeId, FlowTypeId, TargetType, Multiplier,
                 TransferToStratumId, TransferToSecondaryStratumId, TransferToTertiaryStratumId, TransferToStateClassId, TransferToMinimumAge);
 
             return p;

@@ -20,7 +20,8 @@ namespace SyncroSim.STSimStockFlow
 		private int m_TransitionGroupId;
 		private int? m_StateAttributeTypeId;
 		private int m_FlowTypeId;
-		private double m_Multiplier;
+        private Constants.TargetType m_TargetType = Constants.TargetType.Flow;
+        private double m_Multiplier;
         private int? m_TransferToStratumId;
         private int? m_TransferToSecondaryStratumId;
         private int? m_TransferToTertiaryStratumId;
@@ -45,6 +46,7 @@ namespace SyncroSim.STSimStockFlow
             int transitionGroupId, 
             int? stateAttributeTypeId, 
             int flowTypeId, 
+            int? targetType,
             double multiplier,
             int? transferToStratumId,
             int? transferToSecondaryStratumId,
@@ -73,6 +75,11 @@ namespace SyncroSim.STSimStockFlow
             this.m_TransferToTertiaryStratumId = transferToTertiaryStratumId;
             this.m_TransferToStateClassId = transferToStateClassId;
             this.m_TransferToMinimumAge = transferToMinimumAge;
+
+            if (targetType.HasValue)
+            {
+                this.m_TargetType = (Constants.TargetType)targetType;
+            }
 
             if (this.m_TransferToStratumId.HasValue ||
                 this.m_TransferToSecondaryStratumId.HasValue ||
@@ -203,7 +210,15 @@ namespace SyncroSim.STSimStockFlow
 			}
 		}
 
-		public double Multiplier
+        public Constants.TargetType TargetType
+        {
+            get
+            {
+                return this.m_TargetType;
+            }
+        }
+
+        public double Multiplier
 		{
 			get
 			{

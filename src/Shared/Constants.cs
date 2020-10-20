@@ -13,6 +13,14 @@ namespace SyncroSim.STSimStockFlow
         //ST-Sim Transformer
         public const string STSIM_TRANSFORMER_NAME = "stsim_Runtime";
 
+        //Enums
+        public enum TargetType
+        {
+            Flow = 0,
+            ToStock = 1,
+            FromStock=2
+        };
+
 		//Report names
 		public const string STOCK_REPORT_NAME = "stocks";
 		public const string FLOW_REPORT_NAME = "flows";
@@ -113,6 +121,7 @@ namespace SyncroSim.STSimStockFlow
 		public const string TO_STATECLASS_ID_COLUMN_NAME = "ToStateClassID";
 		public const string TO_MIN_AGE_COLUMN_NAME = "ToAgeMin";
 		public const string TO_STOCK_TYPE_ID_COLUMN_NAME = "ToStockTypeID";
+        public const string TARGET_TYPE = "TargetType";
 
 		public const string TRANSFER_TO_STRATUM_ID_COLUMN_NAME = "TransferToStratumID";
 		public const string TRANSFER_TO_SECONDARY_STRATUM_ID_COLUMN_NAME = "TransferToSecondaryStratumID";
