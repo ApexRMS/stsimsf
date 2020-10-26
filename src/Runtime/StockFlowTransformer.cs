@@ -899,7 +899,10 @@ namespace SyncroSim.STSimStockFlow
             {
                 foreach (FlowMultiplier t in this.m_FlowMultipliers)
                 {
-                    t.Sample(iteration, timestep, this.m_STSimTransformer.DistributionProvider, frequency);
+                    if (!t.IsDisabled)
+                    {
+                        t.Sample(iteration, timestep, this.m_STSimTransformer.DistributionProvider, frequency);
+                    }
                 }
             }
             catch (Exception ex)
@@ -1028,6 +1031,11 @@ namespace SyncroSim.STSimStockFlow
 
         private double CalculateFlowAmountTargetTypeFromStock(FlowPathway fp, Cell cell, int iteration, int timestep)
         {
+            if (this.DisabledFlowMultiplierExists(cell, fp, iteration, timestep))
+            {
+                return 0.0;
+            }
+
             Dictionary<int, double> d = GetStockAmountDictionary(cell);
 
             if (!d.ContainsKey(fp.FromStockTypeId))
@@ -1057,6 +1065,11 @@ namespace SyncroSim.STSimStockFlow
 
         private double CalculateFlowAmountTargetTypeToStock(FlowPathway fp, Cell cell, int iteration, int timestep)
         {
+            if (this.DisabledFlowMultiplierExists(cell, fp, iteration, timestep))
+            {
+                return 0.0;
+            }
+
             Dictionary<int, double> d = GetStockAmountDictionary(cell);
 
             if (!d.ContainsKey(fp.ToStockTypeId))
@@ -1082,6 +1095,31 @@ namespace SyncroSim.STSimStockFlow
             }
 
             return (StockTargetAmount - ToStockAmount);
+        }
+
+        private bool DisabledFlowMultiplierExists(Cell cell, FlowPathway fp, int iteration, int timestep)
+        {
+            FlowType ft = this.m_FlowTypes[fp.FlowTypeId];
+
+            foreach (FlowMultiplierType mt in this.m_FlowMultiplierTypes)
+            {
+                foreach (FlowGroupLinkage fgl in ft.FlowGroupLinkages)
+                {
+                    if (mt.FlowMultiplierMap != null)
+                    {
+                        FlowMultiplier fm = mt.FlowMultiplierMap.GetFlowMultiplierClassInstance(
+                            fgl.FlowGroup.Id, cell.StratumId, cell.SecondaryStratumId, cell.TertiaryStratumId,
+                            cell.StateClassId, iteration, timestep, cell.Age);
+
+                        if (fm != null && fm.IsDisabled)
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+
+            return false;
         }
 
         private double ApplyFlowMultipliers(Cell cell, FlowPathway fp, int iteration, int timestep, double value)

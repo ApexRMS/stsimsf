@@ -335,7 +335,7 @@ namespace SyncroSim.STSimStockFlow
                             Convert.ToInt32(dr[Constants.STOCK_TYPE_ID_COLUMN_NAME], CultureInfo.InvariantCulture), 
                             stockFileName));
 
-					//Only loading single instance of a particular raster, as a way to converse memory
+					//Only loading single instance of a particular raster, as a way to conserve memory
 
 					if (!m_InitialStockSpatialRasters.ContainsKey(stockFileName))
 					{
@@ -644,12 +644,16 @@ namespace SyncroSim.STSimStockFlow
                         FlowMultiplierTypeId, FlowGroupId, MultiplierAmount, 
                         DistributionTypeId, DistributionFrequency, DistributionSD, DistributionMin, DistributionMax);
 
-					this.m_STSimTransformer.DistributionProvider.Validate(
-                        Item.DistributionTypeId, Item.DistributionValue, Item.DistributionSD, 
-                        Item.DistributionMin, Item.DistributionMax);
+                    Item.IsDisabled = (!Item.DistributionValue.HasValue && !Item.DistributionTypeId.HasValue);
+
+                    if (!Item.IsDisabled)
+                    {
+                        this.m_STSimTransformer.DistributionProvider.Validate(
+                            Item.DistributionTypeId, Item.DistributionValue, Item.DistributionSD, 
+                            Item.DistributionMin, Item.DistributionMax);
+                    }
 
 					this.m_FlowMultipliers.Add(Item);
-
 				}
 				catch (Exception ex)
 				{

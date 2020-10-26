@@ -23,7 +23,7 @@ namespace SyncroSim.STSimStockFlow
 			}
 		}
 
-		public double GetFlowMultiplier(
+		public FlowMultiplier GetFlowMultiplierClassInstance(
             int flowGroupId, 
             int stratumId, 
             int? secondaryStratumId, 
@@ -38,8 +38,36 @@ namespace SyncroSim.STSimStockFlow
 
 			if (l == null)
 			{
-				return 1.0;
+                return null;
 			}
+
+            FlowMultiplier m = GetFlowMultiplierByAge(l, age);
+
+            if (m == null)
+            {
+                return null;
+            }
+
+            return m;
+        }
+
+        public double GetFlowMultiplier(
+            int flowGroupId,
+            int stratumId,
+            int? secondaryStratumId,
+            int? tertiaryStratumId,
+            int stateClassId,
+            int iteration,
+            int timestep,
+            int age)
+        {
+            List<FlowMultiplier> l = this.GetItem(
+                flowGroupId, stratumId, secondaryStratumId, tertiaryStratumId, stateClassId, iteration, timestep);
+
+            if (l == null)
+            {
+                return 1.0;
+            }
 
             FlowMultiplier m = GetFlowMultiplierByAge(l, age);
 
@@ -47,10 +75,15 @@ namespace SyncroSim.STSimStockFlow
             {
                 return 1.0;
             }
-            
-			m.Sample(iteration, timestep, this.m_DistributionProvider, DistributionFrequency.Always);
-			return m.CurrentValue.Value;
-		}
+
+            if (m.IsDisabled)
+            {
+                return 1.0;
+            }
+
+            m.Sample(iteration, timestep, this.m_DistributionProvider, DistributionFrequency.Always);
+            return m.CurrentValue.Value;
+        }
 
         private static FlowMultiplier GetFlowMultiplierByAge(List<FlowMultiplier> l, int age)
         {

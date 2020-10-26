@@ -110,10 +110,13 @@ namespace SyncroSim.STSimStockFlow
 			{
 				foreach (FlowMultiplier t in this.m_FlowMultipliers)
 				{
-					t.Initialize(
-                        this.m_STSimTransformer.MinimumIteration, 
-                        this.m_STSimTransformer.MinimumTimestep, 
-                        this.m_STSimTransformer.DistributionProvider);
+                    if (!t.IsDisabled)
+                    {
+					    t.Initialize(
+                            this.m_STSimTransformer.MinimumIteration, 
+                            this.m_STSimTransformer.MinimumTimestep, 
+                            this.m_STSimTransformer.DistributionProvider);
+                    }
 				}
 			}
 			catch (Exception ex)
