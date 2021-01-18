@@ -545,10 +545,10 @@
         <item name="avgstkg" displayName="Average" dataSheet="OutputAverageSpatialStockGroup" column="Filename" filter="StockGroupID" extendedIdentifier="(Average for all Iterations)"></item>        
       </group>
       <group name="FlowGroups" displayName="Flow Groups">
-        <item name="flog" displayName="Iteration" dataSheet="OutputSpatialFlowGroup" column="Filename" filter="FlowGroupID"></item>
-        <item name="lflog" displayName="Iteration - Lateral" dataSheet="OutputLateralFlowGroup" column="Filename" filter="FlowGroupID"></item>
-        <item name="avgflog" displayName="Average" dataSheet="OutputAverageSpatialFlowGroup" column="Filename" filter="FlowGroupID" extendedIdentifier="(Average for all Iterations)"></item>            
-        <item name="avglflog" displayName="Average - Lateral" dataSheet="OutputAverageLateralFlowGroup" column="Filename" filter="FlowGroupID" extendedIdentifier="(Average for all Iterations)"></item>                
+        <item name="flog" displayName="Iteration" dataSheet="OutputSpatialFlowGroup" column="Filename" filter="FlowGroupID" extendedIdentifier="(Flow)"></item>
+        <item name="lflog" displayName="Iteration - Lateral" dataSheet="OutputLateralFlowGroup" column="Filename" filter="FlowGroupID" extendedIdentifier="(Lateral Flow)"></item>
+        <item name="avgflog" displayName="Average" dataSheet="OutputAverageSpatialFlowGroup" column="Filename" filter="FlowGroupID" extendedIdentifier="(Flow) (Average for all Iterations)"></item>            
+        <item name="avglflog" displayName="Average - Lateral" dataSheet="OutputAverageLateralFlowGroup" column="Filename" filter="FlowGroupID" extendedIdentifier="(Lateral Flow) (Average for all Iterations)"></item>                
       </group>
     </layout>
   </layouts>
