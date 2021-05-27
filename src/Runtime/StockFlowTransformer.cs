@@ -608,8 +608,12 @@ namespace SyncroSim.STSimStockFlow
 							{
 								v = 0.0;
 							}
+                            else if (Math.Abs((float)v - (float)this.m_InitialStockSpatialRasters[s.Filename].NoDataValue) < float.Epsilon | float.IsNegativeInfinity((float)v))
+                            {
+								v = 0.0;
+                            }
 
-							v = GetLimitBasedInitialStock(v, lim);
+                            v = GetLimitBasedInitialStock(v, lim);
 							StockAmounts[s.StockTypeId] = v*this.m_STSimTransformer.AmountPerCell;
 						}
 						else
