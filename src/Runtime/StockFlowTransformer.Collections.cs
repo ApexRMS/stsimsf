@@ -316,10 +316,10 @@ namespace SyncroSim.STSimStockFlow
 				string cmpMsg = "";
 				var cmpResult = this.STSimTransformer.InputRasters.CompareMetadata(raster, ref cmpMsg);
 
-				if (cmpResult == STSim.CompareMetadataResult.ImportantDifferences)
+				if (cmpResult == STSim.CompareMetadataResult.RowColumnMismatch)
 				{
-					string message = string.Format(CultureInfo.InvariantCulture, Constants.SPATIAL_FILE_STOCK_METADATA_WARNING, stockFileName, cmpMsg);
-					this.RecordStatus(StatusType.Warning, message);
+					string message = string.Format(CultureInfo.InvariantCulture, Constants.SPATIAL_FILE_STOCK_ROW_COLUMN_MISMATCH, stockFileName, cmpMsg);
+					ExceptionUtils.ThrowArgumentException(message);
 				}
 				else
 				{

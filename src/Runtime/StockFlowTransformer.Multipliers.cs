@@ -142,12 +142,10 @@ namespace SyncroSim.STSimStockFlow
                 var cmpRes = this.STSimTransformer.InputRasters.CompareMetadata(this.m_FlowSpatialMultiplierRasters[r.FileName], ref cmpMsg);
                 string FullFilename = Spatial.GetSpatialInputFileName(ds, r.FileName, false);
 
-                if (cmpRes == CompareMetadataResult.ImportantDifferences)
+                if (cmpRes == CompareMetadataResult.RowColumnMismatch)
                 {
-                    string msg = string.Format(CultureInfo.InvariantCulture, Constants.SPATIAL_METADATA_WARNING, FullFilename);
-                    RecordStatus(StatusType.Warning, msg);
-
-                    this.m_FlowSpatialMultipliers.RemoveAt(i);
+                    string msg = string.Format(CultureInfo.InvariantCulture, Constants.SPATIAL_METADATA_ROW_COLUMN_MISMATCH, FullFilename);
+                    ExceptionUtils.ThrowArgumentException(msg);
                 }
                 else
                 {
@@ -181,12 +179,10 @@ namespace SyncroSim.STSimStockFlow
                 var cmpRes = this.STSimTransformer.InputRasters.CompareMetadata(this.m_FlowLateralMultiplierRasters[r.FileName], ref cmpMsg);
                 string FullFilename = Spatial.GetSpatialInputFileName(ds, r.FileName, false);
 
-                if (cmpRes == CompareMetadataResult.ImportantDifferences)
+                if (cmpRes == CompareMetadataResult.RowColumnMismatch)
                 {
-                    string msg = string.Format(CultureInfo.InvariantCulture, Constants.SPATIAL_METADATA_WARNING, FullFilename);
-                    RecordStatus(StatusType.Warning, msg);
-
-                    this.m_FlowLateralMultipliers.RemoveAt(i);
+                    string msg = string.Format(CultureInfo.InvariantCulture, Constants.SPATIAL_METADATA_ROW_COLUMN_MISMATCH, FullFilename);
+                    ExceptionUtils.ThrowArgumentException(msg);
                 }
                 else
                 {
