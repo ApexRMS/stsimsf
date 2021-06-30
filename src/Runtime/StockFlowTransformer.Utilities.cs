@@ -240,5 +240,107 @@ namespace SyncroSim.STSimStockFlow
 
             return (FlowTypeLists);
         }
+
+        private bool ShouldOutputTabularDataForStockType(int stockTypeId)
+        {
+            if (!this.m_OutputFilterStocks.HasItems)
+            {
+                return true;
+            }
+
+            OutputFilterStocks flt = (OutputFilterStocks)this.m_OutputFilterStocks.Get(stockTypeId);
+
+            if (flt == null)
+            {
+                return false;
+            }
+
+            return flt.OutputTabularData;
+        }
+
+        private bool ShouldOutputSpatialDataForStockType(int stockTypeId)
+        {
+            if (!this.m_OutputFilterStocks.HasItems)
+            {
+                return true;
+            }
+
+            OutputFilterStocks flt = (OutputFilterStocks)this.m_OutputFilterStocks.Get(stockTypeId);
+
+            if (flt == null)
+            {
+                return false;
+            }
+
+            return flt.OutputSpatialData;
+        }
+
+        private bool ShouldOutputAvgSpatialDataForStockType(int stockTypeId)
+        {
+            if (!this.m_OutputFilterStocks.HasItems)
+            {
+                return true;
+            }
+
+            OutputFilterStocks flt = (OutputFilterStocks)this.m_OutputFilterStocks.Get(stockTypeId);
+
+            if (flt == null)
+            {
+                return false;
+            }
+
+            return flt.OutputAvgSpatialData;
+        }
+
+        private bool ShouldOutputTabularDataForFlowType(int flowTypeId)
+        {
+            if (!this.m_OutputFilterFlows.HasItems)
+            {
+                return true;
+            }
+
+            OutputFilterFlows flt = (OutputFilterFlows)this.m_OutputFilterFlows.Get(flowTypeId);
+
+            if (flt == null)
+            {
+                return false;
+            }
+
+            return flt.OutputTabularData;
+        }
+
+        private bool ShouldOutputSpatialDataForFlowType(int flowTypeId)
+        {
+            if (!this.m_OutputFilterFlows.HasItems)
+            {
+                return true;
+            }
+
+            OutputFilterFlows flt = (OutputFilterFlows)this.m_OutputFilterFlows.Get(flowTypeId);
+
+            if (flt == null)
+            {
+                return false;
+            }
+
+            return flt.OutputSpatialData;
+        }
+
+        private bool ShouldOutputAvgSpatialDataForFlowType(int flowTypeId)
+        {
+            if (!this.m_OutputFilterFlows.HasItems)
+            {
+                return true;
+            }
+
+            OutputFilterFlows flt = (OutputFilterFlows)this.m_OutputFilterFlows.Get(flowTypeId);
+
+            if (flt == null)
+            {
+                return false;
+            }
+
+            return flt.OutputAvgSpatialData;
+        }
     }
 }

@@ -13,7 +13,7 @@ namespace SyncroSim.STSimStockFlow
 		{
 			get
 			{
-				return this.m_Items.Count > 0;
+				return (this.m_Items.Count > 0);
 			}
 		}
 

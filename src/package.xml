@@ -354,7 +354,7 @@
               <columns>
                 <column name="OutputFilterStocksID" dataType="Integer" isPrimary="True"/>
                 <column name="ScenarioID" dataType="Integer"/>
-                <column name="StockTypeID" dataType="Integer" displayName="Stock Type/Group" validationType="Datasheet" formula1="StockType" allowDbNull="False"/>
+                <column name="StockGroupID" dataType="Integer" displayName="Stock Type/Group" validationType="Datasheet" formula1="StockGroup" allowDbNull="False"/>
                 <column name="Summary" displayName="Summary" dataType="Boolean" allowDbNull="False"/>
                 <column name="Spatial" displayName="Spatial" dataType="Boolean" allowDbNull="False"/>
                 <column name="AvgSpatial" displayName="Average Spatial" dataType="Boolean" allowDbNull="False"/> 
@@ -371,7 +371,7 @@
               <columns>
                 <column name="OutputFilterFlowsID" dataType="Integer" isPrimary="True"/>
                 <column name="ScenarioID" dataType="Integer"/>
-                <column name="FlowTypeID" dataType="Integer" displayName="Flow Type/Group" validationType="Datasheet" formula1="FlowType" allowDbNull="False"/>
+                <column name="FlowGroupID" dataType="Integer" displayName="Flow Type/Group" validationType="Datasheet" formula1="FlowGroup" allowDbNull="False"/>
                 <column name="Summary" displayName="Summary" dataType="Boolean" allowDbNull="False"/>
                 <column name="Spatial" displayName="Spatial" dataType="Boolean" allowDbNull="False"/>
                 <column name="AvgSpatial" displayName="Average Spatial" dataType="Boolean" allowDbNull="False"/>

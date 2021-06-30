@@ -6,21 +6,21 @@ namespace SyncroSim.STSimStockFlow
     class OutputFilterBase
     {
         private int m_Id;
-        private bool m_OutputSummary;
-        private bool m_OutputSpatial;
-        private bool m_OutputAvgSpatial;
+        private bool m_OutputTabularData;
+        private bool m_OutputSpatialData;
+        private bool m_OutputAvgSpatialData;
 
-        public OutputFilterBase(int id, bool outputSummary, bool outputSpatial, bool outputAvgSpatial)
+        public OutputFilterBase(int id, bool outputTabularData, bool outputSpatialData, bool outputAvgSpatialData)
         {
             this.Id = id;
-            this.OutputSummary = outputSummary;
-            this.OutputSpatial = outputSpatial;
-            this.m_OutputAvgSpatial = outputAvgSpatial;
+            this.m_OutputTabularData = outputTabularData;
+            this.m_OutputSpatialData = outputSpatialData;
+            this.m_OutputAvgSpatialData = outputAvgSpatialData;
         }
 
         public int Id { get => m_Id; set => m_Id = value; }
-        public bool OutputSummary { get => m_OutputSummary; set => m_OutputSummary = value; }
-        public bool OutputSpatial { get => m_OutputSpatial; set => m_OutputSpatial = value; }
-        public bool OutputAvgSpatial { get => m_OutputAvgSpatial; set => m_OutputAvgSpatial = value; }
+        public bool OutputTabularData { get => m_OutputTabularData; set => m_OutputTabularData = value; }
+        public bool OutputSpatialData { get => m_OutputSpatialData; set => m_OutputSpatialData = value; }
+        public bool OutputAvgSpatialData { get => m_OutputAvgSpatialData; set => m_OutputAvgSpatialData = value; }
     }
 }
