@@ -29,6 +29,8 @@ namespace SyncroSim.STSimStockFlow
 		private Dictionary<string, StochasticTimeRaster> m_FlowSpatialMultiplierRasters = new Dictionary<string, StochasticTimeRaster>();
         private FlowLateralMultiplierCollection m_FlowLateralMultipliers = new FlowLateralMultiplierCollection();
 		private Dictionary<string, StochasticTimeRaster> m_FlowLateralMultiplierRasters = new Dictionary<string, StochasticTimeRaster>();
+		private OutputFilterCollection m_OutputFilterStocks = new OutputFilterCollection();
+		private OutputFilterCollection m_OutputFilterFlows = new OutputFilterCollection();
 		private FlowOrderCollection m_FlowOrders = new FlowOrderCollection();
 
 #if DEBUG
@@ -659,6 +661,38 @@ namespace SyncroSim.STSimStockFlow
 				{
 					throw new ArgumentException(ds.DisplayName + " -> " + ex.Message);
 				}
+			}
+		}
+
+		private void FillOutputFilterStocks()
+		{
+			Debug.Assert(!this.m_OutputFilterStocks.HasItems);
+			DataSheet ds = this.ResultScenario.GetDataSheet(Constants.DATASHEET_OUTPUT_FILTER_STOCKS);
+
+			foreach (DataRow dr in ds.GetData().Rows)
+			{
+				this.m_OutputFilterStocks.Add(
+					new OutputFilterStocks(
+						Convert.ToInt32(dr[ds.PrimaryKeyColumn.Name], CultureInfo.InvariantCulture),
+						Convert.ToBoolean(dr[Constants.OUTPUT_SUMMARY_COLUMN_NAME], CultureInfo.InvariantCulture),
+						Convert.ToBoolean(dr[Constants.OUTPUT_SPATIAL_COLUMN_NAME], CultureInfo.InvariantCulture), 
+						Convert.ToBoolean(dr[Constants.OUTPUT_AVG_SPATIAL_COLUMN_NAME], CultureInfo.InvariantCulture)));
+			}
+		}
+
+		private void FillOutputFilterFlows()
+		{
+			Debug.Assert(!this.m_OutputFilterFlows.HasItems);
+			DataSheet ds = this.ResultScenario.GetDataSheet(Constants.DATASHEET_OUTPUT_FILTER_FLOWS);
+
+			foreach (DataRow dr in ds.GetData().Rows)
+			{
+				this.m_OutputFilterFlows.Add(
+					new OutputFilterFlows(
+						Convert.ToInt32(dr[ds.PrimaryKeyColumn.Name], CultureInfo.InvariantCulture),
+						Convert.ToBoolean(dr[Constants.OUTPUT_SUMMARY_COLUMN_NAME], CultureInfo.InvariantCulture),
+						Convert.ToBoolean(dr[Constants.OUTPUT_SPATIAL_COLUMN_NAME], CultureInfo.InvariantCulture),
+						Convert.ToBoolean(dr[Constants.OUTPUT_AVG_SPATIAL_COLUMN_NAME], CultureInfo.InvariantCulture)));
 			}
 		}
 

@@ -161,6 +161,10 @@
     <Compile Include="Runtime\LateralFlowAmountRecord.cs" />
     <Compile Include="Runtime\LateralFlowCouplet.cs" />
     <Compile Include="Runtime\LateralFlowCoupletMap.cs" />
+    <Compile Include="Runtime\OutputFilterBase.cs" />
+    <Compile Include="Runtime\OutputFilterCollection.cs" />
+    <Compile Include="Runtime\OutputFilterFlows.cs" />
+    <Compile Include="Runtime\OutputFilterStocks.cs" />
     <Compile Include="Runtime\OutputFlow.cs" />
     <Compile Include="Runtime\OutputFlowCollection.cs" />
     <Compile Include="Runtime\OutputStock.cs" />
@@ -316,7 +320,6 @@
       <CustomToolNamespace>My</CustomToolNamespace>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
-    <None Include="stsim-stockflow.FxCop" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Images\Delete16x16.png" />

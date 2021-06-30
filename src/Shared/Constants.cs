@@ -67,6 +67,8 @@ namespace SyncroSim.STSimStockFlow
 		public const string DATASHEET_OUTPUT_AVG_SPATIAL_STOCK_GROUP = "stsimsf_OutputAverageSpatialStockGroup";
 		public const string DATASHEET_OUTPUT_AVG_SPATIAL_FLOW_GROUP = "stsimsf_OutputAverageSpatialFlowGroup";
 		public const string DATASHEET_OUTPUT_AVG_SPATIAL_LATERAL_FLOW_GROUP = "stsimsf_OutputAverageLateralFlowGroup";
+		public const string DATASHEET_OUTPUT_FILTER_STOCKS = "stsimsf_OutputFilterStocks";
+		public const string DATASHEET_OUTPUT_FILTER_FLOWS = "stsimsf_OutputFilterFlows";
 
         public const string DATASHEET_STSIM_STRATUM = "stsim_Stratum";
         public const string DATASHEET_STSIM_SECONDARY_STRATUM = "stsim_SecondaryStratum";
@@ -137,6 +139,10 @@ namespace SyncroSim.STSimStockFlow
 
         public const string IS_AUTO_COLUMN_NAME = "IsAuto";
         public const string AUTO_COLUMN_SUFFIX = "[Type]";
+
+		public const string OUTPUT_SUMMARY_COLUMN_NAME = "Summary";
+		public const string OUTPUT_SPATIAL_COLUMN_NAME = "Spatial";
+		public const string OUTPUT_AVG_SPATIAL_COLUMN_NAME = "AvgSpatial";
 
         //Terminology
         public const string STOCK_UNITS_COLUMN_NAME = "StockUnits";

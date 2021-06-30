@@ -95,6 +95,8 @@ namespace SyncroSim.STSimStockFlow
 			this.FillFlowPathways();
 			this.FillFlowMultipliers();
 			this.FillFlowOrders();
+			this.FillOutputFilterStocks();
+			this.FillOutputFilterFlows();
 
             this.AddAutoStockTypeLinkages();
             this.AddAutoFlowTypeLinkages();
