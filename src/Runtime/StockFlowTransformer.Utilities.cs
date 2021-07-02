@@ -241,14 +241,14 @@ namespace SyncroSim.STSimStockFlow
             return (FlowTypeLists);
         }
 
-        private bool ShouldOutputTabularDataForStockType(int stockTypeId)
+        private bool FilterIncludesTabularDataForStockGroup(int stockGroupId)
         {
             if (!this.m_OutputFilterStocks.HasItems)
             {
                 return true;
             }
 
-            OutputFilterStocks flt = (OutputFilterStocks)this.m_OutputFilterStocks.Get(stockTypeId);
+            OutputFilterStocks flt = (OutputFilterStocks)this.m_OutputFilterStocks.Get(stockGroupId);
 
             if (flt == null)
             {
@@ -258,14 +258,14 @@ namespace SyncroSim.STSimStockFlow
             return flt.OutputTabularData;
         }
 
-        private bool ShouldOutputSpatialDataForStockType(int stockTypeId)
+        private bool FilterIncludesSpatialDataForStockGroup(int stockGroupId)
         {
             if (!this.m_OutputFilterStocks.HasItems)
             {
                 return true;
             }
 
-            OutputFilterStocks flt = (OutputFilterStocks)this.m_OutputFilterStocks.Get(stockTypeId);
+            OutputFilterStocks flt = (OutputFilterStocks)this.m_OutputFilterStocks.Get(stockGroupId);
 
             if (flt == null)
             {
@@ -275,14 +275,14 @@ namespace SyncroSim.STSimStockFlow
             return flt.OutputSpatialData;
         }
 
-        private bool ShouldOutputAvgSpatialDataForStockType(int stockTypeId)
+        private bool FilterIncludesAvgSpatialDataForStockGroup(int stockGroupId)
         {
             if (!this.m_OutputFilterStocks.HasItems)
             {
                 return true;
             }
 
-            OutputFilterStocks flt = (OutputFilterStocks)this.m_OutputFilterStocks.Get(stockTypeId);
+            OutputFilterStocks flt = (OutputFilterStocks)this.m_OutputFilterStocks.Get(stockGroupId);
 
             if (flt == null)
             {
@@ -292,14 +292,14 @@ namespace SyncroSim.STSimStockFlow
             return flt.OutputAvgSpatialData;
         }
 
-        private bool ShouldOutputTabularDataForFlowType(int flowTypeId)
+        private bool FilterIncludesTabularDataForFlowGroup(int flowGroupId)
         {
             if (!this.m_OutputFilterFlows.HasItems)
             {
                 return true;
             }
 
-            OutputFilterFlows flt = (OutputFilterFlows)this.m_OutputFilterFlows.Get(flowTypeId);
+            OutputFilterFlows flt = (OutputFilterFlows)this.m_OutputFilterFlows.Get(flowGroupId);
 
             if (flt == null)
             {
@@ -309,14 +309,14 @@ namespace SyncroSim.STSimStockFlow
             return flt.OutputTabularData;
         }
 
-        private bool ShouldOutputSpatialDataForFlowType(int flowTypeId)
+        private bool FilterIncludesSpatialDataForFlowGroup(int flowGroupId)
         {
             if (!this.m_OutputFilterFlows.HasItems)
             {
                 return true;
             }
 
-            OutputFilterFlows flt = (OutputFilterFlows)this.m_OutputFilterFlows.Get(flowTypeId);
+            OutputFilterFlows flt = (OutputFilterFlows)this.m_OutputFilterFlows.Get(flowGroupId);
 
             if (flt == null)
             {
@@ -326,14 +326,14 @@ namespace SyncroSim.STSimStockFlow
             return flt.OutputSpatialData;
         }
 
-        private bool ShouldOutputAvgSpatialDataForFlowType(int flowTypeId)
+        private bool FilterIncludesAvgSpatialDataForFlowGroup(int flowGroupId)
         {
             if (!this.m_OutputFilterFlows.HasItems)
             {
                 return true;
             }
 
-            OutputFilterFlows flt = (OutputFilterFlows)this.m_OutputFilterFlows.Get(flowTypeId);
+            OutputFilterFlows flt = (OutputFilterFlows)this.m_OutputFilterFlows.Get(flowGroupId);
 
             if (flt == null)
             {
@@ -341,6 +341,36 @@ namespace SyncroSim.STSimStockFlow
             }
 
             return flt.OutputAvgSpatialData;
+        }
+
+        private bool FilterIncludesSpatialDataForFlowType(int flowTypeId)
+        {
+            FlowType ft = this.m_FlowTypes[flowTypeId];
+
+            foreach (FlowGroupLinkage l in ft.FlowGroupLinkages)
+            {
+                if (this.FilterIncludesSpatialDataForFlowGroup(l.FlowGroup.Id))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private bool FilterIncludesAvgSpatialDataForFlowType(int flowTypeId)
+        {
+            FlowType ft = this.m_FlowTypes[flowTypeId];
+
+            foreach (FlowGroupLinkage l in ft.FlowGroupLinkages)
+            {
+                if (this.FilterIncludesAvgSpatialDataForFlowGroup(l.FlowGroup.Id))
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
     }
 }

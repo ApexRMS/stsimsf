@@ -323,6 +323,11 @@ namespace SyncroSim.STSimStockFlow
 
             foreach (StockGroup g in this.m_StockGroups)
             {
+                if (!this.FilterIncludesSpatialDataForStockGroup(g.Id))
+                {
+                    continue;
+                }
+
                 StochasticTimeRaster rastOutput = this.STSimTransformer.InputRasters.CreateOutputRaster(RasterDataType.DTDouble);
 
                 foreach (StockTypeLinkage l in g.StockTypeLinkages)
@@ -351,6 +356,11 @@ namespace SyncroSim.STSimStockFlow
 
             foreach (FlowGroup g in this.m_FlowGroups)
             {
+                if (!this.FilterIncludesSpatialDataForFlowGroup(g.Id))
+                {
+                    continue;
+                }
+
                 bool AtLeastOne = false;
                 StochasticTimeRaster rastOutput = this.STSimTransformer.InputRasters.CreateOutputRaster(RasterDataType.DTDouble);
 
@@ -398,6 +408,11 @@ namespace SyncroSim.STSimStockFlow
 
             foreach (FlowGroup g in this.m_FlowGroups)
             {
+                if (!this.FilterIncludesSpatialDataForFlowGroup(g.Id))
+                {
+                    continue;
+                }
+
                 bool AtLeastOne = false;
                 StochasticTimeRaster rastOutput = this.STSimTransformer.InputRasters.CreateOutputRaster(RasterDataType.DTDouble);
 
@@ -448,6 +463,11 @@ namespace SyncroSim.STSimStockFlow
 
             foreach (int id in this.m_AvgStockMap.Keys)
             {
+                if (!this.FilterIncludesAvgSpatialDataForStockGroup(id))
+                {
+                    continue;
+                }
+
                 Dictionary<int, double[]> dict = this.m_AvgStockMap[id];
 
                 foreach (int timestep in dict.Keys)
@@ -492,6 +512,11 @@ namespace SyncroSim.STSimStockFlow
 
             foreach (int id in this.m_AvgFlowMap.Keys)
             {
+                if (!this.FilterIncludesAvgSpatialDataForFlowGroup(id))
+                {
+                    continue;
+                }
+
                 Dictionary<int, double[]> dict = this.m_AvgFlowMap[id];
 
                 foreach (int timestep in dict.Keys)
@@ -541,6 +566,11 @@ namespace SyncroSim.STSimStockFlow
 
             foreach (int id in this.m_AvgLateralFlowMap.Keys)
             {
+                if (!this.FilterIncludesAvgSpatialDataForFlowGroup(id))
+                {
+                    continue;
+                }
+
                 Dictionary<int, double[]> dict = this.m_AvgLateralFlowMap[id];
 
                 foreach (int timestep in dict.Keys)
