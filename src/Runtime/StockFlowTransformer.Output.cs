@@ -64,11 +64,16 @@ namespace SyncroSim.STSimStockFlow
                     StockType t = this.m_StockTypes[StockTypeId];
                     double amount = StockAmounts[StockTypeId];
 
-                    foreach (StockGroupLinkage l in t.StockGroupLinkages)
+                    foreach (StockGroupLinkage l in t.StockGroupLinkages)                    
                     {
+                        if (!l.StockGroup.OutputFilter.HasFlag(Constants.OutputFilter.Tabular))
+                        {
+                            continue;
+                        }
+
                         FiveIntegerLookupKey k = new FiveIntegerLookupKey(
-                            c.StratumId, GetSecondaryStratumIdKey(c),
-                            GetTertiaryStratumIdKey(c), c.StateClassId, l.StockGroup.Id);
+                        c.StratumId, GetSecondaryStratumIdKey(c),
+                        GetTertiaryStratumIdKey(c), c.StateClassId, l.StockGroup.Id);
 
                         if (this.m_SummaryOutputStockRecords.Contains(k))
                         {
@@ -139,6 +144,11 @@ namespace SyncroSim.STSimStockFlow
 
                 foreach (FlowGroupLinkage l in t.FlowGroupLinkages)
                 {
+                    if (!l.FlowGroup.OutputFilter.HasFlag(Constants.OutputFilter.Tabular))
+                    {
+                        continue;
+                    }
+
                     FifteenIntegerLookupKey k = new FifteenIntegerLookupKey(
                         cell.StratumId,
                         GetSecondaryStratumIdKey(cell),
