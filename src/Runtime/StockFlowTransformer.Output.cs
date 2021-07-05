@@ -219,8 +219,6 @@ namespace SyncroSim.STSimStockFlow
                 return;
             }
 
-            Debug.Assert(GetSpatialOutputFlowDictionary().ContainsKey(flowTypeId));
-
             if (GetSpatialOutputFlowDictionary().ContainsKey(flowTypeId))
             {
                 SpatialOutputFlowRecord rec = GetSpatialOutputFlowDictionary()[flowTypeId];
@@ -254,8 +252,6 @@ namespace SyncroSim.STSimStockFlow
             {
                 return;
             }
-
-            Debug.Assert(GetLateralOutputFlowDictionary().ContainsKey(flowTypeId));
 
             if (GetLateralOutputFlowDictionary().ContainsKey(flowTypeId))
             {
@@ -842,7 +838,7 @@ namespace SyncroSim.STSimStockFlow
                         if (rec.HasOutputData)
                         {
                             Amount += rec.Data[i];
-                        }
+                        }                    
                     }
 
                     if ((timestepKey == this.STSimTransformer.MaximumTimestep) && (((timestepKey - this.STSimTransformer.TimestepZero) % this.m_AvgSpatialFlowOutputTimesteps) != 0))
@@ -913,7 +909,7 @@ namespace SyncroSim.STSimStockFlow
                         if (rec.HasOutputData)
                         {
                             Amount += rec.Data[i];
-                        }
+                        }                     
                     }
 
                     Values[i] += Amount / this.m_TotalIterations;
@@ -951,7 +947,7 @@ namespace SyncroSim.STSimStockFlow
                         if (rec.HasOutputData)
                         {
                             Amount += rec.Data[i];
-                        }
+                        }                         
                     }
 
                     if ((timestepKey == this.STSimTransformer.MaximumTimestep) && (((timestepKey - this.STSimTransformer.TimestepZero) % this.m_AvgSpatialLateralFlowOutputTimesteps) != 0))

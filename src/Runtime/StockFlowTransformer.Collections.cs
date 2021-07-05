@@ -37,10 +37,14 @@ namespace SyncroSim.STSimStockFlow
         private bool m_AutoStockLinkagesAdded;
         private bool m_StockTypesFilled;
         private bool m_StockGroupsFilled;
+		private bool m_StockTypeLinkagesAdded;
+		private bool m_StockGroupLinkagesAdded;
 
         private bool m_AutoFlowLinkagesAdded;
 		private bool m_FlowTypesFilled;
 		private bool m_FlowGroupsFilled;
+		private bool m_FlowTypeLinkagesAdded;
+		private bool m_FlowGroupLinkagesAdded;
 #endif
 
         private void FillStockTypes()
@@ -148,9 +152,12 @@ namespace SyncroSim.STSimStockFlow
                     st.StockGroupLinkages.Add(linkage);
                 }
             }
-        }
+#if DEBUG
+			this.m_StockGroupLinkagesAdded = true;
+#endif
+		}
 
-        private void FillStockTypeLinkages()
+		private void FillStockTypeLinkages()
         {
 
 #if DEBUG
@@ -182,9 +189,13 @@ namespace SyncroSim.STSimStockFlow
                     sg.StockTypeLinkages.Add(linkage);
                 }
             }
-        }
 
-        private void FillFlowGroupLinkages()
+#if DEBUG
+			this.m_StockTypeLinkagesAdded = true;
+#endif
+		}
+
+		private void FillFlowGroupLinkages()
 		{
 
 #if DEBUG
@@ -216,9 +227,13 @@ namespace SyncroSim.STSimStockFlow
                     ft.FlowGroupLinkages.Add(linkage);
                 }
             }
+
+#if DEBUG
+			this.m_FlowGroupLinkagesAdded = true;
+#endif
 		}
 
-        private void FillFlowTypeLinkages()
+		private void FillFlowTypeLinkages()
         {
 
 #if DEBUG
@@ -250,7 +265,11 @@ namespace SyncroSim.STSimStockFlow
                     fg.FlowTypeLinkages.Add(linkage);
                 }
             }
-        }
+
+#if DEBUG
+			this.m_FlowTypeLinkagesAdded = true;
+#endif
+		}
 
         private void FillFlowMultiplierTypes()
         {
@@ -666,7 +685,10 @@ namespace SyncroSim.STSimStockFlow
 
 		private void FillOutputFilterStocks()
 		{
+			Debug.Assert(this.m_StockTypeLinkagesAdded);
+			Debug.Assert(this.m_StockGroupLinkagesAdded);
 			Debug.Assert(!this.m_OutputFilterStocks.HasItems);
+
 			DataSheet ds = this.ResultScenario.GetDataSheet(Constants.DATASHEET_OUTPUT_FILTER_STOCKS);
 
 			foreach (DataRow dr in ds.GetData().Rows)
@@ -693,7 +715,10 @@ namespace SyncroSim.STSimStockFlow
 
 		private void FillOutputFilterFlows()
 		{
+			Debug.Assert(this.m_FlowTypeLinkagesAdded);
+			Debug.Assert(this.m_FlowGroupLinkagesAdded);
 			Debug.Assert(!this.m_OutputFilterFlows.HasItems);
+
 			DataSheet ds = this.ResultScenario.GetDataSheet(Constants.DATASHEET_OUTPUT_FILTER_FLOWS);
 
 			foreach (DataRow dr in ds.GetData().Rows)
@@ -716,6 +741,16 @@ namespace SyncroSim.STSimStockFlow
 
 				g.OutputFilter = f;
 			}
+
+			foreach (FlowType t in this.m_FlowTypes)
+            {
+				Constants.OutputFilter f = Constants.OutputFilter.None;
+
+				if (this.FilterIncludesSpatialDataForFlowType(t.Id)) f |= Constants.OutputFilter.Spatial;
+				if (this.FilterIncludesAvgSpatialDataForFlowType(t.Id)) f |= Constants.OutputFilter.AvgSpatial;
+
+				t.OutputFilter = f;
+            }
 		}
 
 		private void FillFlowOrders()

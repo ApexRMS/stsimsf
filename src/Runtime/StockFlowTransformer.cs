@@ -95,8 +95,6 @@ namespace SyncroSim.STSimStockFlow
 			this.FillFlowPathways();
 			this.FillFlowMultipliers();
 			this.FillFlowOrders();
-			this.FillOutputFilterStocks();
-			this.FillOutputFilterFlows();
 
             this.AddAutoStockTypeLinkages();
             this.AddAutoFlowTypeLinkages();
@@ -105,6 +103,9 @@ namespace SyncroSim.STSimStockFlow
             this.FillStockTypeLinkages();
 			this.FillFlowGroupLinkages();
             this.FillFlowTypeLinkages();
+
+			this.FillOutputFilterStocks();
+			this.FillOutputFilterFlows();
 
 			if (this.m_IsSpatial)
 			{
