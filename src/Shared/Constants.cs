@@ -1,6 +1,7 @@
 ﻿// stsim-stockflow: SyncroSim Add-On Package (to stsim) for integrating stocks and flows into state-and-transition simulation models in ST-Sim.
 // Copyright © 2007-2021 Apex Resource Management Solutions Ltd. (ApexRMS). All rights reserved.
 
+using System;
 using System.Drawing;
 
 namespace SyncroSim.STSimStockFlow
@@ -20,6 +21,15 @@ namespace SyncroSim.STSimStockFlow
             ToStock = 1,
             FromStock=2
         };
+
+		[Flags()]
+		public enum OutputFilter
+        {
+			None = 0,
+			Tabular = 1,
+			Spatial = 2,
+			AvgSpatial = 4
+        }
 
 		//Report names
 		public const string STOCK_REPORT_NAME = "stocks";

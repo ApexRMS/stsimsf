@@ -678,6 +678,17 @@ namespace SyncroSim.STSimStockFlow
 						Convert.ToBoolean(dr[Constants.OUTPUT_SPATIAL_COLUMN_NAME], CultureInfo.InvariantCulture), 
 						Convert.ToBoolean(dr[Constants.OUTPUT_AVG_SPATIAL_COLUMN_NAME], CultureInfo.InvariantCulture)));
 			}
+
+			foreach (StockGroup g in this.m_StockGroups)
+            {
+				Constants.OutputFilter f = Constants.OutputFilter.None;
+
+				if (this.FilterIncludesTabularDataForStockGroup(g.Id)) f |= Constants.OutputFilter.Tabular;
+				if (this.FilterIncludesSpatialDataForStockGroup(g.Id)) f |= Constants.OutputFilter.Spatial;
+				if (this.FilterIncludesAvgSpatialDataForStockGroup(g.Id)) f |= Constants.OutputFilter.AvgSpatial;
+
+				g.OutputFilter = f;
+            }
 		}
 
 		private void FillOutputFilterFlows()
@@ -693,6 +704,17 @@ namespace SyncroSim.STSimStockFlow
 						Convert.ToBoolean(dr[Constants.OUTPUT_SUMMARY_COLUMN_NAME], CultureInfo.InvariantCulture),
 						Convert.ToBoolean(dr[Constants.OUTPUT_SPATIAL_COLUMN_NAME], CultureInfo.InvariantCulture),
 						Convert.ToBoolean(dr[Constants.OUTPUT_AVG_SPATIAL_COLUMN_NAME], CultureInfo.InvariantCulture)));
+			}
+
+			foreach (FlowGroup g in this.m_FlowGroups)
+			{
+				Constants.OutputFilter f = Constants.OutputFilter.None;
+
+				if (this.FilterIncludesTabularDataForFlowGroup(g.Id)) f |= Constants.OutputFilter.Tabular;
+				if (this.FilterIncludesSpatialDataForFlowGroup(g.Id)) f |= Constants.OutputFilter.Spatial;
+				if (this.FilterIncludesAvgSpatialDataForFlowGroup(g.Id)) f |= Constants.OutputFilter.AvgSpatial;
+
+				g.OutputFilter = f;
 			}
 		}
 

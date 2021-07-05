@@ -323,7 +323,7 @@ namespace SyncroSim.STSimStockFlow
 
             foreach (StockGroup g in this.m_StockGroups)
             {
-                if (!this.FilterIncludesSpatialDataForStockGroup(g.Id))
+                if (!g.OutputFilter.HasFlag(Constants.OutputFilter.Spatial))
                 {
                     continue;
                 }
@@ -356,7 +356,7 @@ namespace SyncroSim.STSimStockFlow
 
             foreach (FlowGroup g in this.m_FlowGroups)
             {
-                if (!this.FilterIncludesSpatialDataForFlowGroup(g.Id))
+                if (!g.OutputFilter.HasFlag(Constants.OutputFilter.Spatial))
                 {
                     continue;
                 }
@@ -408,7 +408,7 @@ namespace SyncroSim.STSimStockFlow
 
             foreach (FlowGroup g in this.m_FlowGroups)
             {
-                if (!this.FilterIncludesSpatialDataForFlowGroup(g.Id))
+                if (!g.OutputFilter.HasFlag(Constants.OutputFilter.Spatial))
                 {
                     continue;
                 }
@@ -463,7 +463,9 @@ namespace SyncroSim.STSimStockFlow
 
             foreach (int id in this.m_AvgStockMap.Keys)
             {
-                if (!this.FilterIncludesAvgSpatialDataForStockGroup(id))
+                StockGroup sg = this.m_StockGroups[id];
+
+                if (!sg.OutputFilter.HasFlag(Constants.OutputFilter.AvgSpatial))
                 {
                     continue;
                 }
@@ -512,7 +514,9 @@ namespace SyncroSim.STSimStockFlow
 
             foreach (int id in this.m_AvgFlowMap.Keys)
             {
-                if (!this.FilterIncludesAvgSpatialDataForFlowGroup(id))
+                FlowGroup sg = this.m_FlowGroups[id];
+
+                if (!sg.OutputFilter.HasFlag(Constants.OutputFilter.AvgSpatial))
                 {
                     continue;
                 }
@@ -566,7 +570,9 @@ namespace SyncroSim.STSimStockFlow
 
             foreach (int id in this.m_AvgLateralFlowMap.Keys)
             {
-                if (!this.FilterIncludesAvgSpatialDataForFlowGroup(id))
+                FlowGroup sg = this.m_FlowGroups[id];
+
+                if (!sg.OutputFilter.HasFlag(Constants.OutputFilter.AvgSpatial))
                 {
                     continue;
                 }
