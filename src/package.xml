@@ -348,6 +348,40 @@
             </datasheet>
           </datasheets>
         </datafeed>
+        <datafeed name="OutputFilterStocks" displayName="Filter Stock Output" dataScope="Scenario">
+          <datasheets>
+            <datasheet name="OutputFilterStocks" displayName="Filter Stock Output">
+              <columns>
+                <column name="OutputFilterStocksID" dataType="Integer" isPrimary="True"/>
+                <column name="ScenarioID" dataType="Integer"/>
+                <column name="StockGroupID" dataType="Integer" displayName="Stock Type/Group" validationType="Datasheet" formula1="StockGroup" allowDbNull="False"/>
+                <column name="Summary" displayName="Summary" dataType="Boolean" allowDbNull="False"/>
+                <column name="Spatial" displayName="Spatial" dataType="Boolean" allowDbNull="False"/>
+                <column name="AvgSpatial" displayName="Average Spatial" dataType="Boolean" allowDbNull="False"/> 
+              </columns>
+              <validations>
+                <validation validationType="Unique" columns="StockGroupID"/>
+              </validations>
+            </datasheet>
+          </datasheets>
+        </datafeed>
+        <datafeed name="OutputFilterFlows" displayName="Filter Flow Output" dataScope="Scenario">
+          <datasheets>
+            <datasheet name="OutputFilterFlows" displayName="Filter Flow Output">
+              <columns>
+                <column name="OutputFilterFlowsID" dataType="Integer" isPrimary="True"/>
+                <column name="ScenarioID" dataType="Integer"/>
+                <column name="FlowGroupID" dataType="Integer" displayName="Flow Type/Group" validationType="Datasheet" formula1="FlowGroup" allowDbNull="False"/>
+                <column name="Summary" displayName="Summary" dataType="Boolean" allowDbNull="False"/>
+                <column name="Spatial" displayName="Spatial" dataType="Boolean" allowDbNull="False"/>
+                <column name="AvgSpatial" displayName="Average Spatial" dataType="Boolean" allowDbNull="False"/>
+              </columns>
+              <validations>
+                <validation validationType="Unique" columns="FlowGroupID"/>
+              </validations>
+            </datasheet>
+          </datasheets>
+        </datafeed>                  
         <datafeed name="OutputStock" dataScope="Scenario" isOutput="True">
           <datasheets>
             <datasheet name="OutputStock" displayName="Output Stock Group" spatialMultiProcessing="True" sumColumnNames="Amount">
@@ -522,6 +556,10 @@
         <item name="FlowPathways"/>       
         <item name="InitialStocks"/>
         <item name="OutputOptions"/>
+        <group name="OutputFilters" displayName="Output Filters">
+          <item name="OutputFilterStocks" displayName="Stocks"/>
+          <item name="OutputFilterFlows" displayName="Flows"/>          
+        </group>
         <group name="Advanced">
           <item name="StockGroupMembership"/>
           <item name="StockLimit"/>

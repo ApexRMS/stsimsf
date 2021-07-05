@@ -29,16 +29,22 @@ namespace SyncroSim.STSimStockFlow
 		private Dictionary<string, StochasticTimeRaster> m_FlowSpatialMultiplierRasters = new Dictionary<string, StochasticTimeRaster>();
         private FlowLateralMultiplierCollection m_FlowLateralMultipliers = new FlowLateralMultiplierCollection();
 		private Dictionary<string, StochasticTimeRaster> m_FlowLateralMultiplierRasters = new Dictionary<string, StochasticTimeRaster>();
+		private OutputFilterCollection m_OutputFilterStocks = new OutputFilterCollection();
+		private OutputFilterCollection m_OutputFilterFlows = new OutputFilterCollection();
 		private FlowOrderCollection m_FlowOrders = new FlowOrderCollection();
 
 #if DEBUG
         private bool m_AutoStockLinkagesAdded;
         private bool m_StockTypesFilled;
         private bool m_StockGroupsFilled;
+		private bool m_StockTypeLinkagesAdded;
+		private bool m_StockGroupLinkagesAdded;
 
         private bool m_AutoFlowLinkagesAdded;
 		private bool m_FlowTypesFilled;
 		private bool m_FlowGroupsFilled;
+		private bool m_FlowTypeLinkagesAdded;
+		private bool m_FlowGroupLinkagesAdded;
 #endif
 
         private void FillStockTypes()
@@ -146,9 +152,12 @@ namespace SyncroSim.STSimStockFlow
                     st.StockGroupLinkages.Add(linkage);
                 }
             }
-        }
+#if DEBUG
+			this.m_StockGroupLinkagesAdded = true;
+#endif
+		}
 
-        private void FillStockTypeLinkages()
+		private void FillStockTypeLinkages()
         {
 
 #if DEBUG
@@ -180,9 +189,13 @@ namespace SyncroSim.STSimStockFlow
                     sg.StockTypeLinkages.Add(linkage);
                 }
             }
-        }
 
-        private void FillFlowGroupLinkages()
+#if DEBUG
+			this.m_StockTypeLinkagesAdded = true;
+#endif
+		}
+
+		private void FillFlowGroupLinkages()
 		{
 
 #if DEBUG
@@ -214,9 +227,13 @@ namespace SyncroSim.STSimStockFlow
                     ft.FlowGroupLinkages.Add(linkage);
                 }
             }
+
+#if DEBUG
+			this.m_FlowGroupLinkagesAdded = true;
+#endif
 		}
 
-        private void FillFlowTypeLinkages()
+		private void FillFlowTypeLinkages()
         {
 
 #if DEBUG
@@ -248,7 +265,11 @@ namespace SyncroSim.STSimStockFlow
                     fg.FlowTypeLinkages.Add(linkage);
                 }
             }
-        }
+
+#if DEBUG
+			this.m_FlowTypeLinkagesAdded = true;
+#endif
+		}
 
         private void FillFlowMultiplierTypes()
         {
@@ -660,6 +681,76 @@ namespace SyncroSim.STSimStockFlow
 					throw new ArgumentException(ds.DisplayName + " -> " + ex.Message);
 				}
 			}
+		}
+
+		private void FillOutputFilterStocks()
+		{
+			Debug.Assert(this.m_StockTypeLinkagesAdded);
+			Debug.Assert(this.m_StockGroupLinkagesAdded);
+			Debug.Assert(!this.m_OutputFilterStocks.HasItems);
+
+			DataSheet ds = this.ResultScenario.GetDataSheet(Constants.DATASHEET_OUTPUT_FILTER_STOCKS);
+
+			foreach (DataRow dr in ds.GetData().Rows)
+			{
+				this.m_OutputFilterStocks.Add(
+					new OutputFilterStocks(
+						Convert.ToInt32(dr[Constants.STOCK_GROUP_ID_COLUMN_NAME], CultureInfo.InvariantCulture),
+						Convert.ToBoolean(dr[Constants.OUTPUT_SUMMARY_COLUMN_NAME], CultureInfo.InvariantCulture),
+						Convert.ToBoolean(dr[Constants.OUTPUT_SPATIAL_COLUMN_NAME], CultureInfo.InvariantCulture), 
+						Convert.ToBoolean(dr[Constants.OUTPUT_AVG_SPATIAL_COLUMN_NAME], CultureInfo.InvariantCulture)));
+			}
+
+			foreach (StockGroup g in this.m_StockGroups)
+            {
+				Constants.OutputFilter f = Constants.OutputFilter.None;
+
+				if (this.FilterIncludesTabularDataForStockGroup(g.Id)) f |= Constants.OutputFilter.Tabular;
+				if (this.FilterIncludesSpatialDataForStockGroup(g.Id)) f |= Constants.OutputFilter.Spatial;
+				if (this.FilterIncludesAvgSpatialDataForStockGroup(g.Id)) f |= Constants.OutputFilter.AvgSpatial;
+
+				g.OutputFilter = f;
+            }
+		}
+
+		private void FillOutputFilterFlows()
+		{
+			Debug.Assert(this.m_FlowTypeLinkagesAdded);
+			Debug.Assert(this.m_FlowGroupLinkagesAdded);
+			Debug.Assert(!this.m_OutputFilterFlows.HasItems);
+
+			DataSheet ds = this.ResultScenario.GetDataSheet(Constants.DATASHEET_OUTPUT_FILTER_FLOWS);
+
+			foreach (DataRow dr in ds.GetData().Rows)
+			{
+				this.m_OutputFilterFlows.Add(
+					new OutputFilterFlows(
+						Convert.ToInt32(dr[Constants.FLOW_GROUP_ID_COLUMN_NAME], CultureInfo.InvariantCulture),
+						Convert.ToBoolean(dr[Constants.OUTPUT_SUMMARY_COLUMN_NAME], CultureInfo.InvariantCulture),
+						Convert.ToBoolean(dr[Constants.OUTPUT_SPATIAL_COLUMN_NAME], CultureInfo.InvariantCulture),
+						Convert.ToBoolean(dr[Constants.OUTPUT_AVG_SPATIAL_COLUMN_NAME], CultureInfo.InvariantCulture)));
+			}
+
+			foreach (FlowGroup g in this.m_FlowGroups)
+			{
+				Constants.OutputFilter f = Constants.OutputFilter.None;
+
+				if (this.FilterIncludesTabularDataForFlowGroup(g.Id)) f |= Constants.OutputFilter.Tabular;
+				if (this.FilterIncludesSpatialDataForFlowGroup(g.Id)) f |= Constants.OutputFilter.Spatial;
+				if (this.FilterIncludesAvgSpatialDataForFlowGroup(g.Id)) f |= Constants.OutputFilter.AvgSpatial;
+
+				g.OutputFilter = f;
+			}
+
+			foreach (FlowType t in this.m_FlowTypes)
+            {
+				Constants.OutputFilter f = Constants.OutputFilter.None;
+
+				if (this.FilterIncludesSpatialDataForFlowType(t.Id)) f |= Constants.OutputFilter.Spatial;
+				if (this.FilterIncludesAvgSpatialDataForFlowType(t.Id)) f |= Constants.OutputFilter.AvgSpatial;
+
+				t.OutputFilter = f;
+            }
 		}
 
 		private void FillFlowOrders()

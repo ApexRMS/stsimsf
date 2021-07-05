@@ -249,6 +249,11 @@ namespace SyncroSim.STSimStockFlow
 
             foreach (StockGroup sg in this.m_StockGroups)
             {
+                if (!sg.OutputFilter.HasFlag(Constants.OutputFilter.AvgSpatial))
+                {
+                    continue;
+                }
+
                 Dictionary<int, double[]> dict = new Dictionary<int, double[]>();
 
                 for (var timestep = this.STSimTransformer.MinimumTimestep; timestep <= this.STSimTransformer.MaximumTimestep; timestep++)
@@ -297,6 +302,11 @@ namespace SyncroSim.STSimStockFlow
 
             foreach (FlowGroup fg in this.m_FlowGroups)
             {
+                if (!fg.OutputFilter.HasFlag(Constants.OutputFilter.AvgSpatial))
+                {
+                    continue;
+                }
+
                 Dictionary<int, double[]> dict = new Dictionary<int, double[]>();
 
                 for (var timestep = this.STSimTransformer.MinimumTimestep; timestep <= this.STSimTransformer.MaximumTimestep; timestep++)
@@ -333,6 +343,11 @@ namespace SyncroSim.STSimStockFlow
 
             foreach (FlowGroup fg in this.m_FlowGroups)
             {
+                if (!fg.OutputFilter.HasFlag(Constants.OutputFilter.AvgSpatial))
+                {
+                    continue;
+                }
+
                 Dictionary<int, double[]> dict = new Dictionary<int, double[]>();
 
                 for (var timestep = this.STSimTransformer.MinimumTimestep; timestep <= this.STSimTransformer.MaximumTimestep; timestep++)
