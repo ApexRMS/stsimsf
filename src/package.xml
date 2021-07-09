@@ -355,9 +355,9 @@
                 <column name="OutputFilterStocksID" dataType="Integer" isPrimary="True"/>
                 <column name="ScenarioID" dataType="Integer"/>
                 <column name="StockGroupID" dataType="Integer" displayName="Stock Type/Group" validationType="Datasheet" formula1="StockGroup" allowDbNull="False"/>
-                <column name="Summary" displayName="Summary" dataType="Boolean" allowDbNull="False"/>
-                <column name="Spatial" displayName="Spatial" dataType="Boolean" allowDbNull="False"/>
-                <column name="AvgSpatial" displayName="Average Spatial" dataType="Boolean" allowDbNull="False"/> 
+                <column name="Summary" displayName="Summary" dataType="Boolean"/>
+                <column name="Spatial" displayName="Spatial" dataType="Boolean"/>
+                <column name="AvgSpatial" displayName="Average Spatial" dataType="Boolean"/> 
               </columns>
               <validations>
                 <validation validationType="Unique" columns="StockGroupID"/>
@@ -372,9 +372,9 @@
                 <column name="OutputFilterFlowsID" dataType="Integer" isPrimary="True"/>
                 <column name="ScenarioID" dataType="Integer"/>
                 <column name="FlowGroupID" dataType="Integer" displayName="Flow Type/Group" validationType="Datasheet" formula1="FlowGroup" allowDbNull="False"/>
-                <column name="Summary" displayName="Summary" dataType="Boolean" allowDbNull="False"/>
-                <column name="Spatial" displayName="Spatial" dataType="Boolean" allowDbNull="False"/>
-                <column name="AvgSpatial" displayName="Average Spatial" dataType="Boolean" allowDbNull="False"/>
+                <column name="Summary" displayName="Summary" dataType="Boolean"/>
+                <column name="Spatial" displayName="Spatial" dataType="Boolean"/>
+                <column name="AvgSpatial" displayName="Average Spatial" dataType="Boolean"/>
               </columns>
               <validations>
                 <validation validationType="Unique" columns="FlowGroupID"/>

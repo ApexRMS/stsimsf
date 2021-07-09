@@ -696,9 +696,9 @@ namespace SyncroSim.STSimStockFlow
 				this.m_OutputFilterStocks.Add(
 					new OutputFilterStocks(
 						Convert.ToInt32(dr[Constants.STOCK_GROUP_ID_COLUMN_NAME], CultureInfo.InvariantCulture),
-						Convert.ToBoolean(dr[Constants.OUTPUT_SUMMARY_COLUMN_NAME], CultureInfo.InvariantCulture),
-						Convert.ToBoolean(dr[Constants.OUTPUT_SPATIAL_COLUMN_NAME], CultureInfo.InvariantCulture), 
-						Convert.ToBoolean(dr[Constants.OUTPUT_AVG_SPATIAL_COLUMN_NAME], CultureInfo.InvariantCulture)));
+						Booleans.BoolFromValue(dr[Constants.OUTPUT_SUMMARY_COLUMN_NAME]),
+						Booleans.BoolFromValue(dr[Constants.OUTPUT_SPATIAL_COLUMN_NAME]), 
+						Booleans.BoolFromValue(dr[Constants.OUTPUT_AVG_SPATIAL_COLUMN_NAME])));
 			}
 
 			foreach (StockGroup g in this.m_StockGroups)
@@ -726,9 +726,9 @@ namespace SyncroSim.STSimStockFlow
 				this.m_OutputFilterFlows.Add(
 					new OutputFilterFlows(
 						Convert.ToInt32(dr[Constants.FLOW_GROUP_ID_COLUMN_NAME], CultureInfo.InvariantCulture),
-						Convert.ToBoolean(dr[Constants.OUTPUT_SUMMARY_COLUMN_NAME], CultureInfo.InvariantCulture),
-						Convert.ToBoolean(dr[Constants.OUTPUT_SPATIAL_COLUMN_NAME], CultureInfo.InvariantCulture),
-						Convert.ToBoolean(dr[Constants.OUTPUT_AVG_SPATIAL_COLUMN_NAME], CultureInfo.InvariantCulture)));
+						Booleans.BoolFromValue(dr[Constants.OUTPUT_SUMMARY_COLUMN_NAME]),
+						Booleans.BoolFromValue(dr[Constants.OUTPUT_SPATIAL_COLUMN_NAME]),
+						Booleans.BoolFromValue(dr[Constants.OUTPUT_AVG_SPATIAL_COLUMN_NAME])));
 			}
 
 			foreach (FlowGroup g in this.m_FlowGroups)
