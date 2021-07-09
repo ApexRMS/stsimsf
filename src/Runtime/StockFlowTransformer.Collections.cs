@@ -685,10 +685,11 @@ namespace SyncroSim.STSimStockFlow
 
 		private void FillOutputFilterStocks()
 		{
+#if DEBUG
 			Debug.Assert(this.m_StockTypeLinkagesAdded);
 			Debug.Assert(this.m_StockGroupLinkagesAdded);
 			Debug.Assert(!this.m_OutputFilterStocks.HasItems);
-
+#endif
 			DataSheet ds = this.ResultScenario.GetDataSheet(Constants.DATASHEET_OUTPUT_FILTER_STOCKS);
 
 			foreach (DataRow dr in ds.GetData().Rows)
@@ -715,10 +716,11 @@ namespace SyncroSim.STSimStockFlow
 
 		private void FillOutputFilterFlows()
 		{
+#if DEBUG
 			Debug.Assert(this.m_FlowTypeLinkagesAdded);
 			Debug.Assert(this.m_FlowGroupLinkagesAdded);
 			Debug.Assert(!this.m_OutputFilterFlows.HasItems);
-
+#endif
 			DataSheet ds = this.ResultScenario.GetDataSheet(Constants.DATASHEET_OUTPUT_FILTER_FLOWS);
 
 			foreach (DataRow dr in ds.GetData().Rows)
