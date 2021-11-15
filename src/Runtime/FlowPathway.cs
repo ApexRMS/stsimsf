@@ -12,11 +12,11 @@ namespace SyncroSim.STSimStockFlow
 		private int? m_FromTertiaryStratumId;
 		private int? m_FromStateClassId;
 		private int? m_FromMinimumAge;
-		private int m_FromStockTypeId;
+		private int? m_FromStockTypeId;
 		private int? m_ToStratumId;
 		private int? m_ToStateClassId;
 		private int? m_ToMinimumAge;
-		private int m_ToStockTypeId;
+		private int? m_ToStockTypeId;
 		private int m_TransitionGroupId;
 		private int? m_StateAttributeTypeId;
 		private int m_FlowTypeId;
@@ -38,11 +38,11 @@ namespace SyncroSim.STSimStockFlow
             int? fromTertiaryStratumId, 
             int? fromStateClassId, 
             int? fromMinimumAge, 
-            int fromStockTypeId, 
+            int? fromStockTypeId, 
             int? toStratumId, 
             int? toStateClassId, 
             int? toMinimumAge, 
-            int toStockTypeId, 
+            int? toStockTypeId, 
             int transitionGroupId, 
             int? stateAttributeTypeId, 
             int flowTypeId, 
@@ -131,7 +131,7 @@ namespace SyncroSim.STSimStockFlow
 			}
 		}
 
-		public int FromStockTypeId
+		public int? FromStockTypeId
 		{
 			get
 			{
@@ -178,7 +178,7 @@ namespace SyncroSim.STSimStockFlow
 			}
 		}
 
-		public int ToStockTypeId
+		public int? ToStockTypeId
 		{
 			get
 			{

@@ -840,45 +840,50 @@ namespace SyncroSim.STSimStockFlow
 					StockLimit limsrc = this.m_StockLimitMap.GetStockLimit(fp.FromStockTypeId, cell.StratumId, cell.SecondaryStratumId, cell.TertiaryStratumId, cell.StateClassId, iteration, timestep);
 					StockLimit limdst = this.m_StockLimitMap.GetStockLimit(fp.ToStockTypeId, cell.StratumId, cell.SecondaryStratumId, cell.TertiaryStratumId, cell.StateClassId, iteration, timestep);
 
-					if (!d.ContainsKey(fp.FromStockTypeId))
+					if (fp.FromStockTypeId.HasValue && !d.ContainsKey(fp.FromStockTypeId.Value))
 					{
 						double val = GetLimitBasedInitialStock(0.0, limsrc);
-						d.Add(fp.FromStockTypeId, val);
+						d.Add(fp.FromStockTypeId.Value, val);
 					}
 
-					if (!d.ContainsKey(fp.ToStockTypeId))
+					if (fp.ToStockTypeId.HasValue && !d.ContainsKey(fp.ToStockTypeId.Value))
 					{
 						double val = GetLimitBasedInitialStock(0.0, limdst);
-						d.Add(fp.ToStockTypeId, val);
+						d.Add(fp.ToStockTypeId.Value, val);
 					}
 
 					double fa = fp.FlowAmount;
 
 					if (limsrc != null)
 					{
-						if ((d[fp.FromStockTypeId] - fa) < limsrc.StockMinimum)
-						{
-							fa = d[fp.FromStockTypeId] - limsrc.StockMinimum;
+						if (fp.FromStockTypeId.HasValue)
+                        {
+							if ((d[fp.FromStockTypeId.Value] - fa) < limsrc.StockMinimum)
+							{
+								fa = d[fp.FromStockTypeId.Value] - limsrc.StockMinimum;
+							}
 						}
 					}
 
 					if (limdst != null)
 					{
-                        if (!fp.IsLateral)
+                        if (!fp.IsLateral && fp.ToStockTypeId.HasValue)
                         {
-						    if ((d[fp.ToStockTypeId] + fa) > limdst.StockMaximum)
+						    if ((d[fp.ToStockTypeId.Value] + fa) > limdst.StockMaximum)
 						    {
-							    fa = limdst.StockMaximum - d[fp.ToStockTypeId];
+							    fa = limdst.StockMaximum - d[fp.ToStockTypeId.Value];
 						    }
                         }
 					}
 
-					d[fp.FromStockTypeId] -= fa;
-
-                    if (MathUtils.CompareDoublesEqual(d[fp.FromStockTypeId], 0.0, 0.00000001))
+					if (fp.FromStockTypeId.HasValue)
                     {
-                        d[fp.FromStockTypeId] = 0.0;
-                    }
+						d[fp.FromStockTypeId.Value] -= fa;
+						if (MathUtils.CompareDoublesEqual(d[fp.FromStockTypeId.Value], 0.0, 0.00000001))
+						{
+							d[fp.FromStockTypeId.Value] = 0.0;
+						}
+					}
 
                     if (fp.IsLateral)
                     {
@@ -886,7 +891,10 @@ namespace SyncroSim.STSimStockFlow
                     }
                     else
                     {
-					    d[fp.ToStockTypeId] += fa;
+						if (fp.ToStockTypeId.HasValue)
+                        {
+							d[fp.ToStockTypeId.Value] += fa;
+						}
                     }
 
 					this.RecordSummaryFlowOutputData(timestep, cell, dtPathway, ptPathway, fp, fa);
@@ -967,8 +975,11 @@ namespace SyncroSim.STSimStockFlow
 
                     double LateralFlowMultiplier = this.GetFlowLateralMultiplier(rec.FlowTypeId, RecCell, iteration, timestep);
                     double FlowAmount = ((LateralFlowMultiplier / rec.InverseMultiplier) * rec.StockAmount);
-
-                    d[rec.StockTypeId] += FlowAmount;
+					
+					if (rec.StockTypeId.HasValue)
+                    {
+						d[rec.StockTypeId.Value] += FlowAmount;
+					}
                     this.RecordSpatialLateralFlowOutputData(timestep, RecCell, rec.FlowTypeId, FlowAmount);
                 }
             }
@@ -1025,12 +1036,15 @@ namespace SyncroSim.STSimStockFlow
 			{
 				Dictionary<int, double> d = GetStockAmountDictionary(cell);
 
-				if (!d.ContainsKey(fp.FromStockTypeId))
+				if (fp.FromStockTypeId.HasValue && !d.ContainsKey(fp.FromStockTypeId.Value))
 				{
-					d.Add(fp.FromStockTypeId, 0.0);
+					d.Add(fp.FromStockTypeId.Value, 0.0);
 				}
 
-				FlowAmount = d[fp.FromStockTypeId];
+				if (fp.FromStockTypeId.HasValue)
+                {
+					FlowAmount = d[fp.FromStockTypeId.Value];
+				}
 			}
 
             return this.ApplyFlowMultipliers(cell, fp, iteration, timestep, FlowAmount);
@@ -1038,20 +1052,25 @@ namespace SyncroSim.STSimStockFlow
 
         private double CalculateFlowAmountTargetTypeFromStock(FlowPathway fp, Cell cell, int iteration, int timestep)
         {
+			if (!fp.FromStockTypeId.HasValue)
+            {
+				return 0.0;
+            }
+
             if (this.DisabledFlowMultiplierExists(cell, fp, iteration, timestep))
             {
                 return 0.0;
             }
 
-            Dictionary<int, double> d = GetStockAmountDictionary(cell);
+			Dictionary<int, double> d = GetStockAmountDictionary(cell);
 
-            if (!d.ContainsKey(fp.FromStockTypeId))
+            if (!d.ContainsKey(fp.FromStockTypeId.Value))
             {
-                d.Add(fp.FromStockTypeId, 0.0);
-            }
+                d.Add(fp.FromStockTypeId.Value, 0.0);
+			}
 
-            double StockTargetAmount = 0.0;
-            double FromStockAmount = d[fp.FromStockTypeId];
+			double StockTargetAmount = 0.0;
+			double FromStockAmount = d[fp.FromStockTypeId.Value];
 
             if (fp.StateAttributeTypeId.HasValue)
             {
@@ -1072,6 +1091,11 @@ namespace SyncroSim.STSimStockFlow
 
         private double CalculateFlowAmountTargetTypeToStock(FlowPathway fp, Cell cell, int iteration, int timestep)
         {
+			if (!fp.ToStockTypeId.HasValue)
+            {
+				return 0.0;
+            }
+
             if (this.DisabledFlowMultiplierExists(cell, fp, iteration, timestep))
             {
                 return 0.0;
@@ -1079,13 +1103,13 @@ namespace SyncroSim.STSimStockFlow
 
             Dictionary<int, double> d = GetStockAmountDictionary(cell);
 
-            if (!d.ContainsKey(fp.ToStockTypeId))
+            if (!d.ContainsKey(fp.ToStockTypeId.Value))
             {
-                d.Add(fp.ToStockTypeId, 0.0);
+                d.Add(fp.ToStockTypeId.Value, 0.0);
             }
 
             double StockTargetAmount = 0.0;
-            double ToStockAmount = d[fp.ToStockTypeId];
+            double ToStockAmount = d[fp.ToStockTypeId.Value];
 
             if (fp.StateAttributeTypeId.HasValue)
             {

@@ -5,7 +5,7 @@ namespace SyncroSim.STSimStockFlow
 {
     class LateralFlowCouplet
     {
-        public int StockTypeId;
+        public int? StockTypeId;
         public int FlowTypeId;
     }
 }

@@ -23,7 +23,7 @@ namespace SyncroSim.STSimStockFlow
         }
 
         public void AddOrUpdate(
-            int stockTypeId,
+            int? stockTypeId,
             int flowTypeId,
             int? primaryStratumId,
             int? secondaryStratumId,
@@ -34,7 +34,7 @@ namespace SyncroSim.STSimStockFlow
         {
             Debug.Assert(
                 primaryStratumId.HasValue || secondaryStratumId.HasValue || tertiaryStratumId.HasValue 
-                || stateClassId.HasValue || minimumAge.HasValue);
+                || stateClassId.HasValue || minimumAge.HasValue || stockTypeId.HasValue);
 
             SortedKeyMap1<LateralFlowAmountRecord> m = this.m_Map.GetItemExact(
                 stockTypeId, flowTypeId, primaryStratumId, secondaryStratumId, tertiaryStratumId, stateClassId);
@@ -65,7 +65,7 @@ namespace SyncroSim.STSimStockFlow
         }
 
         public LateralFlowAmountRecord GetRecord(
-            int stockTypeId, 
+            int? stockTypeId, 
             int flowTypeId, 
             int primaryStratumId, 
             int? secondaryStratumId, 

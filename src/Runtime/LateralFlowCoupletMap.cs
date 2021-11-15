@@ -12,10 +12,17 @@ namespace SyncroSim.STSimStockFlow
         private List<LateralFlowCouplet> m_Couplets = new List<LateralFlowCouplet>();
         private Dictionary<string, LateralFlowCouplet> m_LookAside = new Dictionary<string, LateralFlowCouplet>();
 
-        public void AddCouplet(int stockTypeId, int flowTypeId)
+        public void AddCouplet(int? stockTypeId, int flowTypeId)
         {
-            Debug.Assert(stockTypeId > 0 && flowTypeId > 0);
-            string Key = string.Format(CultureInfo.InvariantCulture, "{0}-{1}", stockTypeId, flowTypeId);
+#if DEBUG
+            if (stockTypeId.HasValue)
+            {
+                Debug.Assert(stockTypeId.Value > 0);
+            }
+
+            Debug.Assert(flowTypeId > 0);
+#endif
+            string Key = string.Format(CultureInfo.InvariantCulture, "{0}-{1}", LookupKeyUtilities.GetOutputCollectionKey(stockTypeId), flowTypeId);
 
             if (!this.m_LookAside.ContainsKey(Key))
             {

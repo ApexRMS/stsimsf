@@ -16,7 +16,7 @@ namespace SyncroSim.STSimStockFlow
             }
         }
 
-        public StockLimit GetStockLimit(int stockTypeId, int stratumId, int? secondaryStratumId, int? tertiaryStratumId, int stateClassId, int iteration, int timestep)
+        public StockLimit GetStockLimit(int? stockTypeId, int stratumId, int? secondaryStratumId, int? tertiaryStratumId, int stateClassId, int iteration, int timestep)
         {
             return base.GetItem(stockTypeId, stratumId, secondaryStratumId, tertiaryStratumId, stateClassId, iteration, timestep);
         }
