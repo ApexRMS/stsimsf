@@ -166,6 +166,10 @@ namespace SyncroSim.STSimStockFlow
 
 		//Flow Diagram
 		public const string LOCATION_COLUMN_NAME = "Location";
+		public const int FLOW_PATHWAY_NULL_STOCK_TYPE_CUE_SIZE = 14;
+		public static Color FLOW_PATHWAY_CUE_COLOR = Color.Green;
+
+
 
 		//Flow Order
 		public const string DATASHEET_FLOW_ORDER_OPTIONS_ABT_COLUMN_NAME = "ApplyBeforeTransitions";
