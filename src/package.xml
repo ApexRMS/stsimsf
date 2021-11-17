@@ -153,11 +153,11 @@
                 <column name="FromTertiaryStratumID" dataType="Integer" displayName="From Tertiary Stratum" validationType="Datasheet" formula1="stsim_TertiaryStratum" isOptional="True" displayNameSource="stsim_Terminology" displayNameColumn="TertiaryStratumLabel"/>
                 <column name="FromStateClassID" dataType="Integer" displayName="From State Class" validationType="Datasheet" formula1="stsim_StateClass" isOptional="True"/>
                 <column name="FromAgeMin" dataType="Integer" displayName="From Min Age" validationType="WholeNumber" validationCondition="GreaterEqual" formula1="0" isOptional="True"/>
-                <column name="FromStockTypeID" dataType="Integer" displayName="From Stock Type" validationType="Datasheet" formula1="StockType" allowDbNull="False"/>
+                <column name="FromStockTypeID" dataType="Integer" displayName="From Stock Type" validationType="Datasheet" formula1="StockType"/>
                 <column name="ToStratumID" dataType="Integer" displayName="To Stratum" validationType="Datasheet" formula1="stsim_Stratum" isOptional="True" displayNameSource="stsim_Terminology" displayNameColumn="PrimaryStratumLabel"/>
                 <column name="ToStateClassID" dataType="Integer" displayName="To State Class" validationType="Datasheet" formula1="stsim_StateClass" isOptional="True"/>
                 <column name="ToAgeMin" dataType="Integer" displayName="To Min Age" validationType="WholeNumber" validationCondition="GreaterEqual" formula1="0" isOptional="True"/>
-                <column name="ToStockTypeID" dataType="Integer" displayName="To Stock Type" validationType="Datasheet" formula1="StockType" allowDbNull="False"/>
+                <column name="ToStockTypeID" dataType="Integer" displayName="To Stock Type" validationType="Datasheet" formula1="StockType"/>
                 <column name="TransitionGroupID" dataType="Integer" displayName="Transition Group" validationType="Datasheet" formula1="stsim_TransitionGroup" isOptional="True"/>
                 <column name="StateAttributeTypeID" dataType="Integer" displayName="State Attribute Type" validationType="Datasheet" formula1="stsim_StateAttributeType" isOptional="True"/>
                 <column name="FlowTypeID" dataType="Integer" displayName="Flow Type" validationType="Datasheet" formula1="FlowType" allowDbNull="False"/>

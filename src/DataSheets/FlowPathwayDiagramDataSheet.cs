@@ -56,13 +56,26 @@ namespace SyncroSim.STSimStockFlow
 					continue;
 				}
 
-				int FromStockTypeId = Convert.ToInt32(dr[Constants.FROM_STOCK_TYPE_ID_COLUMN_NAME], CultureInfo.InvariantCulture);
-				int ToStockTypeId = Convert.ToInt32(dr[Constants.TO_STOCK_TYPE_ID_COLUMN_NAME], CultureInfo.InvariantCulture);
+				int? FromStockTypeId = null;
+				if (dr[Constants.FROM_STOCK_TYPE_ID_COLUMN_NAME] != DBNull.Value)
+                {
+					FromStockTypeId = Convert.ToInt32(dr[Constants.FROM_STOCK_TYPE_ID_COLUMN_NAME], CultureInfo.InvariantCulture);
+				}
 
-				if ((!RemainingStockTypes.ContainsKey(FromStockTypeId)) | (!RemainingStockTypes.ContainsKey(ToStockTypeId)))
-				{
-					DataTableUtilities.DeleteTableRow(FlowPathwayData, dr);
-					DeletedRows = true;
+				int? ToStockTypeId = null;
+				if (dr[Constants.TO_STOCK_TYPE_ID_COLUMN_NAME] != DBNull.Value)
+                {
+					ToStockTypeId = Convert.ToInt32(dr[Constants.TO_STOCK_TYPE_ID_COLUMN_NAME], CultureInfo.InvariantCulture);
+
+				}
+
+				if (FromStockTypeId.HasValue && ToStockTypeId.HasValue)
+                {
+					if ((!RemainingStockTypes.ContainsKey(FromStockTypeId.Value)) | (!RemainingStockTypes.ContainsKey(ToStockTypeId.Value)))
+					{
+						DataTableUtilities.DeleteTableRow(FlowPathwayData, dr);
+						DeletedRows = true;
+					}
 				}
 			}
 

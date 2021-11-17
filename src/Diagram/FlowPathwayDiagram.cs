@@ -223,6 +223,7 @@ namespace SyncroSim.STSimStockFlow
 				s.CreateConnectorPoints();
 
 				this.FillOutgoingPathways(s);
+				this.FillIncomingPathways(s);
 				this.AddShape(s);
 			}
 		}
@@ -288,10 +289,28 @@ namespace SyncroSim.STSimStockFlow
 				shape.OutgoingFlowPathways.Add(fp);
 			}
 		}
+		private void FillIncomingPathways(StockTypeShape shape)
+		{
+			DataRow[] IncomingRows = this.GetIncomingPathways(shape.StockTypeId);
+
+			foreach (DataRow dr in IncomingRows)
+			{
+				Debug.Assert(Convert.ToInt32(dr[Constants.TO_STOCK_TYPE_ID_COLUMN_NAME], CultureInfo.InvariantCulture) == shape.StockTypeId);
+
+				FlowPathway fp = DataTableUtilities.CreateFlowPathway(dr);
+				shape.IncomingFlowPathways.Add(fp);
+			}
+		}
 
 		private DataRow[] GetOutgoingPathways(int stockTypeId)
 		{
 			string Query = string.Format(CultureInfo.InvariantCulture, "{0}={1}", Constants.FROM_STOCK_TYPE_ID_COLUMN_NAME, stockTypeId);
+			return this.m_FlowPathwayData.Select(Query, null);
+		}
+
+		private DataRow[] GetIncomingPathways(int stockTypeId)
+        {
+			string Query = string.Format(CultureInfo.InvariantCulture, "{0}={1}", Constants.TO_STOCK_TYPE_ID_COLUMN_NAME, stockTypeId);
 			return this.m_FlowPathwayData.Select(Query, null);
 		}
 
@@ -361,7 +380,13 @@ namespace SyncroSim.STSimStockFlow
 				foreach (FlowPathway Pathway in FromShape.OutgoingFlowPathways)
 				{
 					FlowPathwayLine l = null;
-					StockTypeShape ToShape = this.m_ShapeLookup[Pathway.ToStockTypeId];
+
+					if (!Pathway.ToStockTypeId.HasValue)
+					{
+						continue;
+					}
+
+					StockTypeShape ToShape = this.m_ShapeLookup[Pathway.ToStockTypeId.Value];
 					string Lookup = string.Format(CultureInfo.InvariantCulture, "k1{0}-k2{1}", FromShape.StockTypeId, Pathway.ToStockTypeId);
 
 					if (AlreadyAdded.ContainsKey(Lookup))
@@ -385,8 +410,25 @@ namespace SyncroSim.STSimStockFlow
 
 						AlreadyAdded.Add(Lookup, l);
 					}
-
 					this.AddLine(l);
+				}
+
+				foreach (FlowPathway Pathway in FromShape.OutgoingFlowPathways)
+                {
+					if (!Pathway.ToStockTypeId.HasValue)
+                    {
+						this.AddLine(CreateNullToStockTypeCue(FromShape, Pathway));
+						break;
+					}
+                }
+
+				foreach (FlowPathway Pathway in FromShape.IncomingFlowPathways)
+				{
+					if (!Pathway.FromStockTypeId.HasValue)
+					{
+						this.AddLine(CreateNullFromStockTypeCue(FromShape, Pathway));
+						break;
+					}
 				}
 			}
 		}
@@ -401,6 +443,35 @@ namespace SyncroSim.STSimStockFlow
 
 			l.AddEllipse(rc);
 			return l;
+		}
+
+		private static FlowPathwayLine CreateNullToStockTypeCue(StockTypeShape shape, FlowPathway fp)
+		{
+			int X1 = shape.Bounds.X + shape.Bounds.Width;
+			int Y1 = shape.Bounds.Y;
+			int X2 = X1 + Constants.FLOW_PATHWAY_NULL_STOCK_TYPE_CUE_SIZE;
+			int Y2 = Y1 - Constants.FLOW_PATHWAY_NULL_STOCK_TYPE_CUE_SIZE;
+
+			FlowPathwayLine Line = new FlowPathwayLine(Constants.DIAGRAM_FLOW_PATHWAY_LINE_COLOR, fp);
+
+			Line.AddLineSegment(X1, Y1, X2, Y2);
+			Line.AddArrowSegments(X2, Y2, BoxArrowDiagramArrowDirection.Northeast);
+
+			return Line;
+		}
+
+		private static FlowPathwayLine CreateNullFromStockTypeCue(StockTypeShape shape, FlowPathway fp)
+		{
+			int X1 = shape.Bounds.X - Constants.FLOW_PATHWAY_NULL_STOCK_TYPE_CUE_SIZE;
+			int Y1 = shape.Bounds.Y - Constants.FLOW_PATHWAY_NULL_STOCK_TYPE_CUE_SIZE;
+			int X2 = shape.Bounds.X;
+			int Y2 = shape.Bounds.Y;
+			FlowPathwayLine Line = new FlowPathwayLine(Constants.DIAGRAM_FLOW_PATHWAY_LINE_COLOR, fp);
+
+			Line.AddLineSegment(X1, Y1, X2, Y2);
+			Line.AddArrowSegments(X2, Y2, BoxArrowDiagramArrowDirection.Southeast);
+
+			return Line;
 		}
 
 		private string GetNextLocation()

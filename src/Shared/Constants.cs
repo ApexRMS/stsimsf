@@ -36,6 +36,7 @@ namespace SyncroSim.STSimStockFlow
 		public const string FLOW_REPORT_NAME = "flows";
 		public const double DEFAULT_FLOW_ORDER = double.MinValue;
 		public const int OUTPUT_COLLECTION_WILDCARD_KEY = 0;
+		public const int NULL_FROM_STOCK_TYPE_ID = 0;
 
 		//Categories and groups
 		public const string STOCK_TYPE_GROUP_NAME = "Stock Types";
@@ -166,6 +167,10 @@ namespace SyncroSim.STSimStockFlow
 
 		//Flow Diagram
 		public const string LOCATION_COLUMN_NAME = "Location";
+		public const int FLOW_PATHWAY_NULL_STOCK_TYPE_CUE_SIZE = 14;
+		public static Color FLOW_PATHWAY_CUE_COLOR = Color.Green;
+
+
 
 		//Flow Order
 		public const string DATASHEET_FLOW_ORDER_OPTIONS_ABT_COLUMN_NAME = "ApplyBeforeTransitions";

@@ -91,8 +91,8 @@ namespace SyncroSim.STSimStockFlow
 		{
 			string Filter = CreateIntegerFilterSpec(this.m_StockTypeIds);
 
-			string FromFormatString = "FromStockTypeID IN ({0})";
-			string ToFormatString = "ToStockTypeID IN ({0})";
+			string FromFormatString = "FromStockTypeID IS NULL OR FromStockTypeId IN ({0})";
+			string ToFormatString = "ToStockTypeID IS NULL OR ToStockTypeID IN ({0})";
 
 			if (this.m_ShowFlowsFrom)
 			{

@@ -115,11 +115,11 @@ namespace SyncroSim.STSimStockFlow
             int? FromTertiaryStratumId = null;
             int? FromStateClassId = null;
             int? FromMinimumAge = null;
-            int FromStockTypeId = 0;
+            int? FromStockTypeId = null;
             int? ToStratumId = null;
             int? ToStateClassId = null;
             int? ToMinimumAge = null;
-            int ToStockTypeId = 0;
+            int? ToStockTypeId = null;
             int TransitionGroupId = 0;
             int? StateAttributeTypeId = null;
             int FlowTypeId = 0;
@@ -166,7 +166,10 @@ namespace SyncroSim.STSimStockFlow
                 FromMinimumAge = Convert.ToInt32(dr[Constants.FROM_MIN_AGE_COLUMN_NAME], CultureInfo.InvariantCulture);
             }
 
-            FromStockTypeId = Convert.ToInt32(dr[Constants.FROM_STOCK_TYPE_ID_COLUMN_NAME], CultureInfo.InvariantCulture);
+            if (dr[Constants.FROM_STOCK_TYPE_ID_COLUMN_NAME] != DBNull.Value)
+            {
+                FromStockTypeId = Convert.ToInt32(dr[Constants.FROM_STOCK_TYPE_ID_COLUMN_NAME], CultureInfo.InvariantCulture);
+            }
 
             if (dr[Constants.TO_STRATUM_ID_COLUMN_NAME] != DBNull.Value)
             {
@@ -183,7 +186,10 @@ namespace SyncroSim.STSimStockFlow
                 ToMinimumAge = Convert.ToInt32(dr[Constants.TO_MIN_AGE_COLUMN_NAME], CultureInfo.InvariantCulture);
             }
 
-            ToStockTypeId = Convert.ToInt32(dr[Constants.TO_STOCK_TYPE_ID_COLUMN_NAME], CultureInfo.InvariantCulture);
+            if (dr[Constants.TO_STOCK_TYPE_ID_COLUMN_NAME] != DBNull.Value)
+            {
+                ToStockTypeId = Convert.ToInt32(dr[Constants.TO_STOCK_TYPE_ID_COLUMN_NAME], CultureInfo.InvariantCulture);
+            }
 
             if (dr[Constants.TRANSITION_GROUP_ID_COLUMN_NAME] != DBNull.Value)
             {

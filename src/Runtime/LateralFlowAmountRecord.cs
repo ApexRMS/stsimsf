@@ -9,7 +9,7 @@ namespace SyncroSim.STSimStockFlow
     class LateralFlowAmountRecord
     {
         public List<Cell> Cells = new List<Cell>();
-        public int StockTypeId;
+        public int? StockTypeId;
         public int FlowTypeId;
         public double StockAmount;
         public double InverseMultiplier;

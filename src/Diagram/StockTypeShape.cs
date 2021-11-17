@@ -12,6 +12,7 @@ namespace SyncroSim.STSimStockFlow
 	{
 		private int m_StockTypeId;
 		private List<FlowPathway> m_OutgoingPathways = new List<FlowPathway>();
+		private List<FlowPathway> m_IncomingPathways = new List<FlowPathway>();
 		private bool m_IsReadOnly;
 
 		public StockTypeShape(int stockTypeId, string displayName) : 
@@ -37,6 +38,14 @@ namespace SyncroSim.STSimStockFlow
 			get
 			{
 				return this.m_OutgoingPathways;
+			}
+		}
+
+		public List<FlowPathway> IncomingFlowPathways
+		{
+			get
+			{
+				return this.m_IncomingPathways;
 			}
 		}
 

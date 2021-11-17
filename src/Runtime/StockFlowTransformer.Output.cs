@@ -154,11 +154,11 @@ namespace SyncroSim.STSimStockFlow
                         GetSecondaryStratumIdKey(cell),
                         GetTertiaryStratumIdKey(cell),
                         cell.StateClassId,
-                        flowPathway.FromStockTypeId,
+                        LookupKeyUtilities.GetOutputCollectionKey(flowPathway.FromStockTypeId),
                         LookupKeyUtilities.GetOutputCollectionKey(TransitionTypeId),
                         StratumIdDest,
                         StateClassIdDest,
-                        flowPathway.ToStockTypeId,
+                        LookupKeyUtilities.GetOutputCollectionKey(flowPathway.ToStockTypeId),
                         l.FlowGroup.Id, 
                         LookupKeyUtilities.GetOutputCollectionKey(flowPathway.TransferToStratumId),
                         LookupKeyUtilities.GetOutputCollectionKey(flowPathway.TransferToSecondaryStratumId),
@@ -303,11 +303,11 @@ namespace SyncroSim.STSimStockFlow
 				dr[Constants.FROM_SECONDARY_STRATUM_ID_COLUMN_NAME] = DataTableUtilities.GetNullableDatabaseValue(r.FromSecondaryStratumId);
 				dr[Constants.FROM_TERTIARY_STRATUM_ID_COLUMN_NAME] = DataTableUtilities.GetNullableDatabaseValue(r.FromTertiaryStratumId);
 				dr[Constants.FROM_STATECLASS_ID_COLUMN_NAME] = r.FromStateClassId;
-				dr[Constants.FROM_STOCK_TYPE_ID_COLUMN_NAME] = r.FromStockTypeId;
+				dr[Constants.FROM_STOCK_TYPE_ID_COLUMN_NAME] = DataTableUtilities.GetNullableDatabaseValue(r.FromStockTypeId);
 				dr[Constants.TRANSITION_TYPE_ID_COLUMN_NAME] = DataTableUtilities.GetNullableDatabaseValue(r.TransitionTypeId);
 				dr[Constants.TO_STRATUM_ID_COLUMN_NAME] = r.ToStratumId;
 				dr[Constants.TO_STATECLASS_ID_COLUMN_NAME] = r.ToStateClassId;
-				dr[Constants.TO_STOCK_TYPE_ID_COLUMN_NAME] = r.ToStockTypeId;
+				dr[Constants.TO_STOCK_TYPE_ID_COLUMN_NAME] = DataTableUtilities.GetNullableDatabaseValue(r.ToStockTypeId);
                 dr[Constants.FLOW_GROUP_ID_COLUMN_NAME] = r.FlowGroupId;
 				dr[Constants.END_STRATUM_ID_COLUMN_NAME] = DataTableUtilities.GetNullableDatabaseValue(r.TransferToStratumId);
 				dr[Constants.END_SECONDARY_STRATUM_ID_COLUMN_NAME] = DataTableUtilities.GetNullableDatabaseValue(r.TransferToSecondaryStratumId);
