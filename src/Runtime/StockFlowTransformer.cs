@@ -683,7 +683,7 @@ namespace SyncroSim.STSimStockFlow
 					this.ApplyTransitionFlows(l, st.Id, e.SimulationCell, e.Iteration, e.Timestep, null, e.ProbabilisticPathway);
 				}
 
-				this.ApplyTransitionFlows(l, Constants.NULL_FROM_STOCK_TYPE_ID, e.SimulationCell, e.Iteration, e.Timestep, e.DeterministicPathway, null);
+				this.ApplyTransitionFlows(l, Constants.NULL_FROM_STOCK_TYPE_ID, e.SimulationCell, e.Iteration, e.Timestep, null, e.ProbabilisticPathway);
 			}
 		}
 
