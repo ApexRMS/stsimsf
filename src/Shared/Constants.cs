@@ -36,6 +36,7 @@ namespace SyncroSim.STSimStockFlow
 		public const string FLOW_REPORT_NAME = "flows";
 		public const double DEFAULT_FLOW_ORDER = double.MinValue;
 		public const int OUTPUT_COLLECTION_WILDCARD_KEY = 0;
+		public const int NULL_FROM_STOCK_TYPE_ID = 0;
 
 		//Categories and groups
 		public const string STOCK_TYPE_GROUP_NAME = "Stock Types";

@@ -680,8 +680,10 @@ namespace SyncroSim.STSimStockFlow
 			{
 				foreach (StockType st in this.m_StockTypes)
 				{
-					this.ApplyTransitionFlows(l, st, e.SimulationCell, e.Iteration, e.Timestep, null, e.ProbabilisticPathway);
+					this.ApplyTransitionFlows(l, st.Id, e.SimulationCell, e.Iteration, e.Timestep, null, e.ProbabilisticPathway);
 				}
+
+				this.ApplyTransitionFlows(l, Constants.NULL_FROM_STOCK_TYPE_ID, e.SimulationCell, e.Iteration, e.Timestep, e.DeterministicPathway, null);
 			}
 		}
 
@@ -727,14 +729,16 @@ namespace SyncroSim.STSimStockFlow
 			{
 				foreach (StockType st in this.m_StockTypes)
 				{
-					this.ApplyTransitionFlows(l, st, e.SimulationCell, e.Iteration, e.Timestep, e.DeterministicPathway, null);
+					this.ApplyTransitionFlows(l, st.Id, e.SimulationCell, e.Iteration, e.Timestep, e.DeterministicPathway, null);
 				}
+
+				this.ApplyTransitionFlows(l, Constants.NULL_FROM_STOCK_TYPE_ID, e.SimulationCell, e.Iteration, e.Timestep, e.DeterministicPathway, null);
 			}
 		}
 
 		private void ApplyTransitionFlows(
             List<FlowType> ftList, 
-            StockType st, 
+            int stockTypeId, 
             Cell cell, 
             int iteration, 
             int timestep, 
@@ -817,7 +821,7 @@ namespace SyncroSim.STSimStockFlow
 				foreach (FlowType ft in ftList)
 				{
 					List<FlowPathway> l = this.m_FlowPathwayMap.GetFlowPathwayList(
-                        iteration, timestep, cell.StratumId, cell.SecondaryStratumId, cell.TertiaryStratumId, cell.StateClassId, st.Id, cell.Age, 
+                        iteration, timestep, cell.StratumId, cell.SecondaryStratumId, cell.TertiaryStratumId, cell.StateClassId, stockTypeId, cell.Age, 
                         DestStrat, DestStateClass, TransitionGroupId, ft.Id, ToAge);
 
 					if (l != null)
