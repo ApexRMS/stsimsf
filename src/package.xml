@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<package name="stsimsf" displayName="Integrates stocks and flows into the ST-Sim simulation model" version="3.3.2"  isAddOn="True" extendsPackage="stsim" url="https://apexrms.github.io/stsimsf/">
+<package name="stsimsf" displayName="Integrates stocks and flows into the ST-Sim simulation model" version="3.3.3"  isAddOn="True" extendsPackage="stsim" url="https://apexrms.github.io/stsimsf/">
   <transformers>
     <transformer name="Primary" displayName="Stocks and Flows" className="SyncroSim.STSimStockFlow.StockFlowTransformer" classAssembly="SyncroSim.STSimStockFlow" isPrimary="True" extendsTransformer="stsim_Runtime">
       <datafeeds>
