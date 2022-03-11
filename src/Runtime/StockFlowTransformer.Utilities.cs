@@ -212,6 +212,13 @@ namespace SyncroSim.STSimStockFlow
 			return true;
 		}
 
+        protected bool IsStockLimitsOnSourceAndTarget()
+        {
+            DataTable stockLims = this.ResultScenario.GetDataSheet(Constants.DATASHEET_STOCK_LIMIT_NAME).GetData();
+            // this.ResultScenario.DataFeeds.GetDataSheet(Constants.DATASHEET_STOCK_LIMIT_NAME);
+            return false;
+        }
+
         private List<List<FlowType>> CreateListOfFlowTypeLists()
         {
             List<List<FlowType>> FlowTypeLists = new List<List<FlowType>>();

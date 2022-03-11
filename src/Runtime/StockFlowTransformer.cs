@@ -24,6 +24,7 @@ namespace SyncroSim.STSimStockFlow
 		private bool m_SummaryOmitTertiaryStrata;
 		private STSimTransformer m_STSimTransformer;
 		private bool m_CanComputeStocksAndFlows;
+		private bool m_StockLimitsOnSourceAndTarget;
 		private RandomGenerator m_RandomGenerator = new RandomGenerator();
 		private List<FlowType> m_ShufflableFlowTypes = new List<FlowType>();
         private LateralFlowAmountMap m_LateralFlowAmountMap;
@@ -53,6 +54,7 @@ namespace SyncroSim.STSimStockFlow
 
 			this.m_STSimTransformer = this.GetSTSimTransformer();
 			this.m_CanComputeStocksAndFlows = this.CanComputeStocksAndFlows();
+			this.m_StockLimitsOnSourceAndTarget = this.IsStockLimitsOnSourceAndTarget();
 
 			if (this.m_CanComputeStocksAndFlows)
 			{
@@ -71,6 +73,7 @@ namespace SyncroSim.STSimStockFlow
 		{
 			this.m_STSimTransformer = this.GetSTSimTransformer();
 			this.m_CanComputeStocksAndFlows = this.CanComputeStocksAndFlows();
+			this.m_StockLimitsOnSourceAndTarget = this.IsStockLimitsOnSourceAndTarget();
 
 			if (!this.m_CanComputeStocksAndFlows)
 			{
@@ -857,22 +860,13 @@ namespace SyncroSim.STSimStockFlow
 					}
 
 					double fa = fp.FlowAmount;
-					double faDensity = fa / this.m_STSimTransformer.AmountPerCell;
 
 					if (limsrc != null)
 					{
 						if (fp.FromStockTypeId.HasValue)
                         {
 							double srcStkDensity = (d[fp.FromStockTypeId.Value] / this.m_STSimTransformer.AmountPerCell);
-
-							if ((srcStkDensity - faDensity) < limsrc.StockMinimum)
-							{
-								fa = (srcStkDensity - limsrc.StockMinimum) * this.m_STSimTransformer.AmountPerCell;
-							}
-							else if ((srcStkDensity - faDensity) > limsrc.StockMaximum)
-                            {
-								fa = (limsrc.StockMaximum - srcStkDensity) * this.m_STSimTransformer.AmountPerCell;
-							}
+							fa = this.CalculateFlowAmountWithStockLimits(srcStkDensity, limsrc, fa, true);
 						}
 					}
 
@@ -881,15 +875,7 @@ namespace SyncroSim.STSimStockFlow
                         if (!fp.IsLateral && fp.ToStockTypeId.HasValue)
                         {
 							double dstStkDensity = (d[fp.ToStockTypeId.Value] / this.m_STSimTransformer.AmountPerCell);
-
-							if ((dstStkDensity + faDensity) > limdst.StockMaximum)
-						    {
-								fa = (limdst.StockMaximum - dstStkDensity) * this.m_STSimTransformer.AmountPerCell;
-						    }
-							if ((dstStkDensity + faDensity) < limdst.StockMinimum)
-							{
-								fa = (dstStkDensity - limdst.StockMinimum) * this.m_STSimTransformer.AmountPerCell;
-							}
+							fa = this.CalculateFlowAmountWithStockLimits(dstStkDensity, limdst, fa, false);
 						}
 					}
 
@@ -925,7 +911,37 @@ namespace SyncroSim.STSimStockFlow
 			}
 		}
 
-        private void ResampleFlowMultiplierValues(int iteration, int timestep, DistributionFrequency frequency)
+		private double CalculateFlowAmountWithStockLimits(double StkDensity, StockLimit lim, double fa, bool src)
+        {
+			double faDensity = fa / this.m_STSimTransformer.AmountPerCell;
+
+			if (src)
+            {
+				if ((StkDensity - faDensity) < lim.StockMinimum)
+				{
+					fa = (StkDensity - lim.StockMinimum) * this.m_STSimTransformer.AmountPerCell;
+				}
+				else if ((StkDensity - faDensity) > lim.StockMaximum)
+				{
+					fa = (lim.StockMaximum - StkDensity) * this.m_STSimTransformer.AmountPerCell;
+				}
+			} 
+			else
+            {
+				if ((StkDensity + faDensity) > lim.StockMaximum)
+				{
+					fa = (lim.StockMaximum - StkDensity) * this.m_STSimTransformer.AmountPerCell;
+				}
+				else if ((StkDensity + faDensity) < lim.StockMinimum)
+				{
+					fa = (StkDensity - lim.StockMinimum) * this.m_STSimTransformer.AmountPerCell;
+				}
+			}
+
+			return fa;
+		}
+
+		private void ResampleFlowMultiplierValues(int iteration, int timestep, DistributionFrequency frequency)
         {
             try
             {
