@@ -555,11 +555,13 @@
       <group name="StocksAndFlowsGroup" displayName="Stocks and Flows">
         <item name="FlowPathways"/>       
         <item name="InitialStocks"/>
-        <item name="OutputOptions"/>
-        <group name="OutputFilters" displayName="Output Filters">
-          <item name="OutputFilterStocks" displayName="Stocks"/>
-          <item name="OutputFilterFlows" displayName="Flows"/>          
-        </group>
+        <group name="Output">
+			<item name="OutputOptions"/>
+		    <group name="OutputFilters" displayName="Output Filters">
+                <item name="OutputFilterStocks" displayName="Stocks"/>
+                <item name="OutputFilterFlows" displayName="Flows"/>          
+            </group>
+		</group>
         <group name="Advanced">
           <item name="StockGroupMembership"/>
           <item name="StockLimit"/>
