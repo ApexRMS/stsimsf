@@ -1,5 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
+<<<<<<< HEAD
 <package name="stsimsf" displayName="Integrates stocks and flows into the ST-Sim simulation model" version="3.3.8"  isAddOn="True" extendsPackage="stsim" url="https://apexrms.github.io/stsimsf/">
+=======
+<package name="stsimsf" displayName="Integrates stocks and flows into the ST-Sim simulation model" version="3.3.7"  isAddOn="True" extendsPackage="stsim" url="https://apexrms.github.io/stsimsf/">
+>>>>>>> 391f164da6b7f036c30d71481a25cf6a8b04f9c5
   <transformers>
     <transformer name="Primary" displayName="Stocks and Flows" className="SyncroSim.STSimStockFlow.StockFlowTransformer" classAssembly="SyncroSim.STSimStockFlow" isPrimary="True" extendsTransformer="stsim_Runtime">
       <datafeeds>
@@ -555,11 +559,13 @@
       <group name="StocksAndFlowsGroup" displayName="Stocks and Flows">
         <item name="FlowPathways"/>       
         <item name="InitialStocks"/>
-        <item name="OutputOptions"/>
-        <group name="OutputFilters" displayName="Output Filters">
-          <item name="OutputFilterStocks" displayName="Stocks"/>
-          <item name="OutputFilterFlows" displayName="Flows"/>          
-        </group>
+        <group name="Output">
+			<item name="OutputOptions"/>
+		    <group name="OutputFilters" displayName="Output Filters">
+                <item name="OutputFilterStocks" displayName="Stocks"/>
+                <item name="OutputFilterFlows" displayName="Flows"/>          
+            </group>
+		</group>
         <group name="Advanced">
           <item name="StockGroupMembership"/>
           <item name="StockLimit"/>
