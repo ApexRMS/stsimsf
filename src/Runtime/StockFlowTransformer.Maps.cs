@@ -14,9 +14,9 @@ namespace SyncroSim.STSimStockFlow
 		private FlowPathwayMap m_FlowPathwayMap;
 		private FlowOrderMap m_FlowOrderMap;
         private LateralFlowCoupletMap m_LateralFlowCoupletMap;
-        private Dictionary<int, Dictionary<int, double[]>> m_AvgStockMap = new Dictionary<int, Dictionary<int, double[]>>();
-        private Dictionary<int, Dictionary<int, double[]>> m_AvgFlowMap = new Dictionary<int, Dictionary<int, double[]>>();
-        private Dictionary<int, Dictionary<int, double[]>> m_AvgLateralFlowMap = new Dictionary<int, Dictionary<int, double[]>>();
+        private Dictionary<int, Dictionary<int, float[]>> m_AvgStockMap = new Dictionary<int, Dictionary<int, float[]>>();
+        private Dictionary<int, Dictionary<int, float[]>> m_AvgFlowMap = new Dictionary<int, Dictionary<int, float[]>>();
+        private Dictionary<int, Dictionary<int, float[]>> m_AvgLateralFlowMap = new Dictionary<int, Dictionary<int, float[]>>();
 
         private void CreateStockLimitMap()
 		{

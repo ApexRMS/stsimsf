@@ -222,14 +222,14 @@ namespace SyncroSim.STSimStockFlow
             if (GetSpatialOutputFlowDictionary().ContainsKey(flowTypeId))
             {
                 SpatialOutputFlowRecord rec = GetSpatialOutputFlowDictionary()[flowTypeId];
-                double amt = rec.Data[cell.CollectionIndex];
+                float amt = rec.Data[cell.CollectionIndex];
 
                 if (amt.Equals(Spatial.DefaultNoDataValue))
                 {
                     amt = 0;
                 }
 
-                amt += (flowAmount / this.m_STSimTransformer.AmountPerCell);
+                amt += Convert.ToSingle(flowAmount / this.m_STSimTransformer.AmountPerCell);
 
                 rec.Data[cell.CollectionIndex] = amt;
                 rec.HasOutputData = true;
@@ -256,14 +256,14 @@ namespace SyncroSim.STSimStockFlow
             if (GetLateralOutputFlowDictionary().ContainsKey(flowTypeId))
             {
                 SpatialOutputFlowRecord rec = GetLateralOutputFlowDictionary()[flowTypeId];
-                double amt = rec.Data[cell.CollectionIndex];
+                float amt = rec.Data[cell.CollectionIndex];
 
                 if (amt.Equals(Spatial.DefaultNoDataValue))
                 {
                     amt = 0;
                 }
 
-                amt += (flowAmount / this.m_STSimTransformer.AmountPerCell);
+                amt += Convert.ToSingle(flowAmount / this.m_STSimTransformer.AmountPerCell);
 
                 rec.Data[cell.CollectionIndex] = amt;
                 rec.HasOutputData = true;
@@ -334,15 +334,15 @@ namespace SyncroSim.STSimStockFlow
                     continue;
                 }
 
-                StochasticTimeRaster rastOutput = this.STSimTransformer.InputRasters.CreateOutputRaster(RasterDataType.DTDouble);
+                StochasticTimeRaster rastOutput = this.STSimTransformer.InputRasters.CreateOutputRaster(RasterDataType.DTFloat);
 
                 foreach (StockTypeLinkage l in g.StockTypeLinkages)
                 {
-                    StochasticTimeRaster rastStockType = this.STSimTransformer.InputRasters.CreateOutputRaster(RasterDataType.DTDouble);
+                    StochasticTimeRaster rastStockType = this.STSimTransformer.InputRasters.CreateOutputRaster(RasterDataType.DTFloat);
 
                     GetStockValues(l.StockType.Id, rastStockType);
-                    rastStockType.ScaleDblCells(l.Value);
-                    rastOutput.AddDblCells(rastStockType);
+                    rastStockType.ScaleFloatCells(l.Value);
+                    rastOutput.AddFloatCells(rastStockType);
                 }
 
                 Spatial.WriteRasterData(
@@ -368,7 +368,7 @@ namespace SyncroSim.STSimStockFlow
                 }
 
                 bool AtLeastOne = false;
-                StochasticTimeRaster rastOutput = this.STSimTransformer.InputRasters.CreateOutputRaster(RasterDataType.DTDouble);
+                StochasticTimeRaster rastOutput = this.STSimTransformer.InputRasters.CreateOutputRaster(RasterDataType.DTFloat);
 
                 foreach (FlowTypeLinkage l in g.FlowTypeLinkages)
                 {
@@ -378,16 +378,16 @@ namespace SyncroSim.STSimStockFlow
 
                         if (rec.HasOutputData)
                         {
-                            StochasticTimeRaster rastFlowType = this.STSimTransformer.InputRasters.CreateOutputRaster(RasterDataType.DTDouble);
-                            double[] arr = rastFlowType.DblCells;
+                            StochasticTimeRaster rastFlowType = this.STSimTransformer.InputRasters.CreateOutputRaster(RasterDataType.DTFloat);
+                            float[] arr = rastFlowType.FloatCells;
 
                             foreach (Cell c in this.m_STSimTransformer.Cells)
                             {
                                 arr[c.CellId] = rec.Data[c.CollectionIndex];
                             }
 
-                            rastFlowType.ScaleDblCells(l.Value);
-                            rastOutput.AddDblCells(rastFlowType);
+                            rastFlowType.ScaleFloatCells(l.Value);
+                            rastOutput.AddFloatCells(rastFlowType);
 
                             AtLeastOne = true;
                         }
@@ -420,7 +420,7 @@ namespace SyncroSim.STSimStockFlow
                 }
 
                 bool AtLeastOne = false;
-                StochasticTimeRaster rastOutput = this.STSimTransformer.InputRasters.CreateOutputRaster(RasterDataType.DTDouble);
+                StochasticTimeRaster rastOutput = this.STSimTransformer.InputRasters.CreateOutputRaster(RasterDataType.DTFloat);
 
                 foreach (FlowTypeLinkage l in g.FlowTypeLinkages)
                 {
@@ -431,17 +431,17 @@ namespace SyncroSim.STSimStockFlow
                         if (rec.HasOutputData)
                         {
                             StochasticTimeRaster rastFlowType = 
-                                this.STSimTransformer.InputRasters.CreateOutputRaster(RasterDataType.DTDouble);
+                                this.STSimTransformer.InputRasters.CreateOutputRaster(RasterDataType.DTFloat);
 
-                            double[] arr = rastFlowType.DblCells;
+                            float[] arr = rastFlowType.FloatCells;
 
                             foreach (Cell c in this.m_STSimTransformer.Cells)
                             {
                                 arr[c.CellId] = rec.Data[c.CollectionIndex];
                             }
 
-                            rastFlowType.ScaleDblCells(l.Value);
-                            rastOutput.AddDblCells(rastFlowType);
+                            rastFlowType.ScaleFloatCells(l.Value);
+                            rastOutput.AddFloatCells(rastFlowType);
 
                             AtLeastOne = true;
                         }
@@ -476,11 +476,11 @@ namespace SyncroSim.STSimStockFlow
                     continue;
                 }
 
-                Dictionary<int, double[]> dict = this.m_AvgStockMap[id];
+                Dictionary<int, float[]> dict = this.m_AvgStockMap[id];
 
                 foreach (int timestep in dict.Keys)
                 {
-                    double[] values = dict[timestep];
+                    float[] values = dict[timestep];
                     var distArray = values.Distinct();
 
                     if (distArray.Count() == 1)
@@ -493,12 +493,12 @@ namespace SyncroSim.STSimStockFlow
                         }
                     }
 
-                    StochasticTimeRaster rast = this.STSimTransformer.InputRasters.CreateOutputRaster(RasterDataType.DTDouble);
-                    double[] arr = rast.DblCells;
+                    StochasticTimeRaster rast = this.STSimTransformer.InputRasters.CreateOutputRaster(RasterDataType.DTFloat);
+                    float[] arr = rast.FloatCells;
 
                     foreach (Cell c in this.STSimTransformer.Cells)
                     {
-                        arr[c.CellId] = values[c.CollectionIndex] / this.STSimTransformer.AmountPerCell;
+                        arr[c.CellId] = Convert.ToSingle(values[c.CollectionIndex] / this.STSimTransformer.AmountPerCell);
                     }
 
                     Spatial.WriteRasterData(
@@ -527,7 +527,7 @@ namespace SyncroSim.STSimStockFlow
                     continue;
                 }
 
-                Dictionary<int, double[]> dict = this.m_AvgFlowMap[id];
+                Dictionary<int, float[]> dict = this.m_AvgFlowMap[id];
 
                 foreach (int timestep in dict.Keys)
                 {
@@ -536,7 +536,7 @@ namespace SyncroSim.STSimStockFlow
                         continue;
                     }
 
-                    double[] values = dict[timestep];
+                    float[] values = dict[timestep];
                     var distArray = values.Distinct();
 
                     if (distArray.Count() == 1)
@@ -549,12 +549,12 @@ namespace SyncroSim.STSimStockFlow
                         }
                     }
 
-                    StochasticTimeRaster rast = this.STSimTransformer.InputRasters.CreateOutputRaster(RasterDataType.DTDouble);
-                    double[] arr = rast.DblCells;
+                    StochasticTimeRaster rast = this.STSimTransformer.InputRasters.CreateOutputRaster(RasterDataType.DTFloat);
+                    float[] arr = rast.FloatCells;
 
                     foreach (Cell c in this.STSimTransformer.Cells)
                     {
-                        arr[c.CellId] = values[c.CollectionIndex] / this.STSimTransformer.AmountPerCell;
+                        arr[c.CellId] = Convert.ToSingle(values[c.CollectionIndex] / this.STSimTransformer.AmountPerCell);
                     }
 
                     Spatial.WriteRasterData(
@@ -583,7 +583,7 @@ namespace SyncroSim.STSimStockFlow
                     continue;
                 }
 
-                Dictionary<int, double[]> dict = this.m_AvgLateralFlowMap[id];
+                Dictionary<int, float[]> dict = this.m_AvgLateralFlowMap[id];
 
                 foreach (int timestep in dict.Keys)
                 {
@@ -592,7 +592,7 @@ namespace SyncroSim.STSimStockFlow
                         continue;
                     }
 
-                    double[] values = dict[timestep];
+                    float[] values = dict[timestep];
                     var distArray = values.Distinct();
 
                     if (distArray.Count() == 1)
@@ -605,12 +605,12 @@ namespace SyncroSim.STSimStockFlow
                         }
                     }
 
-                    StochasticTimeRaster rast = this.STSimTransformer.InputRasters.CreateOutputRaster(RasterDataType.DTDouble);
-                    double[] arr = rast.DblCells;
+                    StochasticTimeRaster rast = this.STSimTransformer.InputRasters.CreateOutputRaster(RasterDataType.DTFloat);
+                    float[] arr = rast.FloatCells;
 
                     foreach (Cell c in this.STSimTransformer.Cells)
                     {
-                        arr[c.CellId] = values[c.CollectionIndex] / this.STSimTransformer.AmountPerCell;
+                        arr[c.CellId] = Convert.ToSingle(values[c.CollectionIndex] / this.STSimTransformer.AmountPerCell);
                     }
 
                     Spatial.WriteRasterData(
@@ -684,18 +684,18 @@ namespace SyncroSim.STSimStockFlow
                     continue;
                 }
 
-                Dictionary<int, double[]> dict = this.m_AvgStockMap[g.Id];
-                double[] Values = dict[timestep];
+                Dictionary<int, float[]> dict = this.m_AvgStockMap[g.Id];
+                float[] Values = dict[timestep];
 
                 foreach (Cell c in this.STSimTransformer.Cells)
                 {
-                    double Amount = 0;
+                    float Amount = 0;
                     int i = c.CollectionIndex;
                     Dictionary<int, double> StockAmounts = GetStockAmountDictionary(c);
 
                     foreach (StockTypeLinkage l in g.StockTypeLinkages)
                     {
-                       Amount += StockAmounts[l.StockType.Id];
+                       Amount += Convert.ToSingle(StockAmounts[l.StockType.Id]);
                     }
 
                     Values[i] += Amount / this.m_TotalIterations;
@@ -718,27 +718,27 @@ namespace SyncroSim.STSimStockFlow
                     continue;
                 }
 
-                Dictionary<int, double[]> dict = this.m_AvgStockMap[g.Id];
-                double[] Values = dict[timestepKey];
+                Dictionary<int, float[]> dict = this.m_AvgStockMap[g.Id];
+                float[] Values = dict[timestepKey];
 
                 foreach (Cell c in this.STSimTransformer.Cells)
                 {
-                    double Amount = 0;
+                    float Amount = 0;
                     int i = c.CollectionIndex;
                     Dictionary<int, double> StockAmounts = GetStockAmountDictionary(c);
 
                     foreach (StockTypeLinkage l in g.StockTypeLinkages)
                     {
-                        Amount += StockAmounts[l.StockType.Id];
+                        Amount += Convert.ToSingle(StockAmounts[l.StockType.Id]);
                     }
 
                     if ((timestepKey == this.STSimTransformer.MaximumTimestep) && (((timestepKey - this.STSimTransformer.TimestepZero) % this.m_AvgSpatialStockOutputTimesteps) != 0))
                     {
-                        Values[i] += Amount / (double)((timestepKey - this.STSimTransformer.TimestepZero) % this.m_AvgSpatialStockOutputTimesteps * this.m_TotalIterations);
+                        Values[i] += Amount / ((timestepKey - this.STSimTransformer.TimestepZero) % this.m_AvgSpatialStockOutputTimesteps * this.m_TotalIterations);
                     }
                     else
                     {
-                        Values[i] += Amount / (double)(this.m_AvgSpatialStockOutputTimesteps * this.m_TotalIterations);
+                        Values[i] += Amount / (this.m_AvgSpatialStockOutputTimesteps * this.m_TotalIterations);
                     }
                 }
             }
@@ -785,12 +785,12 @@ namespace SyncroSim.STSimStockFlow
                     continue;
                 }
 
-                Dictionary<int, double[]> dict = this.m_AvgFlowMap[g.Id];
-                double[] Values = dict[timestep];
+                Dictionary<int, float[]> dict = this.m_AvgFlowMap[g.Id];
+                float[] Values = dict[timestep];
 
                 foreach (Cell c in this.m_STSimTransformer.Cells)
                 {
-                    double Amount = 0;
+                    float Amount = 0;
                     int i = c.CollectionIndex;
 
                     foreach (FlowTypeLinkage l in g.FlowTypeLinkages)
@@ -823,12 +823,12 @@ namespace SyncroSim.STSimStockFlow
                     continue;
                 }
 
-                Dictionary<int, double[]> dict = this.m_AvgFlowMap[g.Id];
-                double[] Values = dict[timestepKey];
+                Dictionary<int, float[]> dict = this.m_AvgFlowMap[g.Id];
+                float[] Values = dict[timestepKey];
 
                 foreach (Cell c in this.m_STSimTransformer.Cells)
                 {
-                    double Amount = 0;
+                    float Amount = 0;
                     int i = c.CollectionIndex;
 
                     foreach (FlowTypeLinkage l in g.FlowTypeLinkages)
@@ -843,11 +843,11 @@ namespace SyncroSim.STSimStockFlow
 
                     if ((timestepKey == this.STSimTransformer.MaximumTimestep) && (((timestepKey - this.STSimTransformer.TimestepZero) % this.m_AvgSpatialFlowOutputTimesteps) != 0))
                     {
-                        Values[i] += Amount / (double)((timestepKey - this.STSimTransformer.TimestepZero) % this.m_AvgSpatialFlowOutputTimesteps * this.m_TotalIterations);
+                        Values[i] += Amount / ((timestepKey - this.STSimTransformer.TimestepZero) % this.m_AvgSpatialFlowOutputTimesteps * this.m_TotalIterations);
                     }
                     else
                     {
-                        Values[i] += Amount / (double)(this.m_AvgSpatialFlowOutputTimesteps * this.m_TotalIterations);
+                        Values[i] += Amount / (this.m_AvgSpatialFlowOutputTimesteps * this.m_TotalIterations);
                     }
                 }
             }
@@ -894,12 +894,12 @@ namespace SyncroSim.STSimStockFlow
                     continue;
                 }
 
-                Dictionary<int, double[]> dict = this.m_AvgLateralFlowMap[g.Id];
-                double[] Values = dict[timestep];
+                Dictionary<int, float[]> dict = this.m_AvgLateralFlowMap[g.Id];
+                float[] Values = dict[timestep];
 
                 foreach (Cell c in this.m_STSimTransformer.Cells)
                 {
-                    double Amount = 0;
+                    float Amount = 0;
                     int i = c.CollectionIndex;
 
                     foreach (FlowTypeLinkage l in g.FlowTypeLinkages)
@@ -932,12 +932,12 @@ namespace SyncroSim.STSimStockFlow
                     continue;
                 }
 
-                Dictionary<int, double[]> dict = this.m_AvgLateralFlowMap[g.Id];
-                double[] Values = dict[timestepKey];
+                Dictionary<int, float[]> dict = this.m_AvgLateralFlowMap[g.Id];
+                float[] Values = dict[timestepKey];
 
                 foreach (Cell c in this.m_STSimTransformer.Cells)
                 {
-                    double Amount = 0;
+                    float Amount = 0;
                     int i = c.CollectionIndex;
 
                     foreach (FlowTypeLinkage l in g.FlowTypeLinkages)
@@ -952,11 +952,11 @@ namespace SyncroSim.STSimStockFlow
 
                     if ((timestepKey == this.STSimTransformer.MaximumTimestep) && (((timestepKey - this.STSimTransformer.TimestepZero) % this.m_AvgSpatialLateralFlowOutputTimesteps) != 0))
                     {
-                        Values[i] += Amount / (double)((timestepKey - this.STSimTransformer.TimestepZero) % this.m_AvgSpatialLateralFlowOutputTimesteps * this.m_TotalIterations);
+                        Values[i] += Amount / ((timestepKey - this.STSimTransformer.TimestepZero) % this.m_AvgSpatialLateralFlowOutputTimesteps * this.m_TotalIterations);
                     }
                     else
                     {
-                        Values[i] += Amount / (double)(this.m_AvgSpatialLateralFlowOutputTimesteps * this.m_TotalIterations);
+                        Values[i] += Amount / (this.m_AvgSpatialLateralFlowOutputTimesteps * this.m_TotalIterations);
                     }
                 }
             }

@@ -6,9 +6,9 @@ namespace SyncroSim.STSimStockFlow
     class StockTypeLinkage
     {
         private StockType m_StockType;
-        private double m_Value;
+        private float m_Value;
 
-        public StockTypeLinkage(StockType stockType, double value)
+        public StockTypeLinkage(StockType stockType, float value)
         {
             this.m_StockType = stockType;
             this.m_Value = value;
@@ -22,7 +22,7 @@ namespace SyncroSim.STSimStockFlow
             }
         }
 
-        public double Value
+        public float Value
         {
             get
             {
