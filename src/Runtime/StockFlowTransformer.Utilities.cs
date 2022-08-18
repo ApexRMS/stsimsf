@@ -7,6 +7,7 @@ using SyncroSim.STSim;
 using System.Diagnostics;
 using SyncroSim.StochasticTime;
 using System.Collections.Generic;
+using System;
 
 namespace SyncroSim.STSimStockFlow
 {
@@ -134,7 +135,7 @@ namespace SyncroSim.STSimStockFlow
 
                 if (StockAmounts.Count > 0)
                 {
-                    rastStockType.DblCells[c.CellId] = (StockAmounts[stockTypeId] / AmountPerCell);
+                    rastStockType.FloatCells[c.CellId] = Convert.ToSingle(StockAmounts[stockTypeId] / AmountPerCell);
                 }
                 else
                 {
