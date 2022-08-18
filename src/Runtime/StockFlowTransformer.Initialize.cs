@@ -254,7 +254,7 @@ namespace SyncroSim.STSimStockFlow
                     continue;
                 }
 
-                Dictionary<int, double[]> dict = new Dictionary<int, double[]>();
+                Dictionary<int, float[]> dict = new Dictionary<int, float[]>();
 
                 for (var timestep = this.STSimTransformer.MinimumTimestep; timestep <= this.STSimTransformer.MaximumTimestep; timestep++)
                 {
@@ -263,7 +263,7 @@ namespace SyncroSim.STSimStockFlow
                         this.m_AvgSpatialStockOutputTimesteps,
                         this.m_CreateAvgSpatialStockOutput))
                     {
-                        double[] values = new double[this.STSimTransformer.Cells.Count];
+                        float[] values = new float[this.STSimTransformer.Cells.Count];
 
                         for (var i = 0; i < this.STSimTransformer.Cells.Count; i++)
                         {
@@ -276,7 +276,7 @@ namespace SyncroSim.STSimStockFlow
 
                 if (!dict.ContainsKey(this.STSimTransformer.TimestepZero))
                 {
-                    double[] values = new double[this.STSimTransformer.Cells.Count];
+                    float[] values = new float[this.STSimTransformer.Cells.Count];
 
                     for (var i = 0; i < this.STSimTransformer.Cells.Count; i++)
                     {
@@ -307,7 +307,7 @@ namespace SyncroSim.STSimStockFlow
                     continue;
                 }
 
-                Dictionary<int, double[]> dict = new Dictionary<int, double[]>();
+                Dictionary<int, float[]> dict = new Dictionary<int, float[]>();
 
                 for (var timestep = this.STSimTransformer.MinimumTimestep; timestep <= this.STSimTransformer.MaximumTimestep; timestep++)
                 {
@@ -316,7 +316,7 @@ namespace SyncroSim.STSimStockFlow
                         this.m_AvgSpatialFlowOutputTimesteps, 
                         this.m_CreateAvgSpatialFlowOutput))
                     { 
-                        double[] values = new double[this.STSimTransformer.Cells.Count];
+                        float[] values = new float[this.STSimTransformer.Cells.Count];
 
                         for (var i = 0; i < this.STSimTransformer.Cells.Count; i++)
                         {
@@ -348,7 +348,7 @@ namespace SyncroSim.STSimStockFlow
                     continue;
                 }
 
-                Dictionary<int, double[]> dict = new Dictionary<int, double[]>();
+                Dictionary<int, float[]> dict = new Dictionary<int, float[]>();
 
                 for (var timestep = this.STSimTransformer.MinimumTimestep; timestep <= this.STSimTransformer.MaximumTimestep; timestep++)
                 {
@@ -357,7 +357,7 @@ namespace SyncroSim.STSimStockFlow
                         this.m_AvgSpatialLateralFlowOutputTimesteps,
                         this.m_CreateAvgSpatialLateralFlowOutput))
                     {
-                        double[] values = new double[this.STSimTransformer.Cells.Count];
+                        float[] values = new float[this.STSimTransformer.Cells.Count];
 
                         for (var i = 0; i < this.STSimTransformer.Cells.Count; i++)
                         {

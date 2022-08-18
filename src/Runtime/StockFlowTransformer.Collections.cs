@@ -178,11 +178,11 @@ namespace SyncroSim.STSimStockFlow
                 foreach (DataRow dr in rows)
                 {
                     int tid = Convert.ToInt32(dr[Constants.STOCK_TYPE_ID_COLUMN_NAME], CultureInfo.InvariantCulture);
-                    double value = 1.0;
+                    float value = 1.0F;
 
                     if (dr[Constants.VALUE_COLUMN_NAME] != DBNull.Value)
                     {
-                        value = (double)dr[Constants.VALUE_COLUMN_NAME];
+						value = Convert.ToSingle(dr[Constants.VALUE_COLUMN_NAME]);
                     }
 
                     StockTypeLinkage linkage = new StockTypeLinkage(this.m_StockTypes[tid], value);
@@ -254,11 +254,11 @@ namespace SyncroSim.STSimStockFlow
                 foreach (DataRow dr in rows)
                 {
                     int tid = Convert.ToInt32(dr[Constants.FLOW_TYPE_ID_COLUMN_NAME], CultureInfo.InvariantCulture);
-                    double value = 1.0;
+                    float value = 1.0F;
 
                     if (dr[Constants.VALUE_COLUMN_NAME] != DBNull.Value)
                     {
-                        value = (double)dr[Constants.VALUE_COLUMN_NAME];
+                        value = Convert.ToSingle(dr[Constants.VALUE_COLUMN_NAME]);
                     }
 
                     FlowTypeLinkage linkage = new FlowTypeLinkage(this.m_FlowTypes[tid], value);

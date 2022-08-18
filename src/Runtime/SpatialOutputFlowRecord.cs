@@ -6,7 +6,7 @@ namespace SyncroSim.STSimStockFlow
     class SpatialOutputFlowRecord
     {
         public int FlowTypeId;
-        public double[] Data;
+        public float[] Data;
         public bool HasOutputData;
     }
 }
