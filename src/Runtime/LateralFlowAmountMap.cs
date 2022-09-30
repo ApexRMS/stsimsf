@@ -30,7 +30,7 @@ namespace SyncroSim.STSimStockFlow
             int? tertiaryStratumId,
             int? stateClassId,
             int? minimumAge, 
-            double amount)
+            float amount)
         {
             Debug.Assert(
                 primaryStratumId.HasValue || secondaryStratumId.HasValue || tertiaryStratumId.HasValue 

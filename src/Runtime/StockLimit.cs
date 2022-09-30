@@ -17,7 +17,7 @@ namespace SyncroSim.STSimStockFlow
 
 		public StockLimit(
             int? iteration, int? timestep, int stockTypeId, int? stratumId, int? secondaryStratumId, int? tertiaryStratumId, 
-            int? stateClassId, double stockMinimum, double stockMaximum)
+            int? stateClassId, float stockMinimum, float stockMaximum)
 		{
 			this.m_Iteration = iteration;
 			this.m_Timestep = timestep;

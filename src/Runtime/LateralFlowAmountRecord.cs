@@ -11,7 +11,7 @@ namespace SyncroSim.STSimStockFlow
         public List<Cell> Cells = new List<Cell>();
         public int? StockTypeId;
         public int FlowTypeId;
-        public double StockAmount;
+        public float StockAmount;
         public double InverseMultiplier;
     }
 }

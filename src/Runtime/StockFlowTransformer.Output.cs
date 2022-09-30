@@ -57,12 +57,12 @@ namespace SyncroSim.STSimStockFlow
         {
             foreach (Cell c in this.STSimTransformer.Cells)
             {
-                Dictionary<int, double> StockAmounts = GetStockAmountDictionary(c);
+                Dictionary<int, float> StockAmounts = GetStockAmountDictionary(c);
 
                 foreach (int StockTypeId in StockAmounts.Keys)
                 {
                     StockType t = this.m_StockTypes[StockTypeId];
-                    double amount = StockAmounts[StockTypeId];
+                    float amount = StockAmounts[StockTypeId];
 
                     foreach (StockGroupLinkage l in t.StockGroupLinkages)                    
                     {
@@ -99,7 +99,7 @@ namespace SyncroSim.STSimStockFlow
             DeterministicTransition deterministicPathway,
             Transition probabilisticPathway,
             FlowPathway flowPathway,
-            double flowAmount)
+            float flowAmount)
         {
             int? TransitionTypeId = null;
             int StratumIdDest = cell.StratumId;
@@ -197,7 +197,7 @@ namespace SyncroSim.STSimStockFlow
             }
         }
 
-        private void RecordSpatialFlowOutputData(int timestep, Cell cell, int flowTypeId, double flowAmount)
+        private void RecordSpatialFlowOutputData(int timestep, Cell cell, int flowTypeId, float flowAmount)
         {
             if (!this.m_IsSpatial)
             {
@@ -236,7 +236,7 @@ namespace SyncroSim.STSimStockFlow
             }
         }
 
-        private void RecordSpatialLateralFlowOutputData(int timestep, Cell cell, int flowTypeId, double flowAmount)
+        private void RecordSpatialLateralFlowOutputData(int timestep, Cell cell, int flowTypeId, float flowAmount)
         {
             bool IsLFOutputTimestep = this.m_STSimTransformer.IsOutputTimestep(
                 timestep,
@@ -691,7 +691,7 @@ namespace SyncroSim.STSimStockFlow
                 {
                     float Amount = 0;
                     int i = c.CollectionIndex;
-                    Dictionary<int, double> StockAmounts = GetStockAmountDictionary(c);
+                    Dictionary<int, float> StockAmounts = GetStockAmountDictionary(c);
 
                     foreach (StockTypeLinkage l in g.StockTypeLinkages)
                     {
@@ -725,7 +725,7 @@ namespace SyncroSim.STSimStockFlow
                 {
                     float Amount = 0;
                     int i = c.CollectionIndex;
-                    Dictionary<int, double> StockAmounts = GetStockAmountDictionary(c);
+                    Dictionary<int, float> StockAmounts = GetStockAmountDictionary(c);
 
                     foreach (StockTypeLinkage l in g.StockTypeLinkages)
                     {

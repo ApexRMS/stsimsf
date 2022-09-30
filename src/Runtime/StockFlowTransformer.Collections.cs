@@ -8,6 +8,7 @@ using System.Globalization;
 using System.Collections.Generic;
 using SyncroSim.Core;
 using SyncroSim.StochasticTime;
+using System.Collections.ObjectModel;
 
 namespace SyncroSim.STSimStockFlow
 {
@@ -32,6 +33,9 @@ namespace SyncroSim.STSimStockFlow
 		private OutputFilterCollection m_OutputFilterStocks = new OutputFilterCollection();
 		private OutputFilterCollection m_OutputFilterFlows = new OutputFilterCollection();
 		private FlowOrderCollection m_FlowOrders = new FlowOrderCollection();
+
+		private Collection<int> m_RequiredFlowGroups = new Collection<int>();
+		private Collection<int> m_RequiredStockGroups = new Collection<int>();
 
 #if DEBUG
         private bool m_AutoStockLinkagesAdded;
@@ -83,7 +87,31 @@ namespace SyncroSim.STSimStockFlow
 #endif
         }
 
-        private void FillFlowTypes()
+		private void FillStockGroups(bool required)
+		{
+			this.m_StockGroups.Clear();
+			Debug.Assert(this.m_StockGroups.Count == 0);
+			DataSheet ds = this.Project.GetDataSheet(Constants.DATASHEET_STOCK_GROUP_NAME);
+
+			foreach (DataRow dr in ds.GetData().Rows)
+			{
+				int stockGroupId = Convert.ToInt32(dr[ds.PrimaryKeyColumn.Name], CultureInfo.InvariantCulture);
+
+				if (this.m_RequiredStockGroups.Contains(stockGroupId))
+                {
+					this.m_StockGroups.Add(
+						new StockGroup(
+							stockGroupId,
+							Convert.ToString(dr[ds.DisplayMember], CultureInfo.InvariantCulture)));
+				}
+			}
+
+#if DEBUG
+			this.m_StockGroupsFilled = true;
+#endif
+		}
+
+		private void FillFlowTypes()
         {
             Debug.Assert(this.m_FlowTypes.Count == 0);
             DataSheet ds = this.Project.GetDataSheet(Constants.DATASHEET_FLOW_TYPE_NAME);
@@ -120,7 +148,31 @@ namespace SyncroSim.STSimStockFlow
 #endif
 		}
 
-        private void FillStockGroupLinkages()
+		private void FillFlowGroups(bool required)
+		{
+			this.m_FlowGroups.Clear();
+			Debug.Assert(this.m_FlowGroups.Count == 0);
+			DataSheet ds = this.Project.GetDataSheet(Constants.DATASHEET_FLOW_GROUP_NAME);
+
+			foreach (DataRow dr in ds.GetData().Rows)
+			{
+				int flowGroupId = Convert.ToInt32(dr[ds.PrimaryKeyColumn.Name], CultureInfo.InvariantCulture);
+
+				if (this.m_RequiredFlowGroups.Contains(flowGroupId))
+				{
+					this.m_FlowGroups.Add(
+						new FlowGroup(
+							flowGroupId,
+							Convert.ToString(dr[ds.DisplayMember], CultureInfo.InvariantCulture)));
+				}
+			}
+
+#if DEBUG
+			this.m_FlowGroupsFilled = true;
+#endif
+		}
+
+		private void FillStockGroupLinkages()
         {
 
 #if DEBUG
@@ -380,8 +432,8 @@ namespace SyncroSim.STSimStockFlow
 				int? SecondaryStratumId = null;
 				int? TertiaryStratumId = null;
 				int? StateClassId = null;
-				double StockMin = double.MinValue;
-				double StockMax = double.MaxValue;
+				float StockMin = float.MinValue;
+				float StockMax = float.MaxValue;
 
 				if (dr[Constants.ITERATION_COLUMN_NAME] != DBNull.Value)
 				{
@@ -417,12 +469,12 @@ namespace SyncroSim.STSimStockFlow
 
 				if (dr[Constants.STOCK_MIN_COLUMN_NAME] != DBNull.Value)
 				{
-					StockMin = Convert.ToDouble(dr[Constants.STOCK_MIN_COLUMN_NAME], CultureInfo.InvariantCulture);
+					StockMin = Convert.ToSingle(dr[Constants.STOCK_MIN_COLUMN_NAME], CultureInfo.InvariantCulture);
 				}
 
 				if (dr[Constants.STOCK_MAX_COLUMN_NAME] != DBNull.Value)
 				{
-					StockMax = Convert.ToDouble(dr[Constants.STOCK_MAX_COLUMN_NAME], CultureInfo.InvariantCulture);
+					StockMax = Convert.ToSingle(dr[Constants.STOCK_MAX_COLUMN_NAME], CultureInfo.InvariantCulture);
 				}
 
 				this.m_StockLimits.Add(new StockLimit(
@@ -526,6 +578,7 @@ namespace SyncroSim.STSimStockFlow
                         Item.DistributionMin, Item.DistributionMax);
 
 					this.m_StockTransitionMultipliers.Add(Item);
+					this.m_RequiredStockGroups.Add(StockGroupId);
 
 				}
 				catch (Exception ex)
@@ -675,6 +728,7 @@ namespace SyncroSim.STSimStockFlow
                     }
 
 					this.m_FlowMultipliers.Add(Item);
+					this.m_RequiredFlowGroups.Add(FlowGroupId);
 				}
 				catch (Exception ex)
 				{

@@ -27,7 +27,7 @@ namespace SyncroSim.STSimStockFlow
         private int? m_TransferToTertiaryStratumId;
         private int? m_TransferToStateClassId;
         private int? m_TransferToMinimumAge;
-        private double m_FlowAmount;
+        private float m_FlowAmount;
         private bool m_IsLateral;
 
 		public FlowPathway(
@@ -226,7 +226,7 @@ namespace SyncroSim.STSimStockFlow
 			}
 		}
 
-		public double FlowAmount
+		public float FlowAmount
 		{
 			get
 			{

@@ -40,13 +40,13 @@ namespace SyncroSim.STSimStockFlow
 		/// <param name="cell"></param>
 		/// <returns></returns>
 		/// <remarks></remarks>
-		private static Dictionary<int, double> GetStockAmountDictionary(Cell cell)
+		private static Dictionary<int, float> GetStockAmountDictionary(Cell cell)
 		{
-			Dictionary<int, double> StockAmounts = (Dictionary<int, double>)cell.GetAssociatedObject(STOCK_AMOUNT_KEY);
+			Dictionary<int, float> StockAmounts = (Dictionary<int, float>)cell.GetAssociatedObject(STOCK_AMOUNT_KEY);
 
 			if (StockAmounts == null)
 			{
-				StockAmounts = new Dictionary<int, double>();
+				StockAmounts = new Dictionary<int, float>();
 				cell.SetAssociatedObject(STOCK_AMOUNT_KEY, StockAmounts);
 			}
 
@@ -131,7 +131,7 @@ namespace SyncroSim.STSimStockFlow
 
             foreach (Cell c in this.STSimTransformer.Cells)
             {
-                Dictionary<int, double> StockAmounts = GetStockAmountDictionary(c);
+                Dictionary<int, float> StockAmounts = GetStockAmountDictionary(c);
 
                 if (StockAmounts.Count > 0)
                 {
@@ -145,11 +145,11 @@ namespace SyncroSim.STSimStockFlow
             }
         }
 
-        private double GetAttributeValue(
+        private float GetAttributeValue(
             int stateAttributeTypeId, int stratumId, int? secondaryStratumId, int? tertiaryStratumId,
             int stateClassId, int iteration, int timestep, int age, TstCollection cellTst)
         {
-            double val = 0.0;
+            float val = 0.0F;
 
             double? v = this.STSimTransformer.GetAttributeValue(
                 stateAttributeTypeId, stratumId, secondaryStratumId, tertiaryStratumId,
@@ -157,7 +157,7 @@ namespace SyncroSim.STSimStockFlow
 
             if (v.HasValue)
             {
-                val = v.Value;
+                val = Convert.ToSingle(v.Value);
             }
 
             return val;

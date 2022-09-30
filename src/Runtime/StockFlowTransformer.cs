@@ -119,6 +119,9 @@ namespace SyncroSim.STSimStockFlow
                 this.ValidateFlowLateralMultipliers();
 			}
 
+			this.FillFlowGroups(true);
+			this.FillStockGroups(true);
+
 			this.NormalizeForUserDistributions();
 			this.InitializeDistributionValues();
 			this.InitializeShufflableFlowTypes();
@@ -515,22 +518,22 @@ namespace SyncroSim.STSimStockFlow
 			double Multiplier = 1.0;
 			DataSheet Groups = this.Project.GetDataSheet(Constants.DATASHEET_STOCK_GROUP_NAME);
 			DataSheet TGMembership = this.ResultScenario.GetDataSheet(Constants.DATASHEET_STOCK_TYPE_GROUP_MEMBERSHIP_NAME);
-			Dictionary<int, double> StockAmounts = GetStockAmountDictionary(e.SimulationCell);
+			Dictionary<int, float> StockAmounts = GetStockAmountDictionary(e.SimulationCell);
 			var dtgroups = Groups.GetData();
 			var dtmembership = TGMembership.GetData();
 
 			foreach (DataRow dr in dtgroups.Rows)
 			{
-				double StockGroupValue = 0.0;
+				float StockGroupValue = 0.0F;
 				int StockGroupId = Convert.ToInt32(dr[Groups.ValueMember], CultureInfo.InvariantCulture);
 				string query = string.Format(CultureInfo.InvariantCulture, "StockGroupID={0}", StockGroupId);
 				DataRow[] rows = dtmembership.Select(query);
 
 				foreach (DataRow r in rows)
 				{
-					double ValueMultiplier = 1.0;
+					float ValueMultiplier = 1.0F;
 					int StockTypeId = Convert.ToInt32(r[Constants.STOCK_TYPE_ID_COLUMN_NAME], CultureInfo.InvariantCulture);
-					double StockTypeAmount = 0.0;
+					float StockTypeAmount = 0.0F;
 
 					if (StockAmounts.ContainsKey(StockTypeId))
 					{
@@ -539,10 +542,10 @@ namespace SyncroSim.STSimStockFlow
 
 					if (!Convert.IsDBNull(r[Constants.VALUE_COLUMN_NAME]))
 					{
-						ValueMultiplier = Convert.ToDouble(r[Constants.VALUE_COLUMN_NAME], CultureInfo.InvariantCulture);
+						ValueMultiplier = Convert.ToSingle(r[Constants.VALUE_COLUMN_NAME], CultureInfo.InvariantCulture);
 					}
 
-					StockGroupValue += ((StockTypeAmount * ValueMultiplier) / this.m_STSimTransformer.AmountPerCell);
+					StockGroupValue += ((StockTypeAmount * ValueMultiplier) / Convert.ToSingle(this.m_STSimTransformer.AmountPerCell));
 				}
 
 				Multiplier *= this.m_StockTransitionMultiplierMap.GetStockTransitionMultiplier(StockGroupId, e.SimulationCell.StratumId, e.SimulationCell.SecondaryStratumId, e.SimulationCell.TertiaryStratumId, e.SimulationCell.StateClassId, e.TransitionGroupId, e.Iteration, e.Timestep, StockGroupValue);
@@ -559,17 +562,17 @@ namespace SyncroSim.STSimStockFlow
 		/// <remarks></remarks>
 		private void OnSTSimCellInitialized(object sender, CellEventArgs e)
 		{
-			Dictionary<int, double> StockAmounts = GetStockAmountDictionary(e.SimulationCell);
+			Dictionary<int, float> StockAmounts = GetStockAmountDictionary(e.SimulationCell);
 
 			foreach (StockType s in this.m_StockTypes)
 			{
 				if (StockAmounts.ContainsKey(s.Id))
 				{
-					StockAmounts[s.Id] = 0.0;
+					StockAmounts[s.Id] = 0.0F;
 				}
 				else
 				{
-					StockAmounts.Add(s.Id, 0.0);
+					StockAmounts.Add(s.Id, 0.0F);
 				}
 			}
 
@@ -584,9 +587,9 @@ namespace SyncroSim.STSimStockFlow
                     e.SimulationCell.StateClassId, e.Iteration, e.Timestep, e.SimulationCell.Age, e.SimulationCell.TstValues);
 
 				double v = val * this.m_STSimTransformer.AmountPerCell;
-				v = GetLimitBasedInitialStock(v, lim);
+				v = GetLimitBasedInitialStock(Convert.ToSingle(v), lim);
 
-				StockAmounts[s.StockTypeId] = v;
+				StockAmounts[s.StockTypeId] = Convert.ToSingle(v);
 			}
 
 			if (this.m_InitialStockSpatialMap != null)
@@ -619,8 +622,8 @@ namespace SyncroSim.STSimStockFlow
 								v = 0.0;
                             }
 
-                            v = GetLimitBasedInitialStock(v, lim);
-							StockAmounts[s.StockTypeId] = v*this.m_STSimTransformer.AmountPerCell;
+                            v = GetLimitBasedInitialStock(Convert.ToSingle(v), lim);
+							StockAmounts[s.StockTypeId] = Convert.ToSingle(v*this.m_STSimTransformer.AmountPerCell);
 						}
 						else
 						{
@@ -843,23 +846,23 @@ namespace SyncroSim.STSimStockFlow
 
 				foreach (FlowPathway fp in allFlowPathways)
 				{
-					Dictionary<int, double> d = GetStockAmountDictionary(cell);
+					Dictionary<int, float> d = GetStockAmountDictionary(cell);
 					StockLimit limsrc = this.m_StockLimitMap.GetStockLimit(fp.FromStockTypeId, cell.StratumId, cell.SecondaryStratumId, cell.TertiaryStratumId, cell.StateClassId, iteration, timestep);
 					StockLimit limdst = this.m_StockLimitMap.GetStockLimit(fp.ToStockTypeId, cell.StratumId, cell.SecondaryStratumId, cell.TertiaryStratumId, cell.StateClassId, iteration, timestep);
 
 					if (fp.FromStockTypeId.HasValue && !d.ContainsKey(fp.FromStockTypeId.Value))
 					{
-						double val = GetLimitBasedInitialStock(0.0, limsrc);
+						float val = GetLimitBasedInitialStock(0.0F, limsrc);
 						d.Add(fp.FromStockTypeId.Value, val);
 					}
 
 					if (fp.ToStockTypeId.HasValue && !d.ContainsKey(fp.ToStockTypeId.Value))
 					{
-						double val = GetLimitBasedInitialStock(0.0, limdst);
+						float val = GetLimitBasedInitialStock(0.0F, limdst);
 						d.Add(fp.ToStockTypeId.Value, val);
 					}
 
-					double fa = fp.FlowAmount;
+					float fa = fp.FlowAmount;
 
 					if (limsrc != null)
 					{
@@ -881,10 +884,10 @@ namespace SyncroSim.STSimStockFlow
 
 					if (fp.FromStockTypeId.HasValue)
                     {
-						d[fp.FromStockTypeId.Value] -= fa;
+						d[fp.FromStockTypeId.Value] -= Convert.ToSingle(fa);
 						if (MathUtils.CompareDoublesEqual(d[fp.FromStockTypeId.Value], 0.0, 0.00000001))
 						{
-							d[fp.FromStockTypeId.Value] = 0.0;
+							d[fp.FromStockTypeId.Value] = 0.0F;
 						}
 					}
 
@@ -896,7 +899,7 @@ namespace SyncroSim.STSimStockFlow
                     {
 						if (fp.ToStockTypeId.HasValue)
                         {
-							d[fp.ToStockTypeId.Value] += fa;
+							d[fp.ToStockTypeId.Value] += Convert.ToSingle(fa);
 						}
                     }
 
@@ -911,7 +914,7 @@ namespace SyncroSim.STSimStockFlow
 			}
 		}
 
-		private double CalculateFlowAmountWithStockLimits(double StkDensity, StockLimit lim, double fa, bool src)
+		private float CalculateFlowAmountWithStockLimits(double StkDensity, StockLimit lim, float fa, bool src)
         {
 			double faDensity = fa / this.m_STSimTransformer.AmountPerCell;
 
@@ -919,22 +922,22 @@ namespace SyncroSim.STSimStockFlow
             {
 				if ((StkDensity - faDensity) < lim.StockMinimum)
 				{
-					fa = (StkDensity - lim.StockMinimum) * this.m_STSimTransformer.AmountPerCell;
+					fa = Convert.ToSingle((StkDensity - lim.StockMinimum) * this.m_STSimTransformer.AmountPerCell);
 				}
 				else if ((StkDensity - faDensity) > lim.StockMaximum)
 				{
-					fa = (lim.StockMaximum - StkDensity) * this.m_STSimTransformer.AmountPerCell;
+					fa = Convert.ToSingle((lim.StockMaximum - StkDensity) * this.m_STSimTransformer.AmountPerCell);
 				}
 			} 
 			else
             {
 				if ((StkDensity + faDensity) > lim.StockMaximum)
 				{
-					fa = (lim.StockMaximum - StkDensity) * this.m_STSimTransformer.AmountPerCell;
+					fa = Convert.ToSingle((lim.StockMaximum - StkDensity) * this.m_STSimTransformer.AmountPerCell);
 				}
 				else if ((StkDensity + faDensity) < lim.StockMinimum)
 				{
-					fa = (StkDensity - lim.StockMinimum) * this.m_STSimTransformer.AmountPerCell;
+					fa = Convert.ToSingle((StkDensity - lim.StockMinimum) * this.m_STSimTransformer.AmountPerCell);
 				}
 			}
 
@@ -959,7 +962,7 @@ namespace SyncroSim.STSimStockFlow
             }
         }
 
-        private void AccumulateLateralFlowAmounts(FlowPathway flowPathway, double flowAmount)
+        private void AccumulateLateralFlowAmounts(FlowPathway flowPathway, float flowAmount)
         {      
             this.m_LateralFlowAmountMap.AddOrUpdate(
                 flowPathway.ToStockTypeId, 
@@ -1004,10 +1007,10 @@ namespace SyncroSim.STSimStockFlow
             {
                 foreach (Cell RecCell in rec.Cells)
                 {
-                    Dictionary<int, double> d = GetStockAmountDictionary(RecCell);
+                    Dictionary<int, float> d = GetStockAmountDictionary(RecCell);
 
                     double LateralFlowMultiplier = this.GetFlowLateralMultiplier(rec.FlowTypeId, RecCell, iteration, timestep);
-                    double FlowAmount = ((LateralFlowMultiplier / rec.InverseMultiplier) * rec.StockAmount);
+                    float FlowAmount = Convert.ToSingle((LateralFlowMultiplier / rec.InverseMultiplier) * rec.StockAmount);
 					
 					if (rec.StockTypeId.HasValue)
                     {
@@ -1018,30 +1021,30 @@ namespace SyncroSim.STSimStockFlow
             }
         }
 
-		private static double GetLimitBasedInitialStock(double value, StockLimit limit)
+		private static float GetLimitBasedInitialStock(float value, StockLimit limit)
 		{
-			double v = value;
+			float v = value;
 
 			if (limit != null)
 			{
 				if (v < limit.StockMinimum)
 				{
-					v = limit.StockMinimum;
+					v = Convert.ToSingle(limit.StockMinimum);
 				}
 				else if (v > limit.StockMaximum)
 				{
-					v = limit.StockMinimum;
+					v = Convert.ToSingle(limit.StockMinimum);
 				}
 			}
 
 			return v;
 		}
 
-        private double CalculateFlowAmount(FlowPathway fp, Cell cell, int iteration, int timestep)
+        private float CalculateFlowAmount(FlowPathway fp, Cell cell, int iteration, int timestep)
         {
             if (fp.TargetType == Constants.TargetType.Flow)
             {
-                return this.CalculateFlowAmountTargetTypeFlow(fp, cell, iteration, timestep);
+                return Convert.ToSingle(this.CalculateFlowAmountTargetTypeFlow(fp, cell, iteration, timestep));
             }
             else if (fp.TargetType == Constants.TargetType.FromStock)
             {
@@ -1055,7 +1058,7 @@ namespace SyncroSim.STSimStockFlow
 
         private double CalculateFlowAmountTargetTypeFlow(FlowPathway fp, Cell cell, int iteration, int timestep)
 		{      
-			double FlowAmount = 0.0;
+			float FlowAmount = 0.0F;
 
 			if (fp.StateAttributeTypeId.HasValue)
 			{
@@ -1063,15 +1066,15 @@ namespace SyncroSim.STSimStockFlow
                     fp.StateAttributeTypeId.Value, cell.StratumId, cell.SecondaryStratumId, 
                     cell.TertiaryStratumId, cell.StateClassId, iteration, timestep, cell.Age, cell.TstValues);
 
-				FlowAmount *= this.m_STSimTransformer.AmountPerCell;
+				FlowAmount *= Convert.ToSingle(this.m_STSimTransformer.AmountPerCell);
 			}
 			else
 			{
-				Dictionary<int, double> d = GetStockAmountDictionary(cell);
+				Dictionary<int, float> d = GetStockAmountDictionary(cell);
 
 				if (fp.FromStockTypeId.HasValue && !d.ContainsKey(fp.FromStockTypeId.Value))
 				{
-					d.Add(fp.FromStockTypeId.Value, 0.0);
+					d.Add(fp.FromStockTypeId.Value, 0.0F);
 				}
 
 				if (fp.FromStockTypeId.HasValue)
@@ -1083,27 +1086,27 @@ namespace SyncroSim.STSimStockFlow
             return this.ApplyFlowMultipliers(cell, fp, iteration, timestep, FlowAmount);
         }
 
-        private double CalculateFlowAmountTargetTypeFromStock(FlowPathway fp, Cell cell, int iteration, int timestep)
+        private float CalculateFlowAmountTargetTypeFromStock(FlowPathway fp, Cell cell, int iteration, int timestep)
         {
 			if (!fp.FromStockTypeId.HasValue)
             {
-				return 0.0;
+				return 0.0F;
             }
 
             if (this.DisabledFlowMultiplierExists(cell, fp, iteration, timestep))
             {
-                return 0.0;
+                return 0.0F;
             }
 
-			Dictionary<int, double> d = GetStockAmountDictionary(cell);
+			Dictionary<int, float> d = GetStockAmountDictionary(cell);
 
             if (!d.ContainsKey(fp.FromStockTypeId.Value))
             {
-                d.Add(fp.FromStockTypeId.Value, 0.0);
+                d.Add(fp.FromStockTypeId.Value, 0.0F);
 			}
 
-			double StockTargetAmount = 0.0;
-			double FromStockAmount = d[fp.FromStockTypeId.Value];
+			float StockTargetAmount;
+			float FromStockAmount = d[fp.FromStockTypeId.Value];
 
             if (fp.StateAttributeTypeId.HasValue)
             {
@@ -1112,37 +1115,37 @@ namespace SyncroSim.STSimStockFlow
                     cell.TertiaryStratumId, cell.StateClassId, iteration, timestep, cell.Age, cell.TstValues);
 
                 AttrVal *= this.m_STSimTransformer.AmountPerCell;
-                StockTargetAmount = this.ApplyFlowMultipliers(cell, fp, iteration, timestep, AttrVal);
+                StockTargetAmount = Convert.ToSingle(this.ApplyFlowMultipliers(cell, fp, iteration, timestep, AttrVal));
             }
             else
             {
-                StockTargetAmount = this.ApplyFlowMultipliers(cell, fp, iteration, timestep, FromStockAmount);
+                StockTargetAmount = Convert.ToSingle(this.ApplyFlowMultipliers(cell, fp, iteration, timestep, FromStockAmount));
             }
 
             return (FromStockAmount - StockTargetAmount);
         }
 
-        private double CalculateFlowAmountTargetTypeToStock(FlowPathway fp, Cell cell, int iteration, int timestep)
+        private float CalculateFlowAmountTargetTypeToStock(FlowPathway fp, Cell cell, int iteration, int timestep)
         {
 			if (!fp.ToStockTypeId.HasValue)
             {
-				return 0.0;
+				return 0.0F;
             }
 
             if (this.DisabledFlowMultiplierExists(cell, fp, iteration, timestep))
             {
-                return 0.0;
+                return 0.0F;
             }
 
-            Dictionary<int, double> d = GetStockAmountDictionary(cell);
+            Dictionary<int, float> d = GetStockAmountDictionary(cell);
 
             if (!d.ContainsKey(fp.ToStockTypeId.Value))
             {
-                d.Add(fp.ToStockTypeId.Value, 0.0);
+                d.Add(fp.ToStockTypeId.Value, 0.0F);
             }
 
-            double StockTargetAmount = 0.0;
-            double ToStockAmount = d[fp.ToStockTypeId.Value];
+            float StockTargetAmount;
+            float ToStockAmount = d[fp.ToStockTypeId.Value];
 
             if (fp.StateAttributeTypeId.HasValue)
             {
@@ -1151,11 +1154,11 @@ namespace SyncroSim.STSimStockFlow
                     cell.TertiaryStratumId, cell.StateClassId, iteration, timestep, cell.Age, cell.TstValues);
 
                 AttrVal *= this.m_STSimTransformer.AmountPerCell;
-                StockTargetAmount = this.ApplyFlowMultipliers(cell, fp, iteration, timestep, AttrVal);
+                StockTargetAmount = Convert.ToSingle(this.ApplyFlowMultipliers(cell, fp, iteration, timestep, AttrVal));
             }
             else
             {
-                StockTargetAmount = this.ApplyFlowMultipliers(cell, fp, iteration, timestep, ToStockAmount);
+                StockTargetAmount = Convert.ToSingle(this.ApplyFlowMultipliers(cell, fp, iteration, timestep, ToStockAmount));
             }
 
             return (StockTargetAmount - ToStockAmount);
