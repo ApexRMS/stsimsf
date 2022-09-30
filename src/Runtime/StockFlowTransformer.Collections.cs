@@ -200,8 +200,11 @@ namespace SyncroSim.STSimStockFlow
                         value = (double)dr[Constants.VALUE_COLUMN_NAME];
                     }
 
-                    StockGroupLinkage linkage = new StockGroupLinkage(this.m_StockGroups[gid], value);
-                    st.StockGroupLinkages.Add(linkage);
+					if (this.m_StockGroups.Contains(gid))
+                    {
+						StockGroupLinkage linkage = new StockGroupLinkage(this.m_StockGroups[gid], value);
+						st.StockGroupLinkages.Add(linkage);
+					}
                 }
             }
 #if DEBUG
@@ -222,24 +225,27 @@ namespace SyncroSim.STSimStockFlow
 
             foreach (StockGroup sg in this.m_StockGroups)
             {
-                Debug.Assert(sg.StockTypeLinkages.Count == 0);
-
-                string q = string.Format(CultureInfo.InvariantCulture, "{0}={1}", Constants.STOCK_GROUP_ID_COLUMN_NAME, sg.Id);
-                DataRow[] rows = dt.Select(q, null);
-
-                foreach (DataRow dr in rows)
+                if (this.m_RequiredStockGroups.Contains(sg.Id))
                 {
-                    int tid = Convert.ToInt32(dr[Constants.STOCK_TYPE_ID_COLUMN_NAME], CultureInfo.InvariantCulture);
-                    float value = 1.0F;
+					Debug.Assert(sg.StockTypeLinkages.Count == 0);
 
-                    if (dr[Constants.VALUE_COLUMN_NAME] != DBNull.Value)
-                    {
-						value = Convert.ToSingle(dr[Constants.VALUE_COLUMN_NAME]);
-                    }
+					string q = string.Format(CultureInfo.InvariantCulture, "{0}={1}", Constants.STOCK_GROUP_ID_COLUMN_NAME, sg.Id);
+					DataRow[] rows = dt.Select(q, null);
 
-                    StockTypeLinkage linkage = new StockTypeLinkage(this.m_StockTypes[tid], value);
-                    sg.StockTypeLinkages.Add(linkage);
-                }
+					foreach (DataRow dr in rows)
+					{
+						int tid = Convert.ToInt32(dr[Constants.STOCK_TYPE_ID_COLUMN_NAME], CultureInfo.InvariantCulture);
+						float value = 1.0F;
+
+						if (dr[Constants.VALUE_COLUMN_NAME] != DBNull.Value)
+						{
+							value = Convert.ToSingle(dr[Constants.VALUE_COLUMN_NAME]);
+						}
+
+						StockTypeLinkage linkage = new StockTypeLinkage(this.m_StockTypes[tid], value);
+						sg.StockTypeLinkages.Add(linkage);
+					}
+				}
             }
 
 #if DEBUG
@@ -275,8 +281,11 @@ namespace SyncroSim.STSimStockFlow
                         value = (double)dr[Constants.VALUE_COLUMN_NAME];
                     }
 
-                    FlowGroupLinkage linkage = new FlowGroupLinkage(this.m_FlowGroups[gid], value);
-                    ft.FlowGroupLinkages.Add(linkage);
+                    if (this.m_FlowGroups.Contains(gid))
+                    {
+						FlowGroupLinkage linkage = new FlowGroupLinkage(this.m_FlowGroups[gid], value);
+						ft.FlowGroupLinkages.Add(linkage);
+					}
                 }
             }
 
@@ -298,24 +307,27 @@ namespace SyncroSim.STSimStockFlow
 
             foreach (FlowGroup fg in this.m_FlowGroups)
             {
-                Debug.Assert(fg.FlowTypeLinkages.Count == 0);
-
-                string q = string.Format(CultureInfo.InvariantCulture, "{0}={1}", Constants.FLOW_GROUP_ID_COLUMN_NAME, fg.Id);
-                DataRow[] rows = dt.Select(q, null);
-
-                foreach (DataRow dr in rows)
+				if (this.m_RequiredFlowGroups.Contains(fg.Id))
                 {
-                    int tid = Convert.ToInt32(dr[Constants.FLOW_TYPE_ID_COLUMN_NAME], CultureInfo.InvariantCulture);
-                    float value = 1.0F;
+					Debug.Assert(fg.FlowTypeLinkages.Count == 0);
 
-                    if (dr[Constants.VALUE_COLUMN_NAME] != DBNull.Value)
-                    {
-                        value = Convert.ToSingle(dr[Constants.VALUE_COLUMN_NAME]);
-                    }
+					string q = string.Format(CultureInfo.InvariantCulture, "{0}={1}", Constants.FLOW_GROUP_ID_COLUMN_NAME, fg.Id);
+					DataRow[] rows = dt.Select(q, null);
 
-                    FlowTypeLinkage linkage = new FlowTypeLinkage(this.m_FlowTypes[tid], value);
-                    fg.FlowTypeLinkages.Add(linkage);
-                }
+					foreach (DataRow dr in rows)
+					{
+						int tid = Convert.ToInt32(dr[Constants.FLOW_TYPE_ID_COLUMN_NAME], CultureInfo.InvariantCulture);
+						float value = 1.0F;
+
+						if (dr[Constants.VALUE_COLUMN_NAME] != DBNull.Value)
+						{
+							value = Convert.ToSingle(dr[Constants.VALUE_COLUMN_NAME]);
+						}
+
+						FlowTypeLinkage linkage = new FlowTypeLinkage(this.m_FlowTypes[tid], value);
+						fg.FlowTypeLinkages.Add(linkage);
+					}
+				}
             }
 
 #if DEBUG
@@ -740,8 +752,8 @@ namespace SyncroSim.STSimStockFlow
 		private void FillOutputFilterStocks()
 		{
 #if DEBUG
-			Debug.Assert(this.m_StockTypeLinkagesAdded);
-			Debug.Assert(this.m_StockGroupLinkagesAdded);
+			//Debug.Assert(this.m_StockTypeLinkagesAdded);
+			//Debug.Assert(this.m_StockGroupLinkagesAdded);
 			Debug.Assert(!this.m_OutputFilterStocks.HasItems);
 #endif
 			DataSheet ds = this.ResultScenario.GetDataSheet(Constants.DATASHEET_OUTPUT_FILTER_STOCKS);
@@ -771,8 +783,8 @@ namespace SyncroSim.STSimStockFlow
 		private void FillOutputFilterFlows()
 		{
 #if DEBUG
-			Debug.Assert(this.m_FlowTypeLinkagesAdded);
-			Debug.Assert(this.m_FlowGroupLinkagesAdded);
+			//Debug.Assert(this.m_FlowTypeLinkagesAdded);
+			//Debug.Assert(this.m_FlowGroupLinkagesAdded);
 			Debug.Assert(!this.m_OutputFilterFlows.HasItems);
 #endif
 			DataSheet ds = this.ResultScenario.GetDataSheet(Constants.DATASHEET_OUTPUT_FILTER_FLOWS);
@@ -895,6 +907,7 @@ namespace SyncroSim.STSimStockFlow
 				}
 
 				this.m_FlowSpatialMultipliers.Add(Multiplier);
+				this.m_RequiredFlowGroups.Add(FlowGroupId);
 
 				//Only load a single instance of a each unique filename to conserve memory
 
@@ -951,6 +964,7 @@ namespace SyncroSim.STSimStockFlow
                 }
 
                 this.m_FlowLateralMultipliers.Add(Multiplier);
+				this.m_RequiredFlowGroups.Add(FlowGroupId);
 
                 //Only load a single instance of a each unique filename to conserve memory
 
