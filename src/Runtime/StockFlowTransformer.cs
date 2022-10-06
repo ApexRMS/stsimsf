@@ -102,12 +102,12 @@ namespace SyncroSim.STSimStockFlow
             this.AddAutoStockTypeLinkages();
             this.AddAutoFlowTypeLinkages();
 
-            //this.FillStockGroupLinkages();
-            //this.FillStockTypeLinkages();
-            //this.FillFlowGroupLinkages();
-            //this.FillFlowTypeLinkages();
+            this.FillStockGroupLinkages();
+            this.FillStockTypeLinkages();
+			this.FillFlowGroupLinkages();
+            this.FillFlowTypeLinkages();
 
-            this.FillOutputFilterStocks();
+			this.FillOutputFilterStocks();
 			this.FillOutputFilterFlows();
 
 			if (this.m_IsSpatial)
@@ -121,11 +121,6 @@ namespace SyncroSim.STSimStockFlow
 
 			this.FillFlowGroups(true);
 			this.FillStockGroups(true);
-
-			this.FillStockGroupLinkages();
-			this.FillStockTypeLinkages();
-			this.FillFlowGroupLinkages();
-			this.FillFlowTypeLinkages();
 
 			this.NormalizeForUserDistributions();
 			this.InitializeDistributionValues();
@@ -146,8 +141,8 @@ namespace SyncroSim.STSimStockFlow
                 this.STSimTransformer.MinimumIteration + 1);
 
 #if DEBUG
-            //foreach (StockType t in this.m_StockTypes) { Debug.Assert(t.StockGroupLinkages.Count > 0); }
-            //foreach (FlowType t in this.m_FlowTypes) { Debug.Assert(t.FlowGroupLinkages.Count > 0); }
+            foreach (StockType t in this.m_StockTypes) { Debug.Assert(t.StockGroupLinkages.Count > 0); }
+            foreach (FlowType t in this.m_FlowTypes) { Debug.Assert(t.FlowGroupLinkages.Count > 0); }
 #endif
         }
 
@@ -476,9 +471,6 @@ namespace SyncroSim.STSimStockFlow
 
         private void OnSTSimModelRunComplete(object sender, EventArgs e)
         {
-			// add back in information about stock/flow groups
-			// calculate summary statistics
-
             if (!this.STSimTransformer.IsSpatial)
             {
                 return;
