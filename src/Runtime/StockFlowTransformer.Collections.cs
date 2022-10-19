@@ -34,9 +34,6 @@ namespace SyncroSim.STSimStockFlow
 		private OutputFilterCollection m_OutputFilterFlows = new OutputFilterCollection();
 		private FlowOrderCollection m_FlowOrders = new FlowOrderCollection();
 
-		private Collection<int> m_RequiredFlowGroups = new Collection<int>();
-		private Collection<int> m_RequiredStockGroups = new Collection<int>();
-
 #if DEBUG
         private bool m_AutoStockLinkagesAdded;
         private bool m_StockTypesFilled;
@@ -87,30 +84,6 @@ namespace SyncroSim.STSimStockFlow
 #endif
         }
 
-		private void FillStockGroups(bool required)
-		{
-			this.m_StockGroups.Clear();
-			Debug.Assert(this.m_StockGroups.Count == 0);
-			DataSheet ds = this.Project.GetDataSheet(Constants.DATASHEET_STOCK_GROUP_NAME);
-
-			foreach (DataRow dr in ds.GetData().Rows)
-			{
-				int stockGroupId = Convert.ToInt32(dr[ds.PrimaryKeyColumn.Name], CultureInfo.InvariantCulture);
-
-				if (this.m_RequiredStockGroups.Contains(stockGroupId))
-                {
-					this.m_StockGroups.Add(
-						new StockGroup(
-							stockGroupId,
-							Convert.ToString(dr[ds.DisplayMember], CultureInfo.InvariantCulture)));
-				}
-			}
-
-#if DEBUG
-			this.m_StockGroupsFilled = true;
-#endif
-		}
-
 		private void FillFlowTypes()
         {
             Debug.Assert(this.m_FlowTypes.Count == 0);
@@ -142,30 +115,6 @@ namespace SyncroSim.STSimStockFlow
                         Convert.ToInt32(dr[ds.PrimaryKeyColumn.Name], CultureInfo.InvariantCulture),
                         Convert.ToString(dr[ds.DisplayMember], CultureInfo.InvariantCulture)));
             }
-
-#if DEBUG
-			this.m_FlowGroupsFilled = true;
-#endif
-		}
-
-		private void FillFlowGroups(bool required)
-		{
-			this.m_FlowGroups.Clear();
-			Debug.Assert(this.m_FlowGroups.Count == 0);
-			DataSheet ds = this.Project.GetDataSheet(Constants.DATASHEET_FLOW_GROUP_NAME);
-
-			foreach (DataRow dr in ds.GetData().Rows)
-			{
-				int flowGroupId = Convert.ToInt32(dr[ds.PrimaryKeyColumn.Name], CultureInfo.InvariantCulture);
-
-				if (this.m_RequiredFlowGroups.Contains(flowGroupId))
-				{
-					this.m_FlowGroups.Add(
-						new FlowGroup(
-							flowGroupId,
-							Convert.ToString(dr[ds.DisplayMember], CultureInfo.InvariantCulture)));
-				}
-			}
 
 #if DEBUG
 			this.m_FlowGroupsFilled = true;
@@ -578,7 +527,6 @@ namespace SyncroSim.STSimStockFlow
                         Item.DistributionMin, Item.DistributionMax);
 
 					this.m_StockTransitionMultipliers.Add(Item);
-					this.m_RequiredStockGroups.Add(StockGroupId);
 
 				}
 				catch (Exception ex)
@@ -728,7 +676,6 @@ namespace SyncroSim.STSimStockFlow
                     }
 
 					this.m_FlowMultipliers.Add(Item);
-					this.m_RequiredFlowGroups.Add(FlowGroupId);
 				}
 				catch (Exception ex)
 				{
