@@ -934,7 +934,7 @@ namespace SyncroSim.STSimStockFlow
 				}
 				else if ((StkDensity + faDensity) < lim.StockMinimum)
 				{
-					fa = Convert.ToSingle((StkDensity - lim.StockMinimum) * this.m_STSimTransformer.AmountPerCell);
+					fa = -(Convert.ToSingle((StkDensity - lim.StockMinimum) * this.m_STSimTransformer.AmountPerCell));
 				}
 			}
 
