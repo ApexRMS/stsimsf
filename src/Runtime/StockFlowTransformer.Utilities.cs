@@ -42,18 +42,15 @@ namespace SyncroSim.STSimStockFlow
 		/// <remarks></remarks>
 		private static Dictionary<int, float> GetStockAmountDictionary(Cell cell)
 		{
-            //Dictionary<int, float> StockAmounts = (Dictionary<int, float>)cell.GetAssociatedObject(STOCK_AMOUNT_KEY);
+            Dictionary<int, float> StockAmounts = (Dictionary<int, float>)cell.GetAssociatedObject(STOCK_AMOUNT_KEY);
 
-            //if (StockAmounts == null)
-            //{
-            //	StockAmounts = new Dictionary<int, float>();
-            //	cell.SetAssociatedObject(STOCK_AMOUNT_KEY, StockAmounts);
-            //}
+            if (StockAmounts == null)
+            {
+                StockAmounts = new Dictionary<int, float>();
+                cell.SetAssociatedObject(STOCK_AMOUNT_KEY, StockAmounts);
+            }
 
-            //return StockAmounts;
-
-            cell.SetAssociatedObject(STOCK_AMOUNT_KEY, new float[10]); // verify number of stock types
-            return null;
+            return StockAmounts;
         }
 
         /// <summary>

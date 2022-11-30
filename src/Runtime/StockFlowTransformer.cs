@@ -159,14 +159,14 @@ namespace SyncroSim.STSimStockFlow
 			}
 
 			this.STSimTransformer.CellInitialized += this.OnSTSimCellInitialized;
-			//this.STSimTransformer.CellsInitialized += this.OnSTSimAfterCellsInitialized;
-			//this.STSimTransformer.ChangingCellProbabilistic += this.OnSTSimBeforeChangeCellProbabilistic;
-			//this.STSimTransformer.ChangingCellDeterministic += this.OnSTSimBeforeChangeCellDeterministic;
-			//this.STSimTransformer.CellBeforeTransitions += this.OnSTSimCellBeforeTransitions;
-			//this.STSimTransformer.IterationStarted += this.OnSTSimBeforeIteration;
-			//this.STSimTransformer.TimestepStarted += this.OnSTSimBeforeTimestep;
-			//this.STSimTransformer.TimestepCompleted += this.OnSTSimAfterTimestep;
-   //         this.STSimTransformer.ModelRunComplete += this.OnSTSimModelRunComplete;
+            this.STSimTransformer.CellsInitialized += this.OnSTSimAfterCellsInitialized;
+            this.STSimTransformer.ChangingCellProbabilistic += this.OnSTSimBeforeChangeCellProbabilistic;
+            this.STSimTransformer.ChangingCellDeterministic += this.OnSTSimBeforeChangeCellDeterministic;
+            this.STSimTransformer.CellBeforeTransitions += this.OnSTSimCellBeforeTransitions;
+            this.STSimTransformer.IterationStarted += this.OnSTSimBeforeIteration;
+            this.STSimTransformer.TimestepStarted += this.OnSTSimBeforeTimestep;
+            this.STSimTransformer.TimestepCompleted += this.OnSTSimAfterTimestep;
+            this.STSimTransformer.ModelRunComplete += this.OnSTSimModelRunComplete;
 
             if (this.m_StockTransitionMultipliers.Count > 0)
 			{
@@ -561,75 +561,75 @@ namespace SyncroSim.STSimStockFlow
 		{
 			Dictionary<int, float> StockAmounts = GetStockAmountDictionary(e.SimulationCell);
 
-			//foreach (StockType s in this.m_StockTypes)
-			//{
-			//	if (StockAmounts.ContainsKey(s.Id))
-			//	{
-			//		StockAmounts[s.Id] = 0.0F;
-			//	}
-			//	else
-			//	{
-			//		StockAmounts.Add(s.Id, 0.0F);
-			//	}
-			//}
+            foreach (StockType s in this.m_StockTypes)
+            {
+                if (StockAmounts.ContainsKey(s.Id))
+                {
+                    StockAmounts[s.Id] = 0.0F;
+                }
+                else
+                {
+                    StockAmounts.Add(s.Id, 0.0F);
+                }
+            }
 
-			//foreach (InitialStockNonSpatial s in this.m_InitialStocksNonSpatial)
-			//{
-			//	StockLimit lim = this.m_StockLimitMap.GetStockLimit(
-   //                 s.StockTypeId, e.SimulationCell.StratumId, e.SimulationCell.SecondaryStratumId, e.SimulationCell.TertiaryStratumId, 
-   //                 e.SimulationCell.StateClassId, e.Iteration, e.Timestep);
+            foreach (InitialStockNonSpatial s in this.m_InitialStocksNonSpatial)
+            {
+                StockLimit lim = this.m_StockLimitMap.GetStockLimit(
+                    s.StockTypeId, e.SimulationCell.StratumId, e.SimulationCell.SecondaryStratumId, e.SimulationCell.TertiaryStratumId,
+                    e.SimulationCell.StateClassId, e.Iteration, e.Timestep);
 
-			//	double val = this.GetAttributeValue(
-   //                 s.StateAttributeTypeId, e.SimulationCell.StratumId, e.SimulationCell.SecondaryStratumId, e.SimulationCell.TertiaryStratumId, 
-   //                 e.SimulationCell.StateClassId, e.Iteration, e.Timestep, e.SimulationCell.Age, e.SimulationCell.TstValues);
+                double val = this.GetAttributeValue(
+                    s.StateAttributeTypeId, e.SimulationCell.StratumId, e.SimulationCell.SecondaryStratumId, e.SimulationCell.TertiaryStratumId,
+                    e.SimulationCell.StateClassId, e.Iteration, e.Timestep, e.SimulationCell.Age, e.SimulationCell.TstValues);
 
-			//	double v = val * this.m_STSimTransformer.AmountPerCell;
-			//	v = GetLimitBasedInitialStock(Convert.ToSingle(v), lim);
+                double v = val * this.m_STSimTransformer.AmountPerCell;
+                v = GetLimitBasedInitialStock(Convert.ToSingle(v), lim);
 
-			//	StockAmounts[s.StockTypeId] = Convert.ToSingle(v);
-			//}
+                StockAmounts[s.StockTypeId] = Convert.ToSingle(v);
+            }
 
-			//if (this.m_InitialStockSpatialMap != null)
-			//{
-			//	InitialStockSpatialCollection l = this.m_InitialStockSpatialMap.GetItem(e.Iteration);
+            if (this.m_InitialStockSpatialMap != null)
+            {
+                InitialStockSpatialCollection l = this.m_InitialStockSpatialMap.GetItem(e.Iteration);
 
-			//	if (l != null)
-			//	{
-			//		foreach (InitialStockSpatial s in l)
-			//		{
-			//			StockLimit lim = this.m_StockLimitMap.GetStockLimit(
-   //                         s.StockTypeId, e.SimulationCell.StratumId, e.SimulationCell.SecondaryStratumId, e.SimulationCell.TertiaryStratumId, 
-   //                         e.SimulationCell.StateClassId, e.Iteration, e.Timestep);
+                if (l != null)
+                {
+                    foreach (InitialStockSpatial s in l)
+                    {
+                        StockLimit lim = this.m_StockLimitMap.GetStockLimit(
+                            s.StockTypeId, e.SimulationCell.StratumId, e.SimulationCell.SecondaryStratumId, e.SimulationCell.TertiaryStratumId,
+                            e.SimulationCell.StateClassId, e.Iteration, e.Timestep);
 
-			//			//The spatial value should take precedence over the non-spatial value.  Note that
-			//			//we assume that raster values are the total amount not the density and don't need conversion.
+                        //The spatial value should take precedence over the non-spatial value.  Note that
+                        //we assume that raster values are the total amount not the density and don't need conversion.
 
-			//			if (this.m_InitialStockSpatialRasters.ContainsKey(s.Filename))
-			//			{
-			//				double v = this.m_InitialStockSpatialRasters[s.Filename].DblCells[e.SimulationCell.CellId];
+                        if (this.m_InitialStockSpatialRasters.ContainsKey(s.Filename))
+                        {
+                            double v = this.m_InitialStockSpatialRasters[s.Filename].DblCells[e.SimulationCell.CellId];
 
-			//				//If a cell is a no data cell or if there is a -INF value for a cell, initialize the stock value to zero
+                            //If a cell is a no data cell or if there is a -INF value for a cell, initialize the stock value to zero
 
-			//				if (Math.Abs(v - this.m_InitialStockSpatialRasters[s.Filename].NoDataValue) < double.Epsilon | double.IsNegativeInfinity(v))
-			//				{
-			//					v = 0.0;
-			//				}
-   //                         else if (Math.Abs((float)v - (float)this.m_InitialStockSpatialRasters[s.Filename].NoDataValue) < float.Epsilon | float.IsNegativeInfinity((float)v))
-   //                         {
-			//					v = 0.0;
-   //                         }
+                            if (Math.Abs(v - this.m_InitialStockSpatialRasters[s.Filename].NoDataValue) < double.Epsilon | double.IsNegativeInfinity(v))
+                            {
+                                v = 0.0;
+                            }
+                            else if (Math.Abs((float)v - (float)this.m_InitialStockSpatialRasters[s.Filename].NoDataValue) < float.Epsilon | float.IsNegativeInfinity((float)v))
+                            {
+                                v = 0.0;
+                            }
 
-   //                         v = GetLimitBasedInitialStock(Convert.ToSingle(v), lim);
-			//				StockAmounts[s.StockTypeId] = Convert.ToSingle(v*this.m_STSimTransformer.AmountPerCell);
-			//			}
-			//			else
-			//			{
-			//				Debug.Assert(false, "Where's the raster object ?");
-			//			}
-			//		}
-			//	}
-			//}
-		}
+                            v = GetLimitBasedInitialStock(Convert.ToSingle(v), lim);
+                            StockAmounts[s.StockTypeId] = Convert.ToSingle(v * this.m_STSimTransformer.AmountPerCell);
+                        }
+                        else
+                        {
+                            Debug.Assert(false, "Where's the raster object ?");
+                        }
+                    }
+                }
+            }
+        }
 
 		/// <summary>
 		/// Called after all cells have been initialized
