@@ -319,7 +319,7 @@
             </datasheet>
           </datasheets>
         </datafeed>
-        <datafeed name="OutputOptions" displayName="Output Options" dataScope="Scenario">
+        <datafeed name="OutputOptions" displayName="Tabular and Spatial" dataScope="Scenario">
           <datasheets>
             <datasheet name="OutputOptions" displayName="SF Output Options" isSingleRow="True">
               <columns>
@@ -555,11 +555,11 @@
       <group name="StocksAndFlowsGroup" displayName="Stocks and Flows">
         <item name="FlowPathways"/>       
         <item name="InitialStocks"/>
-        <group name="Output">
-			<item name="OutputOptions"/>
-		    <group name="OutputFilters" displayName="Output Filters">
-                <item name="OutputFilterStocks" displayName="Stocks"/>
-                <item name="OutputFilterFlows" displayName="Flows"/>          
+        <group name="Output" displayName="Output Options">
+			      <item name="OutputOptions" displayName="Tabular and Spatial"/>
+		        <group name="OutputFilters" displayName="Output Filters">
+                    <item name="OutputFilterStocks" displayName="Stocks"/>
+                    <item name="OutputFilterFlows" displayName="Flows"/>          
             </group>
 		</group>
         <group name="Advanced">
