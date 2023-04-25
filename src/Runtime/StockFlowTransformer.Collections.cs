@@ -15,96 +15,96 @@ namespace SyncroSim.STSimStockFlow
 	internal partial class StockFlowTransformer
 	{
 		private StockTypeCollection m_StockTypes = new StockTypeCollection();
-				private StockGroupCollection m_StockGroups = new StockGroupCollection();
-				private FlowTypeCollection m_FlowTypes = new FlowTypeCollection();
+		private StockGroupCollection m_StockGroups = new StockGroupCollection();
+		private FlowTypeCollection m_FlowTypes = new FlowTypeCollection();
 		private FlowGroupCollection m_FlowGroups = new FlowGroupCollection();
-				private FlowMultiplierTypeCollection m_FlowMultiplierTypes = new FlowMultiplierTypeCollection();
+		private FlowMultiplierTypeCollection m_FlowMultiplierTypes = new FlowMultiplierTypeCollection();
 		private InitialStockNonSpatialCollection m_InitialStocksNonSpatial = new InitialStockNonSpatialCollection();
 		private InitialStockSpatialCollection m_InitialStocksSpatial = new InitialStockSpatialCollection();
 		private Dictionary<string, StochasticTimeRaster> m_InitialStockSpatialRasters = new Dictionary<string, StochasticTimeRaster>();
 		private StockLimitCollection m_StockLimits = new StockLimitCollection();
-				private StockFlowMultiplierCollection m_StockFlowMultipliers = new StockFlowMultiplierCollection();
+		private StockFlowMultiplierCollection m_StockFlowMultipliers = new StockFlowMultiplierCollection();
 		private StockTransitionMultiplierCollection m_StockTransitionMultipliers = new StockTransitionMultiplierCollection();
 		private FlowPathwayCollection m_FlowPathways = new FlowPathwayCollection();
 		private FlowMultiplierCollection m_FlowMultipliers = new FlowMultiplierCollection();
 		private FlowSpatialMultiplierCollection m_FlowSpatialMultipliers = new FlowSpatialMultiplierCollection();
 		private Dictionary<string, StochasticTimeRaster> m_FlowSpatialMultiplierRasters = new Dictionary<string, StochasticTimeRaster>();
-				private FlowLateralMultiplierCollection m_FlowLateralMultipliers = new FlowLateralMultiplierCollection();
+		private FlowLateralMultiplierCollection m_FlowLateralMultipliers = new FlowLateralMultiplierCollection();
 		private Dictionary<string, StochasticTimeRaster> m_FlowLateralMultiplierRasters = new Dictionary<string, StochasticTimeRaster>();
 		private OutputFilterCollection m_OutputFilterStocks = new OutputFilterCollection();
 		private OutputFilterCollection m_OutputFilterFlows = new OutputFilterCollection();
 		private FlowOrderCollection m_FlowOrders = new FlowOrderCollection();
 
 #if DEBUG
-				private bool m_AutoStockLinkagesAdded;
-				private bool m_StockTypesFilled;
-				private bool m_StockGroupsFilled;
+		private bool m_AutoStockLinkagesAdded;
+		private bool m_StockTypesFilled;
+		private bool m_StockGroupsFilled;
 		private bool m_StockTypeLinkagesAdded;
 		private bool m_StockGroupLinkagesAdded;
 
-				private bool m_AutoFlowLinkagesAdded;
+		private bool m_AutoFlowLinkagesAdded;
 		private bool m_FlowTypesFilled;
 		private bool m_FlowGroupsFilled;
 		private bool m_FlowTypeLinkagesAdded;
 		private bool m_FlowGroupLinkagesAdded;
 #endif
 
-				private void FillStockTypes()
+		private void FillStockTypes()
+		{
+				Debug.Assert(this.m_StockTypes.Count == 0);
+				DataSheet ds = this.Project.GetDataSheet(Constants.DATASHEET_STOCK_TYPE_NAME);
+
+				foreach (DataRow dr in ds.GetData().Rows)
 				{
-						Debug.Assert(this.m_StockTypes.Count == 0);
-						DataSheet ds = this.Project.GetDataSheet(Constants.DATASHEET_STOCK_TYPE_NAME);
-
-						foreach (DataRow dr in ds.GetData().Rows)
-						{
-								this.m_StockTypes.Add(
-										new StockType(
-												Convert.ToInt32(dr[ds.PrimaryKeyColumn.Name], CultureInfo.InvariantCulture),
-												Convert.ToString(dr[ds.DisplayMember], CultureInfo.InvariantCulture)));
-						}
-
-#if DEBUG
-						this.m_StockTypesFilled = true;
-#endif
+						this.m_StockTypes.Add(
+								new StockType(
+										Convert.ToInt32(dr[ds.PrimaryKeyColumn.Name], CultureInfo.InvariantCulture),
+										Convert.ToString(dr[ds.DisplayMember], CultureInfo.InvariantCulture)));
 				}
 
-				private void FillStockGroups()
-				{
-						Debug.Assert(this.m_StockGroups.Count == 0);
-						DataSheet ds = this.Project.GetDataSheet(Constants.DATASHEET_STOCK_GROUP_NAME);
+#if DEBUG
+				this.m_StockTypesFilled = true;
+#endif
+		}
 
-						foreach (DataRow dr in ds.GetData().Rows)
-						{
-								this.m_StockGroups.Add(
-										new StockGroup(
-												Convert.ToInt32(dr[ds.PrimaryKeyColumn.Name], CultureInfo.InvariantCulture), 
-												Convert.ToString(dr[ds.DisplayMember], CultureInfo.InvariantCulture)));
-						}
+		private void FillStockGroups()
+		{
+				Debug.Assert(this.m_StockGroups.Count == 0);
+				DataSheet ds = this.Project.GetDataSheet(Constants.DATASHEET_STOCK_GROUP_NAME);
+
+				foreach (DataRow dr in ds.GetData().Rows)
+				{
+						this.m_StockGroups.Add(
+								new StockGroup(
+										Convert.ToInt32(dr[ds.PrimaryKeyColumn.Name], CultureInfo.InvariantCulture), 
+										Convert.ToString(dr[ds.DisplayMember], CultureInfo.InvariantCulture)));
+				}
 
 #if DEBUG
-						this.m_StockGroupsFilled = true;
+				this.m_StockGroupsFilled = true;
 #endif
-				}
+		}
 
 		private void FillFlowTypes()
+		{
+				Debug.Assert(this.m_FlowTypes.Count == 0);
+				DataSheet ds = this.Project.GetDataSheet(Constants.DATASHEET_FLOW_TYPE_NAME);
+
+				foreach (DataRow dr in ds.GetData().Rows)
 				{
-						Debug.Assert(this.m_FlowTypes.Count == 0);
-						DataSheet ds = this.Project.GetDataSheet(Constants.DATASHEET_FLOW_TYPE_NAME);
-
-						foreach (DataRow dr in ds.GetData().Rows)
-						{
-								this.m_FlowTypes.Add(
-										new FlowType(
-												Convert.ToInt32(dr[ds.PrimaryKeyColumn.Name], CultureInfo.InvariantCulture),
-												Convert.ToString(dr[ds.DisplayMember], CultureInfo.InvariantCulture)));
-						}
-
-#if DEBUG
-						this.m_FlowTypesFilled = true;
-#endif
-
+						this.m_FlowTypes.Add(
+								new FlowType(
+										Convert.ToInt32(dr[ds.PrimaryKeyColumn.Name], CultureInfo.InvariantCulture),
+										Convert.ToString(dr[ds.DisplayMember], CultureInfo.InvariantCulture)));
 				}
 
-				private void FillFlowGroups()
+#if DEBUG
+				this.m_FlowTypesFilled = true;
+#endif
+
+		}
+
+		private void FillFlowGroups()
 		{
 			Debug.Assert(this.m_FlowGroups.Count == 0);
 			DataSheet ds = this.Project.GetDataSheet(Constants.DATASHEET_FLOW_GROUP_NAME);

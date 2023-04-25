@@ -6,49 +6,49 @@ using SyncroSim.StochasticTime;
 
 namespace SyncroSim.STSimStockFlow
 {
-	internal class FlowMultiplier : STSimDistributionBase
+    internal class FlowMultiplier : STSimDistributionBase
     {
-		private int? m_StateClassId;
+        private int? m_StateClassId;
         private int m_AgeMin;
         private int m_AgeMax = int.MaxValue;
         private int? m_FlowMultiplierTypeId;
-		private int m_FlowGroupId;
+        private int m_FlowGroupId;
 
-		public FlowMultiplier(
-            int? iteration, 
-            int? timestep, 
-            int? stratumId, 
-            int? secondaryStratumId, 
-            int? tertiaryStratumId, 
-            int? stateClassId,
-            int ageMin,
-            int ageMax, 
-            int? flowMultiplierTypeId, 
-            int flowGroupId, 
-            double? multiplierValue, 
-            int? distributionTypeId, 
-            DistributionFrequency? distributionFrequency, 
-            double? distributionSD, 
-            double? distributionMin, 
-            double? distributionMax) : base(
-                iteration, timestep, stratumId, secondaryStratumId, 
-                tertiaryStratumId, multiplierValue, distributionTypeId, 
-                distributionFrequency, distributionSD, distributionMin, distributionMax)
-		{
-			this.m_StateClassId = stateClassId;
+        public FlowMultiplier(
+                int? iteration,
+                int? timestep,
+                int? stratumId,
+                int? secondaryStratumId,
+                int? tertiaryStratumId,
+                int? stateClassId,
+                int ageMin,
+                int ageMax,
+                int? flowMultiplierTypeId,
+                int flowGroupId,
+                double? multiplierValue,
+                int? distributionTypeId,
+                DistributionFrequency? distributionFrequency,
+                double? distributionSD,
+                double? distributionMin,
+                double? distributionMax) : base(
+                    iteration, timestep, stratumId, secondaryStratumId,
+                    tertiaryStratumId, multiplierValue, distributionTypeId,
+                    distributionFrequency, distributionSD, distributionMin, distributionMax)
+        {
+            this.m_StateClassId = stateClassId;
             this.m_AgeMin = ageMin;
             this.m_AgeMax = ageMax;
             this.m_FlowMultiplierTypeId = flowMultiplierTypeId;
-			this.m_FlowGroupId = flowGroupId;
-		}
+            this.m_FlowGroupId = flowGroupId;
+        }
 
-		public int? StateClassId
-		{
-			get
-			{
-				return this.m_StateClassId;
-			}
-		}
+        public int? StateClassId
+        {
+            get
+            {
+                return this.m_StateClassId;
+            }
+        }
 
         public int AgeMin
         {
@@ -67,29 +67,29 @@ namespace SyncroSim.STSimStockFlow
         }
 
         public int? FlowMultiplierTypeId
-		{
-			get
-			{
-				return this.m_FlowMultiplierTypeId;
-			}
-		}
+        {
+            get
+            {
+                return this.m_FlowMultiplierTypeId;
+            }
+        }
 
-		public int FlowGroupId
-		{
-			get
-			{
-				return this.m_FlowGroupId;
-			}
-		}
+        public int FlowGroupId
+        {
+            get
+            {
+                return this.m_FlowGroupId;
+            }
+        }
 
         public override STSimDistributionBase Clone()
-		{
-			return new FlowMultiplier(
-                this.Iteration, this.Timestep, 
-                this.StratumId, this.SecondaryStratumId, this.TertiaryStratumId, 
-                this.StateClassId, this.AgeMin, this.AgeMax, this.FlowMultiplierTypeId, this.FlowGroupId, 
-                this.DistributionValue, this.DistributionTypeId, this.DistributionFrequency, 
-                this.DistributionSD, this.DistributionMin, this.DistributionMax);
-		}
-	}
+        {
+            return new FlowMultiplier(
+                      this.Iteration, this.Timestep,
+                      this.StratumId, this.SecondaryStratumId, this.TertiaryStratumId,
+                      this.StateClassId, this.AgeMin, this.AgeMax, this.FlowMultiplierTypeId, this.FlowGroupId,
+                      this.DistributionValue, this.DistributionTypeId, this.DistributionFrequency,
+                      this.DistributionSD, this.DistributionMin, this.DistributionMax);
+        }
+    }
 }

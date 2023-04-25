@@ -176,6 +176,8 @@
     <Compile Include="Runtime\StockFlowMapBase5.cs" />
     <Compile Include="Runtime\StockFlowMapBase4.cs" />
     <Compile Include="Runtime\StockFlowMultiplier.cs" />
+    <Compile Include="Runtime\StockFlowMultiplierCollection.cs" />
+    <Compile Include="Runtime\StockFlowMultiplierMap.cs" />
     <Compile Include="Runtime\StockFlowTransformer.Collections.cs" />
     <Compile Include="Runtime\StockFlowTransformer.Initialize.cs" />
     <Compile Include="Runtime\StockFlowTransformer.Maps.cs" />

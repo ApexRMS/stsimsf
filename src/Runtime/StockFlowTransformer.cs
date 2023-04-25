@@ -14,127 +14,123 @@ using SyncroSim.StochasticTime;
 
 namespace SyncroSim.STSimStockFlow
 {
-	[ObfuscationAttribute(Exclude=true, ApplyToMembers=false)]
-	internal partial class StockFlowTransformer : Transformer
-	{
-		private bool m_IsSpatial;
-		private bool m_ApplyBeforeTransitions;
-		private bool m_ApplyEquallyRankedSimultaneously;
-		private bool m_SummaryOmitSecondaryStrata;
-		private bool m_SummaryOmitTertiaryStrata;
-		private STSimTransformer m_STSimTransformer;
-		private bool m_CanComputeStocksAndFlows;
-		private bool m_StockLimitsOnSourceAndTarget;
-		private RandomGenerator m_RandomGenerator = new RandomGenerator();
-		private List<FlowType> m_ShufflableFlowTypes = new List<FlowType>();
+    [ObfuscationAttribute(Exclude = true, ApplyToMembers = false)]
+    internal partial class StockFlowTransformer : Transformer
+    {
+        private bool m_IsSpatial;
+        private bool m_ApplyBeforeTransitions;
+        private bool m_ApplyEquallyRankedSimultaneously;
+        private bool m_SummaryOmitSecondaryStrata;
+        private bool m_SummaryOmitTertiaryStrata;
+        private STSimTransformer m_STSimTransformer;
+        private bool m_CanComputeStocksAndFlows;
+        private bool m_StockLimitsOnSourceAndTarget;
+        private RandomGenerator m_RandomGenerator = new RandomGenerator();
+        private List<FlowType> m_ShufflableFlowTypes = new List<FlowType>();
         private LateralFlowAmountMap m_LateralFlowAmountMap;
         private int m_TotalIterations;
 
-		/// <summary>
-		/// Gets the ST-Sim Transformer
-		/// </summary>
-		/// <value></value>
-		/// <returns></returns>
-		/// <remarks></remarks>
-		protected STSimTransformer STSimTransformer
-		{
-			get
-			{
-				return this.m_STSimTransformer;
-			}
-		}
+        /// <summary>
+        /// Gets the ST-Sim Transformer
+        /// </summary>
+        /// <value></value>
+        /// <returns></returns>
+        /// <remarks></remarks>
+        protected STSimTransformer STSimTransformer
+        {
+            get
+            {
+                return this.m_STSimTransformer;
+            }
+        }
 
-		/// <summary>
-		/// Overrides Configure
-		/// </summary>
-		/// <remarks></remarks>
-		public override void Configure()
-		{
-			base.Configure();
+        /// <summary>
+        /// Overrides Configure
+        /// </summary>
+        /// <remarks></remarks>
+        public override void Configure()
+        {
+            base.Configure();
 
-			this.m_STSimTransformer = this.GetSTSimTransformer();
-			this.m_CanComputeStocksAndFlows = this.CanComputeStocksAndFlows();
-			this.m_StockLimitsOnSourceAndTarget = this.IsStockLimitsOnSourceAndTarget();
+            this.m_STSimTransformer = this.GetSTSimTransformer();
+            this.m_CanComputeStocksAndFlows = this.CanComputeStocksAndFlows();
+            this.m_StockLimitsOnSourceAndTarget = this.IsStockLimitsOnSourceAndTarget();
 
-			if (this.m_CanComputeStocksAndFlows)
-			{
-				this.NormalizeOutputOptions();
+            if (this.m_CanComputeStocksAndFlows)
+            {
+                this.NormalizeOutputOptions();
 
                 //These events must be subscribed locally since they are for merging
                 this.STSimTransformer.BeginNormalSpatialMerge += this.OnSTSimBeginNormalSpatialMerge;
                 this.STSimTransformer.NormalSpatialMergeComplete += this.OnSTSimNormalSpatialMergeComplete;
             }
-		}
+        }
 
-		/// <summary>
-		/// Overrides Initialize
-		/// </summary>
-		public override void Initialize()
-		{
-			this.m_STSimTransformer = this.GetSTSimTransformer();
-			this.m_CanComputeStocksAndFlows = this.CanComputeStocksAndFlows();
-			this.m_StockLimitsOnSourceAndTarget = this.IsStockLimitsOnSourceAndTarget();
+        /// <summary>
+        /// Overrides Initialize
+        /// </summary>
+        public override void Initialize()
+        {
+            this.m_STSimTransformer = this.GetSTSimTransformer();
+            this.m_CanComputeStocksAndFlows = this.CanComputeStocksAndFlows();
+            this.m_StockLimitsOnSourceAndTarget = this.IsStockLimitsOnSourceAndTarget();
 
-			if (!this.m_CanComputeStocksAndFlows)
-			{
-				return;
-			}
+            if (!this.m_CanComputeStocksAndFlows)
+            {
+                return;
+            }
 
-			this.InitializeSpatialRunFlag();
-			this.Initialize_SS_TS_Flags();
-			this.InitializeFlowOrderOptions();
-			this.InitializeOutputOptions();
-			this.InitializeOutputDataTables();
-
-			this.FillStockTypes();
+            this.InitializeSpatialRunFlag();
+            this.Initialize_SS_TS_Flags();
+            this.InitializeFlowOrderOptions();
+            this.InitializeOutputOptions();
+            this.InitializeOutputDataTables();
+            this.FillStockTypes();
             this.FillStockGroups();
-			this.FillInitialStocksNonSpatial();
-			this.FillStockLimits();
-			this.FillStockTransitionMultipliers();
-
-			this.FillFlowGroups();
-			this.FillFlowTypes();
+            this.FillInitialStocksNonSpatial();
+            this.FillStockLimits();
+            this.FillStockTransitionMultipliers();
+            this.FillFlowGroups();
+            this.FillFlowTypes();
             this.FillFlowMultiplierTypes();
-			this.FillFlowPathways();
-			this.FillFlowMultipliers();
-			this.FillFlowOrders();
-
+            this.FillFlowPathways();
+            this.FillFlowMultipliers();
+            this.FillFlowOrders();
             this.AddAutoStockTypeLinkages();
             this.AddAutoFlowTypeLinkages();
-
             this.FillStockGroupLinkages();
             this.FillStockTypeLinkages();
-			this.FillFlowGroupLinkages();
+            this.FillFlowGroupLinkages();
             this.FillFlowTypeLinkages();
+            this.FillOutputFilterStocks();
+            this.FillOutputFilterFlows();
 
-			this.FillOutputFilterStocks();
-			this.FillOutputFilterFlows();
-
-			if (this.m_IsSpatial)
-			{
-				this.FillInitialStocksSpatial();
-				this.FillFlowSpatialMultipliers();
+            if (this.m_IsSpatial)
+            {
+                this.FillInitialStocksSpatial();
+                this.FillFlowSpatialMultipliers();
                 this.FillFlowLateralMultipliers();
-				this.ValidateFlowSpatialMultipliers();
+                this.ValidateFlowSpatialMultipliers();
                 this.ValidateFlowLateralMultipliers();
-			}
+            }
 
-			this.NormalizeForUserDistributions();
-			this.InitializeDistributionValues();
-			this.InitializeShufflableFlowTypes();
-			this.CreateStockLimitMap();
-			this.CreateStockTransitionMultiplierMap();
-			this.CreateFlowPathwayMap();
+            this.NormalizeForUserDistributions();
+            this.InitializeDistributionValues();
+            this.InitializeShufflableFlowTypes();
+            this.CreateStockLimitMap();
+            this.CreateStockFlowMultiplierMap();
+            this.CreateStockTransitionMultiplierMap();
+            this.CreateFlowPathwayMap();
             this.CreateMultiplierTypeMaps();
-			this.CreateFlowOrderMap();
+            this.CreateFlowOrderMap();
 
-			if (this.m_IsSpatial)
-			{
-				this.CreateInitialStockSpatialMap();
-			}
+            if (this.m_IsSpatial)
+            {
+                this.CreateInitialStockSpatialMap();
+            }
 
             this.m_TotalIterations = (
-                this.STSimTransformer.MaximumIteration - 
+                this.STSimTransformer.MaximumIteration -
                 this.STSimTransformer.MinimumIteration + 1);
 
 #if DEBUG
@@ -143,22 +139,22 @@ namespace SyncroSim.STSimStockFlow
 #endif
         }
 
-		/// <summary>
-		/// Overrides Transform
-		/// </summary>
-		/// <remarks>
-		/// NOTE: We must initialize the ST-Sim transformer and the flag indicating whether or
-		/// not we can do stocks and flows here because we might be loaded in a separate process as
-		/// part of an MP run.
-		/// </remarks>
-		public override void Transform()
-		{
-			if (!this.m_CanComputeStocksAndFlows)
-			{
-				return;
-			}
+        /// <summary>
+        /// Overrides Transform
+        /// </summary>
+        /// <remarks>
+        /// NOTE: We must initialize the ST-Sim transformer and the flag indicating whether or
+        /// not we can do stocks and flows here because we might be loaded in a separate process as
+        /// part of an MP run.
+        /// </remarks>
+        public override void Transform()
+        {
+            if (!this.m_CanComputeStocksAndFlows)
+            {
+                return;
+            }
 
-			this.STSimTransformer.CellInitialized += this.OnSTSimCellInitialized;
+            this.STSimTransformer.CellInitialized += this.OnSTSimCellInitialized;
             this.STSimTransformer.CellsInitialized += this.OnSTSimAfterCellsInitialized;
             this.STSimTransformer.ChangingCellProbabilistic += this.OnSTSimBeforeChangeCellProbabilistic;
             this.STSimTransformer.ChangingCellDeterministic += this.OnSTSimBeforeChangeCellDeterministic;
@@ -168,11 +164,16 @@ namespace SyncroSim.STSimStockFlow
             this.STSimTransformer.TimestepCompleted += this.OnSTSimAfterTimestep;
             this.STSimTransformer.ModelRunComplete += this.OnSTSimModelRunComplete;
 
+            // don't want to add stock flow multipliers here - should be handled by stsimsf transformer since changing flows
+            //if (this.m_StockFlowMultipliers.Count > 0)
+            //{
+            //    this.STSimTransformer.ApplyingStockFlowMultipliers += this.OnApplyingStockFlowMultipliers;
+            //}
             if (this.m_StockTransitionMultipliers.Count > 0)
-			{
-				this.STSimTransformer.ApplyingTransitionMultipliers += this.OnApplyingTransitionMultipliers;
-			}
-		}
+            {
+                this.STSimTransformer.ApplyingTransitionMultipliers += this.OnApplyingTransitionMultipliers;
+            }
+        }
 
         /// <summary>
         /// Disposes this instance
@@ -180,55 +181,55 @@ namespace SyncroSim.STSimStockFlow
         /// <param name="disposing"></param>
         /// <remarks></remarks>
         protected override void Dispose(bool disposing)
-		{
-			if (disposing && !this.IsDisposed)
-			{
-				if (this.m_CanComputeStocksAndFlows)
-				{
-					this.STSimTransformer.CellInitialized -= this.OnSTSimCellInitialized;
-					this.STSimTransformer.CellsInitialized -= this.OnSTSimAfterCellsInitialized;
-					this.STSimTransformer.ChangingCellProbabilistic -= this.OnSTSimBeforeChangeCellProbabilistic;
-					this.STSimTransformer.ChangingCellDeterministic -= this.OnSTSimBeforeChangeCellDeterministic;
-					this.STSimTransformer.IterationStarted -= this.OnSTSimBeforeIteration;
-					this.STSimTransformer.TimestepStarted -= this.OnSTSimBeforeTimestep;
-					this.STSimTransformer.TimestepCompleted -= this.OnSTSimAfterTimestep;
+        {
+            if (disposing && !this.IsDisposed)
+            {
+                if (this.m_CanComputeStocksAndFlows)
+                {
+                    this.STSimTransformer.CellInitialized -= this.OnSTSimCellInitialized;
+                    this.STSimTransformer.CellsInitialized -= this.OnSTSimAfterCellsInitialized;
+                    this.STSimTransformer.ChangingCellProbabilistic -= this.OnSTSimBeforeChangeCellProbabilistic;
+                    this.STSimTransformer.ChangingCellDeterministic -= this.OnSTSimBeforeChangeCellDeterministic;
+                    this.STSimTransformer.IterationStarted -= this.OnSTSimBeforeIteration;
+                    this.STSimTransformer.TimestepStarted -= this.OnSTSimBeforeTimestep;
+                    this.STSimTransformer.TimestepCompleted -= this.OnSTSimAfterTimestep;
                     this.STSimTransformer.ModelRunComplete -= this.OnSTSimModelRunComplete;
                     this.STSimTransformer.BeginNormalSpatialMerge -= this.OnSTSimBeginNormalSpatialMerge;
                     this.STSimTransformer.NormalSpatialMergeComplete -= this.OnSTSimNormalSpatialMergeComplete;
 
                     if (this.m_StockTransitionMultipliers.Count > 0)
-					{
-						this.STSimTransformer.ApplyingTransitionMultipliers -= this.OnApplyingTransitionMultipliers;
-					}
-				}
-			}
+                    {
+                        this.STSimTransformer.ApplyingTransitionMultipliers -= this.OnApplyingTransitionMultipliers;
+                    }
+                }
+            }
 
-			base.Dispose(disposing);
-		}
+            base.Dispose(disposing);
+        }
 
-		/// <summary>
-		/// Overrides External Data Ready
-		/// </summary>
-		/// <param name="dataSheet"></param>
-		protected override void OnExternalDataReady(DataSheet dataSheet)
-		{
-			if (!this.m_CanComputeStocksAndFlows)
-			{
-				return;
-			}
+        /// <summary>
+        /// Overrides External Data Ready
+        /// </summary>
+        /// <param name="dataSheet"></param>
+        protected override void OnExternalDataReady(DataSheet dataSheet)
+        {
+            if (!this.m_CanComputeStocksAndFlows)
+            {
+                return;
+            }
 
-			if (dataSheet.Name == Constants.DATASHEET_FLOW_PATHWAY_NAME)
-			{
-				this.m_FlowPathways.Clear();
-				this.FillFlowPathways();
-				this.m_FlowPathwayMap = null;
-				this.CreateFlowPathwayMap();
-			}
-			else if (dataSheet.Name == Constants.DATASHEET_FLOW_MULTIPLIER_NAME)
-			{
-				this.m_FlowMultipliers.Clear();
-				this.FillFlowMultipliers();
-				this.InitializeFlowMultiplierDistributionValues();
+            if (dataSheet.Name == Constants.DATASHEET_FLOW_PATHWAY_NAME)
+            {
+                this.m_FlowPathways.Clear();
+                this.FillFlowPathways();
+                this.m_FlowPathwayMap = null;
+                this.CreateFlowPathwayMap();
+            }
+            else if (dataSheet.Name == Constants.DATASHEET_FLOW_MULTIPLIER_NAME)
+            {
+                this.m_FlowMultipliers.Clear();
+                this.FillFlowMultipliers();
+                this.InitializeFlowMultiplierDistributionValues();
 
                 foreach (FlowMultiplierType tmt in this.m_FlowMultiplierTypes)
                 {
@@ -246,14 +247,14 @@ namespace SyncroSim.STSimStockFlow
                     tmt.CreateFlowMultiplierMap();
                 }
             }
-			else if (dataSheet.Name == Constants.DATASHEET_FLOW_SPATIAL_MULTIPLIER_NAME)
-			{
-				if (this.m_IsSpatial)
-				{
-					this.m_FlowSpatialMultipliers.Clear();
-					this.m_FlowSpatialMultiplierRasters.Clear();
-					this.FillFlowSpatialMultipliers();
-					this.ValidateFlowSpatialMultipliers();
+            else if (dataSheet.Name == Constants.DATASHEET_FLOW_SPATIAL_MULTIPLIER_NAME)
+            {
+                if (this.m_IsSpatial)
+                {
+                    this.m_FlowSpatialMultipliers.Clear();
+                    this.m_FlowSpatialMultiplierRasters.Clear();
+                    this.FillFlowSpatialMultipliers();
+                    this.ValidateFlowSpatialMultipliers();
 
                     foreach (FlowMultiplierType tmt in this.m_FlowMultiplierTypes)
                     {
@@ -271,15 +272,15 @@ namespace SyncroSim.STSimStockFlow
                         tmt.CreateSpatialFlowMultiplierMap();
                     }
                 }
-			}
-			else if (dataSheet.Name == Constants.DATASHEET_FLOW_LATERAL_MULTIPLIER_NAME)
-			{
-				if (this.m_IsSpatial)
-				{
-					this.m_FlowLateralMultipliers.Clear();
-					this.m_FlowLateralMultiplierRasters.Clear();
-					this.FillFlowLateralMultipliers();
-					this.ValidateFlowLateralMultipliers();
+            }
+            else if (dataSheet.Name == Constants.DATASHEET_FLOW_LATERAL_MULTIPLIER_NAME)
+            {
+                if (this.m_IsSpatial)
+                {
+                    this.m_FlowLateralMultipliers.Clear();
+                    this.m_FlowLateralMultiplierRasters.Clear();
+                    this.FillFlowLateralMultipliers();
+                    this.ValidateFlowLateralMultipliers();
 
                     foreach (FlowMultiplierType tmt in this.m_FlowMultiplierTypes)
                     {
@@ -297,65 +298,72 @@ namespace SyncroSim.STSimStockFlow
                         tmt.CreateLateralFlowMultiplierMap();
                     }
                 }
-			}
-			else if (dataSheet.Name == Constants.DATASHEET_FLOW_ORDER)
-			{
-				this.m_FlowOrders.Clear();
-				this.FillFlowOrders();
-				this.m_FlowOrderMap = null;
-				this.CreateFlowOrderMap();
-			}
-			else if (dataSheet.Name == Constants.DATASHEET_STOCK_LIMIT_NAME)
-			{
-				this.m_StockLimits.Clear();
-				this.FillStockLimits();
-				this.m_StockLimitMap = null;
-				this.CreateStockLimitMap();
-			}
-			else if (dataSheet.Name == Constants.DATASHEET_STOCK_TRANSITION_MULTIPLIER_NAME)
-			{
-				this.m_StockTransitionMultipliers.Clear();
-				this.FillStockTransitionMultipliers();
-				this.m_StockTransitionMultiplierMap = null;
-				this.CreateStockTransitionMultiplierMap();
-			}
-			else
-			{
-				string msg = string.Format(CultureInfo.InvariantCulture, "External data is not supported for: {0}", dataSheet.Name);
-				throw new TransformerFailedException(msg);
-			}
-		}
+            }
+            else if (dataSheet.Name == Constants.DATASHEET_FLOW_ORDER)
+            {
+                this.m_FlowOrders.Clear();
+                this.FillFlowOrders();
+                this.m_FlowOrderMap = null;
+                this.CreateFlowOrderMap();
+            }
+            else if (dataSheet.Name == Constants.DATASHEET_STOCK_LIMIT_NAME)
+            {
+                this.m_StockLimits.Clear();
+                this.FillStockLimits();
+                this.m_StockLimitMap = null;
+                this.CreateStockLimitMap();
+            }
+            else if (dataSheet.Name == Constants.DATASHEET_STOCK_FLOW_MULTIPLIER_NAME)
+            {
+                this.m_StockFlowMultipliers.Clear();
+                this.FillStockFlowMultipliers();
+                this.m_StockFlowMultiplierMap = null;
+                this.CreateStockFlowMultiplierMap();
+            }
+            else if (dataSheet.Name == Constants.DATASHEET_STOCK_TRANSITION_MULTIPLIER_NAME)
+            {
+                this.m_StockTransitionMultipliers.Clear();
+                this.FillStockTransitionMultipliers();
+                this.m_StockTransitionMultiplierMap = null;
+                this.CreateStockTransitionMultiplierMap();
+            }
+            else
+            {
+                string msg = string.Format(CultureInfo.InvariantCulture, "External data is not supported for: {0}", dataSheet.Name);
+                throw new TransformerFailedException(msg);
+            }
+        }
 
-		/// <summary>
-		/// Handles the BeforeIteration event. We run this raster verification code here
-		/// as it depends of the STSim rasters having been loaded (it's a timing thing).
-		/// </summary>
-		/// <param name="sender"></param>
-		/// <param name="e"></param>
-		/// <remarks></remarks>
-		private void OnSTSimBeforeIteration(object sender, IterationEventArgs e)
-		{
-			this.ResampleFlowMultiplierValues(
-                e.Iteration, 
-                this.m_STSimTransformer.MinimumTimestep, 
-                DistributionFrequency.Iteration);
-		}
+        /// <summary>
+        /// Handles the BeforeIteration event. We run this raster verification code here
+        /// as it depends of the STSim rasters having been loaded (it's a timing thing).
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        /// <remarks></remarks>
+        private void OnSTSimBeforeIteration(object sender, IterationEventArgs e)
+        {
+            this.ResampleFlowMultiplierValues(
+                      e.Iteration,
+                      this.m_STSimTransformer.MinimumTimestep,
+                      DistributionFrequency.Iteration);
+        }
 
-		/// <summary>
-		/// Handles the BeforeTimestep event
-		/// </summary>
-		/// <param name="sender"></param>
-		/// <param name="e"></param>
-		/// <remarks></remarks>
-		private void OnSTSimBeforeTimestep(object sender, TimestepEventArgs e)
-		{
+        /// <summary>
+        /// Handles the BeforeTimestep event
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        /// <remarks></remarks>
+        private void OnSTSimBeforeTimestep(object sender, TimestepEventArgs e)
+        {
             //Is it spatial flow output timestep?  If so, then iterate over flow types and initialize an output raster 
             //for each flow type Initialize to DEFAULT_NODATA_VALUE.  Note that we need to do this for lateral rasters also.
             //Note also that we need to set each SpatialOutputFlowRecord.HasOutputData to FALSE before each timestep.
 
             if (this.m_STSimTransformer.IsOutputTimestep(
-                e.Timestep, 
-                this.m_SpatialFlowOutputTimesteps, 
+                e.Timestep,
+                this.m_SpatialFlowOutputTimesteps,
                 this.m_CreateSpatialFlowOutput))
             {
                 foreach (FlowType ft in this.m_FlowTypes)
@@ -395,7 +403,7 @@ namespace SyncroSim.STSimStockFlow
             }
 
             //Resample the multiplier values
-			this.ResampleFlowMultiplierValues(e.Iteration, e.Timestep, DistributionFrequency.Timestep);
+            this.ResampleFlowMultiplierValues(e.Iteration, e.Timestep, DistributionFrequency.Timestep);
 
             //Clear the lateral flow amount map
             Debug.Assert(this.m_LateralFlowAmountMap == null);
@@ -427,19 +435,19 @@ namespace SyncroSim.STSimStockFlow
         /// <param name="e"></param>
         /// <remarks></remarks>
         private void OnSTSimAfterTimestep(object sender, TimestepEventArgs e)
-		{
+        {
             this.DistributeLateralFlows(e.Iteration, e.Timestep);
 
-			if (this.m_STSimTransformer.IsOutputTimestep(e.Timestep, this.m_SummaryStockOutputTimesteps, this.m_CreateSummaryStockOutput))
-			{
-				this.RecordSummaryStockOutputData();
-				this.WriteTabularSummaryStockOutput(e.Iteration, e.Timestep);
-			}
+            if (this.m_STSimTransformer.IsOutputTimestep(e.Timestep, this.m_SummaryStockOutputTimesteps, this.m_CreateSummaryStockOutput))
+            {
+                this.RecordSummaryStockOutputData();
+                this.WriteTabularSummaryStockOutput(e.Iteration, e.Timestep);
+            }
 
-			if (this.m_STSimTransformer.IsOutputTimestep(e.Timestep, this.m_SummaryFlowOutputTimesteps, this.m_CreateSummaryFlowOutput))
-			{
-				this.WriteTabularSummaryFlowOutputData(e.Iteration, e.Timestep);
-			}
+            if (this.m_STSimTransformer.IsOutputTimestep(e.Timestep, this.m_SummaryFlowOutputTimesteps, this.m_CreateSummaryFlowOutput))
+            {
+                this.WriteTabularSummaryFlowOutputData(e.Iteration, e.Timestep);
+            }
 
             if (this.m_IsSpatial)
             {
@@ -503,63 +511,113 @@ namespace SyncroSim.STSimStockFlow
             this.ProcessAveragedLateralFlowGroupDatasheet();
         }
 
-		/// <summary>
-		/// Called when (non-spatial) multipliers are being applied
-		/// </summary>
-		/// <param name="sender"></param>
-		/// <param name="e"></param>
-		private void OnApplyingTransitionMultipliers(object sender, MultiplierEventArgs e)
-		{
-			Debug.Assert(this.m_StockTransitionMultipliers.Count > 0);
+        /// <summary>
+        /// Called when (non-spatial) multipliers are being applied
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void OnApplyingStockFlowMultipliers(object sender, MultiplierEventArgs e)
+        {
+            Debug.Assert(this.m_StockFlowMultipliers.Count > 0);
 
-			double Multiplier = 1.0;
-			DataSheet Groups = this.Project.GetDataSheet(Constants.DATASHEET_STOCK_GROUP_NAME);
-			DataSheet TGMembership = this.ResultScenario.GetDataSheet(Constants.DATASHEET_STOCK_TYPE_GROUP_MEMBERSHIP_NAME);
-			Dictionary<int, float> StockAmounts = GetStockAmountDictionary(e.SimulationCell);
-			var dtgroups = Groups.GetData();
-			var dtmembership = TGMembership.GetData();
+            double Multiplier = 1.0;
+            DataSheet Groups = this.Project.GetDataSheet(Constants.DATASHEET_STOCK_GROUP_NAME);
+            DataSheet TGMembership = this.ResultScenario.GetDataSheet(Constants.DATASHEET_STOCK_TYPE_GROUP_MEMBERSHIP_NAME);
+            Dictionary<int, float> StockAmounts = GetStockAmountDictionary(e.SimulationCell);
+            var dtgroups = Groups.GetData();
+            var dtmembership = TGMembership.GetData();
 
-			foreach (DataRow dr in dtgroups.Rows)
-			{
-				float StockGroupValue = 0.0F;
-				int StockGroupId = Convert.ToInt32(dr[Groups.ValueMember], CultureInfo.InvariantCulture);
-				string query = string.Format(CultureInfo.InvariantCulture, "StockGroupID={0}", StockGroupId);
-				DataRow[] rows = dtmembership.Select(query);
+            foreach (DataRow dr in dtgroups.Rows)
+            {
+                float StockGroupValue = 0.0F;
+                int StockGroupId = Convert.ToInt32(dr[Groups.ValueMember], CultureInfo.InvariantCulture);
+                string query = string.Format(CultureInfo.InvariantCulture, "StockGroupID={0}", StockGroupId);
+                DataRow[] rows = dtmembership.Select(query);
 
-				foreach (DataRow r in rows)
-				{
-					float ValueMultiplier = 1.0F;
-					int StockTypeId = Convert.ToInt32(r[Constants.STOCK_TYPE_ID_COLUMN_NAME], CultureInfo.InvariantCulture);
-					float StockTypeAmount = 0.0F;
+                foreach (DataRow r in rows)
+                {
+                    float ValueMultiplier = 1.0F;
+                    int StockTypeId = Convert.ToInt32(r[Constants.STOCK_TYPE_ID_COLUMN_NAME], CultureInfo.InvariantCulture);
+                    float StockTypeAmount = 0.0F;
 
-					if (StockAmounts.ContainsKey(StockTypeId))
-					{
-						StockTypeAmount = StockAmounts[StockTypeId];
-					}
+                    if (StockAmounts.ContainsKey(StockTypeId))
+                    {
+                        StockTypeAmount = StockAmounts[StockTypeId];
+                    }
 
-					if (!Convert.IsDBNull(r[Constants.VALUE_COLUMN_NAME]))
-					{
-						ValueMultiplier = Convert.ToSingle(r[Constants.VALUE_COLUMN_NAME], CultureInfo.InvariantCulture);
-					}
+                    if (!Convert.IsDBNull(r[Constants.VALUE_COLUMN_NAME]))
+                    {
+                        ValueMultiplier = Convert.ToSingle(r[Constants.VALUE_COLUMN_NAME], CultureInfo.InvariantCulture);
+                    }
 
-					StockGroupValue += ((StockTypeAmount * ValueMultiplier) / Convert.ToSingle(this.m_STSimTransformer.AmountPerCell));
-				}
+                    StockGroupValue += ((StockTypeAmount * ValueMultiplier) / Convert.ToSingle(this.m_STSimTransformer.AmountPerCell));
+                }
 
-				Multiplier *= this.m_StockTransitionMultiplierMap.GetStockTransitionMultiplier(StockGroupId, e.SimulationCell.StratumId, e.SimulationCell.SecondaryStratumId, e.SimulationCell.TertiaryStratumId, e.SimulationCell.StateClassId, e.TransitionGroupId, e.Iteration, e.Timestep, StockGroupValue);
-			}
+                int FlowGroupId = Convert.ToInt32(dr[Constants.FLOW_GROUP_ID_COLUMN_NAME], CultureInfo.InvariantCulture);
 
-			e.ApplyMultiplier(Multiplier);
-		}
+                Multiplier *= this.m_StockFlowMultiplierMap.GetStockFlowMultiplier(StockGroupId, e.SimulationCell.StratumId, e.SimulationCell.SecondaryStratumId, e.SimulationCell.TertiaryStratumId, e.SimulationCell.StateClassId, FlowGroupId, e.Iteration, e.Timestep, StockGroupValue);
+            }
 
-		/// <summary>
-		/// Called when a cell has been initialized
-		/// </summary>
-		/// <param name="sender"></param>
-		/// <param name="e"></param>
-		/// <remarks></remarks>
-		private void OnSTSimCellInitialized(object sender, CellEventArgs e)
-		{
-			Dictionary<int, float> StockAmounts = GetStockAmountDictionary(e.SimulationCell);
+            e.ApplyMultiplier(Multiplier);
+        }
+
+        /// <summary>
+        /// Called when (non-spatial) multipliers are being applied
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void OnApplyingTransitionMultipliers(object sender, MultiplierEventArgs e)
+        {
+            Debug.Assert(this.m_StockTransitionMultipliers.Count > 0);
+
+            double Multiplier = 1.0;
+            DataSheet Groups = this.Project.GetDataSheet(Constants.DATASHEET_STOCK_GROUP_NAME);
+            DataSheet TGMembership = this.ResultScenario.GetDataSheet(Constants.DATASHEET_STOCK_TYPE_GROUP_MEMBERSHIP_NAME);
+            Dictionary<int, float> StockAmounts = GetStockAmountDictionary(e.SimulationCell);
+            var dtgroups = Groups.GetData();
+            var dtmembership = TGMembership.GetData();
+
+            foreach (DataRow dr in dtgroups.Rows)
+            {
+                float StockGroupValue = 0.0F;
+                int StockGroupId = Convert.ToInt32(dr[Groups.ValueMember], CultureInfo.InvariantCulture);
+                string query = string.Format(CultureInfo.InvariantCulture, "StockGroupID={0}", StockGroupId);
+                DataRow[] rows = dtmembership.Select(query);
+
+                foreach (DataRow r in rows)
+                {
+                    float ValueMultiplier = 1.0F;
+                    int StockTypeId = Convert.ToInt32(r[Constants.STOCK_TYPE_ID_COLUMN_NAME], CultureInfo.InvariantCulture);
+                    float StockTypeAmount = 0.0F;
+
+                    if (StockAmounts.ContainsKey(StockTypeId))
+                    {
+                        StockTypeAmount = StockAmounts[StockTypeId];
+                    }
+
+                    if (!Convert.IsDBNull(r[Constants.VALUE_COLUMN_NAME]))
+                    {
+                        ValueMultiplier = Convert.ToSingle(r[Constants.VALUE_COLUMN_NAME], CultureInfo.InvariantCulture);
+                    }
+
+                    StockGroupValue += ((StockTypeAmount * ValueMultiplier) / Convert.ToSingle(this.m_STSimTransformer.AmountPerCell));
+                }
+
+                Multiplier *= this.m_StockTransitionMultiplierMap.GetStockTransitionMultiplier(StockGroupId, e.SimulationCell.StratumId, e.SimulationCell.SecondaryStratumId, e.SimulationCell.TertiaryStratumId, e.SimulationCell.StateClassId, e.TransitionGroupId, e.Iteration, e.Timestep, StockGroupValue);
+            }
+
+            e.ApplyMultiplier(Multiplier);
+        }
+
+        /// <summary>
+        /// Called when a cell has been initialized
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        /// <remarks></remarks>
+        private void OnSTSimCellInitialized(object sender, CellEventArgs e)
+        {
+            Dictionary<int, float> StockAmounts = GetStockAmountDictionary(e.SimulationCell);
 
             foreach (StockType s in this.m_StockTypes)
             {
@@ -631,26 +689,26 @@ namespace SyncroSim.STSimStockFlow
             }
         }
 
-		/// <summary>
-		/// Called after all cells have been initialized
-		/// </summary>
-		/// <param name="sender"></param>
-		/// <param name="e"></param>
-		/// <remarks></remarks>
-		private void OnSTSimAfterCellsInitialized(object sender, CellEventArgs e)
-		{
-			this.RecordSummaryStockOutputData();
-			this.WriteTabularSummaryStockOutput(e.Iteration, e.Timestep);
+        /// <summary>
+        /// Called after all cells have been initialized
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        /// <remarks></remarks>
+        private void OnSTSimAfterCellsInitialized(object sender, CellEventArgs e)
+        {
+            this.RecordSummaryStockOutputData();
+            this.WriteTabularSummaryStockOutput(e.Iteration, e.Timestep);
 
-			if (this.m_IsSpatial)
-			{
-				if (this.m_STSimTransformer.IsOutputTimestep(
-                    e.Timestep, 
-                    this.m_SpatialStockOutputTimesteps, 
-                    this.m_CreateSpatialStockOutput))
-				{
-					this.WriteStockGroupRasters(e.Iteration, e.Timestep);
-				}
+            if (this.m_IsSpatial)
+            {
+                if (this.m_STSimTransformer.IsOutputTimestep(
+                            e.Timestep,
+                            this.m_SpatialStockOutputTimesteps,
+                            this.m_CreateSpatialStockOutput))
+                {
+                    this.WriteStockGroupRasters(e.Iteration, e.Timestep);
+                }
 
                 if (e.Iteration == this.m_STSimTransformer.MinimumIteration)
                 {
@@ -661,232 +719,232 @@ namespace SyncroSim.STSimStockFlow
 
                 this.RecordAverageStockValuesTimestepZero();
             }
-		}
+        }
 
-		/// <summary>
-		/// Called before a cell changes for a probabilistic transition
-		/// </summary>
-		/// <param name="sender"></param>
-		/// <param name="e"></param>
-		/// <remarks></remarks>
-		private void OnSTSimBeforeChangeCellProbabilistic(object sender, CellChangeEventArgs e)
-		{
-			if (!this.m_FlowPathwayMap.HasRecords)
-			{
-				return;
-			}
+        /// <summary>
+        /// Called before a cell changes for a probabilistic transition
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        /// <remarks></remarks>
+        private void OnSTSimBeforeChangeCellProbabilistic(object sender, CellChangeEventArgs e)
+        {
+            if (!this.m_FlowPathwayMap.HasRecords)
+            {
+                return;
+            }
 
-			this.ReorderShufflableFlowTypes(e.Iteration, e.Timestep);
-			List<List<FlowType>> flowTypeLists = this.CreateListOfFlowTypeLists();
+            this.ReorderShufflableFlowTypes(e.Iteration, e.Timestep);
+            List<List<FlowType>> flowTypeLists = this.CreateListOfFlowTypeLists();
 
-			foreach (List<FlowType> l in flowTypeLists)
-			{
-				foreach (StockType st in this.m_StockTypes)
-				{
-					this.ApplyTransitionFlows(l, st.Id, e.SimulationCell, e.Iteration, e.Timestep, null, e.ProbabilisticPathway);
-				}
+            foreach (List<FlowType> l in flowTypeLists)
+            {
+                foreach (StockType st in this.m_StockTypes)
+                {
+                    this.ApplyTransitionFlows(l, st.Id, e.SimulationCell, e.Iteration, e.Timestep, null, e.ProbabilisticPathway);
+                }
 
-				this.ApplyTransitionFlows(l, Constants.NULL_FROM_STOCK_TYPE_ID, e.SimulationCell, e.Iteration, e.Timestep, null, e.ProbabilisticPathway);
-			}
-		}
+                this.ApplyTransitionFlows(l, Constants.NULL_FROM_STOCK_TYPE_ID, e.SimulationCell, e.Iteration, e.Timestep, null, e.ProbabilisticPathway);
+            }
+        }
 
-		/// <summary>
-		/// Called before a cell changes for a deterministic transition
-		/// </summary>
-		/// <param name="sender"></param>
-		/// <param name="e"></param>
-		/// <remarks></remarks>
-		private void OnSTSimBeforeChangeCellDeterministic(object sender, CellChangeEventArgs e)
-		{
-			if (this.m_ApplyBeforeTransitions == false)
-			{
-				ApplyAutomaticFlows(e);
-			}
-		}
+        /// <summary>
+        /// Called before a cell changes for a deterministic transition
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        /// <remarks></remarks>
+        private void OnSTSimBeforeChangeCellDeterministic(object sender, CellChangeEventArgs e)
+        {
+            if (this.m_ApplyBeforeTransitions == false)
+            {
+                ApplyAutomaticFlows(e);
+            }
+        }
 
-		/// <summary>
-		/// Called before a cell changes for a deterministic transition
-		/// </summary>
-		/// <param name="sender"></param>
-		/// <param name="e"></param>
-		/// <remarks></remarks>
-		private void OnSTSimCellBeforeTransitions(object sender, CellChangeEventArgs e)
-		{
-			if (this.m_ApplyBeforeTransitions == true)
-			{
-				ApplyAutomaticFlows(e);
-			}
-		}
+        /// <summary>
+        /// Called before a cell changes for a deterministic transition
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        /// <remarks></remarks>
+        private void OnSTSimCellBeforeTransitions(object sender, CellChangeEventArgs e)
+        {
+            if (this.m_ApplyBeforeTransitions == true)
+            {
+                ApplyAutomaticFlows(e);
+            }
+        }
 
-		private void ApplyAutomaticFlows(CellChangeEventArgs e)
-		{
-			if (!this.m_FlowPathwayMap.HasRecords)
-			{
-				return;
-			}
+        private void ApplyAutomaticFlows(CellChangeEventArgs e)
+        {
+            if (!this.m_FlowPathwayMap.HasRecords)
+            {
+                return;
+            }
 
-			this.ReorderShufflableFlowTypes(e.Iteration, e.Timestep);
-			List<List<FlowType>> flowTypeLists = this.CreateListOfFlowTypeLists();
+            this.ReorderShufflableFlowTypes(e.Iteration, e.Timestep);
+            List<List<FlowType>> flowTypeLists = this.CreateListOfFlowTypeLists();
 
-			foreach (List<FlowType> l in flowTypeLists)
-			{
-				foreach (StockType st in this.m_StockTypes)
-				{
-					this.ApplyTransitionFlows(l, st.Id, e.SimulationCell, e.Iteration, e.Timestep, e.DeterministicPathway, null);
-				}
+            foreach (List<FlowType> l in flowTypeLists)
+            {
+                foreach (StockType st in this.m_StockTypes)
+                {
+                    this.ApplyTransitionFlows(l, st.Id, e.SimulationCell, e.Iteration, e.Timestep, e.DeterministicPathway, null);
+                }
 
-				this.ApplyTransitionFlows(l, Constants.NULL_FROM_STOCK_TYPE_ID, e.SimulationCell, e.Iteration, e.Timestep, e.DeterministicPathway, null);
-			}
-		}
+                this.ApplyTransitionFlows(l, Constants.NULL_FROM_STOCK_TYPE_ID, e.SimulationCell, e.Iteration, e.Timestep, e.DeterministicPathway, null);
+            }
+        }
 
-		private void ApplyTransitionFlows(
-            List<FlowType> ftList, 
-            int stockTypeId, 
-            Cell cell, 
-            int iteration, 
-            int timestep, 
-            DeterministicTransition dtPathway, 
-            Transition ptPathway)
-		{
-			Debug.Assert(this.m_FlowPathwayMap.HasRecords);
+        private void ApplyTransitionFlows(
+                List<FlowType> ftList,
+                int stockTypeId,
+                Cell cell,
+                int iteration,
+                int timestep,
+                DeterministicTransition dtPathway,
+                Transition ptPathway)
+        {
+            Debug.Assert(this.m_FlowPathwayMap.HasRecords);
 
-			int DestStrat = 0;
-			int DestStateClass = 0;
-			int ToAge = 0;
-			List<int> TGIds = new List<int>();
+            int DestStrat = 0;
+            int DestStateClass = 0;
+            int ToAge = 0;
+            List<int> TGIds = new List<int>();
 
-			if (ptPathway != null)
-			{
-				if (ptPathway.StratumIdDestination.HasValue)
-				{
-					DestStrat = ptPathway.StratumIdDestination.Value;
-				}
-				else
-				{
-					DestStrat = cell.StratumId;
-				}
+            if (ptPathway != null)
+            {
+                if (ptPathway.StratumIdDestination.HasValue)
+                {
+                    DestStrat = ptPathway.StratumIdDestination.Value;
+                }
+                else
+                {
+                    DestStrat = cell.StratumId;
+                }
 
-				if (ptPathway.StateClassIdDestination.HasValue)
-				{
-					DestStateClass = ptPathway.StateClassIdDestination.Value;
-				}
-				else
-				{
-					DestStateClass = cell.StateClassId;
-				}
+                if (ptPathway.StateClassIdDestination.HasValue)
+                {
+                    DestStateClass = ptPathway.StateClassIdDestination.Value;
+                }
+                else
+                {
+                    DestStateClass = cell.StateClassId;
+                }
 
-				ToAge = this.m_STSimTransformer.DetermineTargetAgeProbabilistic(cell.Age, DestStrat, DestStateClass, iteration, timestep, ptPathway);
+                ToAge = this.m_STSimTransformer.DetermineTargetAgeProbabilistic(cell.Age, DestStrat, DestStateClass, iteration, timestep, ptPathway);
 
-				foreach (TransitionGroup tg in this.m_STSimTransformer.TransitionTypes[ptPathway.TransitionTypeId].TransitionGroups)
-				{
-					TGIds.Add(tg.TransitionGroupId);
-				}
-			}
-			else
-			{
-				if (dtPathway == null)
-				{
-					DestStrat = cell.StratumId;
-					DestStateClass = cell.StateClassId;
-					ToAge = cell.Age + 1;
-				}
-				else
-				{
-					if (dtPathway.StratumIdDestination.HasValue)
-					{
-						DestStrat = dtPathway.StratumIdDestination.Value;
-					}
-					else
-					{
-						DestStrat = cell.StratumId;
-					}
+                foreach (TransitionGroup tg in this.m_STSimTransformer.TransitionTypes[ptPathway.TransitionTypeId].TransitionGroups)
+                {
+                    TGIds.Add(tg.TransitionGroupId);
+                }
+            }
+            else
+            {
+                if (dtPathway == null)
+                {
+                    DestStrat = cell.StratumId;
+                    DestStateClass = cell.StateClassId;
+                    ToAge = cell.Age + 1;
+                }
+                else
+                {
+                    if (dtPathway.StratumIdDestination.HasValue)
+                    {
+                        DestStrat = dtPathway.StratumIdDestination.Value;
+                    }
+                    else
+                    {
+                        DestStrat = cell.StratumId;
+                    }
 
-					if (dtPathway.StateClassIdDestination.HasValue)
-					{
-						DestStateClass = dtPathway.StateClassIdDestination.Value;
-					}
-					else
-					{
-						DestStateClass = cell.StateClassId;
-					}
+                    if (dtPathway.StateClassIdDestination.HasValue)
+                    {
+                        DestStateClass = dtPathway.StateClassIdDestination.Value;
+                    }
+                    else
+                    {
+                        DestStateClass = cell.StateClassId;
+                    }
 
-					ToAge = cell.Age + 1;
+                    ToAge = cell.Age + 1;
 
-				}
+                }
 
-				TGIds.Add(0);
-			}
+                TGIds.Add(0);
+            }
 
-			foreach (int TransitionGroupId in TGIds)
-			{
-				List<FlowPathway> allFlowPathways = new List<FlowPathway>();
+            foreach (int TransitionGroupId in TGIds)
+            {
+                List<FlowPathway> allFlowPathways = new List<FlowPathway>();
 
-				foreach (FlowType ft in ftList)
-				{
-					List<FlowPathway> l = this.m_FlowPathwayMap.GetFlowPathwayList(
-                        iteration, timestep, cell.StratumId, cell.SecondaryStratumId, cell.TertiaryStratumId, cell.StateClassId, stockTypeId, cell.Age, 
-                        DestStrat, DestStateClass, TransitionGroupId, ft.Id, ToAge);
+                foreach (FlowType ft in ftList)
+                {
+                    List<FlowPathway> l = this.m_FlowPathwayMap.GetFlowPathwayList(
+                                  iteration, timestep, cell.StratumId, cell.SecondaryStratumId, cell.TertiaryStratumId, cell.StateClassId, stockTypeId, cell.Age,
+                                  DestStrat, DestStateClass, TransitionGroupId, ft.Id, ToAge);
 
-					if (l != null)
-					{
-						foreach (FlowPathway fp in l)
-						{
-							allFlowPathways.Add(fp);
-						}
-					}
-				}
-
-				foreach (FlowPathway fp in allFlowPathways)
-				{
-					fp.FlowAmount = this.CalculateFlowAmount(fp, cell, iteration, timestep);
-				}
-
-				foreach (FlowPathway fp in allFlowPathways)
-				{
-					Dictionary<int, float> d = GetStockAmountDictionary(cell);
-					StockLimit limsrc = this.m_StockLimitMap.GetStockLimit(fp.FromStockTypeId, cell.StratumId, cell.SecondaryStratumId, cell.TertiaryStratumId, cell.StateClassId, iteration, timestep);
-					StockLimit limdst = this.m_StockLimitMap.GetStockLimit(fp.ToStockTypeId, cell.StratumId, cell.SecondaryStratumId, cell.TertiaryStratumId, cell.StateClassId, iteration, timestep);
-
-					if (fp.FromStockTypeId.HasValue && !d.ContainsKey(fp.FromStockTypeId.Value))
-					{
-						float val = GetLimitBasedInitialStock(0.0F, limsrc);
-						d.Add(fp.FromStockTypeId.Value, val);
-					}
-
-					if (fp.ToStockTypeId.HasValue && !d.ContainsKey(fp.ToStockTypeId.Value))
-					{
-						float val = GetLimitBasedInitialStock(0.0F, limdst);
-						d.Add(fp.ToStockTypeId.Value, val);
-					}
-
-					float fa = fp.FlowAmount;
-
-					if (limsrc != null)
-					{
-						if (fp.FromStockTypeId.HasValue)
+                    if (l != null)
+                    {
+                        foreach (FlowPathway fp in l)
                         {
-							double srcStkDensity = (d[fp.FromStockTypeId.Value] / this.m_STSimTransformer.AmountPerCell);
-							fa = this.CalculateFlowAmountWithStockLimits(srcStkDensity, limsrc, fa, true);
-						}
-					}
+                            allFlowPathways.Add(fp);
+                        }
+                    }
+                }
 
-					if (limdst != null)
-					{
+                foreach (FlowPathway fp in allFlowPathways)
+                {
+                    fp.FlowAmount = this.CalculateFlowAmount(fp, cell, iteration, timestep);
+                }
+
+                foreach (FlowPathway fp in allFlowPathways)
+                {
+                    Dictionary<int, float> d = GetStockAmountDictionary(cell);
+                    StockLimit limsrc = this.m_StockLimitMap.GetStockLimit(fp.FromStockTypeId, cell.StratumId, cell.SecondaryStratumId, cell.TertiaryStratumId, cell.StateClassId, iteration, timestep);
+                    StockLimit limdst = this.m_StockLimitMap.GetStockLimit(fp.ToStockTypeId, cell.StratumId, cell.SecondaryStratumId, cell.TertiaryStratumId, cell.StateClassId, iteration, timestep);
+
+                    if (fp.FromStockTypeId.HasValue && !d.ContainsKey(fp.FromStockTypeId.Value))
+                    {
+                        float val = GetLimitBasedInitialStock(0.0F, limsrc);
+                        d.Add(fp.FromStockTypeId.Value, val);
+                    }
+
+                    if (fp.ToStockTypeId.HasValue && !d.ContainsKey(fp.ToStockTypeId.Value))
+                    {
+                        float val = GetLimitBasedInitialStock(0.0F, limdst);
+                        d.Add(fp.ToStockTypeId.Value, val);
+                    }
+
+                    float fa = fp.FlowAmount;
+
+                    if (limsrc != null)
+                    {
+                        if (fp.FromStockTypeId.HasValue)
+                        {
+                            double srcStkDensity = (d[fp.FromStockTypeId.Value] / this.m_STSimTransformer.AmountPerCell);
+                            fa = this.CalculateFlowAmountWithStockLimits(srcStkDensity, limsrc, fa, true);
+                        }
+                    }
+
+                    if (limdst != null)
+                    {
                         if (!fp.IsLateral && fp.ToStockTypeId.HasValue)
                         {
-							double dstStkDensity = (d[fp.ToStockTypeId.Value] / this.m_STSimTransformer.AmountPerCell);
-							fa = this.CalculateFlowAmountWithStockLimits(dstStkDensity, limdst, fa, false);
-						}
-					}
+                            double dstStkDensity = (d[fp.ToStockTypeId.Value] / this.m_STSimTransformer.AmountPerCell);
+                            fa = this.CalculateFlowAmountWithStockLimits(dstStkDensity, limdst, fa, false);
+                        }
+                    }
 
-					if (fp.FromStockTypeId.HasValue)
+                    if (fp.FromStockTypeId.HasValue)
                     {
-						d[fp.FromStockTypeId.Value] -= Convert.ToSingle(fa);
-						if (MathUtils.CompareDoublesEqual(d[fp.FromStockTypeId.Value], 0.0, 0.00000001))
-						{
-							d[fp.FromStockTypeId.Value] = 0.0F;
-						}
-					}
+                        d[fp.FromStockTypeId.Value] -= Convert.ToSingle(fa);
+                        if (MathUtils.CompareDoublesEqual(d[fp.FromStockTypeId.Value], 0.0, 0.00000001))
+                        {
+                            d[fp.FromStockTypeId.Value] = 0.0F;
+                        }
+                    }
 
                     if (fp.IsLateral)
                     {
@@ -894,54 +952,54 @@ namespace SyncroSim.STSimStockFlow
                     }
                     else
                     {
-						if (fp.ToStockTypeId.HasValue)
+                        if (fp.ToStockTypeId.HasValue)
                         {
-							d[fp.ToStockTypeId.Value] += Convert.ToSingle(fa);
-						}
+                            d[fp.ToStockTypeId.Value] += Convert.ToSingle(fa);
+                        }
                     }
 
-					this.RecordSummaryFlowOutputData(timestep, cell, dtPathway, ptPathway, fp, fa);
-					this.RecordSpatialFlowOutputData(timestep, cell, fp.FlowTypeId, fa);
+                    this.RecordSummaryFlowOutputData(timestep, cell, dtPathway, ptPathway, fp, fa);
+                    this.RecordSpatialFlowOutputData(timestep, cell, fp.FlowTypeId, fa);
 
                     if (fp.IsLateral)
                     {
                         this.RecordSpatialLateralFlowOutputData(timestep, cell, fp.FlowTypeId, -fa);
                     }
-				}
-			}
-		}
+                }
+            }
+        }
 
-		private float CalculateFlowAmountWithStockLimits(double StkDensity, StockLimit lim, float fa, bool src)
+        private float CalculateFlowAmountWithStockLimits(double StkDensity, StockLimit lim, float fa, bool src)
         {
-			double faDensity = fa / this.m_STSimTransformer.AmountPerCell;
+            double faDensity = fa / this.m_STSimTransformer.AmountPerCell;
 
-			if (src)
+            if (src)
             {
-				if ((StkDensity - faDensity) < lim.StockMinimum)
-				{
-					fa = Convert.ToSingle((StkDensity - lim.StockMinimum) * this.m_STSimTransformer.AmountPerCell);
-				}
-				else if ((StkDensity - faDensity) > lim.StockMaximum)
-				{
-					fa = Convert.ToSingle((lim.StockMaximum - StkDensity) * this.m_STSimTransformer.AmountPerCell);
-				}
-			} 
-			else
+                if ((StkDensity - faDensity) < lim.StockMinimum)
+                {
+                    fa = Convert.ToSingle((StkDensity - lim.StockMinimum) * this.m_STSimTransformer.AmountPerCell);
+                }
+                else if ((StkDensity - faDensity) > lim.StockMaximum)
+                {
+                    fa = Convert.ToSingle((lim.StockMaximum - StkDensity) * this.m_STSimTransformer.AmountPerCell);
+                }
+            }
+            else
             {
-				if ((StkDensity + faDensity) > lim.StockMaximum)
-				{
-					fa = Convert.ToSingle((lim.StockMaximum - StkDensity) * this.m_STSimTransformer.AmountPerCell);
-				}
-				else if ((StkDensity + faDensity) < lim.StockMinimum)
-				{
-					fa = -(Convert.ToSingle((StkDensity - lim.StockMinimum) * this.m_STSimTransformer.AmountPerCell));
-				}
-			}
+                if ((StkDensity + faDensity) > lim.StockMaximum)
+                {
+                    fa = Convert.ToSingle((lim.StockMaximum - StkDensity) * this.m_STSimTransformer.AmountPerCell);
+                }
+                else if ((StkDensity + faDensity) < lim.StockMinimum)
+                {
+                    fa = -(Convert.ToSingle((StkDensity - lim.StockMinimum) * this.m_STSimTransformer.AmountPerCell));
+                }
+            }
 
-			return fa;
-		}
+            return fa;
+        }
 
-		private void ResampleFlowMultiplierValues(int iteration, int timestep, DistributionFrequency frequency)
+        private void ResampleFlowMultiplierValues(int iteration, int timestep, DistributionFrequency frequency)
         {
             try
             {
@@ -960,14 +1018,14 @@ namespace SyncroSim.STSimStockFlow
         }
 
         private void AccumulateLateralFlowAmounts(FlowPathway flowPathway, float flowAmount)
-        {      
+        {
             this.m_LateralFlowAmountMap.AddOrUpdate(
-                flowPathway.ToStockTypeId, 
-                flowPathway.FlowTypeId, 
-                flowPathway.TransferToStratumId, 
-                flowPathway.TransferToSecondaryStratumId, 
-                flowPathway.TransferToTertiaryStratumId, 
-                flowPathway.TransferToStateClassId, 
+                flowPathway.ToStockTypeId,
+                flowPathway.FlowTypeId,
+                flowPathway.TransferToStratumId,
+                flowPathway.TransferToSecondaryStratumId,
+                flowPathway.TransferToTertiaryStratumId,
+                flowPathway.TransferToStateClassId,
                 flowPathway.TransferToMinimumAge,
                 flowAmount);
         }
@@ -979,17 +1037,17 @@ namespace SyncroSim.STSimStockFlow
                 foreach (Cell cell in this.m_STSimTransformer.Cells)
                 {
                     LateralFlowAmountRecord rec = this.m_LateralFlowAmountMap.GetRecord(
-                        couplet.StockTypeId, 
-                        couplet.FlowTypeId, 
-                        cell.StratumId, 
-                        cell.SecondaryStratumId, 
-                        cell.TertiaryStratumId, 
-                        cell.StateClassId, 
+                        couplet.StockTypeId,
+                        couplet.FlowTypeId,
+                        cell.StratumId,
+                        cell.SecondaryStratumId,
+                        cell.TertiaryStratumId,
+                        cell.StateClassId,
                         cell.Age);
 
                     if (rec != null)
                     {
-                        double InvMult = this.GetFlowLateralMultiplier(couplet.FlowTypeId, cell, iteration, timestep); 
+                        double InvMult = this.GetFlowLateralMultiplier(couplet.FlowTypeId, cell, iteration, timestep);
 
                         if (InvMult > 0.0)
                         {
@@ -1008,34 +1066,34 @@ namespace SyncroSim.STSimStockFlow
 
                     double LateralFlowMultiplier = this.GetFlowLateralMultiplier(rec.FlowTypeId, RecCell, iteration, timestep);
                     float FlowAmount = Convert.ToSingle((LateralFlowMultiplier / rec.InverseMultiplier) * rec.StockAmount);
-					
-					if (rec.StockTypeId.HasValue)
+
+                    if (rec.StockTypeId.HasValue)
                     {
-						d[rec.StockTypeId.Value] += FlowAmount;
-					}
+                        d[rec.StockTypeId.Value] += FlowAmount;
+                    }
                     this.RecordSpatialLateralFlowOutputData(timestep, RecCell, rec.FlowTypeId, FlowAmount);
                 }
             }
         }
 
-		private static float GetLimitBasedInitialStock(float value, StockLimit limit)
-		{
-			float v = value;
+        private static float GetLimitBasedInitialStock(float value, StockLimit limit)
+        {
+            float v = value;
 
-			if (limit != null)
-			{
-				if (v < limit.StockMinimum)
-				{
-					v = Convert.ToSingle(limit.StockMinimum);
-				}
-				else if (v > limit.StockMaximum)
-				{
-					v = Convert.ToSingle(limit.StockMinimum);
-				}
-			}
+            if (limit != null)
+            {
+                if (v < limit.StockMinimum)
+                {
+                    v = Convert.ToSingle(limit.StockMinimum);
+                }
+                else if (v > limit.StockMaximum)
+                {
+                    v = Convert.ToSingle(limit.StockMinimum);
+                }
+            }
 
-			return v;
-		}
+            return v;
+        }
 
         private float CalculateFlowAmount(FlowPathway fp, Cell cell, int iteration, int timestep)
         {
@@ -1054,40 +1112,40 @@ namespace SyncroSim.STSimStockFlow
         }
 
         private double CalculateFlowAmountTargetTypeFlow(FlowPathway fp, Cell cell, int iteration, int timestep)
-		{      
-			float FlowAmount = 0.0F;
+        {
+            float FlowAmount = 0.0F;
 
-			if (fp.StateAttributeTypeId.HasValue)
-			{
-				FlowAmount = this.GetAttributeValue(
-                    fp.StateAttributeTypeId.Value, cell.StratumId, cell.SecondaryStratumId, 
-                    cell.TertiaryStratumId, cell.StateClassId, iteration, timestep, cell.Age, cell.TstValues);
+            if (fp.StateAttributeTypeId.HasValue)
+            {
+                FlowAmount = this.GetAttributeValue(
+                            fp.StateAttributeTypeId.Value, cell.StratumId, cell.SecondaryStratumId,
+                            cell.TertiaryStratumId, cell.StateClassId, iteration, timestep, cell.Age, cell.TstValues);
 
-				FlowAmount *= Convert.ToSingle(this.m_STSimTransformer.AmountPerCell);
-			}
-			else
-			{
-				Dictionary<int, float> d = GetStockAmountDictionary(cell);
+                FlowAmount *= Convert.ToSingle(this.m_STSimTransformer.AmountPerCell);
+            }
+            else
+            {
+                Dictionary<int, float> d = GetStockAmountDictionary(cell);
 
-				if (fp.FromStockTypeId.HasValue && !d.ContainsKey(fp.FromStockTypeId.Value))
-				{
-					d.Add(fp.FromStockTypeId.Value, 0.0F);
-				}
-
-				if (fp.FromStockTypeId.HasValue)
+                if (fp.FromStockTypeId.HasValue && !d.ContainsKey(fp.FromStockTypeId.Value))
                 {
-					FlowAmount = d[fp.FromStockTypeId.Value];
-				}
-			}
+                    d.Add(fp.FromStockTypeId.Value, 0.0F);
+                }
+
+                if (fp.FromStockTypeId.HasValue)
+                {
+                    FlowAmount = d[fp.FromStockTypeId.Value];
+                }
+            }
 
             return this.ApplyFlowMultipliers(cell, fp, iteration, timestep, FlowAmount);
         }
 
         private float CalculateFlowAmountTargetTypeFromStock(FlowPathway fp, Cell cell, int iteration, int timestep)
         {
-			if (!fp.FromStockTypeId.HasValue)
+            if (!fp.FromStockTypeId.HasValue)
             {
-				return 0.0F;
+                return 0.0F;
             }
 
             if (this.DisabledFlowMultiplierExists(cell, fp, iteration, timestep))
@@ -1095,15 +1153,15 @@ namespace SyncroSim.STSimStockFlow
                 return 0.0F;
             }
 
-			Dictionary<int, float> d = GetStockAmountDictionary(cell);
+            Dictionary<int, float> d = GetStockAmountDictionary(cell);
 
             if (!d.ContainsKey(fp.FromStockTypeId.Value))
             {
                 d.Add(fp.FromStockTypeId.Value, 0.0F);
-			}
+            }
 
-			float StockTargetAmount;
-			float FromStockAmount = d[fp.FromStockTypeId.Value];
+            float StockTargetAmount;
+            float FromStockAmount = d[fp.FromStockTypeId.Value];
 
             if (fp.StateAttributeTypeId.HasValue)
             {
@@ -1124,9 +1182,9 @@ namespace SyncroSim.STSimStockFlow
 
         private float CalculateFlowAmountTargetTypeToStock(FlowPathway fp, Cell cell, int iteration, int timestep)
         {
-			if (!fp.ToStockTypeId.HasValue)
+            if (!fp.ToStockTypeId.HasValue)
             {
-				return 0.0F;
+                return 0.0F;
             }
 
             if (this.DisabledFlowMultiplierExists(cell, fp, iteration, timestep))
@@ -1214,160 +1272,160 @@ namespace SyncroSim.STSimStockFlow
             return value;
         }
 
-		/// <summary>
-		/// Reorders the list of shufflable flow types
-		/// </summary>
-		/// <param name="iteration"></param>
-		/// <param name="timestep"></param>
-		/// <remarks></remarks>
-		private void ReorderShufflableFlowTypes(int iteration, int timestep)
-		{
-			FlowOrderCollection orders = this.m_FlowOrderMap.GetOrders(iteration, timestep);
+        /// <summary>
+        /// Reorders the list of shufflable flow types
+        /// </summary>
+        /// <param name="iteration"></param>
+        /// <param name="timestep"></param>
+        /// <remarks></remarks>
+        private void ReorderShufflableFlowTypes(int iteration, int timestep)
+        {
+            FlowOrderCollection orders = this.m_FlowOrderMap.GetOrders(iteration, timestep);
 
-			if (orders == null)
-			{
-				ShuffleUtilities.ShuffleList(this.m_ShufflableFlowTypes, this.m_RandomGenerator.Random);
-			}
-			else
-			{
-				this.ReorderShufflableFlowTypes(orders);
-			}
-		}
+            if (orders == null)
+            {
+                ShuffleUtilities.ShuffleList(this.m_ShufflableFlowTypes, this.m_RandomGenerator.Random);
+            }
+            else
+            {
+                this.ReorderShufflableFlowTypes(orders);
+            }
+        }
 
-		/// <summary>
-		/// Reorders the list of shufflable Flow Types
-		/// </summary>
-		/// <param name="orders"></param>
-		/// <remarks></remarks>
-		private void ReorderShufflableFlowTypes(FlowOrderCollection orders)
-		{
-			//If there are less than two Flow Types there is no reason to continue
+        /// <summary>
+        /// Reorders the list of shufflable Flow Types
+        /// </summary>
+        /// <param name="orders"></param>
+        /// <remarks></remarks>
+        private void ReorderShufflableFlowTypes(FlowOrderCollection orders)
+        {
+            //If there are less than two Flow Types there is no reason to continue
 
-			if (this.m_ShufflableFlowTypes.Count <= 1)
-			{
-				return;
-			}
+            if (this.m_ShufflableFlowTypes.Count <= 1)
+            {
+                return;
+            }
 
-			//Reset all Flow Type order values
+            //Reset all Flow Type order values
 
-			foreach (FlowType ft in this.m_ShufflableFlowTypes)
-			{
-				ft.Order = Constants.DEFAULT_FLOW_ORDER;
-			}
+            foreach (FlowType ft in this.m_ShufflableFlowTypes)
+            {
+                ft.Order = Constants.DEFAULT_FLOW_ORDER;
+            }
 
-			//Apply the new ordering from the order collection
+            //Apply the new ordering from the order collection
 
-			Debug.Assert(this.m_FlowTypes.Count == this.m_ShufflableFlowTypes.Count);
+            Debug.Assert(this.m_FlowTypes.Count == this.m_ShufflableFlowTypes.Count);
 
-			foreach (FlowOrder order in orders)
-			{
-				if (this.m_FlowTypes.Contains(order.FlowTypeId))
-				{
-					Debug.Assert(this.m_ShufflableFlowTypes.Contains(this.m_FlowTypes[order.FlowTypeId]));
-					this.m_FlowTypes[order.FlowTypeId].Order = order.Order;
-				}
-			}
+            foreach (FlowOrder order in orders)
+            {
+                if (this.m_FlowTypes.Contains(order.FlowTypeId))
+                {
+                    Debug.Assert(this.m_ShufflableFlowTypes.Contains(this.m_FlowTypes[order.FlowTypeId]));
+                    this.m_FlowTypes[order.FlowTypeId].Order = order.Order;
+                }
+            }
 
-			//Sort by the Flow Types by the order value
+            //Sort by the Flow Types by the order value
 
-			this.m_ShufflableFlowTypes.Sort((FlowType t1, FlowType t2) =>
-			{
-				return (t1.Order.CompareTo(t2.Order));
-			});
+            this.m_ShufflableFlowTypes.Sort((FlowType t1, FlowType t2) =>
+            {
+                return (t1.Order.CompareTo(t2.Order));
+            });
 
-			//Find the number of times each order appears.  If it appears more than
-			//once then shuffle the subset of transtion groups with this order.
+            //Find the number of times each order appears.  If it appears more than
+            //once then shuffle the subset of transtion groups with this order.
 
-			Dictionary<double, int> OrderCounts = new Dictionary<double, int>();
+            Dictionary<double, int> OrderCounts = new Dictionary<double, int>();
 
-			foreach (FlowOrder o in orders)
-			{
-				if (!OrderCounts.ContainsKey(o.Order))
-				{
-					OrderCounts.Add(o.Order, 1);
-				}
-				else
-				{
-					OrderCounts[o.Order] += 1;
-				}
-			}
+            foreach (FlowOrder o in orders)
+            {
+                if (!OrderCounts.ContainsKey(o.Order))
+                {
+                    OrderCounts.Add(o.Order, 1);
+                }
+                else
+                {
+                    OrderCounts[o.Order] += 1;
+                }
+            }
 
-			//If any order appears more than once then it is a subset
-			//that we need to shuffle.  Note that there may be a subset
-			//for the default order.
+            //If any order appears more than once then it is a subset
+            //that we need to shuffle.  Note that there may be a subset
+            //for the default order.
 
-			foreach (double d in OrderCounts.Keys)
-			{
-				if (OrderCounts[d] > 1)
-				{
-					ShuffleUtilities.ShuffleSubList(
-                        this.m_ShufflableFlowTypes, 
-                        this.GetMinOrderIndex(d), 
-                        this.GetMaxOrderIndex(d), 
-                        this.m_RandomGenerator.Random);
-				}
-			}
+            foreach (double d in OrderCounts.Keys)
+            {
+                if (OrderCounts[d] > 1)
+                {
+                    ShuffleUtilities.ShuffleSubList(
+                                  this.m_ShufflableFlowTypes,
+                                  this.GetMinOrderIndex(d),
+                                  this.GetMaxOrderIndex(d),
+                                  this.m_RandomGenerator.Random);
+                }
+            }
 
-			if (this.DefaultOrderHasSubset())
-			{
-				ShuffleUtilities.ShuffleSubList(
-                    this.m_ShufflableFlowTypes, 
-                    this.GetMinOrderIndex(
-                    Constants.DEFAULT_FLOW_ORDER), 
-                    this.GetMaxOrderIndex(Constants.DEFAULT_FLOW_ORDER), 
-                    this.m_RandomGenerator.Random);
-			}
+            if (this.DefaultOrderHasSubset())
+            {
+                ShuffleUtilities.ShuffleSubList(
+                            this.m_ShufflableFlowTypes,
+                            this.GetMinOrderIndex(
+                            Constants.DEFAULT_FLOW_ORDER),
+                            this.GetMaxOrderIndex(Constants.DEFAULT_FLOW_ORDER),
+                            this.m_RandomGenerator.Random);
+            }
 
-		}
+        }
 
-		private bool DefaultOrderHasSubset()
-		{
-			int c = 0;
+        private bool DefaultOrderHasSubset()
+        {
+            int c = 0;
 
-			foreach (FlowType tg in this.m_ShufflableFlowTypes)
-			{
-				if (tg.Order == Constants.DEFAULT_FLOW_ORDER)
-				{
-					c += 1;
+            foreach (FlowType tg in this.m_ShufflableFlowTypes)
+            {
+                if (tg.Order == Constants.DEFAULT_FLOW_ORDER)
+                {
+                    c += 1;
 
-					if (c == 2)
-					{
-						return true;
-					}
-				}
-			}
+                    if (c == 2)
+                    {
+                        return true;
+                    }
+                }
+            }
 
-			return false;
-		}
+            return false;
+        }
 
-		private int GetMinOrderIndex(double order)
-		{
-			for (int Index = 0; Index < this.m_ShufflableFlowTypes.Count; Index++)
-			{
-				FlowType tg = this.m_ShufflableFlowTypes[Index];
+        private int GetMinOrderIndex(double order)
+        {
+            for (int Index = 0; Index < this.m_ShufflableFlowTypes.Count; Index++)
+            {
+                FlowType tg = this.m_ShufflableFlowTypes[Index];
 
-				if (tg.Order == order)
-				{
-					return Index;
-				}
-			}
+                if (tg.Order == order)
+                {
+                    return Index;
+                }
+            }
 
-			throw new InvalidOperationException("Cannot find minimum Flow order!");
-		}
+            throw new InvalidOperationException("Cannot find minimum Flow order!");
+        }
 
-		private int GetMaxOrderIndex(double order)
-		{
-			for (int Index = this.m_ShufflableFlowTypes.Count - 1; Index >= 0; Index--)
-			{
-				FlowType tg = this.m_ShufflableFlowTypes[Index];
+        private int GetMaxOrderIndex(double order)
+        {
+            for (int Index = this.m_ShufflableFlowTypes.Count - 1; Index >= 0; Index--)
+            {
+                FlowType tg = this.m_ShufflableFlowTypes[Index];
 
-				if (tg.Order == order)
-				{
-					return Index;
-				}
-			}
+                if (tg.Order == order)
+                {
+                    return Index;
+                }
+            }
 
-			throw new InvalidOperationException("Cannot find maximum Flow order!");
-		}
-	}
+            throw new InvalidOperationException("Cannot find maximum Flow order!");
+        }
+    }
 }

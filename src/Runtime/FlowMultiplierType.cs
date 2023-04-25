@@ -19,6 +19,8 @@ namespace SyncroSim.STSimStockFlow
         private FlowSpatialMultiplierMap m_FlowSpatialMultiplierMap;
         private FlowLateralMultiplierCollection m_FlowLateralMultipliers = new FlowLateralMultiplierCollection();
         private FlowLateralMultiplierMap m_FlowLateralMultiplierMap;
+        private StockFlowMultiplierCollection m_StockFlowMultiplierCollection = new StockFlowMultiplierCollection();
+        private StockFlowMultiplierMap m_StockFlowMultiplierMap;
 
         public FlowMultiplierType(
             int? flowMultiplierTypeId, 
