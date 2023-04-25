@@ -14,10 +14,10 @@ namespace SyncroSim.STSimStockFlow
 		private double m_StockValue;
 
 		public StockTransitionMultiplier(
-            int? iteration, int? timestep, int? stratumId, int? secondaryStratumId, int? tertiaryStratumId, 
-            int? stateClassId, int transitionGroupId, int stockGroupId, double stockValue, double? multiplier, 
-            int? distributionTypeId, DistributionFrequency? distributionFrequency, double? distributionSD, 
-            double? distributionMin, double? distributionMax) : base(iteration, timestep, stratumId, secondaryStratumId, tertiaryStratumId, multiplier, distributionTypeId, distributionFrequency, distributionSD, distributionMin, distributionMax)
+						int? iteration, int? timestep, int? stratumId, int? secondaryStratumId, int? tertiaryStratumId, 
+						int? stateClassId, int transitionGroupId, int stockGroupId, double stockValue, double? multiplier, 
+						int? distributionTypeId, DistributionFrequency? distributionFrequency, double? distributionSD, 
+						double? distributionMin, double? distributionMax) : base(iteration, timestep, stratumId, secondaryStratumId, tertiaryStratumId, multiplier, distributionTypeId, distributionFrequency, distributionSD, distributionMin, distributionMax)
 		{
 			this.m_StateClassId = stateClassId;
 			this.m_TransitionGroupId = transitionGroupId;

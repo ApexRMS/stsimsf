@@ -125,6 +125,27 @@ namespace SyncroSim.STSimStockFlow
 			}
 		}
 
+    /// <summary>
+		/// Initializes distribution values for the stock transition multipliers
+		/// </summary>
+		private void InitializeStockFlowMultiplierDistributionValues()
+		{
+			try
+			{
+				foreach (StockFlowMultiplier t in this.m_StockFlowMultipliers)
+				{
+					t.Initialize(
+                        this.m_STSimTransformer.MinimumIteration, 
+                        this.m_STSimTransformer.MinimumTimestep, 
+                        this.m_STSimTransformer.DistributionProvider);
+				}
+			}
+			catch (Exception ex)
+			{
+				throw new ArgumentException("Stock Transition Multipliers" + " -> " + ex.Message);
+			}
+		}
+
 		/// <summary>
 		/// Initializes distribution values for the stock transition multipliers
 		/// </summary>

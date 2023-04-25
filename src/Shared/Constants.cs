@@ -8,28 +8,28 @@ namespace SyncroSim.STSimStockFlow
 {
 	internal static class Constants
 	{
-        //SQLite Datastore name
-        public const string SQLITE_DATASTORE_NAME = "SQLite";
+		//SQLite Datastore name
+		public const string SQLITE_DATASTORE_NAME = "SQLite";
 
-        //ST-Sim Transformer
-        public const string STSIM_TRANSFORMER_NAME = "stsim_Runtime";
+		//ST-Sim Transformer
+		public const string STSIM_TRANSFORMER_NAME = "stsim_Runtime";
 
-        //Enums
-        public enum TargetType
-        {
-            Flow = 0,
-            ToStock = 1,
-            FromStock=2
-        };
+		//Enums
+		public enum TargetType
+		{
+				Flow = 0,
+				ToStock = 1,
+				FromStock=2
+		};
 
 		[Flags()]
 		public enum OutputFilter
-        {
+				{
 			None = 0,
 			Tabular = 1,
 			Spatial = 2,
 			AvgSpatial = 4
-        }
+				}
 
 		//Report names
 		public const string STOCK_REPORT_NAME = "stocks";
@@ -60,6 +60,7 @@ namespace SyncroSim.STSimStockFlow
 		public const string DATASHEET_INITIAL_STOCK_NON_SPATIAL = "stsimsf_InitialStockNonSpatial";
 		public const string DATASHEET_INITIAL_STOCK_SPATIAL = "stsimsf_InitialStockSpatial";
 		public const string DATASHEET_STOCK_LIMIT_NAME = "stsimsf_StockLimit";
+		public const string DATASHEET_STOCK_FLOW_MULTIPLIER_NAME = "stsimsf_StockFlowMultiplier";
 		public const string DATASHEET_STOCK_TRANSITION_MULTIPLIER_NAME = "stsimsf_StockTransitionMultiplier";
 		public const string DATASHEET_STOCK_TYPE_GROUP_MEMBERSHIP_NAME = "stsimsf_StockTypeGroupMembership";
 		public const string DATASHEET_FLOW_PATHWAY_NAME = "stsimsf_FlowPathway";
@@ -81,13 +82,13 @@ namespace SyncroSim.STSimStockFlow
 		public const string DATASHEET_OUTPUT_FILTER_STOCKS = "stsimsf_OutputFilterStocks";
 		public const string DATASHEET_OUTPUT_FILTER_FLOWS = "stsimsf_OutputFilterFlows";
 
-        public const string DATASHEET_STSIM_STRATUM = "stsim_Stratum";
-        public const string DATASHEET_STSIM_SECONDARY_STRATUM = "stsim_SecondaryStratum";
-        public const string DATASHEET_STSIM_TERTIARY_STRATUM = "stsim_TertiaryStratum";
-        public const string DATASHEET_STSIM_STATE_CLASS = "stsim_StateClass";
-        public const string DATASHEET_STSIM_TERMINOLOGY = "stsim_Terminology";
-        public const string DATASHEET_STSIM_RUN_CONTROL = "stsim_RunControl";
-        public const string DATASHEET_STSIM_OUTPUT_OPTIONS = "stsim_OutputOptions";
+		public const string DATASHEET_STSIM_STRATUM = "stsim_Stratum";
+		public const string DATASHEET_STSIM_SECONDARY_STRATUM = "stsim_SecondaryStratum";
+		public const string DATASHEET_STSIM_TERTIARY_STRATUM = "stsim_TertiaryStratum";
+		public const string DATASHEET_STSIM_STATE_CLASS = "stsim_StateClass";
+		public const string DATASHEET_STSIM_TERMINOLOGY = "stsim_Terminology";
+		public const string DATASHEET_STSIM_RUN_CONTROL = "stsim_RunControl";
+		public const string DATASHEET_STSIM_OUTPUT_OPTIONS = "stsim_OutputOptions";
 
 		//Common column names
 		public const string NAME_COLUMN_NAME = "Name";
@@ -98,9 +99,9 @@ namespace SyncroSim.STSimStockFlow
 		public const string SECONDARY_STRATUM_ID_COLUMN_NAME = "SecondaryStratumID";
 		public const string TERTIARY_STRATUM_ID_COLUMN_NAME = "TertiaryStratumID";
 		public const string STATECLASS_ID_COLUMN_NAME = "StateClassID";
-        public const string AGE_MIN_COLUMN_NAME = "AgeMin";
-        public const string AGE_MAX_COLUMN_NAME = "AgeMax";
-        public const string STOCK_TYPE_ID_COLUMN_NAME = "StockTypeID";
+		public const string AGE_MIN_COLUMN_NAME = "AgeMin";
+		public const string AGE_MAX_COLUMN_NAME = "AgeMax";
+		public const string STOCK_TYPE_ID_COLUMN_NAME = "StockTypeID";
 		public const string STOCK_GROUP_ID_COLUMN_NAME = "StockGroupID";
 		public const string FLOW_TYPE_ID_COLUMN_NAME = "FlowTypeID";
 		public const string FLOW_GROUP_ID_COLUMN_NAME = "FlowGroupID";
@@ -121,10 +122,10 @@ namespace SyncroSim.STSimStockFlow
 		public const string DISTRIBUTIONSD_COLUMN_NAME = "DistributionSD";
 		public const string DISTRIBUTIONMIN_COLUMN_NAME = "DistributionMin";
 		public const string DISTRIBUTIONMAX_COLUMN_NAME = "DistributionMax";
-        public const string DATASHEET_OUTPUT_SPATIAL_FILENAME_COLUMN = "Filename";
-        public const string SUM_OF_AMOUNT_COLUMN_NAME = "SumOfAmount";
+		public const string DATASHEET_OUTPUT_SPATIAL_FILENAME_COLUMN = "Filename";
+		public const string SUM_OF_AMOUNT_COLUMN_NAME = "SumOfAmount";
 
-        public const string FROM_STRATUM_ID_COLUMN_NAME = "FromStratumID";
+		public const string FROM_STRATUM_ID_COLUMN_NAME = "FromStratumID";
 		public const string FROM_SECONDARY_STRATUM_ID_COLUMN_NAME = "FromSecondaryStratumID";
 		public const string FROM_TERTIARY_STRATUM_ID_COLUMN_NAME = "FromTertiaryStratumID";
 		public const string FROM_STATECLASS_ID_COLUMN_NAME = "FromStateClassID";
@@ -134,7 +135,7 @@ namespace SyncroSim.STSimStockFlow
 		public const string TO_STATECLASS_ID_COLUMN_NAME = "ToStateClassID";
 		public const string TO_MIN_AGE_COLUMN_NAME = "ToAgeMin";
 		public const string TO_STOCK_TYPE_ID_COLUMN_NAME = "ToStockTypeID";
-        public const string TARGET_TYPE = "TargetType";
+				public const string TARGET_TYPE = "TargetType";
 
 		public const string TRANSFER_TO_STRATUM_ID_COLUMN_NAME = "TransferToStratumID";
 		public const string TRANSFER_TO_SECONDARY_STRATUM_ID_COLUMN_NAME = "TransferToSecondaryStratumID";
@@ -148,15 +149,15 @@ namespace SyncroSim.STSimStockFlow
 		public const string END_STATECLASS_ID_COLUMN_NAME = "EndStateClassID";
 		public const string END_MIN_AGE_COLUMN_NAME = "EndMinAge";
 
-        public const string IS_AUTO_COLUMN_NAME = "IsAuto";
-        public const string AUTO_COLUMN_SUFFIX = "[Type]";
+				public const string IS_AUTO_COLUMN_NAME = "IsAuto";
+				public const string AUTO_COLUMN_SUFFIX = "[Type]";
 
 		public const string OUTPUT_SUMMARY_COLUMN_NAME = "Summary";
 		public const string OUTPUT_SPATIAL_COLUMN_NAME = "Spatial";
 		public const string OUTPUT_AVG_SPATIAL_COLUMN_NAME = "AvgSpatial";
 
-        //Terminology
-        public const string STOCK_UNITS_COLUMN_NAME = "StockUnits";
+				//Terminology
+				public const string STOCK_UNITS_COLUMN_NAME = "StockUnits";
 
 		//Initial Stock
 		public const string RASTER_FILE_COLUMN_NAME = "RasterFileName";
@@ -212,7 +213,7 @@ namespace SyncroSim.STSimStockFlow
 		public const string SPATIAL_METADATA_INFO = "The Flow Spatial Multiplier file '{0}' metadata did not match that of ST-Sim's Initial Condition Primary Stratum raster file, but differences will be ignored. {1}.";
 		public const string SPATIAL_PROCESS_WARNING = "The Flow Spatial Multiplier file '{0}' did not load, and will be ignored.";
 
-        //Spatial Map file naming constants - Stock and Flow Group
+				//Spatial Map file naming constants - Stock and Flow Group
 		public const string SPATIAL_MAP_STOCK_GROUP_VARIABLE_PREFIX = "stkg";
 		public const string SPATIAL_MAP_FLOW_GROUP_VARIABLE_PREFIX = "flog";
 		public const string SPATIAL_MAP_LATERAL_FLOW_GROUP_VARIABLE_PREFIX = "lflog";
@@ -237,8 +238,8 @@ namespace SyncroSim.STSimStockFlow
 		public const int DIAGRAM_LANES_BETWEEN_SHAPES = 11;
 		public const int ZOOM_SAFE_PEN_WIDTH = -1;
 
-        public static Color READONLY_COLUMN_COLOR = Color.FromArgb(232, 232, 232);
-        public static Color DIAGRAM_SHAPE_TEXT_COLOR = Color.Black;
+		public static Color READONLY_COLUMN_COLOR = Color.FromArgb(232, 232, 232);
+		public static Color DIAGRAM_SHAPE_TEXT_COLOR = Color.Black;
 		public static Color DIAGRAM_SHAPE_READONLY_TEXT_COLOR = Color.Gray;
 		public static Color DIAGRAM_SHAPE_BORDER_COLOR = Color.Gray;
 		public static Color DIAGRAM_SHAPE_READONLY_BORDER_COLOR = Color.LightGray;
