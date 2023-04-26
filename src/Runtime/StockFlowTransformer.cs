@@ -531,56 +531,6 @@ namespace SyncroSim.STSimStockFlow
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void OnApplyingStockFlowMultipliers(object sender, MultiplierEventArgs e)
-        {
-            Debug.Assert(this.m_StockFlowMultipliers.Count > 0);
-
-            double Multiplier = 1.0;
-            DataSheet Groups = this.Project.GetDataSheet(Constants.DATASHEET_STOCK_GROUP_NAME);
-            DataSheet TGMembership = this.ResultScenario.GetDataSheet(Constants.DATASHEET_STOCK_TYPE_GROUP_MEMBERSHIP_NAME);
-            Dictionary<int, float> StockAmounts = GetStockAmountDictionary(e.SimulationCell);
-            var dtgroups = Groups.GetData();
-            var dtmembership = TGMembership.GetData();
-
-            foreach (DataRow dr in dtgroups.Rows)
-            {
-                float StockGroupValue = 0.0F;
-                int StockGroupId = Convert.ToInt32(dr[Groups.ValueMember], CultureInfo.InvariantCulture);
-                string query = string.Format(CultureInfo.InvariantCulture, "StockGroupID={0}", StockGroupId);
-                DataRow[] rows = dtmembership.Select(query);
-
-                foreach (DataRow r in rows)
-                {
-                    float ValueMultiplier = 1.0F;
-                    int StockTypeId = Convert.ToInt32(r[Constants.STOCK_TYPE_ID_COLUMN_NAME], CultureInfo.InvariantCulture);
-                    float StockTypeAmount = 0.0F;
-
-                    if (StockAmounts.ContainsKey(StockTypeId))
-                    {
-                        StockTypeAmount = StockAmounts[StockTypeId];
-                    }
-
-                    if (!Convert.IsDBNull(r[Constants.VALUE_COLUMN_NAME]))
-                    {
-                        ValueMultiplier = Convert.ToSingle(r[Constants.VALUE_COLUMN_NAME], CultureInfo.InvariantCulture);
-                    }
-
-                    StockGroupValue += ((StockTypeAmount * ValueMultiplier) / Convert.ToSingle(this.m_STSimTransformer.AmountPerCell));
-                }
-
-                int FlowGroupId = Convert.ToInt32(dr[Constants.FLOW_GROUP_ID_COLUMN_NAME], CultureInfo.InvariantCulture);
-
-                Multiplier *= this.m_StockFlowMultiplierMap.GetStockFlowMultiplier(StockGroupId, e.SimulationCell.StratumId, e.SimulationCell.SecondaryStratumId, e.SimulationCell.TertiaryStratumId, e.SimulationCell.StateClassId, FlowGroupId, e.Iteration, e.Timestep, StockGroupValue);
-            }
-
-            e.ApplyMultiplier(Multiplier);
-        }
-
-        /// <summary>
-        /// Called when (non-spatial) multipliers are being applied
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void OnApplyingTransitionMultipliers(object sender, MultiplierEventArgs e)
         {
             Debug.Assert(this.m_StockTransitionMultipliers.Count > 0);
