@@ -362,6 +362,11 @@ namespace SyncroSim.STSimStockFlow
                       e.Iteration,
                       this.m_STSimTransformer.MinimumTimestep,
                       DistributionFrequency.Iteration);
+
+            this.ResampleStockFlowMultiplierValues(
+                      e.Iteration,
+                      this.m_STSimTransformer.MinimumTimestep,
+                      DistributionFrequency.Iteration);
         }
 
         /// <summary>
@@ -419,6 +424,7 @@ namespace SyncroSim.STSimStockFlow
 
             //Resample the multiplier values
             this.ResampleFlowMultiplierValues(e.Iteration, e.Timestep, DistributionFrequency.Timestep);
+            this.ResampleStockFlowMultiplierValues(e.Iteration, e.Timestep, DistributionFrequency.Timestep);
 
             //Clear the lateral flow amount map
             Debug.Assert(this.m_LateralFlowAmountMap == null);
@@ -979,6 +985,24 @@ namespace SyncroSim.STSimStockFlow
             catch (Exception ex)
             {
                 throw new ArgumentException("Flow Multipliers" + " -> " + ex.Message);
+            }
+        }
+
+        private void ResampleStockFlowMultiplierValues(int iteration, int timestep, DistributionFrequency frequency)
+        {
+            try
+            {
+                foreach (StockFlowMultiplier t in this.m_StockFlowMultipliers)
+                {
+                    if (!t.IsDisabled)
+                    {
+                        t.Sample(iteration, timestep, this.m_STSimTransformer.DistributionProvider, frequency);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new ArgumentException("Stock Flow Multipliers" + " -> " + ex.Message);
             }
         }
 
