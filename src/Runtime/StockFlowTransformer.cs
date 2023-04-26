@@ -95,6 +95,7 @@ namespace SyncroSim.STSimStockFlow
             this.FillFlowMultiplierTypes();
             this.FillFlowPathways();
             this.FillFlowMultipliers();
+            this.FillStockFlowMultipliers();
             this.FillFlowOrders();
             this.AddAutoStockTypeLinkages();
             this.AddAutoFlowTypeLinkages();
@@ -118,7 +119,6 @@ namespace SyncroSim.STSimStockFlow
             this.InitializeDistributionValues();
             this.InitializeShufflableFlowTypes();
             this.CreateStockLimitMap();
-            this.CreateStockFlowMultiplierMap();
             this.CreateStockTransitionMultiplierMap();
             this.CreateFlowPathwayMap();
             this.CreateMultiplierTypeMaps();
@@ -247,6 +247,28 @@ namespace SyncroSim.STSimStockFlow
                     tmt.CreateFlowMultiplierMap();
                 }
             }
+            else if (dataSheet.Name == Constants.DATASHEET_STOCK_FLOW_MULTIPLIER_NAME)
+            {
+                this.m_StockFlowMultipliers.Clear();
+                this.FillStockFlowMultipliers();
+                this.InitializeStockFlowMultiplierDistributionValues();
+
+                foreach (FlowMultiplierType tmt in this.m_FlowMultiplierTypes)
+                {
+                    tmt.ClearStockFlowMultiplierMap();
+                }
+
+                foreach (StockFlowMultiplier sm in this.m_StockFlowMultipliers)
+                {
+                    FlowMultiplierType mt = this.GetFlowMultiplierType(sm.FlowMultiplierTypeId);
+                    mt.AddStockFlowMultiplier(sm);
+                }
+
+                foreach (FlowMultiplierType tmt in this.m_FlowMultiplierTypes)
+                {
+                    tmt.CreateStockFlowMultiplierMap();
+                }
+            }
             else if (dataSheet.Name == Constants.DATASHEET_FLOW_SPATIAL_MULTIPLIER_NAME)
             {
                 if (this.m_IsSpatial)
@@ -312,13 +334,6 @@ namespace SyncroSim.STSimStockFlow
                 this.FillStockLimits();
                 this.m_StockLimitMap = null;
                 this.CreateStockLimitMap();
-            }
-            else if (dataSheet.Name == Constants.DATASHEET_STOCK_FLOW_MULTIPLIER_NAME)
-            {
-                this.m_StockFlowMultipliers.Clear();
-                this.FillStockFlowMultipliers();
-                this.m_StockFlowMultiplierMap = null;
-                this.CreateStockFlowMultiplierMap();
             }
             else if (dataSheet.Name == Constants.DATASHEET_STOCK_TRANSITION_MULTIPLIER_NAME)
             {
@@ -1265,6 +1280,12 @@ namespace SyncroSim.STSimStockFlow
                     {
                         value *= this.GetFlowSpatialMultiplier(
                             cell, mt.FlowSpatialMultiplierMap, fgl.FlowGroup.Id, iteration, timestep);
+                    }
+
+                    if (mt.StockFlowMultiplierMap != null)
+                    {
+                        value *= this.GetStockFlowMultiplier(
+                            fgl.FlowGroup.Id, mt.StockFlowMultiplierMap, iteration, timestep, cell);
                     }
                 }
             }

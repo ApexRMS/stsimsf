@@ -270,8 +270,10 @@
 													<column name="StratumID" dataType="Integer" displayName="Stratum" validationType="Datasheet" formula1="stsim_Stratum" isOptional="True" displayNameSource="stsim_Terminology" displayNameColumn="PrimaryStratumLabel"/>
 													<column name="SecondaryStratumID" dataType="Integer" displayName="Secondary Stratum" validationType="Datasheet" formula1="stsim_SecondaryStratum" isOptional="True" displayNameSource="stsim_Terminology" displayNameColumn="SecondaryStratumLabel"/>
 													<column name="TertiaryStratumID" dataType="Integer" displayName="Tertiary Stratum" validationType="Datasheet" formula1="stsim_TertiaryStratum" isOptional="True" displayNameSource="stsim_Terminology" displayNameColumn="TertiaryStratumLabel"/>
+													<column name="StateClassID" dataType="Integer" displayName="State Class" validationType="Datasheet" formula1="stsim_StateClass" isOptional="True"/>
 													<column name="StockGroupID" dataType="Integer" displayName="Stock Type/Group" validationType="Datasheet" formula1="StockGroup" allowDbNull="False"/>
 													<column name="StockValue" dataType="Double" displayName="Stock Density" validationType="Decimal" validationCondition="GreaterEqual" formula1="0.0" allowDbNull="False"/>
+													<column name="FlowMultiplierTypeID" dataType="Integer" displayName="Flow Multiplier Type" validationType="Datasheet" formula1="FlowMultiplierType" isOptional="True"/>
 													<column name="FlowGroupID" dataType="Integer" displayName="Flow Type/Group" validationType="Datasheet" formula1="FlowGroup" allowDbNull="False"/>
 													<column name="Multiplier" dataType="Double" displayName="Multiplier" validationType="Decimal" validationCondition="GreaterEqual" formula1="0.0"/>
 													<column name="DistributionType" displayName="Multiplier Distribution" dataType="Integer" validationType="Datasheet" formula1="corestime_DistributionType" isOptional="True"/>

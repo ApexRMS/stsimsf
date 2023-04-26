@@ -29,7 +29,7 @@ namespace SyncroSim.STSimStockFlow
         }
 
         private double GetStockFlowMultiplier(
-            int flowGroupId, int iteration, int timestep, Cell simulationCell)
+            int flowGroupId, StockFlowMultiplierMap map, int iteration, int timestep, Cell simulationCell)
         {
             // below taken from StockFlowTransformer.cs line 521
             Debug.Assert(this.m_StockFlowMultipliers.Count > 0);
@@ -67,9 +67,10 @@ namespace SyncroSim.STSimStockFlow
                     StockGroupValue += ((StockTypeAmount * ValueMultiplier) / Convert.ToSingle(this.m_STSimTransformer.AmountPerCell));
                 }
 
-                int FlowGroupId = Convert.ToInt32(dr[Constants.FLOW_GROUP_ID_COLUMN_NAME], CultureInfo.InvariantCulture);
-
-                Multiplier *= this.m_StockFlowMultiplierMap.GetStockFlowMultiplier(StockGroupId, simulationCell.StratumId, simulationCell.SecondaryStratumId, simulationCell.TertiaryStratumId, simulationCell.StateClassId, FlowGroupId, iteration, timestep, StockGroupValue);
+                Multiplier *= map.GetStockFlowMultiplier(
+                    StockGroupId, simulationCell.StratumId, simulationCell.SecondaryStratumId, 
+                    simulationCell.TertiaryStratumId, simulationCell.StateClassId, flowGroupId, 
+                    iteration, timestep, StockGroupValue);
             }
 
             return Multiplier;

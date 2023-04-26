@@ -9,17 +9,19 @@ namespace SyncroSim.STSimStockFlow
 		internal class StockFlowMultiplier : STSimDistributionBase
 		{
 				private int? m_StateClassId;
+				private int? m_FlowMultiplierTypeId;
 				private int m_FlowGroupID;
 				private int m_StockGroupId;
 				private double m_StockValue;
 
 				public StockFlowMultiplier(
 								int? iteration, int? timestep, int? stratumId, int? secondaryStratumId, int? tertiaryStratumId,
-								int? stateClassId, int flowGroupId, int stockGroupId, double stockValue, double? multiplier,
+								int? stateClassId, int? flowMultiplierTypeId, int flowGroupId, int stockGroupId, double stockValue, double? multiplier,
 								int? distributionTypeId, DistributionFrequency? distributionFrequency, double? distributionSD,
 								double? distributionMin, double? distributionMax) : base(iteration, timestep, stratumId, secondaryStratumId, tertiaryStratumId, multiplier, distributionTypeId, distributionFrequency, distributionSD, distributionMin, distributionMax)
 				{
 						this.m_StateClassId = stateClassId;
+						this.m_FlowMultiplierTypeId = flowMultiplierTypeId;
 						this.m_FlowGroupID = flowGroupId;
 						this.m_StockGroupId = stockGroupId;
 						this.m_StockValue = stockValue;
@@ -31,6 +33,14 @@ namespace SyncroSim.STSimStockFlow
 						get
 						{
 								return this.m_StateClassId;
+						}
+				}
+
+				public int? FlowMultiplierTypeId
+				{
+						get
+						{
+								return this.m_FlowMultiplierTypeId;
 						}
 				}
 
@@ -60,7 +70,11 @@ namespace SyncroSim.STSimStockFlow
 
 				public override STSimDistributionBase Clone()
 				{
-						return new StockFlowMultiplier(this.Iteration, this.Timestep, this.StratumId, this.SecondaryStratumId, this.TertiaryStratumId, this.StateClassId, this.FlowGroupId, this.StockGroupId, this.StockValue, this.DistributionValue, this.DistributionTypeId, this.DistributionFrequency, this.DistributionSD, this.DistributionMin, this.DistributionMax);
+						return new StockFlowMultiplier(
+								this.Iteration, this.Timestep, this.StratumId, this.SecondaryStratumId, this.TertiaryStratumId, 
+								this.StateClassId, this.FlowMultiplierTypeId, this.FlowGroupId, this.StockGroupId, this.StockValue, 
+								this.DistributionValue, this.DistributionTypeId, this.DistributionFrequency, this.DistributionSD, 
+								this.DistributionMin, this.DistributionMax);
 				}
 		}
 }
