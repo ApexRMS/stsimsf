@@ -6,7 +6,7 @@ using SyncroSim.StochasticTime;
 
 namespace SyncroSim.STSimStockFlow
 {
-		internal class StockFlowMultiplier : STSimDistributionBase
+		internal class FlowMultiplierByStock : STSimDistributionBase
 		{
 				private int? m_StateClassId;
 				private int? m_FlowMultiplierTypeId;
@@ -14,7 +14,7 @@ namespace SyncroSim.STSimStockFlow
 				private int m_StockGroupId;
 				private double m_StockValue;
 
-				public StockFlowMultiplier(
+				public FlowMultiplierByStock(
 								int? iteration, int? timestep, int? stratumId, int? secondaryStratumId, int? tertiaryStratumId,
 								int? stateClassId, int? flowMultiplierTypeId, int flowGroupId, int stockGroupId, double stockValue, double? multiplier,
 								int? distributionTypeId, DistributionFrequency? distributionFrequency, double? distributionSD,
@@ -70,7 +70,7 @@ namespace SyncroSim.STSimStockFlow
 
 				public override STSimDistributionBase Clone()
 				{
-						return new StockFlowMultiplier(
+						return new FlowMultiplierByStock(
 								this.Iteration, this.Timestep, this.StratumId, this.SecondaryStratumId, this.TertiaryStratumId, 
 								this.StateClassId, this.FlowMultiplierTypeId, this.FlowGroupId, this.StockGroupId, this.StockValue, 
 								this.DistributionValue, this.DistributionTypeId, this.DistributionFrequency, this.DistributionSD, 

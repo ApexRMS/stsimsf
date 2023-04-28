@@ -28,10 +28,10 @@ namespace SyncroSim.STSimStockFlow
             return null;
         }
 
-        private double GetStockFlowMultiplier(
-            int flowGroupId, StockFlowMultiplierMap map, int iteration, int timestep, Cell simulationCell)
+        private double GetFlowMultiplierByStock(
+            int flowGroupId, FlowMultiplierByStockMap map, int iteration, int timestep, Cell simulationCell)
         {
-            Debug.Assert(this.m_StockFlowMultipliers.Count > 0);
+            Debug.Assert(this.m_FlowMultipliersByStock.Count > 0);
 
             double Multiplier = 1.0;
             DataSheet Groups = this.Project.GetDataSheet(Constants.DATASHEET_STOCK_GROUP_NAME);
@@ -66,7 +66,7 @@ namespace SyncroSim.STSimStockFlow
                     StockGroupValue += ((StockTypeAmount * ValueMultiplier) / Convert.ToSingle(this.m_STSimTransformer.AmountPerCell));
                 }
 
-                Multiplier *= map.GetStockFlowMultiplier(
+                Multiplier *= map.GetFlowMultiplierByStock(
                     StockGroupId, simulationCell.StratumId, simulationCell.SecondaryStratumId, 
                     simulationCell.TertiaryStratumId, simulationCell.StateClassId, flowGroupId, 
                     iteration, timestep, StockGroupValue);

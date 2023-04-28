@@ -5,7 +5,7 @@ using System.Collections.ObjectModel;
 
 namespace SyncroSim.STSimStockFlow
 {
-		internal class StockFlowMultiplierCollection : Collection<StockFlowMultiplier>
+		internal class FlowMultiplierByStockCollection : Collection<FlowMultiplierByStock>
 		{
 		}
 }

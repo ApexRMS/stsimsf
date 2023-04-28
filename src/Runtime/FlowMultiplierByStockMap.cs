@@ -10,28 +10,28 @@ using SyncroSim.StochasticTime;
 
 namespace SyncroSim.STSimStockFlow
 {
-		internal class StockFlowMultiplierMap : StockFlowMapBase6<SortedList<double, StockFlowMultiplier>>
+		internal class FlowMultiplierByStockMap : StockFlowMapBase6<SortedList<double, FlowMultiplierByStock>>
 		{
 				private STSimDistributionProvider m_DistributionProvider;
 
-				public StockFlowMultiplierMap(
+				public FlowMultiplierByStockMap(
 								Scenario scenario,
-								StockFlowMultiplierCollection items,
+								FlowMultiplierByStockCollection items,
 								STSimDistributionProvider provider) : base(scenario)
 				{
 						this.m_DistributionProvider = provider;
 
-						foreach (StockFlowMultiplier item in items)
+						foreach (FlowMultiplierByStock item in items)
 						{
 								this.TryAddMultiplier(item);
 						}
 				}
 
-				public double GetStockFlowMultiplier(
+				public double GetFlowMultiplierByStock(
 								int stockGroupId, int stratumId, int? secondaryStratumId, int? tertiaryStratumId,
 								int stateClassId, int flowGroupId, int iteration, int timestep, double stockValue)
 				{
-						SortedList<double, StockFlowMultiplier> lst = this.GetItem(
+						SortedList<double, FlowMultiplierByStock> lst = this.GetItem(
 											stockGroupId, stratumId, secondaryStratumId, tertiaryStratumId,
 											stateClassId, flowGroupId, iteration, timestep);
 
@@ -42,7 +42,7 @@ namespace SyncroSim.STSimStockFlow
 
 						if (lst.Count == 1)
 						{
-								StockFlowMultiplier tsm = lst.First().Value;
+								FlowMultiplierByStock tsm = lst.First().Value;
 								tsm.Sample(iteration, timestep, this.m_DistributionProvider, DistributionFrequency.Always);
 
 								return tsm.CurrentValue.Value;
@@ -50,7 +50,7 @@ namespace SyncroSim.STSimStockFlow
 
 						if (lst.ContainsKey(stockValue))
 						{
-								StockFlowMultiplier tsm = lst[stockValue];
+								FlowMultiplierByStock tsm = lst[stockValue];
 								tsm.Sample(iteration, timestep, this.m_DistributionProvider, DistributionFrequency.Always);
 
 								return tsm.CurrentValue.Value;
@@ -74,7 +74,7 @@ namespace SyncroSim.STSimStockFlow
 
 						if (PrevKey == double.MinValue)
 						{
-								StockFlowMultiplier tsm = lst.First().Value;
+								FlowMultiplierByStock tsm = lst.First().Value;
 								tsm.Sample(iteration, timestep, this.m_DistributionProvider, DistributionFrequency.Always);
 
 								return tsm.CurrentValue.Value;
@@ -82,14 +82,14 @@ namespace SyncroSim.STSimStockFlow
 
 						if (ThisKey == double.MinValue)
 						{
-								StockFlowMultiplier tsm = lst.Last().Value;
+								FlowMultiplierByStock tsm = lst.Last().Value;
 								tsm.Sample(iteration, timestep, this.m_DistributionProvider, DistributionFrequency.Always);
 
 								return tsm.CurrentValue.Value;
 						}
 
-						StockFlowMultiplier PrevMult = lst[PrevKey];
-						StockFlowMultiplier ThisMult = lst[ThisKey];
+						FlowMultiplierByStock PrevMult = lst[PrevKey];
+						FlowMultiplierByStock ThisMult = lst[ThisKey];
 
 						PrevMult.Sample(iteration, timestep, this.m_DistributionProvider, DistributionFrequency.Always);
 						ThisMult.Sample(iteration, timestep, this.m_DistributionProvider, DistributionFrequency.Always);
@@ -97,15 +97,15 @@ namespace SyncroSim.STSimStockFlow
 						return MathUtils.Interpolate(PrevKey, PrevMult.CurrentValue.Value, ThisKey, ThisMult.CurrentValue.Value, stockValue);
 				}
 
-				private void TryAddMultiplier(StockFlowMultiplier item)
+				private void TryAddMultiplier(FlowMultiplierByStock item)
 				{
-						SortedList<double, StockFlowMultiplier> l = this.GetItemExact(
+						SortedList<double, FlowMultiplierByStock> l = this.GetItemExact(
 											item.StockGroupId, item.StratumId, item.SecondaryStratumId, item.TertiaryStratumId,
 											item.StateClassId, item.FlowGroupId, item.Iteration, item.Timestep);
 
 						if (l == null)
 						{
-								l = new SortedList<double, StockFlowMultiplier>();
+								l = new SortedList<double, FlowMultiplierByStock>();
 
 								this.AddItem(
 														item.StockGroupId, item.StratumId, item.SecondaryStratumId, item.TertiaryStratumId,

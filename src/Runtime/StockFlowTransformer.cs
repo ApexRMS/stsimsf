@@ -95,7 +95,7 @@ namespace SyncroSim.STSimStockFlow
             this.FillFlowMultiplierTypes();
             this.FillFlowPathways();
             this.FillFlowMultipliers();
-            this.FillStockFlowMultipliers();
+            this.FillFlowMultipliersByStock();
             this.FillFlowOrders();
             this.AddAutoStockTypeLinkages();
             this.AddAutoFlowTypeLinkages();
@@ -164,11 +164,6 @@ namespace SyncroSim.STSimStockFlow
             this.STSimTransformer.TimestepCompleted += this.OnSTSimAfterTimestep;
             this.STSimTransformer.ModelRunComplete += this.OnSTSimModelRunComplete;
 
-            // don't want to add stock flow multipliers here - should be handled by stsimsf transformer since changing flows
-            //if (this.m_StockFlowMultipliers.Count > 0)
-            //{
-            //    this.STSimTransformer.ApplyingStockFlowMultipliers += this.OnApplyingStockFlowMultipliers;
-            //}
             if (this.m_StockTransitionMultipliers.Count > 0)
             {
                 this.STSimTransformer.ApplyingTransitionMultipliers += this.OnApplyingTransitionMultipliers;
@@ -247,26 +242,26 @@ namespace SyncroSim.STSimStockFlow
                     tmt.CreateFlowMultiplierMap();
                 }
             }
-            else if (dataSheet.Name == Constants.DATASHEET_STOCK_FLOW_MULTIPLIER_NAME)
+            else if (dataSheet.Name == Constants.DATASHEET_FLOW_MULTIPLIER_BY_STOCK_NAME)
             {
-                this.m_StockFlowMultipliers.Clear();
-                this.FillStockFlowMultipliers();
-                this.InitializeStockFlowMultiplierDistributionValues();
+                this.m_FlowMultipliersByStock.Clear();
+                this.FillFlowMultipliersByStock();
+                this.InitializeFlowMultiplierByStockDistributionValues();
 
                 foreach (FlowMultiplierType tmt in this.m_FlowMultiplierTypes)
                 {
-                    tmt.ClearStockFlowMultiplierMap();
+                    tmt.ClearFlowMultiplierByStockMap();
                 }
 
-                foreach (StockFlowMultiplier sm in this.m_StockFlowMultipliers)
+                foreach (FlowMultiplierByStock sm in this.m_FlowMultipliersByStock)
                 {
                     FlowMultiplierType mt = this.GetFlowMultiplierType(sm.FlowMultiplierTypeId);
-                    mt.AddStockFlowMultiplier(sm);
+                    mt.AddFlowMultiplierByStock(sm);
                 }
 
                 foreach (FlowMultiplierType tmt in this.m_FlowMultiplierTypes)
                 {
-                    tmt.CreateStockFlowMultiplierMap();
+                    tmt.CreateFlowMultiplierByStockMap();
                 }
             }
             else if (dataSheet.Name == Constants.DATASHEET_FLOW_SPATIAL_MULTIPLIER_NAME)
@@ -363,7 +358,7 @@ namespace SyncroSim.STSimStockFlow
                       this.m_STSimTransformer.MinimumTimestep,
                       DistributionFrequency.Iteration);
 
-            this.ResampleStockFlowMultiplierValues(
+            this.ResampleFlowMultiplierByStockValues(
                       e.Iteration,
                       this.m_STSimTransformer.MinimumTimestep,
                       DistributionFrequency.Iteration);
@@ -424,7 +419,7 @@ namespace SyncroSim.STSimStockFlow
 
             //Resample the multiplier values
             this.ResampleFlowMultiplierValues(e.Iteration, e.Timestep, DistributionFrequency.Timestep);
-            this.ResampleStockFlowMultiplierValues(e.Iteration, e.Timestep, DistributionFrequency.Timestep);
+            this.ResampleFlowMultiplierByStockValues(e.Iteration, e.Timestep, DistributionFrequency.Timestep);
 
             //Clear the lateral flow amount map
             Debug.Assert(this.m_LateralFlowAmountMap == null);
@@ -988,11 +983,11 @@ namespace SyncroSim.STSimStockFlow
             }
         }
 
-        private void ResampleStockFlowMultiplierValues(int iteration, int timestep, DistributionFrequency frequency)
+        private void ResampleFlowMultiplierByStockValues(int iteration, int timestep, DistributionFrequency frequency)
         {
             try
             {
-                foreach (StockFlowMultiplier t in this.m_StockFlowMultipliers)
+                foreach (FlowMultiplierByStock t in this.m_FlowMultipliersByStock)
                 {
                     if (!t.IsDisabled)
                     {
@@ -1256,10 +1251,10 @@ namespace SyncroSim.STSimStockFlow
                             cell, mt.FlowSpatialMultiplierMap, fgl.FlowGroup.Id, iteration, timestep);
                     }
 
-                    if (mt.StockFlowMultiplierMap != null)
+                    if (mt.FlowMultiplierByStockMap != null)
                     {
-                        value *= this.GetStockFlowMultiplier(
-                            fgl.FlowGroup.Id, mt.StockFlowMultiplierMap, iteration, timestep, cell);
+                        value *= this.GetFlowMultiplierByStock(
+                            fgl.FlowGroup.Id, mt.FlowMultiplierByStockMap, iteration, timestep, cell);
                     }
                 }
             }

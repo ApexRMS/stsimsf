@@ -23,7 +23,7 @@ namespace SyncroSim.STSimStockFlow
         private InitialStockSpatialCollection m_InitialStocksSpatial = new InitialStockSpatialCollection();
         private Dictionary<string, StochasticTimeRaster> m_InitialStockSpatialRasters = new Dictionary<string, StochasticTimeRaster>();
         private StockLimitCollection m_StockLimits = new StockLimitCollection();
-        private StockFlowMultiplierCollection m_StockFlowMultipliers = new StockFlowMultiplierCollection();
+        private FlowMultiplierByStockCollection m_FlowMultipliersByStock = new FlowMultiplierByStockCollection();
         private StockTransitionMultiplierCollection m_StockTransitionMultipliers = new StockTransitionMultiplierCollection();
         private FlowPathwayCollection m_FlowPathways = new FlowPathwayCollection();
         private FlowMultiplierCollection m_FlowMultipliers = new FlowMultiplierCollection();
@@ -433,10 +433,10 @@ namespace SyncroSim.STSimStockFlow
             }
         }
 
-        private void FillStockFlowMultipliers()
+        private void FillFlowMultipliersByStock()
         {
-            Debug.Assert(this.m_StockFlowMultipliers.Count == 0);
-            DataSheet ds = this.ResultScenario.GetDataSheet(Constants.DATASHEET_STOCK_FLOW_MULTIPLIER_NAME);
+            Debug.Assert(this.m_FlowMultipliersByStock.Count == 0);
+            DataSheet ds = this.ResultScenario.GetDataSheet(Constants.DATASHEET_FLOW_MULTIPLIER_BY_STOCK_NAME);
 
             foreach (DataRow dr in ds.GetData().Rows)
             {
@@ -524,7 +524,7 @@ namespace SyncroSim.STSimStockFlow
 
                 try
                 {
-                    StockFlowMultiplier Item = new StockFlowMultiplier(
+                    FlowMultiplierByStock Item = new FlowMultiplierByStock(
                                   Iteration, Timestep, StratumId, SecondaryStratumId, TertiaryStratumId, StateClassId,
                                   FlowMultiplierTypeId, FlowGroupId, StockGroupId, StockValue, Multiplier, DistributionTypeId, DistributionFrequency,
                                   DistributionSD, DistributionMin, DistributionMax);
@@ -533,7 +533,7 @@ namespace SyncroSim.STSimStockFlow
                                   Item.DistributionTypeId, Item.DistributionValue, Item.DistributionSD,
                                   Item.DistributionMin, Item.DistributionMax);
 
-                    this.m_StockFlowMultipliers.Add(Item);
+                    this.m_FlowMultipliersByStock.Add(Item);
 
                 }
                 catch (Exception ex)

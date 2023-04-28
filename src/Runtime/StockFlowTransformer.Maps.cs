@@ -10,7 +10,6 @@ namespace SyncroSim.STSimStockFlow
     {
         private StockLimitMap m_StockLimitMap;
         private InitialStockSpatialMap m_InitialStockSpatialMap;
-        private StockFlowMultiplierMap m_StockFlowMultiplierMap;
         private StockTransitionMultiplierMap m_StockTransitionMultiplierMap;
         private FlowPathwayMap m_FlowPathwayMap;
         private FlowOrderMap m_FlowOrderMap;
@@ -69,10 +68,10 @@ namespace SyncroSim.STSimStockFlow
                 mt.AddFlowLateralMultiplier(tm);
             }
 
-            foreach (StockFlowMultiplier tm in this.m_StockFlowMultipliers)
+            foreach (FlowMultiplierByStock tm in this.m_FlowMultipliersByStock)
             {
                 FlowMultiplierType mt = this.GetFlowMultiplierType(tm.FlowMultiplierTypeId);
-                mt.AddStockFlowMultiplier(tm);
+                mt.AddFlowMultiplierByStock(tm);
             }
 
             foreach (FlowMultiplierType tmt in this.m_FlowMultiplierTypes)
@@ -80,7 +79,7 @@ namespace SyncroSim.STSimStockFlow
                 tmt.CreateFlowMultiplierMap();
                 tmt.CreateSpatialFlowMultiplierMap();
                 tmt.CreateLateralFlowMultiplierMap();
-                tmt.CreateStockFlowMultiplierMap();
+                tmt.CreateFlowMultiplierByStockMap();
             }
         }
     }

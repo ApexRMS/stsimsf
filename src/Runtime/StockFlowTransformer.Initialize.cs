@@ -99,7 +99,7 @@ namespace SyncroSim.STSimStockFlow
         {
             this.InitializeFlowMultiplierDistributionValues();
             this.InitializeStockTransitionMultiplierDistributionValues();
-            this.InitializeStockFlowMultiplierDistributionValues();
+            this.InitializeFlowMultiplierByStockDistributionValues();
         }
 
         /// <summary>
@@ -129,11 +129,11 @@ namespace SyncroSim.STSimStockFlow
         /// <summary>
         /// Initializes distribution values for the stock flow multipliers
         /// </summary>
-        private void InitializeStockFlowMultiplierDistributionValues()
+        private void InitializeFlowMultiplierByStockDistributionValues()
         {
             try
             {
-                foreach (StockFlowMultiplier t in this.m_StockFlowMultipliers)
+                foreach (FlowMultiplierByStock t in this.m_FlowMultipliersByStock)
                 {
                     t.Initialize(
                                   this.m_STSimTransformer.MinimumIteration,
