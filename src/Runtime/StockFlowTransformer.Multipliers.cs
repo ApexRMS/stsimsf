@@ -31,7 +31,6 @@ namespace SyncroSim.STSimStockFlow
         private double GetStockFlowMultiplier(
             int flowGroupId, StockFlowMultiplierMap map, int iteration, int timestep, Cell simulationCell)
         {
-            // below taken from StockFlowTransformer.cs line 521
             Debug.Assert(this.m_StockFlowMultipliers.Count > 0);
 
             double Multiplier = 1.0;

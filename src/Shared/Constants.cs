@@ -60,7 +60,7 @@ namespace SyncroSim.STSimStockFlow
 		public const string DATASHEET_INITIAL_STOCK_NON_SPATIAL = "stsimsf_InitialStockNonSpatial";
 		public const string DATASHEET_INITIAL_STOCK_SPATIAL = "stsimsf_InitialStockSpatial";
 		public const string DATASHEET_STOCK_LIMIT_NAME = "stsimsf_StockLimit";
-		public const string DATASHEET_STOCK_FLOW_MULTIPLIER_NAME = "stsimsf_StockFlowMultiplier";
+		public const string DATASHEET_STOCK_FLOW_MULTIPLIER_NAME = "stsimsf_FlowMultiplierByStock";
 		public const string DATASHEET_STOCK_TRANSITION_MULTIPLIER_NAME = "stsimsf_StockTransitionMultiplier";
 		public const string DATASHEET_STOCK_TYPE_GROUP_MEMBERSHIP_NAME = "stsimsf_StockTypeGroupMembership";
 		public const string DATASHEET_FLOW_PATHWAY_NAME = "stsimsf_FlowPathway";

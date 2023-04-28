@@ -259,11 +259,11 @@
 						</datasheet>
 					</datasheets>
 				</datafeed>
-					<datafeed name="StockFlowMultiplier" displayName="Flow Multipliers by Stock" dataScope="Scenario">
+					<datafeed name="FlowMultiplierByStock" displayName="Flow Multipliers by Stock" dataScope="Scenario">
 							<datasheets>
-									<datasheet name="StockFlowMultiplier" displayName="Flow Multipliers by Stock">
+									<datasheet name="FlowMultiplierByStock" displayName="Flow Multipliers by Stock">
 											<columns>
-													<column name="StockFlowMultiplierID" dataType="Integer" isPrimary="True"/>
+													<column name="FlowMultiplierByStockID" dataType="Integer" isPrimary="True"/>
 													<column name="ScenarioID" dataType="Integer" isCompositeIndex="True"/>
 													<column name="Iteration" dataType="Integer" validationType="WholeNumber" validationCondition="Greater" formula1="0" isOptional="True" format="d"/>
 													<column name="Timestep" dataType="Integer" validationType="WholeNumber" validationCondition="GreaterEqual" formula1="0" isOptional="True" displayNameSource="stsim_Terminology" displayNameColumn="TimestepUnits" format="d"/>
@@ -594,7 +594,7 @@
 				<group name="Advanced">
 					<item name="StockGroupMembership"/>
 					<item name="StockLimit"/>				
-					<item name="StockFlowMultiplier"/>
+					<item name="FlowMultiplierByStock"/>
 					<item name="FlowGroupMembership"/>
 					<item name="FlowMultiplier"/>
 					<item name="FlowSpatialMultiplier"/>
