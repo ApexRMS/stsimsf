@@ -5,21 +5,21 @@ namespace SyncroSim.STSimStockFlow
 {
 	internal class OutputFlow
 	{
-		private int m_FromStratumId;
-		private int? m_FromSecondaryStratumId;
-		private int? m_FromTertiaryStratumID;
-		private int m_FromStateClassId;
-		private int? m_FromStockTypeId;
-		private int? m_transitionTypeId;
-		private int m_ToStratumId;
-		private int m_ToStateClassId;
-		private int? m_ToStockTypeId;
-		private int m_FlowGroupId;
-        private int? m_TransferToStratumId;
-        private int? m_TransferToSecondaryStratumId;
-        private int? m_TransferToTertiaryStratumId;
-        private int? m_TransferToStateClassId;
-        private int? m_TransferToMinimumAge;
+		private readonly int m_FromStratumId;
+		private readonly int? m_FromSecondaryStratumId;
+		private readonly int? m_FromTertiaryStratumID;
+		private readonly int m_FromStateClassId;
+		private readonly int? m_FromStockTypeId;
+		private readonly int? m_transitionTypeId;
+		private readonly int m_ToStratumId;
+		private readonly int m_ToStateClassId;
+		private readonly int? m_ToStockTypeId;
+		private readonly int m_FlowGroupId;
+        private readonly int? m_TransferToStratumId;
+        private readonly int? m_TransferToSecondaryStratumId;
+        private readonly int? m_TransferToTertiaryStratumId;
+        private readonly int? m_TransferToStateClassId;
+        private readonly int? m_TransferToMinimumAge;
 		private double m_Amount;
 
 		public OutputFlow(

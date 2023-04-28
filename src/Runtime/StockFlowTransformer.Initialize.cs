@@ -10,85 +10,85 @@ using SyncroSim.Core;
 
 namespace SyncroSim.STSimStockFlow
 {
-	internal partial class StockFlowTransformer
-	{
-		/// <summary>
-		/// Sets whether or not this is a spatial model run
-		/// </summary>
-		/// <remarks></remarks>
-		private void InitializeSpatialRunFlag()
-		{
-			DataRow drrc = this.ResultScenario.GetDataSheet(Constants.DATASHEET_STSIM_RUN_CONTROL).GetDataRow();
-			this.m_IsSpatial = DataTableUtilities.GetDataBool(drrc["IsSpatial"]);
-		}
+    internal partial class StockFlowTransformer
+    {
+        /// <summary>
+        /// Sets whether or not this is a spatial model run
+        /// </summary>
+        /// <remarks></remarks>
+        private void InitializeSpatialRunFlag()
+        {
+            DataRow drrc = this.ResultScenario.GetDataSheet(Constants.DATASHEET_STSIM_RUN_CONTROL).GetDataRow();
+            this.m_IsSpatial = DataTableUtilities.GetDataBool(drrc["IsSpatial"]);
+        }
 
-		/// <summary>
-		/// Initializes the flags for controlling SecondaryStratum and TertiaryStratum output
-		/// </summary>
-		private void Initialize_SS_TS_Flags()
-		{
-			DataRow dr = this.ResultScenario.GetDataSheet(Constants.DATASHEET_STSIM_OUTPUT_OPTIONS).GetDataRow();
+        /// <summary>
+        /// Initializes the flags for controlling SecondaryStratum and TertiaryStratum output
+        /// </summary>
+        private void Initialize_SS_TS_Flags()
+        {
+            DataRow dr = this.ResultScenario.GetDataSheet(Constants.DATASHEET_STSIM_OUTPUT_OPTIONS).GetDataRow();
 
-			if (dr != null)
-			{
-				this.m_SummaryOmitSecondaryStrata = DataTableUtilities.GetDataBool(dr, "SummaryOutputOmitSS");
-				this.m_SummaryOmitTertiaryStrata = DataTableUtilities.GetDataBool(dr, "SummaryOutputOmitTS");
-			}
-		}
+            if (dr != null)
+            {
+                this.m_SummaryOmitSecondaryStrata = DataTableUtilities.GetDataBool(dr, "SummaryOutputOmitSS");
+                this.m_SummaryOmitTertiaryStrata = DataTableUtilities.GetDataBool(dr, "SummaryOutputOmitTS");
+            }
+        }
 
-		/// <summary>
-		/// Sets the Flow Order Options
-		/// </summary>
-		/// <remarks></remarks>
-		private void InitializeFlowOrderOptions()
-		{
-			DataRow dr = this.ResultScenario.GetDataSheet(Constants.DATASHEET_FLOW_ORDER_OPTIONS).GetDataRow();
+        /// <summary>
+        /// Sets the Flow Order Options
+        /// </summary>
+        /// <remarks></remarks>
+        private void InitializeFlowOrderOptions()
+        {
+            DataRow dr = this.ResultScenario.GetDataSheet(Constants.DATASHEET_FLOW_ORDER_OPTIONS).GetDataRow();
 
-			if (dr != null)
-			{
-				this.m_ApplyBeforeTransitions = DataTableUtilities.GetDataBool(dr, "ApplyBeforeTransitions");
-				this.m_ApplyEquallyRankedSimultaneously = DataTableUtilities.GetDataBool(dr, "ApplyEquallyRankedSimultaneously");
-			}
-		}
+            if (dr != null)
+            {
+                this.m_ApplyBeforeTransitions = DataTableUtilities.GetDataBool(dr, "ApplyBeforeTransitions");
+                this.m_ApplyEquallyRankedSimultaneously = DataTableUtilities.GetDataBool(dr, "ApplyEquallyRankedSimultaneously");
+            }
+        }
 
-		/// <summary>
-		/// Initializes the output options
-		/// </summary>
-		/// <remarks></remarks>
-		private void InitializeOutputOptions()
-		{
-			DataRow droo = this.ResultScenario.GetDataSheet(Constants.DATASHEET_OO_NAME).GetDataRow();
+        /// <summary>
+        /// Initializes the output options
+        /// </summary>
+        /// <remarks></remarks>
+        private void InitializeOutputOptions()
+        {
+            DataRow droo = this.ResultScenario.GetDataSheet(Constants.DATASHEET_OO_NAME).GetDataRow();
 
-			Func<object, int> SafeInt = (object o) =>
-			{
-				if (o == DBNull.Value)
-				{
-					return 0;
-				}
-				else
-				{
-					return Convert.ToInt32(o, CultureInfo.InvariantCulture);
-				}
-			};
+            Func<object, int> SafeInt = (object o) =>
+            {
+                if (o == DBNull.Value)
+                {
+                    return 0;
+                }
+                else
+                {
+                    return Convert.ToInt32(o, CultureInfo.InvariantCulture);
+                }
+            };
 
-			this.m_CreateSummaryStockOutput = DataTableUtilities.GetDataBool(droo[Constants.DATASHEET_OO_SUMMARY_OUTPUT_ST_COLUMN_NAME]);
-			this.m_SummaryStockOutputTimesteps = SafeInt(droo[Constants.DATASHEET_OO_SUMMARY_OUTPUT_ST_TIMESTEPS_COLUMN_NAME]);
-			this.m_CreateSummaryFlowOutput = DataTableUtilities.GetDataBool(droo[Constants.DATASHEET_OO_SUMMARY_OUTPUT_FL_COLUMN_NAME]);
-			this.m_SummaryFlowOutputTimesteps = SafeInt(droo[Constants.DATASHEET_OO_SUMMARY_OUTPUT_FL_TIMESTEPS_COLUMN_NAME]);
-			this.m_CreateSpatialStockOutput = DataTableUtilities.GetDataBool(droo[Constants.DATASHEET_OO_SPATIAL_OUTPUT_ST_COLUMN_NAME]);
-			this.m_SpatialStockOutputTimesteps = SafeInt(droo[Constants.DATASHEET_OO_SPATIAL_OUTPUT_ST_TIMESTEPS_COLUMN_NAME]);
-			this.m_CreateSpatialFlowOutput = DataTableUtilities.GetDataBool(droo[Constants.DATASHEET_OO_SPATIAL_OUTPUT_FL_COLUMN_NAME]);
-			this.m_SpatialFlowOutputTimesteps = SafeInt(droo[Constants.DATASHEET_OO_SPATIAL_OUTPUT_FL_TIMESTEPS_COLUMN_NAME]);
-			this.m_CreateLateralFlowOutput = DataTableUtilities.GetDataBool(droo[Constants.DATASHEET_OO_LATERAL_OUTPUT_FL_COLUMN_NAME]);
-			this.m_LateralFlowOutputTimesteps = SafeInt(droo[Constants.DATASHEET_OO_LATERAL_OUTPUT_FL_TIMESTEPS_COLUMN_NAME]);
-			this.m_CreateAvgSpatialStockOutput = DataTableUtilities.GetDataBool(droo[Constants.DATASHEET_OO_AVG_SPATIAL_OUTPUT_ST_COLUMN_NAME]);
-			this.m_AvgSpatialStockOutputTimesteps = SafeInt(droo[Constants.DATASHEET_OO_AVG_SPATIAL_OUTPUT_ST_TIMESTEPS_COLUMN_NAME]);
+            this.m_CreateSummaryStockOutput = DataTableUtilities.GetDataBool(droo[Constants.DATASHEET_OO_SUMMARY_OUTPUT_ST_COLUMN_NAME]);
+            this.m_SummaryStockOutputTimesteps = SafeInt(droo[Constants.DATASHEET_OO_SUMMARY_OUTPUT_ST_TIMESTEPS_COLUMN_NAME]);
+            this.m_CreateSummaryFlowOutput = DataTableUtilities.GetDataBool(droo[Constants.DATASHEET_OO_SUMMARY_OUTPUT_FL_COLUMN_NAME]);
+            this.m_SummaryFlowOutputTimesteps = SafeInt(droo[Constants.DATASHEET_OO_SUMMARY_OUTPUT_FL_TIMESTEPS_COLUMN_NAME]);
+            this.m_CreateSpatialStockOutput = DataTableUtilities.GetDataBool(droo[Constants.DATASHEET_OO_SPATIAL_OUTPUT_ST_COLUMN_NAME]);
+            this.m_SpatialStockOutputTimesteps = SafeInt(droo[Constants.DATASHEET_OO_SPATIAL_OUTPUT_ST_TIMESTEPS_COLUMN_NAME]);
+            this.m_CreateSpatialFlowOutput = DataTableUtilities.GetDataBool(droo[Constants.DATASHEET_OO_SPATIAL_OUTPUT_FL_COLUMN_NAME]);
+            this.m_SpatialFlowOutputTimesteps = SafeInt(droo[Constants.DATASHEET_OO_SPATIAL_OUTPUT_FL_TIMESTEPS_COLUMN_NAME]);
+            this.m_CreateLateralFlowOutput = DataTableUtilities.GetDataBool(droo[Constants.DATASHEET_OO_LATERAL_OUTPUT_FL_COLUMN_NAME]);
+            this.m_LateralFlowOutputTimesteps = SafeInt(droo[Constants.DATASHEET_OO_LATERAL_OUTPUT_FL_TIMESTEPS_COLUMN_NAME]);
+            this.m_CreateAvgSpatialStockOutput = DataTableUtilities.GetDataBool(droo[Constants.DATASHEET_OO_AVG_SPATIAL_OUTPUT_ST_COLUMN_NAME]);
+            this.m_AvgSpatialStockOutputTimesteps = SafeInt(droo[Constants.DATASHEET_OO_AVG_SPATIAL_OUTPUT_ST_TIMESTEPS_COLUMN_NAME]);
             this.m_AvgSpatialStockOutputAcrossTimesteps = DataTableUtilities.GetDataBool(droo[Constants.DATASHEET_OO_AVG_SPATIAL_OUTPUT_ST_ACROSS_TIMESTEPS_COLUMN_NAME]);
-			this.m_CreateAvgSpatialFlowOutput = DataTableUtilities.GetDataBool(droo[Constants.DATASHEET_OO_AVG_SPATIAL_OUTPUT_FL_COLUMN_NAME]);
-			this.m_AvgSpatialFlowOutputTimesteps = SafeInt(droo[Constants.DATASHEET_OO_AVG_SPATIAL_OUTPUT_FL_TIMESTEPS_COLUMN_NAME]);
+            this.m_CreateAvgSpatialFlowOutput = DataTableUtilities.GetDataBool(droo[Constants.DATASHEET_OO_AVG_SPATIAL_OUTPUT_FL_COLUMN_NAME]);
+            this.m_AvgSpatialFlowOutputTimesteps = SafeInt(droo[Constants.DATASHEET_OO_AVG_SPATIAL_OUTPUT_FL_TIMESTEPS_COLUMN_NAME]);
             this.m_AvgSpatialFlowOutputAcrossTimesteps = DataTableUtilities.GetDataBool(droo[Constants.DATASHEET_OO_AVG_SPATIAL_OUTPUT_FL_ACROSS_TIMESTEPS_COLUMN_NAME]);
             this.m_CreateAvgSpatialLateralFlowOutput = DataTableUtilities.GetDataBool(droo[Constants.DATASHEET_OO_AVG_SPATIAL_OUTPUT_LFL_COLUMN_NAME]);
-			this.m_AvgSpatialLateralFlowOutputTimesteps = SafeInt(droo[Constants.DATASHEET_OO_AVG_SPATIAL_OUTPUT_LFL_TIMESTEPS_COLUMN_NAME]);
+            this.m_AvgSpatialLateralFlowOutputTimesteps = SafeInt(droo[Constants.DATASHEET_OO_AVG_SPATIAL_OUTPUT_LFL_TIMESTEPS_COLUMN_NAME]);
             this.m_AvgSpatialLateralFlowOutputAcrossTimesteps = DataTableUtilities.GetDataBool(droo[Constants.DATASHEET_OO_AVG_SPATIAL_OUTPUT_LFL_ACROSS_TIMESTEPS_COLUMN_NAME]);
         }
 
@@ -96,71 +96,93 @@ namespace SyncroSim.STSimStockFlow
         /// Initializes all distribution values
         /// </summary>
         private void InitializeDistributionValues()
-		{
-			this.InitializeFlowMultiplierDistributionValues();
-			this.InitializeStockTransitionMultiplierDistributionValues();
-		}
+        {
+            this.InitializeFlowMultiplierDistributionValues();
+            this.InitializeStockTransitionMultiplierDistributionValues();
+            this.InitializeFlowMultiplierByStockDistributionValues();
+        }
 
-		/// <summary>
-		/// Initializes distribution values for the flow multipliers
-		/// </summary>
-		private void InitializeFlowMultiplierDistributionValues()
-		{
-			try
-			{
-				foreach (FlowMultiplier t in this.m_FlowMultipliers)
-				{
+        /// <summary>
+        /// Initializes distribution values for the flow multipliers
+        /// </summary>
+        private void InitializeFlowMultiplierDistributionValues()
+        {
+            try
+            {
+                foreach (FlowMultiplier t in this.m_FlowMultipliers)
+                {
                     if (!t.IsDisabled)
                     {
-					    t.Initialize(
-                            this.m_STSimTransformer.MinimumIteration, 
-                            this.m_STSimTransformer.MinimumTimestep, 
-                            this.m_STSimTransformer.DistributionProvider);
+                        t.Initialize(
+                                      this.m_STSimTransformer.MinimumIteration,
+                                      this.m_STSimTransformer.MinimumTimestep,
+                                      this.m_STSimTransformer.DistributionProvider);
                     }
-				}
-			}
-			catch (Exception ex)
-			{
-				throw new ArgumentException("Flow Multipliers" + " -> " + ex.Message);
-			}
-		}
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new ArgumentException("Flow Multipliers" + " -> " + ex.Message);
+            }
+        }
 
-		/// <summary>
-		/// Initializes distribution values for the stock transition multipliers
-		/// </summary>
-		private void InitializeStockTransitionMultiplierDistributionValues()
-		{
-			try
-			{
-				foreach (StockTransitionMultiplier t in this.m_StockTransitionMultipliers)
-				{
-					t.Initialize(
-                        this.m_STSimTransformer.MinimumIteration, 
-                        this.m_STSimTransformer.MinimumTimestep, 
-                        this.m_STSimTransformer.DistributionProvider);
-				}
-			}
-			catch (Exception ex)
-			{
-				throw new ArgumentException("Stock Transition Multipliers" + " -> " + ex.Message);
-			}
-		}
+        /// <summary>
+        /// Initializes distribution values for the stock flow multipliers
+        /// </summary>
+        private void InitializeFlowMultiplierByStockDistributionValues()
+        {
+            try
+            {
+                foreach (FlowMultiplierByStock t in this.m_FlowMultipliersByStock)
+                {
+                    t.Initialize(
+                                  this.m_STSimTransformer.MinimumIteration,
+                                  this.m_STSimTransformer.MinimumTimestep,
+                                  this.m_STSimTransformer.DistributionProvider);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new ArgumentException("Stock Flow Multipliers" + " -> " + ex.Message);
+            }
+        }
 
-		/// <summary>
-		/// Initializes a separate list of Flow Types that can be shuffled
-		/// </summary>
-		/// <remarks>
-		/// The main list is keyed and cannot be shuffled, but we need a shuffled list for doing raster simulations
-		/// </remarks>
-		private void InitializeShufflableFlowTypes()
-		{
-			Debug.Assert(this.m_ShufflableFlowTypes.Count == 0);
+        /// <summary>
+        /// Initializes distribution values for the stock transition multipliers
+        /// </summary>
+        private void InitializeStockTransitionMultiplierDistributionValues()
+        {
+            try
+            {
+                foreach (StockTransitionMultiplier t in this.m_StockTransitionMultipliers)
+                {
+                    t.Initialize(
+                                  this.m_STSimTransformer.MinimumIteration,
+                                  this.m_STSimTransformer.MinimumTimestep,
+                                  this.m_STSimTransformer.DistributionProvider);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new ArgumentException("Stock Transition Multipliers" + " -> " + ex.Message);
+            }
+        }
 
-			foreach (FlowType ft in this.m_FlowTypes)
-			{
-				this.m_ShufflableFlowTypes.Add(ft);
-			}
-		}
+        /// <summary>
+        /// Initializes a separate list of Flow Types that can be shuffled
+        /// </summary>
+        /// <remarks>
+        /// The main list is keyed and cannot be shuffled, but we need a shuffled list for doing raster simulations
+        /// </remarks>
+        private void InitializeShufflableFlowTypes()
+        {
+            Debug.Assert(this.m_ShufflableFlowTypes.Count == 0);
+
+            foreach (FlowType ft in this.m_FlowTypes)
+            {
+                this.m_ShufflableFlowTypes.Add(ft);
+            }
+        }
 
         /// <summary>
         /// Adds automatic stock type/group linkages
@@ -178,7 +200,7 @@ namespace SyncroSim.STSimStockFlow
                 NewRow[Constants.STOCK_GROUP_ID_COLUMN_NAME] = this.GetAutoGeneratedStockGroup(t).Id;
 
                 dt.Rows.Add(NewRow);
-            } 
+            }
 #if DEBUG
             this.m_AutoStockLinkagesAdded = true;
 #endif
@@ -313,9 +335,9 @@ namespace SyncroSim.STSimStockFlow
                 {
                     if (this.m_STSimTransformer.IsOutputTimestepAverage(
                         timestep,
-                        this.m_AvgSpatialFlowOutputTimesteps, 
+                        this.m_AvgSpatialFlowOutputTimesteps,
                         this.m_CreateAvgSpatialFlowOutput))
-                    { 
+                    {
                         float[] values = new float[this.STSimTransformer.Cells.Count];
 
                         for (var i = 0; i < this.STSimTransformer.Cells.Count; i++)

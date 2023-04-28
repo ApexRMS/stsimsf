@@ -9,7 +9,7 @@ namespace SyncroSim.STSimStockFlow
 	internal class InitialStockSpatialMap
 	{
 		private bool m_HasItems;
-		private SortedKeyMap1<InitialStockSpatialCollection> m_Map = new SortedKeyMap1<InitialStockSpatialCollection>(SearchMode.ExactPrev);
+		private readonly SortedKeyMap1<InitialStockSpatialCollection> m_Map = new SortedKeyMap1<InitialStockSpatialCollection>(SearchMode.ExactPrev);
 
 		public InitialStockSpatialMap(InitialStockSpatialCollection icd)
 		{

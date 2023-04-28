@@ -7,6 +7,8 @@ using System.Globalization;
 using SyncroSim.Core;
 using SyncroSim.STSim;
 using SyncroSim.StochasticTime;
+using System.Collections.Generic;
+using System.Data;
 
 namespace SyncroSim.STSimStockFlow
 {
@@ -24,6 +26,53 @@ namespace SyncroSim.STSimStockFlow
 
             Debug.Assert(false);
             return null;
+        }
+
+        private double GetFlowMultiplierByStock(
+            int flowGroupId, FlowMultiplierByStockMap map, int iteration, int timestep, Cell simulationCell)
+        {
+            Debug.Assert(this.m_FlowMultipliersByStock.Count > 0);
+
+            double Multiplier = 1.0;
+            DataSheet Groups = this.Project.GetDataSheet(Constants.DATASHEET_STOCK_GROUP_NAME);
+            DataSheet TGMembership = this.ResultScenario.GetDataSheet(Constants.DATASHEET_STOCK_TYPE_GROUP_MEMBERSHIP_NAME);
+            Dictionary<int, float> StockAmounts = GetStockAmountDictionary(simulationCell);
+            var dtgroups = Groups.GetData();
+            var dtmembership = TGMembership.GetData();
+
+            foreach (DataRow dr in dtgroups.Rows)
+            {
+                float StockGroupValue = 0.0F;
+                int StockGroupId = Convert.ToInt32(dr[Groups.ValueMember], CultureInfo.InvariantCulture);
+                string query = string.Format(CultureInfo.InvariantCulture, "StockGroupID={0}", StockGroupId);
+                DataRow[] rows = dtmembership.Select(query);
+
+                foreach (DataRow r in rows)
+                {
+                    float ValueMultiplier = 1.0F;
+                    int StockTypeId = Convert.ToInt32(r[Constants.STOCK_TYPE_ID_COLUMN_NAME], CultureInfo.InvariantCulture);
+                    float StockTypeAmount = 0.0F;
+
+                    if (StockAmounts.ContainsKey(StockTypeId))
+                    {
+                        StockTypeAmount = StockAmounts[StockTypeId];
+                    }
+
+                    if (!Convert.IsDBNull(r[Constants.VALUE_COLUMN_NAME]))
+                    {
+                        ValueMultiplier = Convert.ToSingle(r[Constants.VALUE_COLUMN_NAME], CultureInfo.InvariantCulture);
+                    }
+
+                    StockGroupValue += ((StockTypeAmount * ValueMultiplier) / Convert.ToSingle(this.m_STSimTransformer.AmountPerCell));
+                }
+
+                Multiplier *= map.GetFlowMultiplierByStock(
+                    StockGroupId, simulationCell.StratumId, simulationCell.SecondaryStratumId, 
+                    simulationCell.TertiaryStratumId, simulationCell.StateClassId, flowGroupId, 
+                    iteration, timestep, StockGroupValue);
+            }
+
+            return Multiplier;
         }
 
         private double GetFlowSpatialMultiplier(

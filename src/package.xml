@@ -1,604 +1,634 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <package name="stsimsf" displayName="Integrates stocks and flows into the ST-Sim simulation model" version="3.3.12"  isAddOn="True" extendsPackage="stsim" url="https://apexrms.github.io/stsimsf/">
-  <transformers>
-    <transformer name="Primary" displayName="Stocks and Flows" className="SyncroSim.STSimStockFlow.StockFlowTransformer" classAssembly="SyncroSim.STSimStockFlow" isPrimary="True" extendsTransformer="stsim_Runtime">
-      <datafeeds>
-        <datafeed name="StockType" displayName="Stock Type" dataScope="Project">
-          <datasheets>
-            <datasheet name="StockType" displayName="Stock Type" valueMember="StockTypeID" displayMember="Name" className="SyncroSim.STSimStockFlow.StockTypeDataSheet" classAssembly="SyncroSim.STSimStockFlow">
-              <columns>
-                <column name="StockTypeID" dataType="Integer" isPrimary="True"/>
-                <column name="ProjectID" dataType="Integer"/>
-                <column name="Name" dataType="String"/>
-                <column name="Description" dataType="String" isOptional="True"/>
-              </columns>
-            </datasheet>
-          </datasheets>
-        </datafeed>
-        <datafeed name="StockGroup" displayName="Stock Group" dataScope="Project">
-          <datasheets>
-            <datasheet name="StockGroup" displayName="Stock Group" valueMember="StockGroupID" displayMember="Name" className="SyncroSim.STSimStockFlow.StockGroupDataSheet" classAssembly="SyncroSim.STSimStockFlow" filter="IsAuto IS NULL OR IsAuto=0">
-              <columns>
-                <column name="StockGroupID" dataType="Integer" isPrimary="True"/>
-                <column name="ProjectID" dataType="Integer"/>
-                <column name="Name" dataType="String"/>
-                <column name="Description" dataType="String" isOptional="True"/>
-                <column name="Units" dataType="String" isOptional="True"/>
-                <column name="IsAuto" dataType="Boolean" isVisible="False"/>
-              </columns>
-            </datasheet>
-          </datasheets>
-        </datafeed>
-        <datafeed name="FlowType" displayName="Flow Type" dataScope="Project">
-          <datasheets>
-            <datasheet name="FlowType" displayName="Flow Type" valueMember="FlowTypeID" displayMember="Name" className="SyncroSim.STSimStockFlow.FlowTypeDataSheet" classAssembly="SyncroSim.STSimStockFlow">
-              <columns>
-                <column name="FlowTypeID" dataType="Integer" isPrimary="True"/>
-                <column name="ProjectID" dataType="Integer"/>
-                <column name="Name" dataType="String"/>
-                <column name="Description" dataType="String" isOptional="True"/>
-              </columns>
-            </datasheet>
-          </datasheets>
-        </datafeed>
-        <datafeed name="FlowGroup" displayName="Flow Group" dataScope="Project">
-          <datasheets>
-            <datasheet name="FlowGroup" displayName="Flow Group" valueMember="FlowGroupID" displayMember="Name" className="SyncroSim.STSimStockFlow.FlowGroupDataSheet" classAssembly="SyncroSim.STSimStockFlow" filter="IsAuto IS NULL OR IsAuto=0">
-              <columns>
-                <column name="FlowGroupID" dataType="Integer" isPrimary="True"/>
-                <column name="ProjectID" dataType="Integer"/>
-                <column name="Name" dataType="String"/>
-                <column name="Description" dataType="String" isOptional="True"/>
-                <column name="Units" dataType="String" isOptional="True"/>
-                <column name="IsAuto" dataType="Boolean" isVisible="False"/>
-              </columns>
-            </datasheet>
-          </datasheets>
-        </datafeed>
-        <datafeed name="FlowMultiplierType" displayName="Flow Multiplier Type" dataScope="Project">
-          <datasheets>
-            <datasheet name="FlowMultiplierType" displayName="Flow Multiplier Type" valueMember="FlowMultiplierTypeID" displayMember="Name">
-              <columns>
-                <column name="FlowMultiplierTypeID" dataType="Integer" isPrimary="True"/>
-                <column name="ProjectID" dataType="Integer"/>
-                <column name="Name" dataType="String"/>
-              </columns>
-            </datasheet>
-          </datasheets>
-        </datafeed>
-        <datafeed name="Terminology" dataScope="Project">
-          <datasheets>
-            <datasheet name="Terminology" isSingleRow="True">
-              <columns>
-                <column name="TerminologyID" dataType="Integer" isPrimary="True"/>
-                <column name="ProjectID" dataType="Integer"/>
-                <column name="StockUnits" dataType="String"/>
-              </columns>
-              <defaultRecords>
-                <record columns="StockUnits" values="tons"/>
-              </defaultRecords>
-            </datasheet>
-          </datasheets>
-        </datafeed>
-        <datafeed name="StockLimit" displayName="Stock Limits" dataScope="Scenario">
-          <datasheets>
-            <datasheet name="StockLimit" displayName="Stock Limits">
-              <columns>
-                <column name="StockLimitID" dataType="Integer" isPrimary="True"/>
-                <column name="ScenarioID" dataType="Integer"/>
-                <column name="Iteration" dataType="Integer" validationType="WholeNumber" validationCondition="Greater" formula1="0" isOptional="True" format="d"/>
-                <column name="Timestep" dataType="Integer" validationType="WholeNumber" validationCondition="GreaterEqual" formula1="0" isOptional="True" displayNameSource="stsim_Terminology" displayNameColumn="TimestepUnits" format="d"/>
-                <column name="StockTypeID" dataType="Integer" displayName="Stock Type" validationType="Datasheet" formula1="StockType" allowDbNull="False"/>
-                <column name="StratumID" dataType="Integer" displayName="Primary Stratum" validationType="Datasheet" formula1="stsim_Stratum" isOptional="True" displayNameSource="stsim_Terminology" displayNameColumn="PrimaryStratumLabel"/>
-                <column name="SecondaryStratumID" dataType="Integer" displayName="Secondary Stratum" validationType="Datasheet" formula1="stsim_SecondaryStratum" isOptional="True" displayNameSource="stsim_Terminology" displayNameColumn="SecondaryStratumLabel"/>
-                <column name="TertiaryStratumID" dataType="Integer" displayName="Tertiary Stratum" validationType="Datasheet" formula1="stsim_TertiaryStratum" isOptional="True" displayNameSource="stsim_Terminology" displayNameColumn="TertiaryStratumLabel"/>
-                <column name="StateClassID" dataType="Integer" displayName="State Class" validationType="Datasheet" formula1="stsim_StateClass" isOptional="True"/>
-                <column name="StockMinimum" dataType="Double" displayName="Stock Min" validationType="Decimal"/>
-                <column name="StockMaximum" dataType="Double" displayName="Stock Max" validationType="Decimal"/>
-              </columns>
-              <validations>
-                <validation validationType="LessEqual" columns="StockMinimum|StockMaximum"/>
-              </validations>
-            </datasheet>
-          </datasheets>
-        </datafeed>
-        <datafeed name="FlowOrder" displayName="Flow Order" dataScope="Scenario">
-          <datasheets>
-            <datasheet name="FlowOrder" displayName="Flow Order">
-              <columns>
-                <column name="FlowOrderID" dataType="Integer" isPrimary="True"/>
-                <column name="ScenarioID" dataType="Integer"/>
-                <column name="Iteration" dataType="Integer" validationType="WholeNumber" validationCondition="Greater" formula1="0" isOptional="True" format="d"/>
-                <column name="Timestep" dataType="Integer" validationType="WholeNumber" validationCondition="GreaterEqual" formula1="0" isOptional="True" displayNameSource="stsim_Terminology" displayNameColumn="TimestepUnits" format="d"/>
-                <column name="FlowTypeID" dataType="Integer" displayName="Flow Type" validationType="Datasheet" formula1="FlowType" allowDbNull="False"/>
-                <column name="Order" dataType="Double" displayName="Order" validationType="Decimal"/>
-              </columns>
-              <validations>
-              </validations>
-            </datasheet>
-            <datasheet name="FlowOrderOptions" displayName="Apply Flow Order" isSingleRow="True">
-              <columns>
-                <column name="FlowOrderOptionsID" dataType="Integer" isPrimary="True"/>
-                <column name="ScenarioID" dataType="Integer"/>
-                <column name="ApplyBeforeTransitions" dataType="Boolean" displayName="Apply Before Transitions"/>
-                <column name="ApplyEquallyRankedSimultaneously" dataType="Boolean" displayName="Apply equally ranked flows simultaneously"/>
-              </columns>
-              <validations>
-              </validations>
-            </datasheet>
-          </datasheets>
-        </datafeed>
-        <datafeed name="FlowPathways" displayName="Flow Pathways" dataScope="Scenario">
-          <datasheets>
-            <datasheet name="FlowPathwayDiagram" displayName="Flow Pathway Diagram" className="SyncroSim.STSimStockFlow.FlowPathwayDiagramDataSheet" classAssembly="SyncroSim.STSimStockFlow" noRowLimit="True">
-              <columns>
-                <column name="FlowPathwayDiagramID" dataType="Integer" isPrimary="True"/>
-                <column name="ScenarioID" dataType="Integer"/>
-                <column name="StockTypeID" dataType="Integer" displayName="Stock Type" validationType="Datasheet" formula1="StockType" allowDbNull="False"/>
-                <column name="Location" dataType="String" columnAlignment="Center" allowDbNull="False"/>
-              </columns>
-              <validations>
-                <validation validationType="Unique" columns="StockTypeID"/>
-                <validation validationType="Unique" columns="Location"/>
-              </validations>
-            </datasheet>
-            <datasheet name="FlowPathway" displayName="Flow Pathways" className="SyncroSim.STSimStockFlow.FlowPathwayDataSheet" classAssembly="SyncroSim.STSimStockFlow" noRowLimit="True">
-              <columns>
-                <column name="FlowPathwayID" dataType="Integer" isPrimary="True"/>
-                <column name="ScenarioID" dataType="Integer" isCompositeIndex="True"/>
-                <column name="Iteration" dataType="Integer" validationType="WholeNumber" validationCondition="Greater" formula1="0" isOptional="True" format="d"/>
-                <column name="Timestep" dataType="Integer" validationType="WholeNumber" validationCondition="GreaterEqual" formula1="0" isOptional="True" displayNameSource="stsim_Terminology" displayNameColumn="TimestepUnits" format="d"/>
-                <column name="FromStratumID" dataType="Integer" displayName="From Stratum" validationType="Datasheet" formula1="stsim_Stratum" isOptional="True" displayNameSource="stsim_Terminology" displayNameColumn="PrimaryStratumLabel"/>
-                <column name="FromSecondaryStratumID" dataType="Integer" displayName="From Secondary Stratum" validationType="Datasheet" formula1="stsim_SecondaryStratum" isOptional="True" displayNameSource="stsim_Terminology" displayNameColumn="SecondaryStratumLabel"/>
-                <column name="FromTertiaryStratumID" dataType="Integer" displayName="From Tertiary Stratum" validationType="Datasheet" formula1="stsim_TertiaryStratum" isOptional="True" displayNameSource="stsim_Terminology" displayNameColumn="TertiaryStratumLabel"/>
-                <column name="FromStateClassID" dataType="Integer" displayName="From State Class" validationType="Datasheet" formula1="stsim_StateClass" isOptional="True"/>
-                <column name="FromAgeMin" dataType="Integer" displayName="From Min Age" validationType="WholeNumber" validationCondition="GreaterEqual" formula1="0" isOptional="True"/>
-                <column name="FromStockTypeID" dataType="Integer" displayName="From Stock Type" validationType="Datasheet" formula1="StockType"/>
-                <column name="ToStratumID" dataType="Integer" displayName="To Stratum" validationType="Datasheet" formula1="stsim_Stratum" isOptional="True" displayNameSource="stsim_Terminology" displayNameColumn="PrimaryStratumLabel"/>
-                <column name="ToStateClassID" dataType="Integer" displayName="To State Class" validationType="Datasheet" formula1="stsim_StateClass" isOptional="True"/>
-                <column name="ToAgeMin" dataType="Integer" displayName="To Min Age" validationType="WholeNumber" validationCondition="GreaterEqual" formula1="0" isOptional="True"/>
-                <column name="ToStockTypeID" dataType="Integer" displayName="To Stock Type" validationType="Datasheet" formula1="StockType"/>
-                <column name="TransitionGroupID" dataType="Integer" displayName="Transition Group" validationType="Datasheet" formula1="stsim_TransitionGroup" isOptional="True"/>
-                <column name="StateAttributeTypeID" dataType="Integer" displayName="State Attribute Type" validationType="Datasheet" formula1="stsim_StateAttributeType" isOptional="True"/>
-                <column name="FlowTypeID" dataType="Integer" displayName="Flow Type" validationType="Datasheet" formula1="FlowType" allowDbNull="False"/>
-                <column name="TargetType" dataType="Integer" displayName="Target Type" validationType="List" formula1="0:Flow|1:To Stock|2:From Stock" isOptional="True"/>
-                <column name="Multiplier" displayName="Multiplier" dataType="Double" validationType="Decimal" allowDbNull="False"/>
-                <column name="TransferToStratumID" dataType="Integer" displayName="Transfer To Stratum" validationType="Datasheet" formula1="stsim_Stratum" isOptional="True" displayNameSource="stsim_Terminology" displayNameColumn="PrimaryStratumLabel"/>
-                <column name="TransferToSecondaryStratumID" dataType="Integer" displayName="Transfer To Secondary Stratum" validationType="Datasheet" formula1="stsim_SecondaryStratum" isOptional="True" displayNameSource="stsim_Terminology" displayNameColumn="SecondaryStratumLabel"/>
-                <column name="TransferToTertiaryStratumID" dataType="Integer" displayName="Transfer To Tertiary Stratum" validationType="Datasheet" formula1="stsim_TertiaryStratum" isOptional="True" displayNameSource="stsim_Terminology" displayNameColumn="TertiaryStratumLabel"/>
-                <column name="TransferToStateClassID" dataType="Integer" displayName="Transfer To State Class" validationType="Datasheet" formula1="stsim_StateClass" isOptional="True"/>
-                <column name="TransferToAgeMin" dataType="Integer" displayName="Transfer To Min Age" validationType="WholeNumber" validationCondition="GreaterEqual" formula1="0" isOptional="True"/>
-            </columns>
-            </datasheet>
-          </datasheets>
-        </datafeed>
-        <datafeed name="InitialStocks" displayName="Initial Stocks" dataScope="Scenario">
-          <datasheets>
-            <datasheet name="InitialStockNonSpatial" displayName="Initial Stock - Non Spatial">
-              <columns>
-                <column name="InitialStockNonSpatialID" dataType="Integer" isPrimary="True"/>
-                <column name="ScenarioID" dataType="Integer"/>
-                <column name="StockTypeID" dataType="Integer" displayName="Stock Type" validationType="Datasheet" formula1="StockType" allowDbNull="False"/>
-                <column name="StateAttributeTypeID" displayName="State Attribute Type" dataType="Integer" validationType="Datasheet" formula1="stsim_StateAttributeType" allowDbNull="False"/>
-              </columns>
-              <validations>
-                <validation validationType="Unique" columns="StockTypeID"/>
-              </validations>
-            </datasheet>
-            <datasheet name="InitialStockSpatial" displayName="Initial Stock - Spatial">
-              <columns>
-                <column name="InitialStockSpatialID" dataType="Integer" isPrimary="True"/>
-                <column name="ScenarioID" dataType="Integer"/>
-                <column name="Iteration" dataType="Integer" validationType="WholeNumber" validationCondition="Greater" formula1="0" isOptional="True" format="d"/>
-                <column name="StockTypeID" dataType="Integer" displayName="Stock Type" validationType="Datasheet" formula1="StockType" allowDbNull="False"/>
-                <column name="RasterFileName" displayName="Raster File Name" dataType="String" allowDbNull="False" isExternalFile="True" isRaster="True"/>
-              </columns>
-              <validations>
-                <validation validationType="Unique" columns="Iteration|StockTypeID"/>
-              </validations>
-            </datasheet>
-          </datasheets>
-        </datafeed>
-        <datafeed name="StockGroupMembership" displayName="Stock Group Membership" dataScope="Scenario">
-          <datasheets>
-            <datasheet name="StockTypeGroupMembership" displayName="Stock Type-Group Membership">
-              <columns>
-                <column name="StockTypeGroupMembershipID" dataType="Integer" isPrimary="True"/>
-                <column name="ScenarioID" dataType="Integer"/>
-                <column name="StockTypeID" dataType="Integer" displayName="Stock Type" validationType="Datasheet" formula1="StockType" allowDbNull="False" isCompositeIndex="True"/>
-                <column name="StockGroupID" dataType="Integer" displayName="Stock Group" validationType="Datasheet" formula1="StockGroup" allowDbNull="False" isCompositeIndex="True"/>
-                <column name="Value" dataType="Double" isOptional="True" format="N8"/>
-              </columns>
-              <validations>
-                <validation validationType="Unique" columns="StockTypeID|StockGroupID"/>
-              </validations>
-            </datasheet>
-          </datasheets>
-        </datafeed>
-        <datafeed name="FlowGroupMembership" displayName="Flow Group Membership" dataScope="Scenario">
-          <datasheets>
-            <datasheet name="FlowTypeGroupMembership" displayName="Flow Type-Group Membership">
-              <columns>
-                <column name="FlowTypeGroupMembershipID" dataType="Integer" isPrimary="True"/>
-                <column name="ScenarioID" dataType="Integer"/>
-                <column name="FlowTypeID" dataType="Integer" displayName="Flow Type" validationType="Datasheet" formula1="FlowType" allowDbNull="False" isCompositeIndex="True"/>
-                <column name="FlowGroupID" dataType="Integer" displayName="Flow Group" validationType="Datasheet" formula1="FlowGroup" allowDbNull="False" isCompositeIndex="True"/>
-                <column name="Value" dataType="Double" isOptional="True" format="N8"/>
-              </columns>
-              <validations>
-                <validation validationType="Unique" columns="FlowTypeID|FlowGroupID"/>
-              </validations>
-            </datasheet>
-          </datasheets>
-        </datafeed>
-        <datafeed name="StockTransitionMultiplier" displayName="Stock Transition Multipliers" dataScope="Scenario">
-          <datasheets>
-            <datasheet name="StockTransitionMultiplier" displayName="Stock Transition Multipliers">
-              <columns>
-                <column name="StockTransitionMultiplierID" dataType="Integer" isPrimary="True"/>
-                <column name="ScenarioID" dataType="Integer" isCompositeIndex="True"/>
-                <column name="Iteration" dataType="Integer" validationType="WholeNumber" validationCondition="Greater" formula1="0" isOptional="True" format="d"/>
-                <column name="Timestep" dataType="Integer" validationType="WholeNumber" validationCondition="GreaterEqual" formula1="0" isOptional="True" displayNameSource="stsim_Terminology" displayNameColumn="TimestepUnits" format="d"/>
-                <column name="StratumID" dataType="Integer" displayName="Stratum" validationType="Datasheet" formula1="stsim_Stratum" isOptional="True" displayNameSource="stsim_Terminology" displayNameColumn="PrimaryStratumLabel"/>
-                <column name="SecondaryStratumID" dataType="Integer" displayName="Secondary Stratum" validationType="Datasheet" formula1="stsim_SecondaryStratum" isOptional="True" displayNameSource="stsim_Terminology" displayNameColumn="SecondaryStratumLabel"/>
-                <column name="TertiaryStratumID" dataType="Integer" displayName="Tertiary Stratum" validationType="Datasheet" formula1="stsim_TertiaryStratum" isOptional="True" displayNameSource="stsim_Terminology" displayNameColumn="TertiaryStratumLabel"/>
-                <column name="StateClassID" dataType="Integer" displayName="State Class" validationType="Datasheet" formula1="stsim_StateClass" isOptional="True"/>
-                <column name="TransitionGroupID" dataType="Integer" displayName="Transition Group" validationType="Datasheet" formula1="stsim_TransitionGroup" allowDbNull="False"/>
-                <column name="StockGroupID" dataType="Integer" displayName="Stock Type/Group" validationType="Datasheet" formula1="StockGroup" allowDbNull="False"/>
-                <column name="StockValue" dataType="Double" displayName="Stock Density" validationType="Decimal" validationCondition="GreaterEqual" formula1="0.0" allowDbNull="False"/>
-                <column name="Multiplier" dataType="Double" displayName="Multiplier" validationType="Decimal" validationCondition="GreaterEqual" formula1="0.0"/>
-                <column name="DistributionType" displayName="Multiplier Distribution" dataType="Integer" validationType="Datasheet" formula1="corestime_DistributionType" isOptional="True"/>
-                <column name="DistributionFrequencyID" displayName="Multiplier Sampling Frequency" dataType="Integer" validationType="List" formula1="0:Always|1:Iteration Only|2:Iteration and Timestep" isOptional="True"/>
-                <column name="DistributionSD" displayName="Multiplier SD" dataType="Double" validationType="Decimal" validationCondition="GreaterEqual" formula1="0.0" isOptional="True"/>
-                <column name="DistributionMin" displayName="Multiplier Min" dataType="Double" validationType="Decimal" validationCondition="GreaterEqual" formula1="0.0" isOptional="True"/>
-                <column name="DistributionMax" displayName="Multiplier Max" dataType="Double" validationType="Decimal" validationCondition="GreaterEqual" formula1="0.0" isOptional="True"/>
-              </columns>
-              <validations>
-                <validation validationType="LessEqual" columns="DistributionMin|DistributionMax"/>
-              </validations>
-            </datasheet>
-          </datasheets>
-        </datafeed>
-        <datafeed name="FlowMultiplier" displayName="Flow Multipliers" dataScope="Scenario">
-          <datasheets>
-            <datasheet name="FlowMultiplier" displayName="Flow Multipliers">
-              <columns>
-                <column name="FlowMultiplierID" dataType="Integer" isPrimary="True"/>
-                <column name="ScenarioID" dataType="Integer" isCompositeIndex="True"/>
-                <column name="Iteration" dataType="Integer" validationType="WholeNumber" validationCondition="Greater" formula1="0" isOptional="True" format="d"/>
-                <column name="Timestep" dataType="Integer" validationType="WholeNumber" validationCondition="GreaterEqual" formula1="0" isOptional="True" displayNameSource="stsim_Terminology" displayNameColumn="TimestepUnits" format="d"/>
-                <column name="StratumID" dataType="Integer" displayName="Stratum" validationType="Datasheet" formula1="stsim_Stratum" isOptional="True" displayNameSource="stsim_Terminology" displayNameColumn="PrimaryStratumLabel"/>
-                <column name="SecondaryStratumID" dataType="Integer" displayName="Secondary Stratum" validationType="Datasheet" formula1="stsim_SecondaryStratum" isOptional="True" displayNameSource="stsim_Terminology" displayNameColumn="SecondaryStratumLabel"/>
-                <column name="TertiaryStratumID" dataType="Integer" displayName="Tertiary Stratum" validationType="Datasheet" formula1="stsim_TertiaryStratum" isOptional="True" displayNameSource="stsim_Terminology" displayNameColumn="TertiaryStratumLabel"/>
-                <column name="StateClassID" dataType="Integer" displayName="State Class" validationType="Datasheet" formula1="stsim_StateClass" isOptional="True"/>
-                <column name="AgeMin" displayName="Age Min" dataType="Integer" isOptional="True" validationType="WholeNumber" validationCondition="GreaterEqual" formula1="0"/>
-                <column name="AgeMax" displayName="Age Max" dataType="Integer" isOptional="True" validationType="WholeNumber" validationCondition="GreaterEqual" formula1="0"/>
-                <column name="FlowGroupID" dataType="Integer" displayName="Flow Type/Group" validationType="Datasheet" formula1="FlowGroup" allowDbNull="False"/>
-                <column name="FlowMultiplierTypeID" dataType="Integer" displayName="Flow Multiplier Type" validationType="Datasheet" formula1="FlowMultiplierType" isOptional="True"/>
-                <column name="Value" displayName="Multiplier" dataType="Double" validationType="Decimal"/>
-                <column name="DistributionType" displayName="Multiplier Distribution" dataType="Integer" validationType="Datasheet" formula1="corestime_DistributionType" isOptional="True"/>
-                <column name="DistributionFrequencyID" displayName="Multiplier Sampling Frequency" dataType="Integer" validationType="List" formula1="0:Always|1:Iteration Only|2:Iteration and Timestep" isOptional="True"/>
-                <column name="DistributionSD" displayName="Multiplier SD" dataType="Double" validationType="Decimal" validationCondition="GreaterEqual" formula1="0.0" isOptional="True"/>
-                <column name="DistributionMin" displayName="Multiplier Min" dataType="Double" validationType="Decimal" isOptional="True"/>
-                <column name="DistributionMax" displayName="Multiplier Max" dataType="Double" validationType="Decimal" isOptional="True"/>
-              </columns>
-              <validations>
-                <validation validationType="LessEqual" columns="AgeMin|AgeMax"/>
-                <validation validationType="LessEqual" columns="DistributionMin|DistributionMax"/>
-              </validations>
-            </datasheet>
-          </datasheets>
-        </datafeed>
-        <datafeed name="FlowSpatialMultiplier" displayName="Flow Spatial Multipliers" dataScope="Scenario">
-          <datasheets>
-            <datasheet name="FlowSpatialMultiplier" displayName="Flow Spatial Multipliers">
-              <columns>
-                <column name="FlowSpatialMultiplierID" dataType="Integer" isPrimary="True"/>
-                <column name="ScenarioID" dataType="Integer"/>
-                <column name="Iteration" dataType="Integer" validationType="WholeNumber" validationCondition="Greater" formula1="0" isOptional="True" format="d"/>
-                <column name="Timestep" dataType="Integer" validationType="WholeNumber" validationCondition="GreaterEqual" formula1="0" isOptional="True" displayNameSource="stsim_Terminology" displayNameColumn="TimestepUnits" format="d"/>
-                <column name="FlowGroupID" dataType="Integer" displayName="Flow Type/Group" validationType="Datasheet" formula1="FlowGroup" allowDbNull="False"/>
-                <column name="FlowMultiplierTypeID" dataType="Integer" displayName="Flow Multiplier Type" validationType="Datasheet" formula1="FlowMultiplierType" isOptional="True"/>
-                <column name="MultiplierFileName" displayName="Multiplier File Name" dataType="String" isExternalFile="True" allowDbNull="False" isRaster="True" externalFileFilter="GeoTIFF Files|*.tif|All Files|*.*"/>
-              </columns>
-            </datasheet>
-          </datasheets>
-        </datafeed>
-        <datafeed name="FlowLateralMultiplier" displayName="Flow Lateral Multipliers" dataScope="Scenario">
-          <datasheets>
-            <datasheet name="FlowLateralMultiplier" displayName="Flow Lateral Multipliers">
-              <columns>
-                <column name="FlowLateralMultiplierID" dataType="Integer" isPrimary="True"/>
-                <column name="ScenarioID" dataType="Integer"/>
-                <column name="Iteration" dataType="Integer" validationType="WholeNumber" validationCondition="Greater" formula1="0" isOptional="True" format="d"/>
-                <column name="Timestep" dataType="Integer" validationType="WholeNumber" validationCondition="GreaterEqual" formula1="0" isOptional="True" displayNameSource="stsim_Terminology" displayNameColumn="TimestepUnits" format="d"/>
-                <column name="FlowGroupID" dataType="Integer" displayName="Flow Type/Group" validationType="Datasheet" formula1="FlowGroup" allowDbNull="False"/>
-                <column name="FlowMultiplierTypeID" dataType="Integer" displayName="Flow Multiplier Type" validationType="Datasheet" formula1="FlowMultiplierType" isOptional="True"/>
-                <column name="MultiplierFileName" displayName="Multiplier File Name" dataType="String" isExternalFile="True" allowDbNull="False" isRaster="True" externalFileFilter="GeoTIFF Files|*.tif|All Files|*.*"/>
-              </columns>
-            </datasheet>
-          </datasheets>
-        </datafeed>
-        <datafeed name="OutputOptions" displayName="Tabular and Spatial" dataScope="Scenario">
-          <datasheets>
-            <datasheet name="OutputOptions" displayName="SF Output Options" isSingleRow="True">
-              <columns>
-                <column name="OutputOptionsID" dataType="Integer" isPrimary="True"/>
-                <column name="ScenarioID" dataType="Integer"/>
-                <column name="SummaryOutputST" dataType="Boolean"/>
-                <column name="SummaryOutputSTTimesteps" dataType="Integer" validationType="WholeNumber" validationCondition="GreaterEqual" formula1="0" format="d"/>
-                <column name="SummaryOutputFL" dataType="Boolean"/>
-                <column name="SummaryOutputFLTimesteps" dataType="Integer" validationType="WholeNumber" validationCondition="GreaterEqual" formula1="0" format="d"/>
-                <column name="SpatialOutputST" dataType="Boolean"/>
-                <column name="SpatialOutputSTTimesteps" dataType="Integer" validationType="WholeNumber" validationCondition="GreaterEqual" formula1="0" format="d"/>
-                <column name="SpatialOutputFL" dataType="Boolean"/>
-                <column name="SpatialOutputFLTimesteps" dataType="Integer" validationType="WholeNumber" validationCondition="GreaterEqual" formula1="0" format="d"/>
-                <column name="LateralOutputFL" dataType="Boolean"/>
-                <column name="LateralOutputFLTimesteps" dataType="Integer" validationType="WholeNumber" validationCondition="GreaterEqual" formula1="0" format="d"/>
-                <column name="AvgSpatialOutputST" dataType="Boolean"/>
-                <column name="AvgSpatialOutputSTTimesteps" dataType="Integer" validationType="WholeNumber" validationCondition="GreaterEqual" formula1="0" format="d"/>
-                <column name="AvgSpatialOutputSTAcrossTimesteps" dataType="Boolean"/>
-                <column name="AvgSpatialOutputFL" dataType="Boolean"/>
-                <column name="AvgSpatialOutputFLTimesteps" dataType="Integer" validationType="WholeNumber" validationCondition="GreaterEqual" formula1="0" format="d"/>
-                <column name="AvgSpatialOutputFLAcrossTimesteps" dataType="Boolean"/>
-                <column name="AvgSpatialOutputLFL" dataType="Boolean"/>
-                <column name="AvgSpatialOutputLFLTimesteps" dataType="Integer" validationType="WholeNumber" validationCondition="GreaterEqual" formula1="0" format="d"/>
-                <column name="AvgSpatialOutputLFLAcrossTimesteps" dataType="Boolean"/>                
-              </columns>
-            </datasheet>
-          </datasheets>
-        </datafeed>
-        <datafeed name="OutputFilterStocks" displayName="Filter Stock Output" dataScope="Scenario">
-          <datasheets>
-            <datasheet name="OutputFilterStocks" displayName="Filter Stock Output">
-              <columns>
-                <column name="OutputFilterStocksID" dataType="Integer" isPrimary="True"/>
-                <column name="ScenarioID" dataType="Integer"/>
-                <column name="StockGroupID" dataType="Integer" displayName="Stock Type/Group" validationType="Datasheet" formula1="StockGroup" allowDbNull="False"/>
-                <column name="Summary" displayName="Summary" dataType="Boolean"/>
-                <column name="Spatial" displayName="Spatial" dataType="Boolean"/>
-                <column name="AvgSpatial" displayName="Average Spatial" dataType="Boolean"/> 
-              </columns>
-              <validations>
-                <validation validationType="Unique" columns="StockGroupID"/>
-              </validations>
-            </datasheet>
-          </datasheets>
-        </datafeed>
-        <datafeed name="OutputFilterFlows" displayName="Filter Flow Output" dataScope="Scenario">
-          <datasheets>
-            <datasheet name="OutputFilterFlows" displayName="Filter Flow Output">
-              <columns>
-                <column name="OutputFilterFlowsID" dataType="Integer" isPrimary="True"/>
-                <column name="ScenarioID" dataType="Integer"/>
-                <column name="FlowGroupID" dataType="Integer" displayName="Flow Type/Group" validationType="Datasheet" formula1="FlowGroup" allowDbNull="False"/>
-                <column name="Summary" displayName="Summary" dataType="Boolean"/>
-                <column name="Spatial" displayName="Spatial" dataType="Boolean"/>
-                <column name="AvgSpatial" displayName="Average Spatial" dataType="Boolean"/>
-              </columns>
-              <validations>
-                <validation validationType="Unique" columns="FlowGroupID"/>
-              </validations>
-            </datasheet>
-          </datasheets>
-        </datafeed>                  
-        <datafeed name="OutputStock" dataScope="Scenario" isOutput="True">
-          <datasheets>
-            <datasheet name="OutputStock" displayName="Output Stock Group" spatialMultiProcessing="True" sumColumnNames="Amount">
-              <columns>
-                <column name="ScenarioID" dataType="Integer" isCompositeIndex="True"/>
-                <column name="Iteration" dataType="Integer" isCompositeIndex="True" format="d"/>
-                <column name="Timestep" dataType="Integer" isCompositeIndex="True" format="d"/>
-                <column name="StratumID" displayName="Stratum" dataType="Integer" validationType="Datasheet" formula1="stsim_Stratum" allowDbNull="False" displayNameSource="stsim_Terminology" displayNameColumn="PrimaryStratumLabel" isCompositeIndex="True"/>
-                <column name="SecondaryStratumID" displayName="Secondary Stratum" dataType="Integer" validationType="Datasheet" formula1="stsim_SecondaryStratum" allowDbNull="True" displayNameSource="stsim_Terminology" displayNameColumn="SecondaryStratumLabel" isCompositeIndex="True"/>
-                <column name="TertiaryStratumID" dataType="Integer" displayName="Tertiary Stratum" validationType="Datasheet" formula1="stsim_TertiaryStratum" isOptional="True" displayNameSource="stsim_Terminology" displayNameColumn="TertiaryStratumLabel" isCompositeIndex="True"/>
-                <column name="StateClassID" dataType="Integer" displayName="State Class" validationType="Datasheet" formula1="stsim_StateClass" allowDbNull="False" isCompositeIndex="True"/>
-                <column name="StockGroupID" dataType="Integer" displayName="Stock Type/Group" validationType="Datasheet" formula1="StockGroup" allowDbNull="False" isCompositeIndex="True"/>
-                <column name="Amount" dataType="Double"/>
-              </columns>
-            </datasheet>
-          </datasheets>
-        </datafeed>
-        <datafeed name="OutputFlow" dataScope="Scenario" isOutput="True">
-          <datasheets>
-            <datasheet name="OutputFlow" displayName="Output Flow Group" className="SyncroSim.STSimStockFlow.OutputFlowDataSheet" classAssembly="SyncroSim.STSimStockFlow" spatialMultiProcessing="True" sumColumnNames="Amount">
-              <columns>
-                <column name="ScenarioID" dataType="Integer" isCompositeIndex="True"/>
-                <column name="Iteration" dataType="Integer" isCompositeIndex="True" format="d"/>
-                <column name="Timestep" dataType="Integer" isCompositeIndex="True" format="d"/>
-                <column name="FromStratumID" displayName="From Stratum" dataType="Integer" validationType="Datasheet" formula1="stsim_Stratum" allowDbNull="False" isCompositeIndex="True"/>
-                <column name="FromSecondaryStratumID" displayName="From Secondary Stratum" dataType="Integer" validationType="Datasheet" formula1="stsim_SecondaryStratum" allowDbNull="True" isCompositeIndex="True"/>
-                <column name="FromTertiaryStratumID" dataType="Integer" displayName="From Tertiary Stratum" validationType="Datasheet" formula1="stsim_TertiaryStratum" isOptional="True" displayNameSource="stsim_Terminology" displayNameColumn="TertiaryStratumLabel" isCompositeIndex="True"/>
-                <column name="FromStateClassID" dataType="Integer" displayName="From State Class" validationType="Datasheet" formula1="stsim_StateClass" allowDbNull="False" isCompositeIndex="True"/>
-                <column name="FromStockTypeID" dataType="Integer" displayName="From Stock Type" validationType="Datasheet" formula1="StockType" allowDbNull="False" isCompositeIndex="True"/>
-                <column name="TransitionTypeID" dataType="Integer" displayName="From Transition Type" validationType="Datasheet" formula1="stsim_TransitionType" allowDbNull="True" isCompositeIndex="True"/>
-                <column name="ToStratumID" displayName="To Stratum" dataType="Integer" validationType="Datasheet" formula1="stsim_Stratum" allowDbNull="False" isCompositeIndex="True"/>
-                <column name="ToStateClassID" dataType="Integer" displayName="To State Class" validationType="Datasheet" formula1="stsim_StateClass" allowDbNull="False" isCompositeIndex="True"/>
-                <column name="ToStockTypeID" dataType="Integer" displayName="To Stock Type" validationType="Datasheet" formula1="StockType" allowDbNull="False" isCompositeIndex="True"/>
-                <column name="FlowGroupID" dataType="Integer" displayName="Flow Type/Group" validationType="Datasheet" formula1="FlowGroup" allowDbNull="False" isCompositeIndex="True"/>
-                <column name="Amount" dataType="Double"/>
-                <column name="EndStratumID" displayName="End Stratum" dataType="Integer" validationType="Datasheet" formula1="stsim_Stratum" isCompositeIndex="True"/>
-                <column name="EndSecondaryStratumID" displayName="End Secondary Stratum" dataType="Integer" validationType="Datasheet" formula1="stsim_SecondaryStratum" isCompositeIndex="True"/>
-                <column name="EndTertiaryStratumID" dataType="Integer" displayName="End Tertiary Stratum" validationType="Datasheet" formula1="stsim_TertiaryStratum" isOptional="True" displayNameSource="stsim_Terminology" displayNameColumn="TertiaryStratumLabel" isCompositeIndex="True"/>
-                <column name="EndStateClassID" dataType="Integer" displayName="End State Class" validationType="Datasheet" formula1="stsim_StateClass" isCompositeIndex="True"/>
-                <column name="EndMinAge" dataType="Integer" displayName="End Min Age" isCompositeIndex="True"/>
-              </columns>
-            </datasheet>
-          </datasheets>
-        </datafeed>
-        <datafeed name="OutputSpatialStockGroup" displayName="Output Spatial Stock Group" dataScope="Scenario" isOutput="True" >
-          <datasheets>
-            <datasheet name="OutputSpatialStockGroup" displayName="Output Spatial Stock Group" spatialMultiProcessing="True">
-              <columns>
-                <column name="ScenarioID" dataType="Integer" />
-                <column name="Iteration" dataType="Integer" format="d"/>
-                <column name="Timestep" dataType="Integer" displayNameSource="stsim_Terminology" displayNameColumn="TimestepUnits" format="d"/>
-                <column name="StockGroupID" dataType="Integer" displayName="Stock Type/Group" validationType="Datasheet" formula1="StockGroup" allowDbNull="False"/>
-                <column name="Filename" displayName="Stock Group Map" dataType="String" allowDbNull="False" isExternalFile="True" isRaster="True" bandColumn="Band" bandFilterColumn="StockGroupID" filenameCode="stkg"/>
-                <column name="Band" displayName="Band" dataType="Integer" allowDbNull="True"/>
-              </columns>
-            </datasheet>
-          </datasheets>
-        </datafeed>
-        <datafeed name="OutputSpatialFlowGroup" displayName="Output Spatial Flow Group" dataScope="Scenario" isOutput="True" >
-          <datasheets>
-            <datasheet name="OutputSpatialFlowGroup" displayName="Output Spatial Flow Group" spatialMultiProcessing="True">
-              <columns>
-                <column name="ScenarioID" dataType="Integer" />
-                <column name="Iteration" dataType="Integer" format="d"/>
-                <column name="Timestep" dataType="Integer" displayNameSource="stsim_Terminology" displayNameColumn="TimestepUnits" format="d"/>
-                <column name="FlowGroupID" dataType="Integer" displayName="Flow Type/Group" validationType="Datasheet" formula1="FlowGroup" allowDbNull="False"/>
-                <column name="Filename" displayName="Flow Group Map" dataType="String" allowDbNull="False" isExternalFile="True" isRaster="True" bandColumn="Band" bandFilterColumn="FlowGroupID" filenameCode="flog"/>
-                <column name="Band" displayName="Band" dataType="Integer" allowDbNull="True"/>
-              </columns>
-            </datasheet>
-          </datasheets>
-        </datafeed>
-        <datafeed name="OutputLateralFlowGroup" displayName="Output Lateral Flow Group" dataScope="Scenario" isOutput="True" >
-          <datasheets>
-            <datasheet name="OutputLateralFlowGroup" displayName="Output Lateral Flow Group" spatialMultiProcessing="True">
-              <columns>
-                <column name="ScenarioID" dataType="Integer" />
-                <column name="Iteration" dataType="Integer" format="d"/>
-                <column name="Timestep" dataType="Integer" displayNameSource="stsim_Terminology" displayNameColumn="TimestepUnits" format="d"/>
-                <column name="FlowGroupID" dataType="Integer" displayName="Flow Type/Group" validationType="Datasheet" formula1="FlowGroup" allowDbNull="False"/>
-                <column name="Filename" displayName="Flow Group Map" dataType="String" allowDbNull="False" isExternalFile="True" isRaster="True" bandColumn="Band" bandFilterColumn="FlowGroupID" filenameCode="lflog"/>
-                <column name="Band" displayName="Band" dataType="Integer" allowDbNull="True"/>
-              </columns>
-            </datasheet>
-          </datasheets>
-        </datafeed>
-        <datafeed name="OutputAverageSpatialStockGroup" displayName="Output Average Spatial Stock Group" dataScope="Scenario" isOutput="True" >
-          <datasheets>
-            <datasheet name="OutputAverageSpatialStockGroup" displayName="Output Average Spatial Stock Group" spatialMultiProcessing="True">
-              <columns>
-                <column name="ScenarioID" dataType="Integer" />
-                <column name="Iteration" dataType="Integer" format="d"/>
-                <column name="Timestep" dataType="Integer" displayNameSource="stsim_Terminology" displayNameColumn="TimestepUnits" format="d"/>
-                <column name="StockGroupID" dataType="Integer" displayName="Stock Group" validationType="Datasheet" formula1="StockGroup" allowDbNull="False"/>
-                <column name="Filename" displayName="Average Spatial Stock Group Map" dataType="String" allowDbNull="False" isExternalFile="True" isRaster="True" bandColumn="Band" bandFilterColumn="StockGroupID" filenameCode="avgstkg" />
-                <column name="Band" displayName="Band" dataType="Integer" allowDbNull="True" isOptional="True"/>
-              </columns>
-            </datasheet>
-          </datasheets>
-        </datafeed>        
-        <datafeed name="OutputAverageSpatialFlowGroup" displayName="Output Average Spatial Flow Group" dataScope="Scenario" isOutput="True" >
-          <datasheets>
-            <datasheet name="OutputAverageSpatialFlowGroup" displayName="Output Average Spatial Flow Group" spatialMultiProcessing="True">
-              <columns>
-                <column name="ScenarioID" dataType="Integer" />
-                <column name="Iteration" dataType="Integer" format="d"/>
-                <column name="Timestep" dataType="Integer" displayNameSource="stsim_Terminology" displayNameColumn="TimestepUnits" format="d"/>
-                <column name="FlowGroupID" dataType="Integer" displayName="Flow Group" validationType="Datasheet" formula1="FlowGroup" allowDbNull="False"/>
-                <column name="Filename" displayName="Average Spatial Flow Group Map" dataType="String" allowDbNull="False" isExternalFile="True" isRaster="True" bandColumn="Band" bandFilterColumn="FlowGroupID" filenameCode="avgflog" />
-                <column name="Band" displayName="Band" dataType="Integer" allowDbNull="True" isOptional="True"/>
-              </columns>
-            </datasheet>
-          </datasheets>
-        </datafeed>  
-        <datafeed name="OutputAverageLateralFlowGroup" displayName="Output Average Lateral Flow Group" dataScope="Scenario" isOutput="True" >
-          <datasheets>
-            <datasheet name="OutputAverageLateralFlowGroup" displayName="Output Average Lateral Flow Group" spatialMultiProcessing="True">
-              <columns>
-                <column name="ScenarioID" dataType="Integer" />
-                <column name="Iteration" dataType="Integer" format="d"/>
-                <column name="Timestep" dataType="Integer" displayNameSource="stsim_Terminology" displayNameColumn="TimestepUnits" format="d"/>
-                <column name="FlowGroupID" dataType="Integer" displayName="Flow Group" validationType="Datasheet" formula1="FlowGroup" allowDbNull="False"/>
-                <column name="Filename" displayName="Average Lateral Flow Group Map" dataType="String" allowDbNull="False" isExternalFile="True" isRaster="True" bandColumn="Band" bandFilterColumn="FlowGroupID" filenameCode="avglflog" />
-                <column name="Band" displayName="Band" dataType="Integer" allowDbNull="True" isOptional="True"/>
-              </columns>
-            </datasheet>
-          </datasheets>
-        </datafeed>       
-      </datafeeds>
-    </transformer>
-    <transformer name="SummaryStockReport" displayName="Stocks" className="SyncroSim.STSimStockFlow.SummaryStockReport" classAssembly="SyncroSim.STSimStockFlow">
-    </transformer>
-    <transformer name="SummaryFlowReport" displayName="Flows" className="SyncroSim.STSimStockFlow.SummaryFlowReport" classAssembly="SyncroSim.STSimStockFlow">
-    </transformer>
-    <transformer name="StockRasterMap" displayName="Stock Groups" className="SyncroSim.StochasticTime.Forms.StochasticTimeExportTransformer" classAssembly="SyncroSim.StochasticTime.Forms" dataSheet="OutputSpatialStockGroup" column="Filename" isFolderExport="True">
-    </transformer>
-    <transformer name="FlowRasterMap" displayName="Flow Groups" className="SyncroSim.StochasticTime.Forms.StochasticTimeExportTransformer" classAssembly="SyncroSim.StochasticTime.Forms" dataSheet="OutputSpatialFlowGroup" column="Filename" isFolderExport="True">
-    </transformer>
-    <transformer name="LateralFlowRasterMap" displayName="Lateral Flow Groups" className="SyncroSim.StochasticTime.Forms.StochasticTimeExportTransformer" classAssembly="SyncroSim.StochasticTime.Forms" dataSheet="OutputLateralFlowGroup" column="Filename" isFolderExport="True">
-    </transformer>  
-    <transformer name="AvgStockRasterMap" displayName="Average Stock Groups" className="SyncroSim.StochasticTime.Forms.StochasticTimeExportTransformer" classAssembly="SyncroSim.StochasticTime.Forms" dataSheet="OutputAverageSpatialStockGroup" column="Filename" isFolderExport="True">
-    </transformer>
-    <transformer name="AvgFlowRasterMap" displayName="Average Flow Groups" className="SyncroSim.StochasticTime.Forms.StochasticTimeExportTransformer" classAssembly="SyncroSim.StochasticTime.Forms" dataSheet="OutputAverageSpatialFlowGroup" column="Filename" isFolderExport="True">
-    </transformer>  
-    <transformer name="AvgLateralFlowRasterMap" displayName="Average Lateral Flow Groups" className="SyncroSim.StochasticTime.Forms.StochasticTimeExportTransformer" classAssembly="SyncroSim.StochasticTime.Forms" dataSheet="OutputAverageSpatialLateralFlowGroup" column="Filename" isFolderExport="True">
-    </transformer>     
-  </transformers>
-  <views>
-    <view name="FlowOrderDatafeedView" target="FlowOrder" className="SyncroSim.STSimStockFlow.FlowOrderDataFeedView" classAssembly="SyncroSim.STSimStockFlow"/>
-    <view name="FlowPathwayDatafeedView" target="FlowPathways" className="SyncroSim.STSimStockFlow.FlowPathwayDataFeedView" classAssembly="SyncroSim.STSimStockFlow"/>
-    <view name="InitialStocksDatafeedView" target="InitialStocks" className="SyncroSim.STSimStockFlow.InitialStocksDataFeedView" classAssembly="SyncroSim.STSimStockFlow"/>
-    <view name="OutputOptionsDatafeedView" target="OutputOptions" className="SyncroSim.STSimStockFlow.OutputOptionsDataFeedView" classAssembly="SyncroSim.STSimStockFlow"/>
-  </views>
-  <layouts>
-    <layout
-      name="coreforms_ResultTransformers"
-      className="SyncroSim.STSimStockFlow.ResultLayoutProvider"
-      classAssembly="SyncroSim.STSimStockFlow">
-    </layout>
-    <layout name ="coreforms_ProjectDatafeeds" appendTo="stsim_Advanced">
-      <group name="StocksAndFlowsGroup" displayName="Stocks and Flows">
-        <item name="StockType"/>
-        <item name="StockGroup"/>
-        <item name="FlowType"/>
-        <item name="FlowGroup"/>
-        <item name="FlowMultiplierType"/>
-        <item name="Terminology"/>
-      </group>
-    </layout>
-    <layout name="coreforms_ScenarioDatafeeds" appendTo="stsim_Advanced">
-      <group name="StocksAndFlowsGroup" displayName="Stocks and Flows">
-        <item name="FlowPathways"/>       
-        <item name="InitialStocks"/>
-        <group name="Output" displayName="Output Options">
-			      <item name="OutputOptions" displayName="Tabular and Spatial"/>
-		        <group name="OutputFilters" displayName="Output Filters">
-                    <item name="OutputFilterStocks" displayName="Stocks"/>
-                    <item name="OutputFilterFlows" displayName="Flows"/>          
-            </group>
+	<transformers>
+		<transformer name="Primary" displayName="Stocks and Flows" className="SyncroSim.STSimStockFlow.StockFlowTransformer" classAssembly="SyncroSim.STSimStockFlow" isPrimary="True" extendsTransformer="stsim_Runtime">
+			<datafeeds>
+				<datafeed name="StockType" displayName="Stock Type" dataScope="Project">
+					<datasheets>
+						<datasheet name="StockType" displayName="Stock Type" valueMember="StockTypeID" displayMember="Name" className="SyncroSim.STSimStockFlow.StockTypeDataSheet" classAssembly="SyncroSim.STSimStockFlow">
+							<columns>
+								<column name="StockTypeID" dataType="Integer" isPrimary="True"/>
+								<column name="ProjectID" dataType="Integer"/>
+								<column name="Name" dataType="String"/>
+								<column name="Description" dataType="String" isOptional="True"/>
+							</columns>
+						</datasheet>
+					</datasheets>
+				</datafeed>
+				<datafeed name="StockGroup" displayName="Stock Group" dataScope="Project">
+					<datasheets>
+						<datasheet name="StockGroup" displayName="Stock Group" valueMember="StockGroupID" displayMember="Name" className="SyncroSim.STSimStockFlow.StockGroupDataSheet" classAssembly="SyncroSim.STSimStockFlow" filter="IsAuto IS NULL OR IsAuto=0">
+							<columns>
+								<column name="StockGroupID" dataType="Integer" isPrimary="True"/>
+								<column name="ProjectID" dataType="Integer"/>
+								<column name="Name" dataType="String"/>
+								<column name="Description" dataType="String" isOptional="True"/>
+								<column name="Units" dataType="String" isOptional="True"/>
+								<column name="IsAuto" dataType="Boolean" isVisible="False"/>
+							</columns>
+						</datasheet>
+					</datasheets>
+				</datafeed>
+				<datafeed name="FlowType" displayName="Flow Type" dataScope="Project">
+					<datasheets>
+						<datasheet name="FlowType" displayName="Flow Type" valueMember="FlowTypeID" displayMember="Name" className="SyncroSim.STSimStockFlow.FlowTypeDataSheet" classAssembly="SyncroSim.STSimStockFlow">
+							<columns>
+								<column name="FlowTypeID" dataType="Integer" isPrimary="True"/>
+								<column name="ProjectID" dataType="Integer"/>
+								<column name="Name" dataType="String"/>
+								<column name="Description" dataType="String" isOptional="True"/>
+							</columns>
+						</datasheet>
+					</datasheets>
+				</datafeed>
+				<datafeed name="FlowGroup" displayName="Flow Group" dataScope="Project">
+					<datasheets>
+						<datasheet name="FlowGroup" displayName="Flow Group" valueMember="FlowGroupID" displayMember="Name" className="SyncroSim.STSimStockFlow.FlowGroupDataSheet" classAssembly="SyncroSim.STSimStockFlow" filter="IsAuto IS NULL OR IsAuto=0">
+							<columns>
+								<column name="FlowGroupID" dataType="Integer" isPrimary="True"/>
+								<column name="ProjectID" dataType="Integer"/>
+								<column name="Name" dataType="String"/>
+								<column name="Description" dataType="String" isOptional="True"/>
+								<column name="Units" dataType="String" isOptional="True"/>
+								<column name="IsAuto" dataType="Boolean" isVisible="False"/>
+							</columns>
+						</datasheet>
+					</datasheets>
+				</datafeed>
+				<datafeed name="FlowMultiplierType" displayName="Flow Multiplier Type" dataScope="Project">
+					<datasheets>
+						<datasheet name="FlowMultiplierType" displayName="Flow Multiplier Type" valueMember="FlowMultiplierTypeID" displayMember="Name">
+							<columns>
+								<column name="FlowMultiplierTypeID" dataType="Integer" isPrimary="True"/>
+								<column name="ProjectID" dataType="Integer"/>
+								<column name="Name" dataType="String"/>
+							</columns>
+						</datasheet>
+					</datasheets>
+				</datafeed>
+				<datafeed name="Terminology" dataScope="Project">
+					<datasheets>
+						<datasheet name="Terminology" isSingleRow="True">
+							<columns>
+								<column name="TerminologyID" dataType="Integer" isPrimary="True"/>
+								<column name="ProjectID" dataType="Integer"/>
+								<column name="StockUnits" dataType="String"/>
+							</columns>
+							<defaultRecords>
+								<record columns="StockUnits" values="tons"/>
+							</defaultRecords>
+						</datasheet>
+					</datasheets>
+				</datafeed>
+				<datafeed name="StockLimit" displayName="Stock Limits" dataScope="Scenario">
+					<datasheets>
+						<datasheet name="StockLimit" displayName="Stock Limits">
+							<columns>
+								<column name="StockLimitID" dataType="Integer" isPrimary="True"/>
+								<column name="ScenarioID" dataType="Integer"/>
+								<column name="Iteration" dataType="Integer" validationType="WholeNumber" validationCondition="Greater" formula1="0" isOptional="True" format="d"/>
+								<column name="Timestep" dataType="Integer" validationType="WholeNumber" validationCondition="GreaterEqual" formula1="0" isOptional="True" displayNameSource="stsim_Terminology" displayNameColumn="TimestepUnits" format="d"/>
+								<column name="StockTypeID" dataType="Integer" displayName="Stock Type" validationType="Datasheet" formula1="StockType" allowDbNull="False"/>
+								<column name="StratumID" dataType="Integer" displayName="Primary Stratum" validationType="Datasheet" formula1="stsim_Stratum" isOptional="True" displayNameSource="stsim_Terminology" displayNameColumn="PrimaryStratumLabel"/>
+								<column name="SecondaryStratumID" dataType="Integer" displayName="Secondary Stratum" validationType="Datasheet" formula1="stsim_SecondaryStratum" isOptional="True" displayNameSource="stsim_Terminology" displayNameColumn="SecondaryStratumLabel"/>
+								<column name="TertiaryStratumID" dataType="Integer" displayName="Tertiary Stratum" validationType="Datasheet" formula1="stsim_TertiaryStratum" isOptional="True" displayNameSource="stsim_Terminology" displayNameColumn="TertiaryStratumLabel"/>
+								<column name="StateClassID" dataType="Integer" displayName="State Class" validationType="Datasheet" formula1="stsim_StateClass" isOptional="True"/>
+								<column name="StockMinimum" dataType="Double" displayName="Stock Min" validationType="Decimal"/>
+								<column name="StockMaximum" dataType="Double" displayName="Stock Max" validationType="Decimal"/>
+							</columns>
+							<validations>
+								<validation validationType="LessEqual" columns="StockMinimum|StockMaximum"/>
+							</validations>
+						</datasheet>
+					</datasheets>
+				</datafeed>
+				<datafeed name="FlowOrder" displayName="Flow Order" dataScope="Scenario">
+					<datasheets>
+						<datasheet name="FlowOrder" displayName="Flow Order">
+							<columns>
+								<column name="FlowOrderID" dataType="Integer" isPrimary="True"/>
+								<column name="ScenarioID" dataType="Integer"/>
+								<column name="Iteration" dataType="Integer" validationType="WholeNumber" validationCondition="Greater" formula1="0" isOptional="True" format="d"/>
+								<column name="Timestep" dataType="Integer" validationType="WholeNumber" validationCondition="GreaterEqual" formula1="0" isOptional="True" displayNameSource="stsim_Terminology" displayNameColumn="TimestepUnits" format="d"/>
+								<column name="FlowTypeID" dataType="Integer" displayName="Flow Type" validationType="Datasheet" formula1="FlowType" allowDbNull="False"/>
+								<column name="Order" dataType="Double" displayName="Order" validationType="Decimal"/>
+							</columns>
+							<validations>
+							</validations>
+						</datasheet>
+						<datasheet name="FlowOrderOptions" displayName="Apply Flow Order" isSingleRow="True">
+							<columns>
+								<column name="FlowOrderOptionsID" dataType="Integer" isPrimary="True"/>
+								<column name="ScenarioID" dataType="Integer"/>
+								<column name="ApplyBeforeTransitions" dataType="Boolean" displayName="Apply Before Transitions"/>
+								<column name="ApplyEquallyRankedSimultaneously" dataType="Boolean" displayName="Apply equally ranked flows simultaneously"/>
+							</columns>
+							<validations>
+							</validations>
+						</datasheet>
+					</datasheets>
+				</datafeed>
+				<datafeed name="FlowPathways" displayName="Flow Pathways" dataScope="Scenario">
+					<datasheets>
+						<datasheet name="FlowPathwayDiagram" displayName="Flow Pathway Diagram" className="SyncroSim.STSimStockFlow.FlowPathwayDiagramDataSheet" classAssembly="SyncroSim.STSimStockFlow" noRowLimit="True">
+							<columns>
+								<column name="FlowPathwayDiagramID" dataType="Integer" isPrimary="True"/>
+								<column name="ScenarioID" dataType="Integer"/>
+								<column name="StockTypeID" dataType="Integer" displayName="Stock Type" validationType="Datasheet" formula1="StockType" allowDbNull="False"/>
+								<column name="Location" dataType="String" columnAlignment="Center" allowDbNull="False"/>
+							</columns>
+							<validations>
+								<validation validationType="Unique" columns="StockTypeID"/>
+								<validation validationType="Unique" columns="Location"/>
+							</validations>
+						</datasheet>
+						<datasheet name="FlowPathway" displayName="Flow Pathways" className="SyncroSim.STSimStockFlow.FlowPathwayDataSheet" classAssembly="SyncroSim.STSimStockFlow" noRowLimit="True">
+							<columns>
+								<column name="FlowPathwayID" dataType="Integer" isPrimary="True"/>
+								<column name="ScenarioID" dataType="Integer" isCompositeIndex="True"/>
+								<column name="Iteration" dataType="Integer" validationType="WholeNumber" validationCondition="Greater" formula1="0" isOptional="True" format="d"/>
+								<column name="Timestep" dataType="Integer" validationType="WholeNumber" validationCondition="GreaterEqual" formula1="0" isOptional="True" displayNameSource="stsim_Terminology" displayNameColumn="TimestepUnits" format="d"/>
+								<column name="FromStratumID" dataType="Integer" displayName="From Stratum" validationType="Datasheet" formula1="stsim_Stratum" isOptional="True" displayNameSource="stsim_Terminology" displayNameColumn="PrimaryStratumLabel"/>
+								<column name="FromSecondaryStratumID" dataType="Integer" displayName="From Secondary Stratum" validationType="Datasheet" formula1="stsim_SecondaryStratum" isOptional="True" displayNameSource="stsim_Terminology" displayNameColumn="SecondaryStratumLabel"/>
+								<column name="FromTertiaryStratumID" dataType="Integer" displayName="From Tertiary Stratum" validationType="Datasheet" formula1="stsim_TertiaryStratum" isOptional="True" displayNameSource="stsim_Terminology" displayNameColumn="TertiaryStratumLabel"/>
+								<column name="FromStateClassID" dataType="Integer" displayName="From State Class" validationType="Datasheet" formula1="stsim_StateClass" isOptional="True"/>
+								<column name="FromAgeMin" dataType="Integer" displayName="From Min Age" validationType="WholeNumber" validationCondition="GreaterEqual" formula1="0" isOptional="True"/>
+								<column name="FromStockTypeID" dataType="Integer" displayName="From Stock Type" validationType="Datasheet" formula1="StockType"/>
+								<column name="ToStratumID" dataType="Integer" displayName="To Stratum" validationType="Datasheet" formula1="stsim_Stratum" isOptional="True" displayNameSource="stsim_Terminology" displayNameColumn="PrimaryStratumLabel"/>
+								<column name="ToStateClassID" dataType="Integer" displayName="To State Class" validationType="Datasheet" formula1="stsim_StateClass" isOptional="True"/>
+								<column name="ToAgeMin" dataType="Integer" displayName="To Min Age" validationType="WholeNumber" validationCondition="GreaterEqual" formula1="0" isOptional="True"/>
+								<column name="ToStockTypeID" dataType="Integer" displayName="To Stock Type" validationType="Datasheet" formula1="StockType"/>
+								<column name="TransitionGroupID" dataType="Integer" displayName="Transition Group" validationType="Datasheet" formula1="stsim_TransitionGroup" isOptional="True"/>
+								<column name="StateAttributeTypeID" dataType="Integer" displayName="State Attribute Type" validationType="Datasheet" formula1="stsim_StateAttributeType" isOptional="True"/>
+								<column name="FlowTypeID" dataType="Integer" displayName="Flow Type" validationType="Datasheet" formula1="FlowType" allowDbNull="False"/>
+								<column name="TargetType" dataType="Integer" displayName="Target Type" validationType="List" formula1="0:Flow|1:To Stock|2:From Stock" isOptional="True"/>
+								<column name="Multiplier" displayName="Multiplier" dataType="Double" validationType="Decimal" allowDbNull="False"/>
+								<column name="TransferToStratumID" dataType="Integer" displayName="Transfer To Stratum" validationType="Datasheet" formula1="stsim_Stratum" isOptional="True" displayNameSource="stsim_Terminology" displayNameColumn="PrimaryStratumLabel"/>
+								<column name="TransferToSecondaryStratumID" dataType="Integer" displayName="Transfer To Secondary Stratum" validationType="Datasheet" formula1="stsim_SecondaryStratum" isOptional="True" displayNameSource="stsim_Terminology" displayNameColumn="SecondaryStratumLabel"/>
+								<column name="TransferToTertiaryStratumID" dataType="Integer" displayName="Transfer To Tertiary Stratum" validationType="Datasheet" formula1="stsim_TertiaryStratum" isOptional="True" displayNameSource="stsim_Terminology" displayNameColumn="TertiaryStratumLabel"/>
+								<column name="TransferToStateClassID" dataType="Integer" displayName="Transfer To State Class" validationType="Datasheet" formula1="stsim_StateClass" isOptional="True"/>
+								<column name="TransferToAgeMin" dataType="Integer" displayName="Transfer To Min Age" validationType="WholeNumber" validationCondition="GreaterEqual" formula1="0" isOptional="True"/>
+						</columns>
+						</datasheet>
+					</datasheets>
+				</datafeed>
+				<datafeed name="InitialStocks" displayName="Initial Stocks" dataScope="Scenario">
+					<datasheets>
+						<datasheet name="InitialStockNonSpatial" displayName="Initial Stock - Non Spatial">
+							<columns>
+								<column name="InitialStockNonSpatialID" dataType="Integer" isPrimary="True"/>
+								<column name="ScenarioID" dataType="Integer"/>
+								<column name="StockTypeID" dataType="Integer" displayName="Stock Type" validationType="Datasheet" formula1="StockType" allowDbNull="False"/>
+								<column name="StateAttributeTypeID" displayName="State Attribute Type" dataType="Integer" validationType="Datasheet" formula1="stsim_StateAttributeType" allowDbNull="False"/>
+							</columns>
+							<validations>
+								<validation validationType="Unique" columns="StockTypeID"/>
+							</validations>
+						</datasheet>
+						<datasheet name="InitialStockSpatial" displayName="Initial Stock - Spatial">
+							<columns>
+								<column name="InitialStockSpatialID" dataType="Integer" isPrimary="True"/>
+								<column name="ScenarioID" dataType="Integer"/>
+								<column name="Iteration" dataType="Integer" validationType="WholeNumber" validationCondition="Greater" formula1="0" isOptional="True" format="d"/>
+								<column name="StockTypeID" dataType="Integer" displayName="Stock Type" validationType="Datasheet" formula1="StockType" allowDbNull="False"/>
+								<column name="RasterFileName" displayName="Raster File Name" dataType="String" allowDbNull="False" isExternalFile="True" isRaster="True"/>
+							</columns>
+							<validations>
+								<validation validationType="Unique" columns="Iteration|StockTypeID"/>
+							</validations>
+						</datasheet>
+					</datasheets>
+				</datafeed>
+				<datafeed name="StockGroupMembership" displayName="Stock Group Membership" dataScope="Scenario">
+					<datasheets>
+						<datasheet name="StockTypeGroupMembership" displayName="Stock Type-Group Membership">
+							<columns>
+								<column name="StockTypeGroupMembershipID" dataType="Integer" isPrimary="True"/>
+								<column name="ScenarioID" dataType="Integer"/>
+								<column name="StockTypeID" dataType="Integer" displayName="Stock Type" validationType="Datasheet" formula1="StockType" allowDbNull="False" isCompositeIndex="True"/>
+								<column name="StockGroupID" dataType="Integer" displayName="Stock Group" validationType="Datasheet" formula1="StockGroup" allowDbNull="False" isCompositeIndex="True"/>
+								<column name="Value" dataType="Double" isOptional="True" format="N8"/>
+							</columns>
+							<validations>
+								<validation validationType="Unique" columns="StockTypeID|StockGroupID"/>
+							</validations>
+						</datasheet>
+					</datasheets>
+				</datafeed>
+				<datafeed name="FlowGroupMembership" displayName="Flow Group Membership" dataScope="Scenario">
+					<datasheets>
+						<datasheet name="FlowTypeGroupMembership" displayName="Flow Type-Group Membership">
+							<columns>
+								<column name="FlowTypeGroupMembershipID" dataType="Integer" isPrimary="True"/>
+								<column name="ScenarioID" dataType="Integer"/>
+								<column name="FlowTypeID" dataType="Integer" displayName="Flow Type" validationType="Datasheet" formula1="FlowType" allowDbNull="False" isCompositeIndex="True"/>
+								<column name="FlowGroupID" dataType="Integer" displayName="Flow Group" validationType="Datasheet" formula1="FlowGroup" allowDbNull="False" isCompositeIndex="True"/>
+								<column name="Value" dataType="Double" isOptional="True" format="N8"/>
+							</columns>
+							<validations>
+								<validation validationType="Unique" columns="FlowTypeID|FlowGroupID"/>
+							</validations>
+						</datasheet>
+					</datasheets>
+				</datafeed>
+				<datafeed name="StockTransitionMultiplier" displayName="Transition Multipliers by Stock" dataScope="Scenario">
+					<datasheets>
+						<datasheet name="StockTransitionMultiplier" displayName="Transition Multipliers by Stock">
+							<columns>
+								<column name="StockTransitionMultiplierID" dataType="Integer" isPrimary="True"/>
+								<column name="ScenarioID" dataType="Integer" isCompositeIndex="True"/>
+								<column name="Iteration" dataType="Integer" validationType="WholeNumber" validationCondition="Greater" formula1="0" isOptional="True" format="d"/>
+								<column name="Timestep" dataType="Integer" validationType="WholeNumber" validationCondition="GreaterEqual" formula1="0" isOptional="True" displayNameSource="stsim_Terminology" displayNameColumn="TimestepUnits" format="d"/>
+								<column name="StratumID" dataType="Integer" displayName="Stratum" validationType="Datasheet" formula1="stsim_Stratum" isOptional="True" displayNameSource="stsim_Terminology" displayNameColumn="PrimaryStratumLabel"/>
+								<column name="SecondaryStratumID" dataType="Integer" displayName="Secondary Stratum" validationType="Datasheet" formula1="stsim_SecondaryStratum" isOptional="True" displayNameSource="stsim_Terminology" displayNameColumn="SecondaryStratumLabel"/>
+								<column name="TertiaryStratumID" dataType="Integer" displayName="Tertiary Stratum" validationType="Datasheet" formula1="stsim_TertiaryStratum" isOptional="True" displayNameSource="stsim_Terminology" displayNameColumn="TertiaryStratumLabel"/>
+								<column name="StateClassID" dataType="Integer" displayName="State Class" validationType="Datasheet" formula1="stsim_StateClass" isOptional="True"/>
+								<column name="TransitionGroupID" dataType="Integer" displayName="Transition Group" validationType="Datasheet" formula1="stsim_TransitionGroup" allowDbNull="False"/>
+								<column name="StockGroupID" dataType="Integer" displayName="Stock Type/Group" validationType="Datasheet" formula1="StockGroup" allowDbNull="False"/>
+								<column name="StockValue" dataType="Double" displayName="Stock Density" validationType="Decimal" validationCondition="GreaterEqual" formula1="0.0" allowDbNull="False"/>
+								<column name="Multiplier" dataType="Double" displayName="Multiplier" validationType="Decimal" validationCondition="GreaterEqual" formula1="0.0"/>
+								<column name="DistributionType" displayName="Multiplier Distribution" dataType="Integer" validationType="Datasheet" formula1="corestime_DistributionType" isOptional="True"/>
+								<column name="DistributionFrequencyID" displayName="Multiplier Sampling Frequency" dataType="Integer" validationType="List" formula1="0:Always|1:Iteration Only|2:Iteration and Timestep" isOptional="True"/>
+								<column name="DistributionSD" displayName="Multiplier SD" dataType="Double" validationType="Decimal" validationCondition="GreaterEqual" formula1="0.0" isOptional="True"/>
+								<column name="DistributionMin" displayName="Multiplier Min" dataType="Double" validationType="Decimal" validationCondition="GreaterEqual" formula1="0.0" isOptional="True"/>
+								<column name="DistributionMax" displayName="Multiplier Max" dataType="Double" validationType="Decimal" validationCondition="GreaterEqual" formula1="0.0" isOptional="True"/>
+							</columns>
+							<validations>
+								<validation validationType="LessEqual" columns="DistributionMin|DistributionMax"/>
+							</validations>
+						</datasheet>
+					</datasheets>
+				</datafeed>
+					<datafeed name="FlowMultiplierByStock" displayName="Flow Multipliers by Stock" dataScope="Scenario">
+							<datasheets>
+									<datasheet name="FlowMultiplierByStock" displayName="Flow Multipliers by Stock">
+											<columns>
+													<column name="FlowMultiplierByStockID" dataType="Integer" isPrimary="True"/>
+													<column name="ScenarioID" dataType="Integer" isCompositeIndex="True"/>
+													<column name="Iteration" dataType="Integer" validationType="WholeNumber" validationCondition="Greater" formula1="0" isOptional="True" format="d"/>
+													<column name="Timestep" dataType="Integer" validationType="WholeNumber" validationCondition="GreaterEqual" formula1="0" isOptional="True" displayNameSource="stsim_Terminology" displayNameColumn="TimestepUnits" format="d"/>
+													<column name="StratumID" dataType="Integer" displayName="Stratum" validationType="Datasheet" formula1="stsim_Stratum" isOptional="True" displayNameSource="stsim_Terminology" displayNameColumn="PrimaryStratumLabel"/>
+													<column name="SecondaryStratumID" dataType="Integer" displayName="Secondary Stratum" validationType="Datasheet" formula1="stsim_SecondaryStratum" isOptional="True" displayNameSource="stsim_Terminology" displayNameColumn="SecondaryStratumLabel"/>
+													<column name="TertiaryStratumID" dataType="Integer" displayName="Tertiary Stratum" validationType="Datasheet" formula1="stsim_TertiaryStratum" isOptional="True" displayNameSource="stsim_Terminology" displayNameColumn="TertiaryStratumLabel"/>
+													<column name="StateClassID" dataType="Integer" displayName="State Class" validationType="Datasheet" formula1="stsim_StateClass" isOptional="True"/>
+													<column name="StockGroupID" dataType="Integer" displayName="Stock Type/Group" validationType="Datasheet" formula1="StockGroup" allowDbNull="False"/>
+													<column name="StockValue" dataType="Double" displayName="Stock Density" validationType="Decimal" validationCondition="GreaterEqual" formula1="0.0" allowDbNull="False"/>
+													<column name="FlowMultiplierTypeID" dataType="Integer" displayName="Flow Multiplier Type" validationType="Datasheet" formula1="FlowMultiplierType" isOptional="True"/>
+													<column name="FlowGroupID" dataType="Integer" displayName="Flow Type/Group" validationType="Datasheet" formula1="FlowGroup" allowDbNull="False"/>
+													<column name="Multiplier" dataType="Double" displayName="Multiplier" validationType="Decimal" validationCondition="GreaterEqual" formula1="0.0"/>
+													<column name="DistributionType" displayName="Multiplier Distribution" dataType="Integer" validationType="Datasheet" formula1="corestime_DistributionType" isOptional="True"/>
+													<column name="DistributionFrequencyID" displayName="Multiplier Sampling Frequency" dataType="Integer" validationType="List" formula1="0:Always|1:Iteration Only|2:Iteration and Timestep" isOptional="True"/>
+													<column name="DistributionSD" displayName="Multiplier SD" dataType="Double" validationType="Decimal" validationCondition="GreaterEqual" formula1="0.0" isOptional="True"/>
+													<column name="DistributionMin" displayName="Multiplier Min" dataType="Double" validationType="Decimal" validationCondition="GreaterEqual" formula1="0.0" isOptional="True"/>
+													<column name="DistributionMax" displayName="Multiplier Max" dataType="Double" validationType="Decimal" validationCondition="GreaterEqual" formula1="0.0" isOptional="True"/>
+											</columns>
+											<validations>
+													<validation validationType="LessEqual" columns="DistributionMin|DistributionMax"/>
+											</validations>
+									</datasheet>
+							</datasheets>
+					</datafeed>
+				<datafeed name="FlowMultiplier" displayName="Flow Multipliers" dataScope="Scenario">
+					<datasheets>
+						<datasheet name="FlowMultiplier" displayName="Flow Multipliers">
+							<columns>
+								<column name="FlowMultiplierID" dataType="Integer" isPrimary="True"/>
+								<column name="ScenarioID" dataType="Integer" isCompositeIndex="True"/>
+								<column name="Iteration" dataType="Integer" validationType="WholeNumber" validationCondition="Greater" formula1="0" isOptional="True" format="d"/>
+								<column name="Timestep" dataType="Integer" validationType="WholeNumber" validationCondition="GreaterEqual" formula1="0" isOptional="True" displayNameSource="stsim_Terminology" displayNameColumn="TimestepUnits" format="d"/>
+								<column name="StratumID" dataType="Integer" displayName="Stratum" validationType="Datasheet" formula1="stsim_Stratum" isOptional="True" displayNameSource="stsim_Terminology" displayNameColumn="PrimaryStratumLabel"/>
+								<column name="SecondaryStratumID" dataType="Integer" displayName="Secondary Stratum" validationType="Datasheet" formula1="stsim_SecondaryStratum" isOptional="True" displayNameSource="stsim_Terminology" displayNameColumn="SecondaryStratumLabel"/>
+								<column name="TertiaryStratumID" dataType="Integer" displayName="Tertiary Stratum" validationType="Datasheet" formula1="stsim_TertiaryStratum" isOptional="True" displayNameSource="stsim_Terminology" displayNameColumn="TertiaryStratumLabel"/>
+								<column name="StateClassID" dataType="Integer" displayName="State Class" validationType="Datasheet" formula1="stsim_StateClass" isOptional="True"/>
+								<column name="AgeMin" displayName="Age Min" dataType="Integer" isOptional="True" validationType="WholeNumber" validationCondition="GreaterEqual" formula1="0"/>
+								<column name="AgeMax" displayName="Age Max" dataType="Integer" isOptional="True" validationType="WholeNumber" validationCondition="GreaterEqual" formula1="0"/>
+								<column name="FlowGroupID" dataType="Integer" displayName="Flow Type/Group" validationType="Datasheet" formula1="FlowGroup" allowDbNull="False"/>
+								<column name="FlowMultiplierTypeID" dataType="Integer" displayName="Flow Multiplier Type" validationType="Datasheet" formula1="FlowMultiplierType" isOptional="True"/>
+								<column name="Value" displayName="Multiplier" dataType="Double" validationType="Decimal"/>
+								<column name="DistributionType" displayName="Multiplier Distribution" dataType="Integer" validationType="Datasheet" formula1="corestime_DistributionType" isOptional="True"/>
+								<column name="DistributionFrequencyID" displayName="Multiplier Sampling Frequency" dataType="Integer" validationType="List" formula1="0:Always|1:Iteration Only|2:Iteration and Timestep" isOptional="True"/>
+								<column name="DistributionSD" displayName="Multiplier SD" dataType="Double" validationType="Decimal" validationCondition="GreaterEqual" formula1="0.0" isOptional="True"/>
+								<column name="DistributionMin" displayName="Multiplier Min" dataType="Double" validationType="Decimal" isOptional="True"/>
+								<column name="DistributionMax" displayName="Multiplier Max" dataType="Double" validationType="Decimal" isOptional="True"/>
+							</columns>
+							<validations>
+								<validation validationType="LessEqual" columns="AgeMin|AgeMax"/>
+								<validation validationType="LessEqual" columns="DistributionMin|DistributionMax"/>
+							</validations>
+						</datasheet>
+					</datasheets>
+				</datafeed>
+				<datafeed name="FlowSpatialMultiplier" displayName="Flow Spatial Multipliers" dataScope="Scenario">
+					<datasheets>
+						<datasheet name="FlowSpatialMultiplier" displayName="Flow Spatial Multipliers">
+							<columns>
+								<column name="FlowSpatialMultiplierID" dataType="Integer" isPrimary="True"/>
+								<column name="ScenarioID" dataType="Integer"/>
+								<column name="Iteration" dataType="Integer" validationType="WholeNumber" validationCondition="Greater" formula1="0" isOptional="True" format="d"/>
+								<column name="Timestep" dataType="Integer" validationType="WholeNumber" validationCondition="GreaterEqual" formula1="0" isOptional="True" displayNameSource="stsim_Terminology" displayNameColumn="TimestepUnits" format="d"/>
+								<column name="FlowGroupID" dataType="Integer" displayName="Flow Type/Group" validationType="Datasheet" formula1="FlowGroup" allowDbNull="False"/>
+								<column name="FlowMultiplierTypeID" dataType="Integer" displayName="Flow Multiplier Type" validationType="Datasheet" formula1="FlowMultiplierType" isOptional="True"/>
+								<column name="MultiplierFileName" displayName="Multiplier File Name" dataType="String" isExternalFile="True" allowDbNull="False" isRaster="True" externalFileFilter="GeoTIFF Files|*.tif|All Files|*.*"/>
+							</columns>
+						</datasheet>
+					</datasheets>
+				</datafeed>
+				<datafeed name="FlowLateralMultiplier" displayName="Flow Lateral Multipliers" dataScope="Scenario">
+					<datasheets>
+						<datasheet name="FlowLateralMultiplier" displayName="Flow Lateral Multipliers">
+							<columns>
+								<column name="FlowLateralMultiplierID" dataType="Integer" isPrimary="True"/>
+								<column name="ScenarioID" dataType="Integer"/>
+								<column name="Iteration" dataType="Integer" validationType="WholeNumber" validationCondition="Greater" formula1="0" isOptional="True" format="d"/>
+								<column name="Timestep" dataType="Integer" validationType="WholeNumber" validationCondition="GreaterEqual" formula1="0" isOptional="True" displayNameSource="stsim_Terminology" displayNameColumn="TimestepUnits" format="d"/>
+								<column name="FlowGroupID" dataType="Integer" displayName="Flow Type/Group" validationType="Datasheet" formula1="FlowGroup" allowDbNull="False"/>
+								<column name="FlowMultiplierTypeID" dataType="Integer" displayName="Flow Multiplier Type" validationType="Datasheet" formula1="FlowMultiplierType" isOptional="True"/>
+								<column name="MultiplierFileName" displayName="Multiplier File Name" dataType="String" isExternalFile="True" allowDbNull="False" isRaster="True" externalFileFilter="GeoTIFF Files|*.tif|All Files|*.*"/>
+							</columns>
+						</datasheet>
+					</datasheets>
+				</datafeed>
+				<datafeed name="OutputOptions" displayName="Tabular and Spatial" dataScope="Scenario">
+					<datasheets>
+						<datasheet name="OutputOptions" displayName="SF Output Options" isSingleRow="True">
+							<columns>
+								<column name="OutputOptionsID" dataType="Integer" isPrimary="True"/>
+								<column name="ScenarioID" dataType="Integer"/>
+								<column name="SummaryOutputST" dataType="Boolean"/>
+								<column name="SummaryOutputSTTimesteps" dataType="Integer" validationType="WholeNumber" validationCondition="GreaterEqual" formula1="0" format="d"/>
+								<column name="SummaryOutputFL" dataType="Boolean"/>
+								<column name="SummaryOutputFLTimesteps" dataType="Integer" validationType="WholeNumber" validationCondition="GreaterEqual" formula1="0" format="d"/>
+								<column name="SpatialOutputST" dataType="Boolean"/>
+								<column name="SpatialOutputSTTimesteps" dataType="Integer" validationType="WholeNumber" validationCondition="GreaterEqual" formula1="0" format="d"/>
+								<column name="SpatialOutputFL" dataType="Boolean"/>
+								<column name="SpatialOutputFLTimesteps" dataType="Integer" validationType="WholeNumber" validationCondition="GreaterEqual" formula1="0" format="d"/>
+								<column name="LateralOutputFL" dataType="Boolean"/>
+								<column name="LateralOutputFLTimesteps" dataType="Integer" validationType="WholeNumber" validationCondition="GreaterEqual" formula1="0" format="d"/>
+								<column name="AvgSpatialOutputST" dataType="Boolean"/>
+								<column name="AvgSpatialOutputSTTimesteps" dataType="Integer" validationType="WholeNumber" validationCondition="GreaterEqual" formula1="0" format="d"/>
+								<column name="AvgSpatialOutputSTAcrossTimesteps" dataType="Boolean"/>
+								<column name="AvgSpatialOutputFL" dataType="Boolean"/>
+								<column name="AvgSpatialOutputFLTimesteps" dataType="Integer" validationType="WholeNumber" validationCondition="GreaterEqual" formula1="0" format="d"/>
+								<column name="AvgSpatialOutputFLAcrossTimesteps" dataType="Boolean"/>
+								<column name="AvgSpatialOutputLFL" dataType="Boolean"/>
+								<column name="AvgSpatialOutputLFLTimesteps" dataType="Integer" validationType="WholeNumber" validationCondition="GreaterEqual" formula1="0" format="d"/>
+								<column name="AvgSpatialOutputLFLAcrossTimesteps" dataType="Boolean"/>                
+							</columns>
+						</datasheet>
+					</datasheets>
+				</datafeed>
+				<datafeed name="OutputFilterStocks" displayName="Filter Stock Output" dataScope="Scenario">
+					<datasheets>
+						<datasheet name="OutputFilterStocks" displayName="Filter Stock Output">
+							<columns>
+								<column name="OutputFilterStocksID" dataType="Integer" isPrimary="True"/>
+								<column name="ScenarioID" dataType="Integer"/>
+								<column name="StockGroupID" dataType="Integer" displayName="Stock Type/Group" validationType="Datasheet" formula1="StockGroup" allowDbNull="False"/>
+								<column name="Summary" displayName="Summary" dataType="Boolean"/>
+								<column name="Spatial" displayName="Spatial" dataType="Boolean"/>
+								<column name="AvgSpatial" displayName="Average Spatial" dataType="Boolean"/> 
+							</columns>
+							<validations>
+								<validation validationType="Unique" columns="StockGroupID"/>
+							</validations>
+						</datasheet>
+					</datasheets>
+				</datafeed>
+				<datafeed name="OutputFilterFlows" displayName="Filter Flow Output" dataScope="Scenario">
+					<datasheets>
+						<datasheet name="OutputFilterFlows" displayName="Filter Flow Output">
+							<columns>
+								<column name="OutputFilterFlowsID" dataType="Integer" isPrimary="True"/>
+								<column name="ScenarioID" dataType="Integer"/>
+								<column name="FlowGroupID" dataType="Integer" displayName="Flow Type/Group" validationType="Datasheet" formula1="FlowGroup" allowDbNull="False"/>
+								<column name="Summary" displayName="Summary" dataType="Boolean"/>
+								<column name="Spatial" displayName="Spatial" dataType="Boolean"/>
+								<column name="AvgSpatial" displayName="Average Spatial" dataType="Boolean"/>
+							</columns>
+							<validations>
+								<validation validationType="Unique" columns="FlowGroupID"/>
+							</validations>
+						</datasheet>
+					</datasheets>
+				</datafeed>                  
+				<datafeed name="OutputStock" dataScope="Scenario" isOutput="True">
+					<datasheets>
+						<datasheet name="OutputStock" displayName="Output Stock Group" spatialMultiProcessing="True" sumColumnNames="Amount">
+							<columns>
+								<column name="ScenarioID" dataType="Integer" isCompositeIndex="True"/>
+								<column name="Iteration" dataType="Integer" isCompositeIndex="True" format="d"/>
+								<column name="Timestep" dataType="Integer" isCompositeIndex="True" format="d"/>
+								<column name="StratumID" displayName="Stratum" dataType="Integer" validationType="Datasheet" formula1="stsim_Stratum" allowDbNull="False" displayNameSource="stsim_Terminology" displayNameColumn="PrimaryStratumLabel" isCompositeIndex="True"/>
+								<column name="SecondaryStratumID" displayName="Secondary Stratum" dataType="Integer" validationType="Datasheet" formula1="stsim_SecondaryStratum" allowDbNull="True" displayNameSource="stsim_Terminology" displayNameColumn="SecondaryStratumLabel" isCompositeIndex="True"/>
+								<column name="TertiaryStratumID" dataType="Integer" displayName="Tertiary Stratum" validationType="Datasheet" formula1="stsim_TertiaryStratum" isOptional="True" displayNameSource="stsim_Terminology" displayNameColumn="TertiaryStratumLabel" isCompositeIndex="True"/>
+								<column name="StateClassID" dataType="Integer" displayName="State Class" validationType="Datasheet" formula1="stsim_StateClass" allowDbNull="False" isCompositeIndex="True"/>
+								<column name="StockGroupID" dataType="Integer" displayName="Stock Type/Group" validationType="Datasheet" formula1="StockGroup" allowDbNull="False" isCompositeIndex="True"/>
+								<column name="Amount" dataType="Double"/>
+							</columns>
+						</datasheet>
+					</datasheets>
+				</datafeed>
+				<datafeed name="OutputFlow" dataScope="Scenario" isOutput="True">
+					<datasheets>
+						<datasheet name="OutputFlow" displayName="Output Flow Group" className="SyncroSim.STSimStockFlow.OutputFlowDataSheet" classAssembly="SyncroSim.STSimStockFlow" spatialMultiProcessing="True" sumColumnNames="Amount">
+							<columns>
+								<column name="ScenarioID" dataType="Integer" isCompositeIndex="True"/>
+								<column name="Iteration" dataType="Integer" isCompositeIndex="True" format="d"/>
+								<column name="Timestep" dataType="Integer" isCompositeIndex="True" format="d"/>
+								<column name="FromStratumID" displayName="From Stratum" dataType="Integer" validationType="Datasheet" formula1="stsim_Stratum" allowDbNull="False" isCompositeIndex="True"/>
+								<column name="FromSecondaryStratumID" displayName="From Secondary Stratum" dataType="Integer" validationType="Datasheet" formula1="stsim_SecondaryStratum" allowDbNull="True" isCompositeIndex="True"/>
+								<column name="FromTertiaryStratumID" dataType="Integer" displayName="From Tertiary Stratum" validationType="Datasheet" formula1="stsim_TertiaryStratum" isOptional="True" displayNameSource="stsim_Terminology" displayNameColumn="TertiaryStratumLabel" isCompositeIndex="True"/>
+								<column name="FromStateClassID" dataType="Integer" displayName="From State Class" validationType="Datasheet" formula1="stsim_StateClass" allowDbNull="False" isCompositeIndex="True"/>
+								<column name="FromStockTypeID" dataType="Integer" displayName="From Stock Type" validationType="Datasheet" formula1="StockType" allowDbNull="False" isCompositeIndex="True"/>
+								<column name="TransitionTypeID" dataType="Integer" displayName="From Transition Type" validationType="Datasheet" formula1="stsim_TransitionType" allowDbNull="True" isCompositeIndex="True"/>
+								<column name="ToStratumID" displayName="To Stratum" dataType="Integer" validationType="Datasheet" formula1="stsim_Stratum" allowDbNull="False" isCompositeIndex="True"/>
+								<column name="ToStateClassID" dataType="Integer" displayName="To State Class" validationType="Datasheet" formula1="stsim_StateClass" allowDbNull="False" isCompositeIndex="True"/>
+								<column name="ToStockTypeID" dataType="Integer" displayName="To Stock Type" validationType="Datasheet" formula1="StockType" allowDbNull="False" isCompositeIndex="True"/>
+								<column name="FlowGroupID" dataType="Integer" displayName="Flow Type/Group" validationType="Datasheet" formula1="FlowGroup" allowDbNull="False" isCompositeIndex="True"/>
+								<column name="Amount" dataType="Double"/>
+								<column name="EndStratumID" displayName="End Stratum" dataType="Integer" validationType="Datasheet" formula1="stsim_Stratum" isCompositeIndex="True"/>
+								<column name="EndSecondaryStratumID" displayName="End Secondary Stratum" dataType="Integer" validationType="Datasheet" formula1="stsim_SecondaryStratum" isCompositeIndex="True"/>
+								<column name="EndTertiaryStratumID" dataType="Integer" displayName="End Tertiary Stratum" validationType="Datasheet" formula1="stsim_TertiaryStratum" isOptional="True" displayNameSource="stsim_Terminology" displayNameColumn="TertiaryStratumLabel" isCompositeIndex="True"/>
+								<column name="EndStateClassID" dataType="Integer" displayName="End State Class" validationType="Datasheet" formula1="stsim_StateClass" isCompositeIndex="True"/>
+								<column name="EndMinAge" dataType="Integer" displayName="End Min Age" isCompositeIndex="True"/>
+							</columns>
+						</datasheet>
+					</datasheets>
+				</datafeed>
+				<datafeed name="OutputSpatialStockGroup" displayName="Output Spatial Stock Group" dataScope="Scenario" isOutput="True" >
+					<datasheets>
+						<datasheet name="OutputSpatialStockGroup" displayName="Output Spatial Stock Group" spatialMultiProcessing="True">
+							<columns>
+								<column name="ScenarioID" dataType="Integer" />
+								<column name="Iteration" dataType="Integer" format="d"/>
+								<column name="Timestep" dataType="Integer" displayNameSource="stsim_Terminology" displayNameColumn="TimestepUnits" format="d"/>
+								<column name="StockGroupID" dataType="Integer" displayName="Stock Type/Group" validationType="Datasheet" formula1="StockGroup" allowDbNull="False"/>
+								<column name="Filename" displayName="Stock Group Map" dataType="String" allowDbNull="False" isExternalFile="True" isRaster="True" bandColumn="Band" bandFilterColumn="StockGroupID" filenameCode="stkg"/>
+								<column name="Band" displayName="Band" dataType="Integer" allowDbNull="True"/>
+							</columns>
+						</datasheet>
+					</datasheets>
+				</datafeed>
+				<datafeed name="OutputSpatialFlowGroup" displayName="Output Spatial Flow Group" dataScope="Scenario" isOutput="True" >
+					<datasheets>
+						<datasheet name="OutputSpatialFlowGroup" displayName="Output Spatial Flow Group" spatialMultiProcessing="True">
+							<columns>
+								<column name="ScenarioID" dataType="Integer" />
+								<column name="Iteration" dataType="Integer" format="d"/>
+								<column name="Timestep" dataType="Integer" displayNameSource="stsim_Terminology" displayNameColumn="TimestepUnits" format="d"/>
+								<column name="FlowGroupID" dataType="Integer" displayName="Flow Type/Group" validationType="Datasheet" formula1="FlowGroup" allowDbNull="False"/>
+								<column name="Filename" displayName="Flow Group Map" dataType="String" allowDbNull="False" isExternalFile="True" isRaster="True" bandColumn="Band" bandFilterColumn="FlowGroupID" filenameCode="flog"/>
+								<column name="Band" displayName="Band" dataType="Integer" allowDbNull="True"/>
+							</columns>
+						</datasheet>
+					</datasheets>
+				</datafeed>
+				<datafeed name="OutputLateralFlowGroup" displayName="Output Lateral Flow Group" dataScope="Scenario" isOutput="True" >
+					<datasheets>
+						<datasheet name="OutputLateralFlowGroup" displayName="Output Lateral Flow Group" spatialMultiProcessing="True">
+							<columns>
+								<column name="ScenarioID" dataType="Integer" />
+								<column name="Iteration" dataType="Integer" format="d"/>
+								<column name="Timestep" dataType="Integer" displayNameSource="stsim_Terminology" displayNameColumn="TimestepUnits" format="d"/>
+								<column name="FlowGroupID" dataType="Integer" displayName="Flow Type/Group" validationType="Datasheet" formula1="FlowGroup" allowDbNull="False"/>
+								<column name="Filename" displayName="Flow Group Map" dataType="String" allowDbNull="False" isExternalFile="True" isRaster="True" bandColumn="Band" bandFilterColumn="FlowGroupID" filenameCode="lflog"/>
+								<column name="Band" displayName="Band" dataType="Integer" allowDbNull="True"/>
+							</columns>
+						</datasheet>
+					</datasheets>
+				</datafeed>
+				<datafeed name="OutputAverageSpatialStockGroup" displayName="Output Average Spatial Stock Group" dataScope="Scenario" isOutput="True" >
+					<datasheets>
+						<datasheet name="OutputAverageSpatialStockGroup" displayName="Output Average Spatial Stock Group" spatialMultiProcessing="True">
+							<columns>
+								<column name="ScenarioID" dataType="Integer" />
+								<column name="Iteration" dataType="Integer" format="d"/>
+								<column name="Timestep" dataType="Integer" displayNameSource="stsim_Terminology" displayNameColumn="TimestepUnits" format="d"/>
+								<column name="StockGroupID" dataType="Integer" displayName="Stock Group" validationType="Datasheet" formula1="StockGroup" allowDbNull="False"/>
+								<column name="Filename" displayName="Average Spatial Stock Group Map" dataType="String" allowDbNull="False" isExternalFile="True" isRaster="True" bandColumn="Band" bandFilterColumn="StockGroupID" filenameCode="avgstkg" />
+								<column name="Band" displayName="Band" dataType="Integer" allowDbNull="True" isOptional="True"/>
+							</columns>
+						</datasheet>
+					</datasheets>
+				</datafeed>        
+				<datafeed name="OutputAverageSpatialFlowGroup" displayName="Output Average Spatial Flow Group" dataScope="Scenario" isOutput="True" >
+					<datasheets>
+						<datasheet name="OutputAverageSpatialFlowGroup" displayName="Output Average Spatial Flow Group" spatialMultiProcessing="True">
+							<columns>
+								<column name="ScenarioID" dataType="Integer" />
+								<column name="Iteration" dataType="Integer" format="d"/>
+								<column name="Timestep" dataType="Integer" displayNameSource="stsim_Terminology" displayNameColumn="TimestepUnits" format="d"/>
+								<column name="FlowGroupID" dataType="Integer" displayName="Flow Group" validationType="Datasheet" formula1="FlowGroup" allowDbNull="False"/>
+								<column name="Filename" displayName="Average Spatial Flow Group Map" dataType="String" allowDbNull="False" isExternalFile="True" isRaster="True" bandColumn="Band" bandFilterColumn="FlowGroupID" filenameCode="avgflog" />
+								<column name="Band" displayName="Band" dataType="Integer" allowDbNull="True" isOptional="True"/>
+							</columns>
+						</datasheet>
+					</datasheets>
+				</datafeed>  
+				<datafeed name="OutputAverageLateralFlowGroup" displayName="Output Average Lateral Flow Group" dataScope="Scenario" isOutput="True" >
+					<datasheets>
+						<datasheet name="OutputAverageLateralFlowGroup" displayName="Output Average Lateral Flow Group" spatialMultiProcessing="True">
+							<columns>
+								<column name="ScenarioID" dataType="Integer" />
+								<column name="Iteration" dataType="Integer" format="d"/>
+								<column name="Timestep" dataType="Integer" displayNameSource="stsim_Terminology" displayNameColumn="TimestepUnits" format="d"/>
+								<column name="FlowGroupID" dataType="Integer" displayName="Flow Group" validationType="Datasheet" formula1="FlowGroup" allowDbNull="False"/>
+								<column name="Filename" displayName="Average Lateral Flow Group Map" dataType="String" allowDbNull="False" isExternalFile="True" isRaster="True" bandColumn="Band" bandFilterColumn="FlowGroupID" filenameCode="avglflog" />
+								<column name="Band" displayName="Band" dataType="Integer" allowDbNull="True" isOptional="True"/>
+							</columns>
+						</datasheet>
+					</datasheets>
+				</datafeed>       
+			</datafeeds>
+		</transformer>
+		<transformer name="SummaryStockReport" displayName="Stocks" className="SyncroSim.STSimStockFlow.SummaryStockReport" classAssembly="SyncroSim.STSimStockFlow">
+		</transformer>
+		<transformer name="SummaryFlowReport" displayName="Flows" className="SyncroSim.STSimStockFlow.SummaryFlowReport" classAssembly="SyncroSim.STSimStockFlow">
+		</transformer>
+		<transformer name="StockRasterMap" displayName="Stock Groups" className="SyncroSim.StochasticTime.Forms.StochasticTimeExportTransformer" classAssembly="SyncroSim.StochasticTime.Forms" dataSheet="OutputSpatialStockGroup" column="Filename" isFolderExport="True">
+		</transformer>
+		<transformer name="FlowRasterMap" displayName="Flow Groups" className="SyncroSim.StochasticTime.Forms.StochasticTimeExportTransformer" classAssembly="SyncroSim.StochasticTime.Forms" dataSheet="OutputSpatialFlowGroup" column="Filename" isFolderExport="True">
+		</transformer>
+		<transformer name="LateralFlowRasterMap" displayName="Lateral Flow Groups" className="SyncroSim.StochasticTime.Forms.StochasticTimeExportTransformer" classAssembly="SyncroSim.StochasticTime.Forms" dataSheet="OutputLateralFlowGroup" column="Filename" isFolderExport="True">
+		</transformer>  
+		<transformer name="AvgStockRasterMap" displayName="Average Stock Groups" className="SyncroSim.StochasticTime.Forms.StochasticTimeExportTransformer" classAssembly="SyncroSim.StochasticTime.Forms" dataSheet="OutputAverageSpatialStockGroup" column="Filename" isFolderExport="True">
+		</transformer>
+		<transformer name="AvgFlowRasterMap" displayName="Average Flow Groups" className="SyncroSim.StochasticTime.Forms.StochasticTimeExportTransformer" classAssembly="SyncroSim.StochasticTime.Forms" dataSheet="OutputAverageSpatialFlowGroup" column="Filename" isFolderExport="True">
+		</transformer>  
+		<transformer name="AvgLateralFlowRasterMap" displayName="Average Lateral Flow Groups" className="SyncroSim.StochasticTime.Forms.StochasticTimeExportTransformer" classAssembly="SyncroSim.StochasticTime.Forms" dataSheet="OutputAverageSpatialLateralFlowGroup" column="Filename" isFolderExport="True">
+		</transformer>     
+	</transformers>
+	<views>
+		<view name="FlowOrderDatafeedView" target="FlowOrder" className="SyncroSim.STSimStockFlow.FlowOrderDataFeedView" classAssembly="SyncroSim.STSimStockFlow"/>
+		<view name="FlowPathwayDatafeedView" target="FlowPathways" className="SyncroSim.STSimStockFlow.FlowPathwayDataFeedView" classAssembly="SyncroSim.STSimStockFlow"/>
+		<view name="InitialStocksDatafeedView" target="InitialStocks" className="SyncroSim.STSimStockFlow.InitialStocksDataFeedView" classAssembly="SyncroSim.STSimStockFlow"/>
+		<view name="OutputOptionsDatafeedView" target="OutputOptions" className="SyncroSim.STSimStockFlow.OutputOptionsDataFeedView" classAssembly="SyncroSim.STSimStockFlow"/>
+	</views>
+	<layouts>
+		<layout
+			name="coreforms_ResultTransformers"
+			className="SyncroSim.STSimStockFlow.ResultLayoutProvider"
+			classAssembly="SyncroSim.STSimStockFlow">
+		</layout>
+		<layout name ="coreforms_ProjectDatafeeds" appendTo="stsim_Advanced">
+			<group name="StocksAndFlowsGroup" displayName="Stocks and Flows">
+				<item name="StockType"/>
+				<item name="StockGroup"/>
+				<item name="FlowType"/>
+				<item name="FlowGroup"/>
+				<item name="FlowMultiplierType"/>
+				<item name="Terminology"/>
+			</group>
+		</layout>
+		<layout name="coreforms_ScenarioDatafeeds" appendTo="stsim_Advanced">
+			<group name="StocksAndFlowsGroup" displayName="Stocks and Flows">
+				<item name="FlowPathways"/>       
+				<item name="InitialStocks"/>
+				<group name="Output" displayName="Output Options">
+						<item name="OutputOptions" displayName="Tabular and Spatial"/>
+						<group name="OutputFilters" displayName="Output Filters">
+										<item name="OutputFilterStocks" displayName="Stocks"/>
+										<item name="OutputFilterFlows" displayName="Flows"/>          
+						</group>
 		</group>
-        <group name="Advanced">
-          <item name="StockGroupMembership"/>
-          <item name="StockLimit"/>
-          <item name="StockTransitionMultiplier"/>
-          <item name="FlowGroupMembership"/>
-          <item name="FlowMultiplier"/>
-          <item name="FlowSpatialMultiplier"/>
-          <item name="FlowLateralMultiplier"/>
-          <item name="FlowOrder"/>
-        </group>
-      </group>
-    </layout>
-    <layout
-      name="corestimeforms_Charts"
-      className="SyncroSim.STSimStockFlow.SFChartProvider"
-      classAssembly="SyncroSim.STSimStockFlow">
-    </layout>
-    <layout name="corestimeforms_Maps">
-      <group name="StockGroups" displayName="Stock Groups">
-        <item name="stkg" displayName="Iteration" dataSheet="OutputSpatialStockGroup" column="Filename" filter="StockGroupID"></item> 
-        <item name="avgstkg" displayName="Average" dataSheet="OutputAverageSpatialStockGroup" column="Filename" filter="StockGroupID" extendedIdentifier="(Average for all Iterations)"></item>        
-      </group>
-      <group name="FlowGroups" displayName="Flow Groups">
-        <item name="flog" displayName="Iteration" dataSheet="OutputSpatialFlowGroup" column="Filename" filter="FlowGroupID" extendedIdentifier="(Flow)"></item>
-        <item name="lflog" displayName="Iteration - Lateral" dataSheet="OutputLateralFlowGroup" column="Filename" filter="FlowGroupID" extendedIdentifier="(Lateral Flow)"></item>
-        <item name="avgflog" displayName="Average" dataSheet="OutputAverageSpatialFlowGroup" column="Filename" filter="FlowGroupID" extendedIdentifier="(Flow) (Average for all Iterations)"></item>            
-        <item name="avglflog" displayName="Average - Lateral" dataSheet="OutputAverageLateralFlowGroup" column="Filename" filter="FlowGroupID" extendedIdentifier="(Lateral Flow) (Average for all Iterations)"></item>                
-      </group>
-    </layout>
-  </layouts>
-  <updateProvider
-    schemaVersion="106"
-    minPackageVersion="3.2.10"
-    className="SyncroSim.STSimStockFlow.SFUpdates"
-    classAssembly="SyncroSim.STSimStockFlow"/>
-  <console
-    displayName="ST-Sim Stocks and Flows Console"
-    className="SyncroSim.STSimStockFlow.SFConsole"
-    classAssembly="SyncroSim.STSimStockFlow"/>
+				<group name="Advanced">
+					<item name="StockGroupMembership"/>
+					<item name="StockLimit"/>				
+					<item name="FlowMultiplierByStock"/>
+					<item name="FlowGroupMembership"/>
+					<item name="FlowMultiplier"/>
+					<item name="FlowSpatialMultiplier"/>
+					<item name="FlowLateralMultiplier"/>
+					<item name="FlowOrder"/>
+					<item name="StockTransitionMultiplier"/>
+				</group>
+			</group>
+		</layout>
+		<layout
+			name="corestimeforms_Charts"
+			className="SyncroSim.STSimStockFlow.SFChartProvider"
+			classAssembly="SyncroSim.STSimStockFlow">
+		</layout>
+		<layout name="corestimeforms_Maps">
+			<group name="StockGroups" displayName="Stock Groups">
+				<item name="stkg" displayName="Iteration" dataSheet="OutputSpatialStockGroup" column="Filename" filter="StockGroupID"></item> 
+				<item name="avgstkg" displayName="Average" dataSheet="OutputAverageSpatialStockGroup" column="Filename" filter="StockGroupID" extendedIdentifier="(Average for all Iterations)"></item>        
+			</group>
+			<group name="FlowGroups" displayName="Flow Groups">
+				<item name="flog" displayName="Iteration" dataSheet="OutputSpatialFlowGroup" column="Filename" filter="FlowGroupID" extendedIdentifier="(Flow)"></item>
+				<item name="lflog" displayName="Iteration - Lateral" dataSheet="OutputLateralFlowGroup" column="Filename" filter="FlowGroupID" extendedIdentifier="(Lateral Flow)"></item>
+				<item name="avgflog" displayName="Average" dataSheet="OutputAverageSpatialFlowGroup" column="Filename" filter="FlowGroupID" extendedIdentifier="(Flow) (Average for all Iterations)"></item>            
+				<item name="avglflog" displayName="Average - Lateral" dataSheet="OutputAverageLateralFlowGroup" column="Filename" filter="FlowGroupID" extendedIdentifier="(Lateral Flow) (Average for all Iterations)"></item>                
+			</group>
+		</layout>
+	</layouts>
+	<updateProvider
+		schemaVersion="106"
+		minPackageVersion="3.2.10"
+		className="SyncroSim.STSimStockFlow.SFUpdates"
+		classAssembly="SyncroSim.STSimStockFlow"/>
+	<console
+		displayName="ST-Sim Stocks and Flows Console"
+		className="SyncroSim.STSimStockFlow.SFConsole"
+		classAssembly="SyncroSim.STSimStockFlow"/>
 </package>

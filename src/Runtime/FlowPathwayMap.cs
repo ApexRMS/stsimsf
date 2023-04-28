@@ -9,7 +9,7 @@ namespace SyncroSim.STSimStockFlow
 	internal class FlowPathwayMap
 	{
 		private bool m_HasRecords;
-		private MultiLevelKeyMap9<SortedKeyMap4<List<FlowPathway>>> m_Map = new MultiLevelKeyMap9<SortedKeyMap4<List<FlowPathway>>>();
+		private readonly MultiLevelKeyMap9<SortedKeyMap4<List<FlowPathway>>> m_Map = new MultiLevelKeyMap9<SortedKeyMap4<List<FlowPathway>>>();
 
 		public FlowPathwayMap(FlowPathwayCollection pathways)
 		{

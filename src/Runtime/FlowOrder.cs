@@ -5,10 +5,10 @@ namespace SyncroSim.STSimStockFlow
 {
 	internal class FlowOrder
 	{
-		private int? m_iteration;
-		private int? m_timestep;
-		private int m_flowTypeId;
-		private double m_Order = Constants.DEFAULT_FLOW_ORDER;
+		private readonly int? m_iteration;
+		private readonly int? m_timestep;
+		private readonly int m_flowTypeId;
+		private readonly double m_Order = Constants.DEFAULT_FLOW_ORDER;
 
 		public FlowOrder(int? iteration, int? timestep, int flowTypeId, double? order)
 		{

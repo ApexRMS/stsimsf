@@ -9,9 +9,9 @@ namespace SyncroSim.STSimStockFlow
 {
     class LateralFlowAmountMap
     {
-        private List<LateralFlowAmountRecord> m_AllRecords = new List<LateralFlowAmountRecord>();
+        private readonly List<LateralFlowAmountRecord> m_AllRecords = new List<LateralFlowAmountRecord>();
 
-        private MultiLevelKeyMap6<SortedKeyMap1<LateralFlowAmountRecord>> m_Map = 
+        private readonly MultiLevelKeyMap6<SortedKeyMap1<LateralFlowAmountRecord>> m_Map = 
             new MultiLevelKeyMap6<SortedKeyMap1<LateralFlowAmountRecord>>();
 
         public List<LateralFlowAmountRecord> AllRecords

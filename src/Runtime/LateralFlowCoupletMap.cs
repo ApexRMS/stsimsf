@@ -9,8 +9,8 @@ namespace SyncroSim.STSimStockFlow
 {
     class LateralFlowCoupletMap
     {
-        private List<LateralFlowCouplet> m_Couplets = new List<LateralFlowCouplet>();
-        private Dictionary<string, LateralFlowCouplet> m_LookAside = new Dictionary<string, LateralFlowCouplet>();
+        private readonly List<LateralFlowCouplet> m_Couplets = new List<LateralFlowCouplet>();
+        private readonly Dictionary<string, LateralFlowCouplet> m_LookAside = new Dictionary<string, LateralFlowCouplet>();
 
         public void AddCouplet(int? stockTypeId, int flowTypeId)
         {

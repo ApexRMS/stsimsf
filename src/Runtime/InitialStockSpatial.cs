@@ -5,9 +5,9 @@ namespace SyncroSim.STSimStockFlow
 {
 	internal class InitialStockSpatial
 	{
-		private int? m_Iteration = null;
-		private int m_StockTypeId;
-		private string m_filename;
+		private readonly int? m_Iteration = null;
+		private readonly int m_StockTypeId;
+		private readonly string m_filename;
 
 		public InitialStockSpatial(int? iteration, int stockTypeId, string filename)
 		{
