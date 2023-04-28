@@ -38,8 +38,8 @@ namespace SyncroSim.STSimStockFlow
 
 		private Dictionary<int, SpatialOutputFlowRecord> m_SpatialOutputFlowDict;
 		private Dictionary<int, SpatialOutputFlowRecord> m_LateralOutputFlowDict;
-		private OutputFlowCollection m_SummaryOutputFlowRecords = new OutputFlowCollection();
-		private OutputStockCollection m_SummaryOutputStockRecords = new OutputStockCollection();
+		private readonly OutputFlowCollection m_SummaryOutputFlowRecords = new OutputFlowCollection();
+		private readonly OutputStockCollection m_SummaryOutputStockRecords = new OutputStockCollection();
 
 		private void InitializeOutputDataTables()
 		{

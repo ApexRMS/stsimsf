@@ -25,11 +25,11 @@ namespace SyncroSim.STSimStockFlow
 		}
 
 		private bool m_IsEnabled;
-		private ToolTip m_TooltipZoomOut = new ToolTip();
-		private ToolTip m_TooltipZoomIn = new ToolTip();
-		private FlowPathwayTabStripItem m_DiagramTab = new FlowPathwayTabStripItem("Diagram");
-		private FlowPathwayTabStripItem m_StockTab = new FlowPathwayTabStripItem("Stocks");
-		private FlowPathwayTabStripItem m_FlowTab = new FlowPathwayTabStripItem("Flows");
+		private readonly ToolTip m_TooltipZoomOut = new ToolTip();
+		private readonly ToolTip m_TooltipZoomIn = new ToolTip();
+		private readonly FlowPathwayTabStripItem m_DiagramTab = new FlowPathwayTabStripItem("Diagram");
+		private readonly FlowPathwayTabStripItem m_StockTab = new FlowPathwayTabStripItem("Stocks");
+		private readonly FlowPathwayTabStripItem m_FlowTab = new FlowPathwayTabStripItem("Flows");
 		private DiagramFilterCriteria m_FilterCriteria = new DiagramFilterCriteria();
 
 		protected override void InitializeView()

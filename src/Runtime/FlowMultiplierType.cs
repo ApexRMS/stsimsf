@@ -10,16 +10,16 @@ namespace SyncroSim.STSimStockFlow
 {
     class FlowMultiplierType
     {
-        private Scenario m_Scenario;
-        private STSimDistributionProvider m_Provider;
-        private int? m_FlowMultiplierTypeId;
-        private FlowMultiplierCollection m_FlowMultipliers = new FlowMultiplierCollection();
+        private readonly Scenario m_Scenario;
+        private readonly STSimDistributionProvider m_Provider;
+        private readonly int? m_FlowMultiplierTypeId;
+        private readonly FlowMultiplierCollection m_FlowMultipliers = new FlowMultiplierCollection();
         private FlowMultiplierMap m_FlowMultiplierMap;
-        private FlowSpatialMultiplierCollection m_FlowSpatialMultipliers = new FlowSpatialMultiplierCollection();
+        private readonly FlowSpatialMultiplierCollection m_FlowSpatialMultipliers = new FlowSpatialMultiplierCollection();
         private FlowSpatialMultiplierMap m_FlowSpatialMultiplierMap;
-        private FlowLateralMultiplierCollection m_FlowLateralMultipliers = new FlowLateralMultiplierCollection();
+        private readonly FlowLateralMultiplierCollection m_FlowLateralMultipliers = new FlowLateralMultiplierCollection();
         private FlowLateralMultiplierMap m_FlowLateralMultiplierMap;
-        private FlowMultiplierByStockCollection m_FlowMultipliersByStock = new FlowMultiplierByStockCollection();
+        private readonly FlowMultiplierByStockCollection m_FlowMultipliersByStock = new FlowMultiplierByStockCollection();
         private FlowMultiplierByStockMap m_FlowMultiplierByStockMap;
 
         public FlowMultiplierType(

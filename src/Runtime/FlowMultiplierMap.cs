@@ -11,7 +11,7 @@ namespace SyncroSim.STSimStockFlow
 {
     internal class FlowMultiplierMap : StockFlowMapBase5<List<FlowMultiplier>>
     {
-        private STSimDistributionProvider m_DistributionProvider;
+        private readonly STSimDistributionProvider m_DistributionProvider;
 
         public FlowMultiplierMap(Scenario scenario, FlowMultiplierCollection items, STSimDistributionProvider provider) : base(scenario)
         {

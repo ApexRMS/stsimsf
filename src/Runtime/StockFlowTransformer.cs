@@ -25,8 +25,8 @@ namespace SyncroSim.STSimStockFlow
         private STSimTransformer m_STSimTransformer;
         private bool m_CanComputeStocksAndFlows;
         private bool m_StockLimitsOnSourceAndTarget;
-        private RandomGenerator m_RandomGenerator = new RandomGenerator();
-        private List<FlowType> m_ShufflableFlowTypes = new List<FlowType>();
+        private readonly RandomGenerator m_RandomGenerator = new RandomGenerator();
+        private readonly List<FlowType> m_ShufflableFlowTypes = new List<FlowType>();
         private LateralFlowAmountMap m_LateralFlowAmountMap;
         private int m_TotalIterations;
 
@@ -773,12 +773,12 @@ namespace SyncroSim.STSimStockFlow
                 Transition ptPathway)
         {
             Debug.Assert(this.m_FlowPathwayMap.HasRecords);
-
-            int DestStrat = 0;
-            int DestStateClass = 0;
-            int ToAge = 0;
             List<int> TGIds = new List<int>();
 
+
+            int DestStrat;
+            int DestStateClass;
+            int ToAge;
             if (ptPathway != null)
             {
                 if (ptPathway.StratumIdDestination.HasValue)

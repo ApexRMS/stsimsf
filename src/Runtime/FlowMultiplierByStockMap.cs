@@ -12,7 +12,7 @@ namespace SyncroSim.STSimStockFlow
 {
 		internal class FlowMultiplierByStockMap : StockFlowMapBase6<SortedList<double, FlowMultiplierByStock>>
 		{
-				private STSimDistributionProvider m_DistributionProvider;
+				private readonly STSimDistributionProvider m_DistributionProvider;
 
 				public FlowMultiplierByStockMap(
 								Scenario scenario,

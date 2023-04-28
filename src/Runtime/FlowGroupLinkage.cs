@@ -5,8 +5,8 @@ namespace SyncroSim.STSimStockFlow
 {
     class FlowGroupLinkage
     {
-        private FlowGroup m_FlowGroup;
-        private double m_Value;
+        private readonly FlowGroup m_FlowGroup;
+        private readonly double m_Value;
 
         public FlowGroupLinkage(FlowGroup flowGroup, double value)
         {

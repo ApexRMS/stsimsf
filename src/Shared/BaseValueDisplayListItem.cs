@@ -5,8 +5,8 @@ namespace SyncroSim.STSimStockFlow
 {
 	internal class BaseValueDisplayListItem
 	{
-		private int m_Value;
-		private string m_Display;
+		private readonly int m_Value;
+		private readonly string m_Display;
 
 		public BaseValueDisplayListItem(int value, string display)
 		{

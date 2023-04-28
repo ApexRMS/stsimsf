@@ -14,26 +14,26 @@ namespace SyncroSim.STSimStockFlow
 {
     internal partial class StockFlowTransformer
     {
-        private StockTypeCollection m_StockTypes = new StockTypeCollection();
-        private StockGroupCollection m_StockGroups = new StockGroupCollection();
-        private FlowTypeCollection m_FlowTypes = new FlowTypeCollection();
-        private FlowGroupCollection m_FlowGroups = new FlowGroupCollection();
-        private FlowMultiplierTypeCollection m_FlowMultiplierTypes = new FlowMultiplierTypeCollection();
-        private InitialStockNonSpatialCollection m_InitialStocksNonSpatial = new InitialStockNonSpatialCollection();
-        private InitialStockSpatialCollection m_InitialStocksSpatial = new InitialStockSpatialCollection();
-        private Dictionary<string, StochasticTimeRaster> m_InitialStockSpatialRasters = new Dictionary<string, StochasticTimeRaster>();
-        private StockLimitCollection m_StockLimits = new StockLimitCollection();
-        private FlowMultiplierByStockCollection m_FlowMultipliersByStock = new FlowMultiplierByStockCollection();
-        private StockTransitionMultiplierCollection m_StockTransitionMultipliers = new StockTransitionMultiplierCollection();
-        private FlowPathwayCollection m_FlowPathways = new FlowPathwayCollection();
-        private FlowMultiplierCollection m_FlowMultipliers = new FlowMultiplierCollection();
-        private FlowSpatialMultiplierCollection m_FlowSpatialMultipliers = new FlowSpatialMultiplierCollection();
-        private Dictionary<string, StochasticTimeRaster> m_FlowSpatialMultiplierRasters = new Dictionary<string, StochasticTimeRaster>();
-        private FlowLateralMultiplierCollection m_FlowLateralMultipliers = new FlowLateralMultiplierCollection();
-        private Dictionary<string, StochasticTimeRaster> m_FlowLateralMultiplierRasters = new Dictionary<string, StochasticTimeRaster>();
-        private OutputFilterCollection m_OutputFilterStocks = new OutputFilterCollection();
-        private OutputFilterCollection m_OutputFilterFlows = new OutputFilterCollection();
-        private FlowOrderCollection m_FlowOrders = new FlowOrderCollection();
+        private readonly StockTypeCollection m_StockTypes = new StockTypeCollection();
+        private readonly StockGroupCollection m_StockGroups = new StockGroupCollection();
+        private readonly FlowTypeCollection m_FlowTypes = new FlowTypeCollection();
+        private readonly FlowGroupCollection m_FlowGroups = new FlowGroupCollection();
+        private readonly FlowMultiplierTypeCollection m_FlowMultiplierTypes = new FlowMultiplierTypeCollection();
+        private readonly InitialStockNonSpatialCollection m_InitialStocksNonSpatial = new InitialStockNonSpatialCollection();
+        private readonly InitialStockSpatialCollection m_InitialStocksSpatial = new InitialStockSpatialCollection();
+        private readonly Dictionary<string, StochasticTimeRaster> m_InitialStockSpatialRasters = new Dictionary<string, StochasticTimeRaster>();
+        private readonly StockLimitCollection m_StockLimits = new StockLimitCollection();
+        private readonly FlowMultiplierByStockCollection m_FlowMultipliersByStock = new FlowMultiplierByStockCollection();
+        private readonly StockTransitionMultiplierCollection m_StockTransitionMultipliers = new StockTransitionMultiplierCollection();
+        private readonly FlowPathwayCollection m_FlowPathways = new FlowPathwayCollection();
+        private readonly FlowMultiplierCollection m_FlowMultipliers = new FlowMultiplierCollection();
+        private readonly FlowSpatialMultiplierCollection m_FlowSpatialMultipliers = new FlowSpatialMultiplierCollection();
+        private readonly Dictionary<string, StochasticTimeRaster> m_FlowSpatialMultiplierRasters = new Dictionary<string, StochasticTimeRaster>();
+        private readonly FlowLateralMultiplierCollection m_FlowLateralMultipliers = new FlowLateralMultiplierCollection();
+        private readonly Dictionary<string, StochasticTimeRaster> m_FlowLateralMultiplierRasters = new Dictionary<string, StochasticTimeRaster>();
+        private readonly OutputFilterCollection m_OutputFilterStocks = new OutputFilterCollection();
+        private readonly OutputFilterCollection m_OutputFilterFlows = new OutputFilterCollection();
+        private readonly FlowOrderCollection m_FlowOrders = new FlowOrderCollection();
 
 #if DEBUG
         private bool m_AutoStockLinkagesAdded;
@@ -377,7 +377,6 @@ namespace SyncroSim.STSimStockFlow
             {
                 int? Iteration = null;
                 int? Timestep = null;
-                int StockTypeId = 0;
                 int? StratumId = null;
                 int? SecondaryStratumId = null;
                 int? TertiaryStratumId = null;
@@ -395,7 +394,7 @@ namespace SyncroSim.STSimStockFlow
                     Timestep = Convert.ToInt32(dr[Constants.TIMESTEP_COLUMN_NAME], CultureInfo.InvariantCulture);
                 }
 
-                StockTypeId = Convert.ToInt32(dr[Constants.STOCK_TYPE_ID_COLUMN_NAME], CultureInfo.InvariantCulture);
+                int StockTypeId = Convert.ToInt32(dr[Constants.STOCK_TYPE_ID_COLUMN_NAME], CultureInfo.InvariantCulture);
 
                 if (dr[Constants.STRATUM_ID_COLUMN_NAME] != DBNull.Value)
                 {

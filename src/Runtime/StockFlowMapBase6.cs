@@ -8,7 +8,7 @@ namespace SyncroSim.STSimStockFlow
 {
 	internal abstract class StockFlowMapBase6<T> : StockFlowMapBase
 	{
-		private MultiLevelKeyMap6<SortedKeyMap2<T>> m_map = new MultiLevelKeyMap6<SortedKeyMap2<T>>();
+		private readonly MultiLevelKeyMap6<SortedKeyMap2<T>> m_map = new MultiLevelKeyMap6<SortedKeyMap2<T>>();
 
 		protected StockFlowMapBase6(Scenario scenario) : base(scenario)
 		{

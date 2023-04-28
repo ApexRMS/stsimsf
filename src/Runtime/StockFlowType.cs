@@ -7,8 +7,8 @@ namespace SyncroSim.STSimStockFlow
 {
 	internal class StockFlowType
 	{
-		private int m_Id;
-        private string m_Name;
+		private readonly int m_Id;
+        private readonly string m_Name;
         private Constants.OutputFilter m_OutputFilter = Constants.OutputFilter.None;
 
         public StockFlowType(int id, string name)

@@ -20,7 +20,7 @@ namespace SyncroSim.STSimStockFlow
 		private DataTable m_FlowDiagramData;
 		private DataSheet m_FlowPathwaySheet;
 		private DataTable m_FlowPathwayData;
-		private Dictionary<int, StockTypeShape> m_ShapeLookup = new Dictionary<int, StockTypeShape>();
+		private readonly Dictionary<int, StockTypeShape> m_ShapeLookup = new Dictionary<int, StockTypeShape>();
 		private bool m_IsFilterApplied;
 
 		public FlowPathwayDiagram()

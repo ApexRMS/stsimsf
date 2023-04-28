@@ -5,15 +5,15 @@ namespace SyncroSim.STSimStockFlow
 {
 	internal class StockLimit
 	{
-		private int? m_Iteration;
-		private int? m_Timestep;
-		private int m_StockTypeId;
-		private int? m_StratumId;
-		private int? m_SecondaryStratumId;
-		private int? m_TertiaryStratumId;
-		private int? m_StateClassId;
-		private double m_StockMinimum;
-		private double m_StockMaximum;
+		private readonly int? m_Iteration;
+		private readonly int? m_Timestep;
+		private readonly int m_StockTypeId;
+		private readonly int? m_StratumId;
+		private readonly int? m_SecondaryStratumId;
+		private readonly int? m_TertiaryStratumId;
+		private readonly int? m_StateClassId;
+		private readonly double m_StockMinimum;
+		private readonly double m_StockMaximum;
 
 		public StockLimit(
             int? iteration, int? timestep, int stockTypeId, int? stratumId, int? secondaryStratumId, int? tertiaryStratumId, 

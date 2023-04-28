@@ -10,9 +10,9 @@ namespace SyncroSim.STSimStockFlow
 {
 	internal class StockTypeShape : BoxDiagramShape
 	{
-		private int m_StockTypeId;
-		private List<FlowPathway> m_OutgoingPathways = new List<FlowPathway>();
-		private List<FlowPathway> m_IncomingPathways = new List<FlowPathway>();
+		private readonly int m_StockTypeId;
+		private readonly List<FlowPathway> m_OutgoingPathways = new List<FlowPathway>();
+		private readonly List<FlowPathway> m_IncomingPathways = new List<FlowPathway>();
 		private bool m_IsReadOnly;
 
 		public StockTypeShape(int stockTypeId, string displayName) : 

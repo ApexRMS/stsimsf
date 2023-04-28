@@ -8,11 +8,11 @@ namespace SyncroSim.STSimStockFlow
 {
 		internal class FlowMultiplierByStock : STSimDistributionBase
 		{
-				private int? m_StateClassId;
-				private int? m_FlowMultiplierTypeId;
-				private int m_FlowGroupID;
-				private int m_StockGroupId;
-				private double m_StockValue;
+				private readonly int? m_StateClassId;
+				private readonly int? m_FlowMultiplierTypeId;
+				private readonly int m_FlowGroupID;
+				private readonly int m_StockGroupId;
+				private readonly double m_StockValue;
 
 				public FlowMultiplierByStock(
 								int? iteration, int? timestep, int? stratumId, int? secondaryStratumId, int? tertiaryStratumId,

@@ -9,7 +9,7 @@ namespace SyncroSim.STSimStockFlow
 	internal class FlowOrderMap
 	{
 		private bool m_HasItems;
-		private SortedKeyMap2<FlowOrderCollection> m_Map = new SortedKeyMap2<FlowOrderCollection>(SearchMode.ExactPrev);
+		private readonly SortedKeyMap2<FlowOrderCollection> m_Map = new SortedKeyMap2<FlowOrderCollection>(SearchMode.ExactPrev);
 
 		public FlowOrderMap(FlowOrderCollection orders)
 		{

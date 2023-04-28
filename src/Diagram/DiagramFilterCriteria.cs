@@ -7,7 +7,7 @@ namespace SyncroSim.STSimStockFlow
 {
 	internal class DiagramFilterCriteria
 	{
-		private Dictionary<int, bool> m_FlowTypes = new Dictionary<int, bool>();
+		private readonly Dictionary<int, bool> m_FlowTypes = new Dictionary<int, bool>();
 
 		public Dictionary<int, bool> FlowTypes
 		{

@@ -8,11 +8,11 @@ namespace SyncroSim.STSimStockFlow
 {
     internal class FlowMultiplier : STSimDistributionBase
     {
-        private int? m_StateClassId;
-        private int m_AgeMin;
-        private int m_AgeMax = int.MaxValue;
-        private int? m_FlowMultiplierTypeId;
-        private int m_FlowGroupId;
+        private readonly int? m_StateClassId;
+        private readonly int m_AgeMin;
+        private readonly int m_AgeMax = int.MaxValue;
+        private readonly int? m_FlowMultiplierTypeId;
+        private readonly int m_FlowGroupId;
 
         public FlowMultiplier(
                 int? iteration,

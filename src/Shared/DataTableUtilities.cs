@@ -11,7 +11,7 @@ namespace SyncroSim.STSimStockFlow
     {
         public static void SetRowValue(DataRow dr, string columnName, object value)
         {
-            if (object.ReferenceEquals(value, DBNull.Value) || object.ReferenceEquals(value, null))
+            if (object.ReferenceEquals(value, DBNull.Value) || value is null)
             {
                 dr[columnName] = DBNull.Value;
             }
@@ -120,11 +120,8 @@ namespace SyncroSim.STSimStockFlow
             int? ToStateClassId = null;
             int? ToMinimumAge = null;
             int? ToStockTypeId = null;
-            int TransitionGroupId = 0;
             int? StateAttributeTypeId = null;
-            int FlowTypeId = 0;
             int? TargetType = null;
-            double Multiplier = 0;
             int? TransferToStratumId = null;
             int? TransferToSecondaryStratumId = null;
             int? TransferToTertiaryStratumId = null;
@@ -191,6 +188,7 @@ namespace SyncroSim.STSimStockFlow
                 ToStockTypeId = Convert.ToInt32(dr[Constants.TO_STOCK_TYPE_ID_COLUMN_NAME], CultureInfo.InvariantCulture);
             }
 
+            int TransitionGroupId;
             if (dr[Constants.TRANSITION_GROUP_ID_COLUMN_NAME] != DBNull.Value)
             {
                 TransitionGroupId = Convert.ToInt32(dr[Constants.TRANSITION_GROUP_ID_COLUMN_NAME], CultureInfo.InvariantCulture);
@@ -205,14 +203,14 @@ namespace SyncroSim.STSimStockFlow
                 StateAttributeTypeId = Convert.ToInt32(dr[Constants.STATE_ATTRIBUTE_TYPE_ID_COLUMN_NAME], CultureInfo.InvariantCulture);
             }
 
-            FlowTypeId = Convert.ToInt32(dr[Constants.FLOW_TYPE_ID_COLUMN_NAME], CultureInfo.InvariantCulture);
+            int FlowTypeId = Convert.ToInt32(dr[Constants.FLOW_TYPE_ID_COLUMN_NAME], CultureInfo.InvariantCulture);
 
             if (dr[Constants.TARGET_TYPE] != DBNull.Value)
             {
                 TargetType = Convert.ToInt32(dr[Constants.TARGET_TYPE], CultureInfo.InvariantCulture);
             }
 
-            Multiplier = Convert.ToDouble(dr[Constants.MULTIPLIER_COLUMN_NAME], CultureInfo.InvariantCulture);
+            double Multiplier = Convert.ToDouble(dr[Constants.MULTIPLIER_COLUMN_NAME], CultureInfo.InvariantCulture);
 
             if (dr[Constants.TRANSFER_TO_STRATUM_ID_COLUMN_NAME] != DBNull.Value)
             {
