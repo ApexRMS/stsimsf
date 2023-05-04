@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<package name="stsimsf" displayName="Integrates stocks and flows into the ST-Sim simulation model" version="3.3.12"  isAddOn="True" extendsPackage="stsim" url="https://apexrms.github.io/stsimsf/">
+<package name="stsimsf" displayName="Integrates stocks and flows into the ST-Sim simulation model" version="3.3.13"  isAddOn="True" extendsPackage="stsim" url="https://apexrms.github.io/stsimsf/">
 	<transformers>
 		<transformer name="Primary" displayName="Stocks and Flows" className="SyncroSim.STSimStockFlow.StockFlowTransformer" classAssembly="SyncroSim.STSimStockFlow" isPrimary="True" extendsTransformer="stsim_Runtime">
 			<datafeeds>
@@ -275,7 +275,7 @@
 													<column name="StockValue" dataType="Double" displayName="Stock Density" validationType="Decimal" validationCondition="GreaterEqual" formula1="0.0" allowDbNull="False"/>
 													<column name="FlowMultiplierTypeID" dataType="Integer" displayName="Flow Multiplier Type" validationType="Datasheet" formula1="FlowMultiplierType" isOptional="True"/>
 													<column name="FlowGroupID" dataType="Integer" displayName="Flow Type/Group" validationType="Datasheet" formula1="FlowGroup" allowDbNull="False"/>
-													<column name="Multiplier" dataType="Double" displayName="Multiplier" validationType="Decimal" validationCondition="GreaterEqual" formula1="0.0"/>
+													<column name="Multiplier" dataType="Double" displayName="Multiplier" validationType="Decimal"/>
 													<column name="DistributionType" displayName="Multiplier Distribution" dataType="Integer" validationType="Datasheet" formula1="corestime_DistributionType" isOptional="True"/>
 													<column name="DistributionFrequencyID" displayName="Multiplier Sampling Frequency" dataType="Integer" validationType="List" formula1="0:Always|1:Iteration Only|2:Iteration and Timestep" isOptional="True"/>
 													<column name="DistributionSD" displayName="Multiplier SD" dataType="Double" validationType="Decimal" validationCondition="GreaterEqual" formula1="0.0" isOptional="True"/>
