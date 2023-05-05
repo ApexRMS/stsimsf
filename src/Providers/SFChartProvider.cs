@@ -49,10 +49,7 @@ namespace SyncroSim.STSimStockFlow
 		{
 			//Stock Groups
 			SyncroSimLayoutItem StockGroupsGroup = new SyncroSimLayoutItem(STOCK_GROUP_NAME, "Stocks", true);
-
 			StockGroupsGroup.Properties.Add(new MetaDataProperty("dataSheet", Constants.DATASHEET_OUTPUT_STOCK_NAME));
-			StockGroupsGroup.Properties.Add(new MetaDataProperty("filter", "StratumID|SecondaryStratumID|TertiaryStratumID|StateClassID|StockGroupID"));
-
 			AddStockGroupChartVariables(project, StockGroupsGroup.Items);
 
 			if (StockGroupsGroup.Items.Count > 0)
@@ -62,10 +59,7 @@ namespace SyncroSim.STSimStockFlow
 
 			//Flow Groups
 			SyncroSimLayoutItem FlowGroupsGroup = new SyncroSimLayoutItem(FLOW_GROUP_NAME, "Flows", true);
-
 			FlowGroupsGroup.Properties.Add(new MetaDataProperty("dataSheet", Constants.DATASHEET_OUTPUT_FLOW_NAME));
-			FlowGroupsGroup.Properties.Add(new MetaDataProperty("filter", "FromStratumID|FromSecondaryStratumID|FromTertiaryStratumID|FromStateClassID|FromStockTypeID|TransitionTypeID|ToStratumID|ToStateClassID|ToStockTypeID|FlowGroupID|EndStratumID|EndSecondaryStratumID|EndTertiaryStratumID|EndStateClassID"));
-
 			AddFlowGroupChartVariables(project, FlowGroupsGroup.Items);
 
 			if (FlowGroupsGroup.Items.Count > 0)
@@ -84,6 +78,7 @@ namespace SyncroSim.STSimStockFlow
 				SyncroSimLayoutItem ItemNormal = new SyncroSimLayoutItem(STOCK_GROUP_VAR_NAME, "Total", false);
 
 				ItemNormal.Properties.Add(new MetaDataProperty("dataSheet", Constants.DATASHEET_OUTPUT_STOCK_NAME));
+				ItemNormal.Properties.Add(new MetaDataProperty("filter", "StratumID|SecondaryStratumID|TertiaryStratumID|StateClassID|StockGroupID"));
 				ItemNormal.Properties.Add(new MetaDataProperty("column", "Amount"));
 				ItemNormal.Properties.Add(new MetaDataProperty("defaultValue", "0.0"));
 
@@ -93,6 +88,7 @@ namespace SyncroSim.STSimStockFlow
 				SyncroSimLayoutItem ItemDensity = new SyncroSimLayoutItem(STOCK_GROUP_DENSITY_VAR_NAME, "Density", false);
 
 				ItemDensity.Properties.Add(new MetaDataProperty("dataSheet", Constants.DATASHEET_OUTPUT_STOCK_NAME));
+				ItemDensity.Properties.Add(new MetaDataProperty("filter", "StratumID|SecondaryStratumID|TertiaryStratumID|StateClassID|StockGroupID"));
 				ItemDensity.Properties.Add(new MetaDataProperty("column", "Amount"));
 				ItemDensity.Properties.Add(new MetaDataProperty("defaultValue", "0.0"));
 
@@ -109,6 +105,7 @@ namespace SyncroSim.STSimStockFlow
 				SyncroSimLayoutItem ItemNormal = new SyncroSimLayoutItem(FLOW_GROUP_VAR_NAME, "Total", false);
 
 				ItemNormal.Properties.Add(new MetaDataProperty("dataSheet", Constants.DATASHEET_OUTPUT_FLOW_NAME));
+				ItemNormal.Properties.Add(new MetaDataProperty("filter", "FromStratumID|FromSecondaryStratumID|FromTertiaryStratumID|FromStateClassID|FromStockTypeID|TransitionTypeID|ToStratumID|ToStateClassID|ToStockTypeID|FlowGroupID|EndStratumID|EndSecondaryStratumID|EndTertiaryStratumID|EndStateClassID"));
 				ItemNormal.Properties.Add(new MetaDataProperty("column", "Amount"));
 				ItemNormal.Properties.Add(new MetaDataProperty("skipTimestepZero", "True"));
 				ItemNormal.Properties.Add(new MetaDataProperty("defaultValue", "0.0"));
@@ -119,6 +116,7 @@ namespace SyncroSim.STSimStockFlow
 				SyncroSimLayoutItem ItemDensity = new SyncroSimLayoutItem(FLOW_GROUP_DENSITY_VAR_NAME, "Density", false);
 
 				ItemDensity.Properties.Add(new MetaDataProperty("dataSheet", Constants.DATASHEET_OUTPUT_FLOW_NAME));
+				ItemDensity.Properties.Add(new MetaDataProperty("filter", "FromStratumID|FromSecondaryStratumID|FromTertiaryStratumID|FromStateClassID|FromStockTypeID|TransitionTypeID|ToStratumID|ToStateClassID|ToStockTypeID|FlowGroupID|EndStratumID|EndSecondaryStratumID|EndTertiaryStratumID|EndStateClassID"));
 				ItemDensity.Properties.Add(new MetaDataProperty("column", "Amount"));
 				ItemDensity.Properties.Add(new MetaDataProperty("skipTimestepZero", "True"));
 				ItemDensity.Properties.Add(new MetaDataProperty("defaultValue", "0.0"));
