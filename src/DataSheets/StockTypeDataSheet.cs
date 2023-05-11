@@ -15,7 +15,7 @@ namespace SyncroSim.STSimStockFlow
         private DataTable m_StockTypeDataTable;
         private DataSheet m_StockGroupDataSheet;
         private DataTable m_StockGroupDataTable;
-        private Dictionary<int, string> m_PrevNames = new Dictionary<int, string>();
+        private readonly Dictionary<int, string> m_PrevNames = new Dictionary<int, string>();
 
         protected override void OnDataFeedsRefreshed()
         {

@@ -5,7 +5,7 @@ namespace SyncroSim.STSimStockFlow
 {
 	internal class StockType : StockFlowType
 	{
-        private StockGroupLinkageCollection m_StockGroupLinkages = new StockGroupLinkageCollection();
+        private readonly StockGroupLinkageCollection m_StockGroupLinkages = new StockGroupLinkageCollection();
 
 		public StockType(int id, string name) : base(id, name)
 		{

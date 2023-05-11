@@ -7,11 +7,11 @@ namespace SyncroSim.STSimStockFlow
 {
     internal class FlowLateralMultiplier
     {
-        private int m_FlowGroupId;
-        private int? m_FlowMultiplierTypeId;
-        private int? m_Iteration;
-        private int? m_Timestep;
-        private string m_Filename;
+        private readonly int m_FlowGroupId;
+        private readonly int? m_FlowMultiplierTypeId;
+        private readonly int? m_Iteration;
+        private readonly int? m_Timestep;
+        private readonly string m_Filename;
 
         public FlowLateralMultiplier(
             int flowGroupId,

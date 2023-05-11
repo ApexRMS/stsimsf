@@ -8,7 +8,7 @@ namespace SyncroSim.STSimStockFlow
 {
 	internal class FlowPathwayLine : ConnectorLine
 	{
-		private FlowPathway m_Pathway;
+		private readonly FlowPathway m_Pathway;
 
 		public FlowPathwayLine(Color lineColor, FlowPathway pathway) : base(lineColor)
 		{

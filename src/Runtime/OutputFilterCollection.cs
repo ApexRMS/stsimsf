@@ -7,7 +7,7 @@ namespace SyncroSim.STSimStockFlow
 {
     class OutputFilterCollection
     {
-		Dictionary<int, OutputFilterBase> m_Items = new Dictionary<int, OutputFilterBase>();
+        readonly Dictionary<int, OutputFilterBase> m_Items = new Dictionary<int, OutputFilterBase>();
 
 		public bool HasItems
 		{

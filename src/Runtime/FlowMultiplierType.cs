@@ -10,15 +10,17 @@ namespace SyncroSim.STSimStockFlow
 {
     class FlowMultiplierType
     {
-        private Scenario m_Scenario;
-        private STSimDistributionProvider m_Provider;
-        private int? m_FlowMultiplierTypeId;
-        private FlowMultiplierCollection m_FlowMultipliers = new FlowMultiplierCollection();
+        private readonly Scenario m_Scenario;
+        private readonly STSimDistributionProvider m_Provider;
+        private readonly int? m_FlowMultiplierTypeId;
+        private readonly FlowMultiplierCollection m_FlowMultipliers = new FlowMultiplierCollection();
         private FlowMultiplierMap m_FlowMultiplierMap;
-        private FlowSpatialMultiplierCollection m_FlowSpatialMultipliers = new FlowSpatialMultiplierCollection();
+        private readonly FlowSpatialMultiplierCollection m_FlowSpatialMultipliers = new FlowSpatialMultiplierCollection();
         private FlowSpatialMultiplierMap m_FlowSpatialMultiplierMap;
-        private FlowLateralMultiplierCollection m_FlowLateralMultipliers = new FlowLateralMultiplierCollection();
+        private readonly FlowLateralMultiplierCollection m_FlowLateralMultipliers = new FlowLateralMultiplierCollection();
         private FlowLateralMultiplierMap m_FlowLateralMultiplierMap;
+        private readonly FlowMultiplierByStockCollection m_FlowMultipliersByStock = new FlowMultiplierByStockCollection();
+        private FlowMultiplierByStockMap m_FlowMultiplierByStockMap;
 
         public FlowMultiplierType(
             int? flowMultiplierTypeId, 
@@ -62,6 +64,14 @@ namespace SyncroSim.STSimStockFlow
             }
         }
 
+        internal FlowMultiplierByStockMap FlowMultiplierByStockMap
+        {
+            get
+            {
+                return this.m_FlowMultiplierByStockMap;
+            }
+        }
+
         internal void AddFlowMultiplier(FlowMultiplier multiplier)
         {
             if (multiplier.FlowMultiplierTypeId != this.m_FlowMultiplierTypeId)
@@ -92,6 +102,16 @@ namespace SyncroSim.STSimStockFlow
             this.m_FlowLateralMultipliers.Add(multiplier);
         }
 
+        internal void AddFlowMultiplierByStock(FlowMultiplierByStock multiplier)
+        {
+            if (multiplier.FlowMultiplierTypeId != this.m_FlowMultiplierTypeId)
+            {
+                throw new ArgumentException("The flow multiplier type is not correct.");
+            }
+
+            this.m_FlowMultipliersByStock.Add(multiplier);
+        }
+
         internal void ClearFlowMultiplierMap()
         {
             this.m_FlowMultipliers.Clear();
@@ -108,6 +128,12 @@ namespace SyncroSim.STSimStockFlow
         {
             this.m_FlowLateralMultipliers.Clear();
             this.m_FlowLateralMultiplierMap = null;
+        }
+
+        internal void ClearFlowMultiplierByStockMap()
+        {
+            this.m_FlowMultipliersByStock.Clear();
+            this.m_FlowMultiplierByStockMap = null;
         }
 
         internal void CreateFlowMultiplierMap()
@@ -140,6 +166,17 @@ namespace SyncroSim.STSimStockFlow
 
                 this.m_FlowLateralMultiplierMap = new FlowLateralMultiplierMap(
                     this.m_Scenario, this.m_FlowLateralMultipliers);
+            }
+        }
+
+        internal void CreateFlowMultiplierByStockMap()
+        {
+            if (this.m_FlowMultipliersByStock.Count > 0)
+            {
+                Debug.Assert(this.m_FlowMultiplierByStockMap == null);
+
+                this.m_FlowMultiplierByStockMap = new FlowMultiplierByStockMap(
+                    this.m_Scenario, this.m_FlowMultipliersByStock, this.m_Provider);
             }
         }
     }

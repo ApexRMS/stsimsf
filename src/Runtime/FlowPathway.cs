@@ -5,30 +5,30 @@ namespace SyncroSim.STSimStockFlow
 {
 	internal class FlowPathway
 	{
-		private int? m_Iteration;
-		private int? m_Timestep;
-		private int? m_FromStratumId;
-		private int? m_FromSecondaryStratumId;
-		private int? m_FromTertiaryStratumId;
-		private int? m_FromStateClassId;
-		private int? m_FromMinimumAge;
-		private int? m_FromStockTypeId;
-		private int? m_ToStratumId;
-		private int? m_ToStateClassId;
-		private int? m_ToMinimumAge;
-		private int? m_ToStockTypeId;
-		private int m_TransitionGroupId;
-		private int? m_StateAttributeTypeId;
-		private int m_FlowTypeId;
-        private Constants.TargetType m_TargetType = Constants.TargetType.Flow;
-        private double m_Multiplier;
-        private int? m_TransferToStratumId;
-        private int? m_TransferToSecondaryStratumId;
-        private int? m_TransferToTertiaryStratumId;
-        private int? m_TransferToStateClassId;
-        private int? m_TransferToMinimumAge;
+		private readonly int? m_Iteration;
+		private readonly int? m_Timestep;
+		private readonly int? m_FromStratumId;
+		private readonly int? m_FromSecondaryStratumId;
+		private readonly int? m_FromTertiaryStratumId;
+		private readonly int? m_FromStateClassId;
+		private readonly int? m_FromMinimumAge;
+		private readonly int? m_FromStockTypeId;
+		private readonly int? m_ToStratumId;
+		private readonly int? m_ToStateClassId;
+		private readonly int? m_ToMinimumAge;
+		private readonly int? m_ToStockTypeId;
+		private readonly int m_TransitionGroupId;
+		private readonly int? m_StateAttributeTypeId;
+		private readonly int m_FlowTypeId;
+        private readonly Constants.TargetType m_TargetType = Constants.TargetType.Flow;
+        private readonly double m_Multiplier;
+        private readonly int? m_TransferToStratumId;
+        private readonly int? m_TransferToSecondaryStratumId;
+        private readonly int? m_TransferToTertiaryStratumId;
+        private readonly int? m_TransferToStateClassId;
+        private readonly int? m_TransferToMinimumAge;
         private float m_FlowAmount;
-        private bool m_IsLateral;
+        private readonly bool m_IsLateral;
 
 		public FlowPathway(
             int? iteration, 

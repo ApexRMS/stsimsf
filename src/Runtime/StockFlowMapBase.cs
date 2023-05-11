@@ -9,10 +9,10 @@ namespace SyncroSim.STSimStockFlow
 {
 	internal abstract class StockFlowMapBase
 	{
-		private Scenario m_Scenario;
-		private string m_PrimaryStratumLabel;
-		private string m_SecondaryStratumLabel;
-		private string m_TertiaryStratumLabel;
+		private readonly Scenario m_Scenario;
+		private readonly string m_PrimaryStratumLabel;
+		private readonly string m_SecondaryStratumLabel;
+		private readonly string m_TertiaryStratumLabel;
 		private bool m_HasItems;
 
 		protected StockFlowMapBase(Scenario scenario)

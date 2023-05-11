@@ -5,11 +5,11 @@ namespace SyncroSim.STSimStockFlow
 {
 	internal class OutputStock
 	{
-		private int m_StratumId;
-		private int? m_SecondaryStratumId;
-		private int? m_TertiaryStratumId;
-		private int m_StateClassId;
-		private int m_StockGroupId;
+		private readonly int m_StratumId;
+		private readonly int? m_SecondaryStratumId;
+		private readonly int? m_TertiaryStratumId;
+		private readonly int m_StateClassId;
+		private readonly int m_StockGroupId;
 		private double m_Amount;
 
 		public OutputStock(

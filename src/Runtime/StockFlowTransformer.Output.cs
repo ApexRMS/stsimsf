@@ -24,22 +24,22 @@ namespace SyncroSim.STSimStockFlow
 		private int m_SpatialStockOutputTimesteps;
 		private bool m_CreateSpatialFlowOutput;
 		private int m_SpatialFlowOutputTimesteps;
-        private bool m_CreateLateralFlowOutput;
-        private int m_LateralFlowOutputTimesteps;
+		private bool m_CreateLateralFlowOutput;
+		private int m_LateralFlowOutputTimesteps;
 		private bool m_CreateAvgSpatialStockOutput;
 		private int m_AvgSpatialStockOutputTimesteps;
-        private bool m_AvgSpatialStockOutputAcrossTimesteps;
+		private bool m_AvgSpatialStockOutputAcrossTimesteps;
 		private bool m_CreateAvgSpatialFlowOutput;
 		private int m_AvgSpatialFlowOutputTimesteps;
-        private bool m_AvgSpatialFlowOutputAcrossTimesteps;
+		private bool m_AvgSpatialFlowOutputAcrossTimesteps;
 		private bool m_CreateAvgSpatialLateralFlowOutput;
 		private int m_AvgSpatialLateralFlowOutputTimesteps;
-        private bool m_AvgSpatialLateralFlowOutputAcrossTimesteps;
+		private bool m_AvgSpatialLateralFlowOutputAcrossTimesteps;
 
 		private Dictionary<int, SpatialOutputFlowRecord> m_SpatialOutputFlowDict;
 		private Dictionary<int, SpatialOutputFlowRecord> m_LateralOutputFlowDict;
-		private OutputFlowCollection m_SummaryOutputFlowRecords = new OutputFlowCollection();
-		private OutputStockCollection m_SummaryOutputStockRecords = new OutputStockCollection();
+		private readonly OutputFlowCollection m_SummaryOutputFlowRecords = new OutputFlowCollection();
+		private readonly OutputStockCollection m_SummaryOutputStockRecords = new OutputStockCollection();
 
 		private void InitializeOutputDataTables()
 		{
@@ -53,245 +53,245 @@ namespace SyncroSim.STSimStockFlow
 			Debug.Assert(this.m_OutputFlowTable.Rows.Count == 0);
 		}
 
-        private void RecordSummaryStockOutputData()
-        {
-            foreach (Cell c in this.STSimTransformer.Cells)
-            {
-                Dictionary<int, float> StockAmounts = GetStockAmountDictionary(c);
+				private void RecordSummaryStockOutputData()
+				{
+						foreach (Cell c in this.STSimTransformer.Cells)
+						{
+								Dictionary<int, float> StockAmounts = GetStockAmountDictionary(c);
 
-                foreach (int StockTypeId in StockAmounts.Keys)
-                {
-                    StockType t = this.m_StockTypes[StockTypeId];
-                    float amount = StockAmounts[StockTypeId];
+								foreach (int StockTypeId in StockAmounts.Keys)
+								{
+										StockType t = this.m_StockTypes[StockTypeId];
+										float amount = StockAmounts[StockTypeId];
 
-                    foreach (StockGroupLinkage l in t.StockGroupLinkages)                    
-                    {
-                        if (!l.StockGroup.OutputFilter.HasFlag(Constants.OutputFilter.Tabular))
-                        {
-                            continue;
-                        }
+										foreach (StockGroupLinkage l in t.StockGroupLinkages)                    
+										{
+												if (!l.StockGroup.OutputFilter.HasFlag(Constants.OutputFilter.Tabular))
+												{
+														continue;
+												}
 
-                        FiveIntegerLookupKey k = new FiveIntegerLookupKey(
-                        c.StratumId, GetSecondaryStratumIdKey(c),
-                        GetTertiaryStratumIdKey(c), c.StateClassId, l.StockGroup.Id);
+												FiveIntegerLookupKey k = new FiveIntegerLookupKey(
+												c.StratumId, GetSecondaryStratumIdKey(c),
+												GetTertiaryStratumIdKey(c), c.StateClassId, l.StockGroup.Id);
 
-                        if (this.m_SummaryOutputStockRecords.Contains(k))
-                        {
-                            OutputStock r = this.m_SummaryOutputStockRecords[k];
-                            r.Amount += (amount * l.Value);
-                        }
-                        else
-                        {
-                            OutputStock r = new OutputStock(
-                                c.StratumId, GetSecondaryStratumIdValue(c),
-                                GetTertiaryStratumIdValue(c), c.StateClassId, l.StockGroup.Id, amount * l.Value);
+												if (this.m_SummaryOutputStockRecords.Contains(k))
+												{
+														OutputStock r = this.m_SummaryOutputStockRecords[k];
+														r.Amount += (amount * l.Value);
+												}
+												else
+												{
+														OutputStock r = new OutputStock(
+																c.StratumId, GetSecondaryStratumIdValue(c),
+																GetTertiaryStratumIdValue(c), c.StateClassId, l.StockGroup.Id, amount * l.Value);
 
-                            this.m_SummaryOutputStockRecords.Add(r);
-                        }
-                    }
-                }
-            }
-        }
+														this.m_SummaryOutputStockRecords.Add(r);
+												}
+										}
+								}
+						}
+				}
 
-        private void RecordSummaryFlowOutputData(
-            int timestep,
-            Cell cell,
-            DeterministicTransition deterministicPathway,
-            Transition probabilisticPathway,
-            FlowPathway flowPathway,
-            float flowAmount)
-        {
-            int? TransitionTypeId = null;
-            int StratumIdDest = cell.StratumId;
-            int StateClassIdDest = cell.StateClassId;
+				private void RecordSummaryFlowOutputData(
+						int timestep,
+						Cell cell,
+						DeterministicTransition deterministicPathway,
+						Transition probabilisticPathway,
+						FlowPathway flowPathway,
+						float flowAmount)
+				{
+						int? TransitionTypeId = null;
+						int StratumIdDest = cell.StratumId;
+						int StateClassIdDest = cell.StateClassId;
 
-            if (probabilisticPathway != null)
-            {
-                TransitionTypeId = probabilisticPathway.TransitionTypeId;
+						if (probabilisticPathway != null)
+						{
+								TransitionTypeId = probabilisticPathway.TransitionTypeId;
 
-                if (probabilisticPathway.StratumIdDestination.HasValue)
-                {
-                    StratumIdDest = probabilisticPathway.StratumIdDestination.Value;
-                }
+								if (probabilisticPathway.StratumIdDestination.HasValue)
+								{
+										StratumIdDest = probabilisticPathway.StratumIdDestination.Value;
+								}
 
-                if (probabilisticPathway.StateClassIdDestination.HasValue)
-                {
-                    StateClassIdDest = probabilisticPathway.StateClassIdDestination.Value;
-                }
-            }
-            else
-            {
-                if (deterministicPathway != null)
-                {
-                    if (deterministicPathway.StratumIdDestination.HasValue)
-                    {
-                        StratumIdDest = deterministicPathway.StratumIdDestination.Value;
-                    }
+								if (probabilisticPathway.StateClassIdDestination.HasValue)
+								{
+										StateClassIdDest = probabilisticPathway.StateClassIdDestination.Value;
+								}
+						}
+						else
+						{
+								if (deterministicPathway != null)
+								{
+										if (deterministicPathway.StratumIdDestination.HasValue)
+										{
+												StratumIdDest = deterministicPathway.StratumIdDestination.Value;
+										}
 
-                    if (deterministicPathway.StateClassIdDestination.HasValue)
-                    {
-                        StateClassIdDest = deterministicPathway.StateClassIdDestination.Value;
-                    }
-                }
-            }
+										if (deterministicPathway.StateClassIdDestination.HasValue)
+										{
+												StateClassIdDest = deterministicPathway.StateClassIdDestination.Value;
+										}
+								}
+						}
 
-            if (this.m_STSimTransformer.IsOutputTimestep(
-                timestep, 
-                this.m_SummaryFlowOutputTimesteps, 
-                this.m_CreateSummaryFlowOutput))
-            {
-                FlowType t = this.m_FlowTypes[flowPathway.FlowTypeId];
+						if (this.m_STSimTransformer.IsOutputTimestep(
+								timestep, 
+								this.m_SummaryFlowOutputTimesteps, 
+								this.m_CreateSummaryFlowOutput))
+						{
+								FlowType t = this.m_FlowTypes[flowPathway.FlowTypeId];
 
-                foreach (FlowGroupLinkage l in t.FlowGroupLinkages)
-                {
-                    if (!l.FlowGroup.OutputFilter.HasFlag(Constants.OutputFilter.Tabular))
-                    {
-                        continue;
-                    }
+								foreach (FlowGroupLinkage l in t.FlowGroupLinkages)
+								{
+										if (!l.FlowGroup.OutputFilter.HasFlag(Constants.OutputFilter.Tabular))
+										{
+												continue;
+										}
 
-                    FifteenIntegerLookupKey k = new FifteenIntegerLookupKey(
-                        cell.StratumId,
-                        GetSecondaryStratumIdKey(cell),
-                        GetTertiaryStratumIdKey(cell),
-                        cell.StateClassId,
-                        LookupKeyUtilities.GetOutputCollectionKey(flowPathway.FromStockTypeId),
-                        LookupKeyUtilities.GetOutputCollectionKey(TransitionTypeId),
-                        StratumIdDest,
-                        StateClassIdDest,
-                        LookupKeyUtilities.GetOutputCollectionKey(flowPathway.ToStockTypeId),
-                        l.FlowGroup.Id, 
-                        LookupKeyUtilities.GetOutputCollectionKey(flowPathway.TransferToStratumId),
-                        LookupKeyUtilities.GetOutputCollectionKey(flowPathway.TransferToSecondaryStratumId),
-                        LookupKeyUtilities.GetOutputCollectionKey(flowPathway.TransferToTertiaryStratumId),
-                        LookupKeyUtilities.GetOutputCollectionKey(flowPathway.TransferToStateClassId),
-                        LookupKeyUtilities.GetOutputCollectionKey(flowPathway.TransferToMinimumAge));
+										FifteenIntegerLookupKey k = new FifteenIntegerLookupKey(
+												cell.StratumId,
+												GetSecondaryStratumIdKey(cell),
+												GetTertiaryStratumIdKey(cell),
+												cell.StateClassId,
+												LookupKeyUtilities.GetOutputCollectionKey(flowPathway.FromStockTypeId),
+												LookupKeyUtilities.GetOutputCollectionKey(TransitionTypeId),
+												StratumIdDest,
+												StateClassIdDest,
+												LookupKeyUtilities.GetOutputCollectionKey(flowPathway.ToStockTypeId),
+												l.FlowGroup.Id, 
+												LookupKeyUtilities.GetOutputCollectionKey(flowPathway.TransferToStratumId),
+												LookupKeyUtilities.GetOutputCollectionKey(flowPathway.TransferToSecondaryStratumId),
+												LookupKeyUtilities.GetOutputCollectionKey(flowPathway.TransferToTertiaryStratumId),
+												LookupKeyUtilities.GetOutputCollectionKey(flowPathway.TransferToStateClassId),
+												LookupKeyUtilities.GetOutputCollectionKey(flowPathway.TransferToMinimumAge));
 
-                    if (this.m_SummaryOutputFlowRecords.Contains(k))
-                    {
-                        OutputFlow r = this.m_SummaryOutputFlowRecords[k];
-                        r.Amount += (flowAmount * l.Value);
-                    }
-                    else
-                    {
-                        OutputFlow r = new OutputFlow(
-                            cell.StratumId,
-                            GetSecondaryStratumIdValue(cell),
-                            GetTertiaryStratumIdValue(cell),
-                            cell.StateClassId,
-                            flowPathway.FromStockTypeId,
-                            TransitionTypeId,
-                            StratumIdDest,
-                            StateClassIdDest,
-                            flowPathway.ToStockTypeId,
-                            l.FlowGroup.Id,
-                            flowPathway.TransferToStratumId,
-                            flowPathway.TransferToSecondaryStratumId,
-                            flowPathway.TransferToTertiaryStratumId,
-                            flowPathway.TransferToStateClassId,
-                            flowPathway.TransferToMinimumAge,
-                            flowAmount * l.Value);
+										if (this.m_SummaryOutputFlowRecords.Contains(k))
+										{
+												OutputFlow r = this.m_SummaryOutputFlowRecords[k];
+												r.Amount += (flowAmount * l.Value);
+										}
+										else
+										{
+												OutputFlow r = new OutputFlow(
+														cell.StratumId,
+														GetSecondaryStratumIdValue(cell),
+														GetTertiaryStratumIdValue(cell),
+														cell.StateClassId,
+														flowPathway.FromStockTypeId,
+														TransitionTypeId,
+														StratumIdDest,
+														StateClassIdDest,
+														flowPathway.ToStockTypeId,
+														l.FlowGroup.Id,
+														flowPathway.TransferToStratumId,
+														flowPathway.TransferToSecondaryStratumId,
+														flowPathway.TransferToTertiaryStratumId,
+														flowPathway.TransferToStateClassId,
+														flowPathway.TransferToMinimumAge,
+														flowAmount * l.Value);
 
-                        this.m_SummaryOutputFlowRecords.Add(r);
-                    }
-                }
-            }
-        }
+												this.m_SummaryOutputFlowRecords.Add(r);
+										}
+								}
+						}
+				}
 
-        private void RecordSpatialFlowOutputData(int timestep, Cell cell, int flowTypeId, float flowAmount)
-        {
-            if (!this.m_IsSpatial)
-            {
-                return;
-            }
+				private void RecordSpatialFlowOutputData(int timestep, Cell cell, int flowTypeId, float flowAmount)
+				{
+						if (!this.m_IsSpatial)
+						{
+								return;
+						}
 
-            bool IsNormalOutputTimestep = this.m_STSimTransformer.IsOutputTimestep(
-                timestep,
-                this.m_SpatialFlowOutputTimesteps,
-                this.m_CreateSpatialFlowOutput);
+						bool IsNormalOutputTimestep = this.m_STSimTransformer.IsOutputTimestep(
+								timestep,
+								this.m_SpatialFlowOutputTimesteps,
+								this.m_CreateSpatialFlowOutput);
 
-            bool IsAverageOutputTimestep = this.m_STSimTransformer.IsOutputTimestep(
-                timestep,
-                this.m_AvgSpatialFlowOutputTimesteps,
-                this.m_CreateAvgSpatialFlowOutput);
+						bool IsAverageOutputTimestep = this.m_STSimTransformer.IsOutputTimestep(
+								timestep,
+								this.m_AvgSpatialFlowOutputTimesteps,
+								this.m_CreateAvgSpatialFlowOutput);
 
-            if (!IsNormalOutputTimestep && !IsAverageOutputTimestep)
-            {
-                return;
-            }
+						if (!IsNormalOutputTimestep && !IsAverageOutputTimestep)
+						{
+								return;
+						}
 
-            if (GetSpatialOutputFlowDictionary().ContainsKey(flowTypeId))
-            {
-                SpatialOutputFlowRecord rec = GetSpatialOutputFlowDictionary()[flowTypeId];
-                float amt = rec.Data[cell.CollectionIndex];
+						if (GetSpatialOutputFlowDictionary().ContainsKey(flowTypeId))
+						{
+								SpatialOutputFlowRecord rec = GetSpatialOutputFlowDictionary()[flowTypeId];
+								float amt = rec.Data[cell.CollectionIndex];
 
-                if (amt.Equals(Spatial.DefaultNoDataValue))
-                {
-                    amt = 0;
-                }
+								if (amt.Equals(Spatial.DefaultNoDataValue))
+								{
+										amt = 0;
+								}
 
-                amt += Convert.ToSingle(flowAmount / this.m_STSimTransformer.AmountPerCell);
+								amt += Convert.ToSingle(flowAmount / this.m_STSimTransformer.AmountPerCell);
 
-                rec.Data[cell.CollectionIndex] = amt;
-                rec.HasOutputData = true;
-            }
-        }
+								rec.Data[cell.CollectionIndex] = amt;
+								rec.HasOutputData = true;
+						}
+				}
 
-        private void RecordSpatialLateralFlowOutputData(int timestep, Cell cell, int flowTypeId, float flowAmount)
-        {
-            bool IsLFOutputTimestep = this.m_STSimTransformer.IsOutputTimestep(
-                timestep,
-                this.m_LateralFlowOutputTimesteps,
-                this.m_CreateLateralFlowOutput);
+				private void RecordSpatialLateralFlowOutputData(int timestep, Cell cell, int flowTypeId, float flowAmount)
+				{
+						bool IsLFOutputTimestep = this.m_STSimTransformer.IsOutputTimestep(
+								timestep,
+								this.m_LateralFlowOutputTimesteps,
+								this.m_CreateLateralFlowOutput);
 
-            bool IsLFAverageOutputTimestep = this.m_STSimTransformer.IsOutputTimestep(
-                timestep,
-                this.m_AvgSpatialLateralFlowOutputTimesteps,
-                this.m_CreateAvgSpatialLateralFlowOutput);
+						bool IsLFAverageOutputTimestep = this.m_STSimTransformer.IsOutputTimestep(
+								timestep,
+								this.m_AvgSpatialLateralFlowOutputTimesteps,
+								this.m_CreateAvgSpatialLateralFlowOutput);
 
-            if (!IsLFOutputTimestep && !IsLFAverageOutputTimestep)
-            {
-                return;
-            }
+						if (!IsLFOutputTimestep && !IsLFAverageOutputTimestep)
+						{
+								return;
+						}
 
-            if (GetLateralOutputFlowDictionary().ContainsKey(flowTypeId))
-            {
-                SpatialOutputFlowRecord rec = GetLateralOutputFlowDictionary()[flowTypeId];
-                float amt = rec.Data[cell.CollectionIndex];
+						if (GetLateralOutputFlowDictionary().ContainsKey(flowTypeId))
+						{
+								SpatialOutputFlowRecord rec = GetLateralOutputFlowDictionary()[flowTypeId];
+								float amt = rec.Data[cell.CollectionIndex];
 
-                if (amt.Equals(Spatial.DefaultNoDataValue))
-                {
-                    amt = 0;
-                }
+								if (amt.Equals(Spatial.DefaultNoDataValue))
+								{
+										amt = 0;
+								}
 
-                amt += Convert.ToSingle(flowAmount / this.m_STSimTransformer.AmountPerCell);
+								amt += Convert.ToSingle(flowAmount / this.m_STSimTransformer.AmountPerCell);
 
-                rec.Data[cell.CollectionIndex] = amt;
-                rec.HasOutputData = true;
-            }
-        }
+								rec.Data[cell.CollectionIndex] = amt;
+								rec.HasOutputData = true;
+						}
+				}
 
-        private void WriteTabularSummaryStockOutput(int iteration, int timestep)
-        {
-            foreach (OutputStock r in this.m_SummaryOutputStockRecords)
-            {
-                DataRow dr = this.m_OutputStockTable.NewRow();
+				private void WriteTabularSummaryStockOutput(int iteration, int timestep)
+				{
+						foreach (OutputStock r in this.m_SummaryOutputStockRecords)
+						{
+								DataRow dr = this.m_OutputStockTable.NewRow();
 
-                dr[Constants.ITERATION_COLUMN_NAME] = iteration;
-                dr[Constants.TIMESTEP_COLUMN_NAME] = timestep;
-                dr[Constants.STRATUM_ID_COLUMN_NAME] = r.StratumId;
-                dr[Constants.SECONDARY_STRATUM_ID_COLUMN_NAME] = DataTableUtilities.GetNullableDatabaseValue(r.SecondaryStratumId);
-                dr[Constants.TERTIARY_STRATUM_ID_COLUMN_NAME] = DataTableUtilities.GetNullableDatabaseValue(r.TertiaryStratumId);
-                dr[Constants.STATECLASS_ID_COLUMN_NAME] = r.StateClassId;
-                dr[Constants.STOCK_GROUP_ID_COLUMN_NAME] = r.StockGroupId;
-                dr[Constants.AMOUNT_COLUMN_NAME] = r.Amount;
+								dr[Constants.ITERATION_COLUMN_NAME] = iteration;
+								dr[Constants.TIMESTEP_COLUMN_NAME] = timestep;
+								dr[Constants.STRATUM_ID_COLUMN_NAME] = r.StratumId;
+								dr[Constants.SECONDARY_STRATUM_ID_COLUMN_NAME] = DataTableUtilities.GetNullableDatabaseValue(r.SecondaryStratumId);
+								dr[Constants.TERTIARY_STRATUM_ID_COLUMN_NAME] = DataTableUtilities.GetNullableDatabaseValue(r.TertiaryStratumId);
+								dr[Constants.STATECLASS_ID_COLUMN_NAME] = r.StateClassId;
+								dr[Constants.STOCK_GROUP_ID_COLUMN_NAME] = r.StockGroupId;
+								dr[Constants.AMOUNT_COLUMN_NAME] = r.Amount;
 
-                this.m_OutputStockTable.Rows.Add(dr);
-            }
+								this.m_OutputStockTable.Rows.Add(dr);
+						}
 
-            this.m_SummaryOutputStockRecords.Clear();
-        }
+						this.m_SummaryOutputStockRecords.Clear();
+				}
 
-        private void WriteTabularSummaryFlowOutputData(int iteration, int timestep)
+				private void WriteTabularSummaryFlowOutputData(int iteration, int timestep)
 		{
 			foreach (OutputFlow r in this.m_SummaryOutputFlowRecords)
 			{
@@ -308,14 +308,14 @@ namespace SyncroSim.STSimStockFlow
 				dr[Constants.TO_STRATUM_ID_COLUMN_NAME] = r.ToStratumId;
 				dr[Constants.TO_STATECLASS_ID_COLUMN_NAME] = r.ToStateClassId;
 				dr[Constants.TO_STOCK_TYPE_ID_COLUMN_NAME] = DataTableUtilities.GetNullableDatabaseValue(r.ToStockTypeId);
-                dr[Constants.FLOW_GROUP_ID_COLUMN_NAME] = r.FlowGroupId;
+				dr[Constants.FLOW_GROUP_ID_COLUMN_NAME] = r.FlowGroupId;
 				dr[Constants.END_STRATUM_ID_COLUMN_NAME] = DataTableUtilities.GetNullableDatabaseValue(r.TransferToStratumId);
 				dr[Constants.END_SECONDARY_STRATUM_ID_COLUMN_NAME] = DataTableUtilities.GetNullableDatabaseValue(r.TransferToSecondaryStratumId);
 				dr[Constants.END_TERTIARY_STRATUM_ID_COLUMN_NAME] = DataTableUtilities.GetNullableDatabaseValue(r.TransferToTertiaryStratumId);
 				dr[Constants.END_STATECLASS_ID_COLUMN_NAME] = DataTableUtilities.GetNullableDatabaseValue(r.TransferToStateClassId);
 				dr[Constants.END_MIN_AGE_COLUMN_NAME] = DataTableUtilities.GetNullableDatabaseValue(r.TransferToMinimumAge);
 
-                dr[Constants.AMOUNT_COLUMN_NAME] = r.Amount;
+				dr[Constants.AMOUNT_COLUMN_NAME] = r.Amount;
 
 				this.m_OutputFlowTable.Rows.Add(dr);
 			}
@@ -327,667 +327,667 @@ namespace SyncroSim.STSimStockFlow
 		{
 			Debug.Assert(this.m_IsSpatial);
 
-            foreach (StockGroup g in this.m_StockGroups)
-            {
-                if (!g.OutputFilter.HasFlag(Constants.OutputFilter.Spatial))
-                {
-                    continue;
-                }
+						foreach (StockGroup g in this.m_StockGroups)
+						{
+								if (!g.OutputFilter.HasFlag(Constants.OutputFilter.Spatial))
+								{
+										continue;
+								}
 
-                StochasticTimeRaster rastOutput = this.STSimTransformer.InputRasters.CreateOutputRaster(RasterDataType.DTFloat);
+								StochasticTimeRaster rastOutput = this.STSimTransformer.InputRasters.CreateOutputRaster(RasterDataType.DTFloat);
 
-                foreach (StockTypeLinkage l in g.StockTypeLinkages)
-                {
-                    StochasticTimeRaster rastStockType = this.STSimTransformer.InputRasters.CreateOutputRaster(RasterDataType.DTFloat);
+								foreach (StockTypeLinkage l in g.StockTypeLinkages)
+								{
+										StochasticTimeRaster rastStockType = this.STSimTransformer.InputRasters.CreateOutputRaster(RasterDataType.DTFloat);
 
-                    GetStockValues(l.StockType.Id, rastStockType);
-                    rastStockType.ScaleFloatCells(l.Value);
-                    rastOutput.AddFloatCells(rastStockType);
-                }
+										GetStockValues(l.StockType.Id, rastStockType);
+										rastStockType.ScaleFloatCells(l.Value);
+										rastOutput.AddFloatCells(rastStockType);
+								}
 
-                Spatial.WriteRasterData(
-                    rastOutput,
-                    this.ResultScenario.GetDataSheet(Constants.DATASHEET_OUTPUT_SPATIAL_STOCK_GROUP),
-                    iteration,
-                    timestep,
-                    g.Id,
-                    Constants.SPATIAL_MAP_STOCK_GROUP_VARIABLE_PREFIX,
-                    Constants.DATASHEET_OUTPUT_SPATIAL_FILENAME_COLUMN);
-            }
+								Spatial.WriteRasterData(
+										rastOutput,
+										this.ResultScenario.GetDataSheet(Constants.DATASHEET_OUTPUT_SPATIAL_STOCK_GROUP),
+										iteration,
+										timestep,
+										g.Id,
+										Constants.SPATIAL_MAP_STOCK_GROUP_VARIABLE_PREFIX,
+										Constants.DATASHEET_OUTPUT_SPATIAL_FILENAME_COLUMN);
+						}
 		}
 
 		private void WriteFlowGroupRasters(int iteration, int timestep)
 		{
-            Debug.Assert(this.m_IsSpatial);
+						Debug.Assert(this.m_IsSpatial);
 
-            foreach (FlowGroup g in this.m_FlowGroups)
-            {
-                if (!g.OutputFilter.HasFlag(Constants.OutputFilter.Spatial))
-                {
-                    continue;
-                }
+						foreach (FlowGroup g in this.m_FlowGroups)
+						{
+								if (!g.OutputFilter.HasFlag(Constants.OutputFilter.Spatial))
+								{
+										continue;
+								}
 
-                bool AtLeastOne = false;
-                StochasticTimeRaster rastOutput = this.STSimTransformer.InputRasters.CreateOutputRaster(RasterDataType.DTFloat);
+								bool AtLeastOne = false;
+								StochasticTimeRaster rastOutput = this.STSimTransformer.InputRasters.CreateOutputRaster(RasterDataType.DTFloat);
 
-                foreach (FlowTypeLinkage l in g.FlowTypeLinkages)
-                {
-                    if (GetSpatialOutputFlowDictionary().ContainsKey(l.FlowType.Id))
-                    {
-                        SpatialOutputFlowRecord rec = GetSpatialOutputFlowDictionary()[l.FlowType.Id];
+								foreach (FlowTypeLinkage l in g.FlowTypeLinkages)
+								{
+										if (GetSpatialOutputFlowDictionary().ContainsKey(l.FlowType.Id))
+										{
+												SpatialOutputFlowRecord rec = GetSpatialOutputFlowDictionary()[l.FlowType.Id];
 
-                        if (rec.HasOutputData)
-                        {
-                            StochasticTimeRaster rastFlowType = this.STSimTransformer.InputRasters.CreateOutputRaster(RasterDataType.DTFloat);
-                            float[] arr = rastFlowType.FloatCells;
+												if (rec.HasOutputData)
+												{
+														StochasticTimeRaster rastFlowType = this.STSimTransformer.InputRasters.CreateOutputRaster(RasterDataType.DTFloat);
+														float[] arr = rastFlowType.FloatCells;
 
-                            foreach (Cell c in this.m_STSimTransformer.Cells)
-                            {
-                                arr[c.CellId] = rec.Data[c.CollectionIndex];
-                            }
+														foreach (Cell c in this.m_STSimTransformer.Cells)
+														{
+																arr[c.CellId] = rec.Data[c.CollectionIndex];
+														}
 
-                            rastFlowType.ScaleFloatCells(l.Value);
-                            rastOutput.AddFloatCells(rastFlowType);
+														rastFlowType.ScaleFloatCells(l.Value);
+														rastOutput.AddFloatCells(rastFlowType);
 
-                            AtLeastOne = true;
-                        }
-                    }
-                }
+														AtLeastOne = true;
+												}
+										}
+								}
 
-                if (AtLeastOne)
-                {
-                    Spatial.WriteRasterData(
-                        rastOutput,
-                        this.ResultScenario.GetDataSheet(Constants.DATASHEET_OUTPUT_SPATIAL_FLOW_GROUP),
-                        iteration,
-                        timestep,
-                        g.Id,
-                        Constants.SPATIAL_MAP_FLOW_GROUP_VARIABLE_PREFIX,
-                        Constants.DATASHEET_OUTPUT_SPATIAL_FILENAME_COLUMN);
-                }
-            }
-        }
+								if (AtLeastOne)
+								{
+										Spatial.WriteRasterData(
+												rastOutput,
+												this.ResultScenario.GetDataSheet(Constants.DATASHEET_OUTPUT_SPATIAL_FLOW_GROUP),
+												iteration,
+												timestep,
+												g.Id,
+												Constants.SPATIAL_MAP_FLOW_GROUP_VARIABLE_PREFIX,
+												Constants.DATASHEET_OUTPUT_SPATIAL_FILENAME_COLUMN);
+								}
+						}
+				}
 
-        private void WriteLateralFlowRasters(int iteration, int timestep)
-        {
-            Debug.Assert(this.m_IsSpatial);
+				private void WriteLateralFlowRasters(int iteration, int timestep)
+				{
+						Debug.Assert(this.m_IsSpatial);
 
-            foreach (FlowGroup g in this.m_FlowGroups)
-            {
-                if (!g.OutputFilter.HasFlag(Constants.OutputFilter.Spatial))
-                {
-                    continue;
-                }
+						foreach (FlowGroup g in this.m_FlowGroups)
+						{
+								if (!g.OutputFilter.HasFlag(Constants.OutputFilter.Spatial))
+								{
+										continue;
+								}
 
-                bool AtLeastOne = false;
-                StochasticTimeRaster rastOutput = this.STSimTransformer.InputRasters.CreateOutputRaster(RasterDataType.DTFloat);
+								bool AtLeastOne = false;
+								StochasticTimeRaster rastOutput = this.STSimTransformer.InputRasters.CreateOutputRaster(RasterDataType.DTFloat);
 
-                foreach (FlowTypeLinkage l in g.FlowTypeLinkages)
-                {
-                    if (GetLateralOutputFlowDictionary().ContainsKey(l.FlowType.Id))
-                    {
-                        SpatialOutputFlowRecord rec = GetLateralOutputFlowDictionary()[l.FlowType.Id];
+								foreach (FlowTypeLinkage l in g.FlowTypeLinkages)
+								{
+										if (GetLateralOutputFlowDictionary().ContainsKey(l.FlowType.Id))
+										{
+												SpatialOutputFlowRecord rec = GetLateralOutputFlowDictionary()[l.FlowType.Id];
 
-                        if (rec.HasOutputData)
-                        {
-                            StochasticTimeRaster rastFlowType = 
-                                this.STSimTransformer.InputRasters.CreateOutputRaster(RasterDataType.DTFloat);
+												if (rec.HasOutputData)
+												{
+														StochasticTimeRaster rastFlowType = 
+																this.STSimTransformer.InputRasters.CreateOutputRaster(RasterDataType.DTFloat);
 
-                            float[] arr = rastFlowType.FloatCells;
+														float[] arr = rastFlowType.FloatCells;
 
-                            foreach (Cell c in this.m_STSimTransformer.Cells)
-                            {
-                                arr[c.CellId] = rec.Data[c.CollectionIndex];
-                            }
+														foreach (Cell c in this.m_STSimTransformer.Cells)
+														{
+																arr[c.CellId] = rec.Data[c.CollectionIndex];
+														}
 
-                            rastFlowType.ScaleFloatCells(l.Value);
-                            rastOutput.AddFloatCells(rastFlowType);
+														rastFlowType.ScaleFloatCells(l.Value);
+														rastOutput.AddFloatCells(rastFlowType);
 
-                            AtLeastOne = true;
-                        }
-                    }
-                }
+														AtLeastOne = true;
+												}
+										}
+								}
 
-                if (AtLeastOne)
-                {
-                    Spatial.WriteRasterData(
-                        rastOutput,
-                        this.ResultScenario.GetDataSheet(Constants.DATASHEET_OUTPUT_LATERAL_FLOW_GROUP),
-                        iteration,
-                        timestep,
-                        g.Id,
-                        Constants.SPATIAL_MAP_LATERAL_FLOW_GROUP_VARIABLE_PREFIX,
-                        Constants.DATASHEET_OUTPUT_SPATIAL_FILENAME_COLUMN);
-                }
-            }
-        }
+								if (AtLeastOne)
+								{
+										Spatial.WriteRasterData(
+												rastOutput,
+												this.ResultScenario.GetDataSheet(Constants.DATASHEET_OUTPUT_LATERAL_FLOW_GROUP),
+												iteration,
+												timestep,
+												g.Id,
+												Constants.SPATIAL_MAP_LATERAL_FLOW_GROUP_VARIABLE_PREFIX,
+												Constants.DATASHEET_OUTPUT_SPATIAL_FILENAME_COLUMN);
+								}
+						}
+				}
 
-        private void WriteAverageStockRasters()
-        {
-            Debug.Assert(this.STSimTransformer.IsSpatial);
-            Debug.Assert(this.m_CreateAvgSpatialStockOutput);
+				private void WriteAverageStockRasters()
+				{
+						Debug.Assert(this.STSimTransformer.IsSpatial);
+						Debug.Assert(this.m_CreateAvgSpatialStockOutput);
 
-            foreach (int id in this.m_AvgStockMap.Keys)
-            {
-                StockGroup sg = this.m_StockGroups[id];
+						foreach (int id in this.m_AvgStockMap.Keys)
+						{
+								StockGroup sg = this.m_StockGroups[id];
 
-                if (!sg.OutputFilter.HasFlag(Constants.OutputFilter.AvgSpatial))
-                {
-                    continue;
-                }
+								if (!sg.OutputFilter.HasFlag(Constants.OutputFilter.AvgSpatial))
+								{
+										continue;
+								}
 
-                Dictionary<int, float[]> dict = this.m_AvgStockMap[id];
+								Dictionary<int, float[]> dict = this.m_AvgStockMap[id];
 
-                foreach (int timestep in dict.Keys)
-                {
-                    float[] values = dict[timestep];
-                    var distArray = values.Distinct();
+								foreach (int timestep in dict.Keys)
+								{
+										float[] values = dict[timestep];
+										var distArray = values.Distinct();
 
-                    if (distArray.Count() == 1)
-                    {
-                        var el0 = distArray.ElementAt(0);
+										if (distArray.Count() == 1)
+										{
+												var el0 = distArray.ElementAt(0);
 
-                        if (el0.Equals(Spatial.DefaultNoDataValue))
-                        {
-                            continue;
-                        }
-                    }
+												if (el0.Equals(Spatial.DefaultNoDataValue))
+												{
+														continue;
+												}
+										}
 
-                    StochasticTimeRaster rast = this.STSimTransformer.InputRasters.CreateOutputRaster(RasterDataType.DTFloat);
-                    float[] arr = rast.FloatCells;
+										StochasticTimeRaster rast = this.STSimTransformer.InputRasters.CreateOutputRaster(RasterDataType.DTFloat);
+										float[] arr = rast.FloatCells;
 
-                    foreach (Cell c in this.STSimTransformer.Cells)
-                    {
-                        arr[c.CellId] = Convert.ToSingle(values[c.CollectionIndex] / this.STSimTransformer.AmountPerCell);
-                    }
+										foreach (Cell c in this.STSimTransformer.Cells)
+										{
+												arr[c.CellId] = Convert.ToSingle(values[c.CollectionIndex] / this.STSimTransformer.AmountPerCell);
+										}
 
-                    Spatial.WriteRasterData(
-                        rast,
-                        this.ResultScenario.GetDataSheet(Constants.DATASHEET_OUTPUT_AVG_SPATIAL_STOCK_GROUP),
-                        0,
-                        timestep,
-                        id,
-                        Constants.SPATIAL_MAP_AVG_STOCK_GROUP_VARIABLE_PREFIX,
-                        Constants.DATASHEET_OUTPUT_SPATIAL_FILENAME_COLUMN);
-                }
-            }
-        }
+										Spatial.WriteRasterData(
+												rast,
+												this.ResultScenario.GetDataSheet(Constants.DATASHEET_OUTPUT_AVG_SPATIAL_STOCK_GROUP),
+												0,
+												timestep,
+												id,
+												Constants.SPATIAL_MAP_AVG_STOCK_GROUP_VARIABLE_PREFIX,
+												Constants.DATASHEET_OUTPUT_SPATIAL_FILENAME_COLUMN);
+								}
+						}
+				}
 
-        private void WriteAverageFlowRasters()
-        {
-            Debug.Assert(this.STSimTransformer.IsSpatial);
-            Debug.Assert(this.m_CreateAvgSpatialFlowOutput);
+				private void WriteAverageFlowRasters()
+				{
+						Debug.Assert(this.STSimTransformer.IsSpatial);
+						Debug.Assert(this.m_CreateAvgSpatialFlowOutput);
 
-            foreach (int id in this.m_AvgFlowMap.Keys)
-            {
-                FlowGroup sg = this.m_FlowGroups[id];
+						foreach (int id in this.m_AvgFlowMap.Keys)
+						{
+								FlowGroup sg = this.m_FlowGroups[id];
 
-                if (!sg.OutputFilter.HasFlag(Constants.OutputFilter.AvgSpatial))
-                {
-                    continue;
-                }
+								if (!sg.OutputFilter.HasFlag(Constants.OutputFilter.AvgSpatial))
+								{
+										continue;
+								}
 
-                Dictionary<int, float[]> dict = this.m_AvgFlowMap[id];
+								Dictionary<int, float[]> dict = this.m_AvgFlowMap[id];
 
-                foreach (int timestep in dict.Keys)
-                {
-                    if (timestep == this.STSimTransformer.TimestepZero)
-                    {
-                        continue;
-                    }
+								foreach (int timestep in dict.Keys)
+								{
+										if (timestep == this.STSimTransformer.TimestepZero)
+										{
+												continue;
+										}
 
-                    float[] values = dict[timestep];
-                    var distArray = values.Distinct();
+										float[] values = dict[timestep];
+										var distArray = values.Distinct();
 
-                    if (distArray.Count() == 1)
-                    {
-                        var el0 = distArray.ElementAt(0);
+										if (distArray.Count() == 1)
+										{
+												var el0 = distArray.ElementAt(0);
 
-                        if (el0.Equals(Spatial.DefaultNoDataValue))
-                        {
-                            continue;
-                        }
-                    }
+												if (el0.Equals(Spatial.DefaultNoDataValue))
+												{
+														continue;
+												}
+										}
 
-                    StochasticTimeRaster rast = this.STSimTransformer.InputRasters.CreateOutputRaster(RasterDataType.DTFloat);
-                    float[] arr = rast.FloatCells;
+										StochasticTimeRaster rast = this.STSimTransformer.InputRasters.CreateOutputRaster(RasterDataType.DTFloat);
+										float[] arr = rast.FloatCells;
 
-                    foreach (Cell c in this.STSimTransformer.Cells)
-                    {
-                        arr[c.CellId] = Convert.ToSingle(values[c.CollectionIndex] / this.STSimTransformer.AmountPerCell);
-                    }
+										foreach (Cell c in this.STSimTransformer.Cells)
+										{
+												arr[c.CellId] = Convert.ToSingle(values[c.CollectionIndex] / this.STSimTransformer.AmountPerCell);
+										}
 
-                    Spatial.WriteRasterData(
-                        rast,
-                        this.ResultScenario.GetDataSheet(Constants.DATASHEET_OUTPUT_AVG_SPATIAL_FLOW_GROUP),
-                        0,
-                        timestep,
-                        id,
-                        Constants.SPATIAL_MAP_AVG_FLOW_GROUP_VARIABLE_PREFIX,
-                        Constants.DATASHEET_OUTPUT_SPATIAL_FILENAME_COLUMN);
-                }
-            }
-        }
+										Spatial.WriteRasterData(
+												rast,
+												this.ResultScenario.GetDataSheet(Constants.DATASHEET_OUTPUT_AVG_SPATIAL_FLOW_GROUP),
+												0,
+												timestep,
+												id,
+												Constants.SPATIAL_MAP_AVG_FLOW_GROUP_VARIABLE_PREFIX,
+												Constants.DATASHEET_OUTPUT_SPATIAL_FILENAME_COLUMN);
+								}
+						}
+				}
 
-        private void WriteAverageLateralFlowRasters()
-        {
-            Debug.Assert(this.STSimTransformer.IsSpatial);
-            Debug.Assert(this.m_CreateAvgSpatialLateralFlowOutput);
+				private void WriteAverageLateralFlowRasters()
+				{
+						Debug.Assert(this.STSimTransformer.IsSpatial);
+						Debug.Assert(this.m_CreateAvgSpatialLateralFlowOutput);
 
-            foreach (int id in this.m_AvgLateralFlowMap.Keys)
-            {
-                FlowGroup sg = this.m_FlowGroups[id];
+						foreach (int id in this.m_AvgLateralFlowMap.Keys)
+						{
+								FlowGroup sg = this.m_FlowGroups[id];
 
-                if (!sg.OutputFilter.HasFlag(Constants.OutputFilter.AvgSpatial))
-                {
-                    continue;
-                }
+								if (!sg.OutputFilter.HasFlag(Constants.OutputFilter.AvgSpatial))
+								{
+										continue;
+								}
 
-                Dictionary<int, float[]> dict = this.m_AvgLateralFlowMap[id];
+								Dictionary<int, float[]> dict = this.m_AvgLateralFlowMap[id];
 
-                foreach (int timestep in dict.Keys)
-                {
-                    if (timestep == this.STSimTransformer.TimestepZero)
-                    {
-                        continue;
-                    }
+								foreach (int timestep in dict.Keys)
+								{
+										if (timestep == this.STSimTransformer.TimestepZero)
+										{
+												continue;
+										}
 
-                    float[] values = dict[timestep];
-                    var distArray = values.Distinct();
+										float[] values = dict[timestep];
+										var distArray = values.Distinct();
 
-                    if (distArray.Count() == 1)
-                    {
-                        var el0 = distArray.ElementAt(0);
+										if (distArray.Count() == 1)
+										{
+												var el0 = distArray.ElementAt(0);
 
-                        if (el0.Equals(Spatial.DefaultNoDataValue))
-                        {
-                            continue;
-                        }
-                    }
+												if (el0.Equals(Spatial.DefaultNoDataValue))
+												{
+														continue;
+												}
+										}
 
-                    StochasticTimeRaster rast = this.STSimTransformer.InputRasters.CreateOutputRaster(RasterDataType.DTFloat);
-                    float[] arr = rast.FloatCells;
+										StochasticTimeRaster rast = this.STSimTransformer.InputRasters.CreateOutputRaster(RasterDataType.DTFloat);
+										float[] arr = rast.FloatCells;
 
-                    foreach (Cell c in this.STSimTransformer.Cells)
-                    {
-                        arr[c.CellId] = Convert.ToSingle(values[c.CollectionIndex] / this.STSimTransformer.AmountPerCell);
-                    }
+										foreach (Cell c in this.STSimTransformer.Cells)
+										{
+												arr[c.CellId] = Convert.ToSingle(values[c.CollectionIndex] / this.STSimTransformer.AmountPerCell);
+										}
 
-                    Spatial.WriteRasterData(
-                        rast,
-                        this.ResultScenario.GetDataSheet(Constants.DATASHEET_OUTPUT_AVG_SPATIAL_LATERAL_FLOW_GROUP),
-                        0,
-                        timestep,
-                        id,
-                        Constants.SPATIAL_MAP_AVG_LATERAL_FLOW_GROUP_VARIABLE_PREFIX,
-                        Constants.DATASHEET_OUTPUT_SPATIAL_FILENAME_COLUMN);
-                }
-            }
-        }
+										Spatial.WriteRasterData(
+												rast,
+												this.ResultScenario.GetDataSheet(Constants.DATASHEET_OUTPUT_AVG_SPATIAL_LATERAL_FLOW_GROUP),
+												0,
+												timestep,
+												id,
+												Constants.SPATIAL_MAP_AVG_LATERAL_FLOW_GROUP_VARIABLE_PREFIX,
+												Constants.DATASHEET_OUTPUT_SPATIAL_FILENAME_COLUMN);
+								}
+						}
+				}
 
-        private void RecordAverageStockValues(int timestep)
-        {
-            if (!this.STSimTransformer.IsSpatial)
-            {
-                return;
-            }
+				private void RecordAverageStockValues(int timestep)
+				{
+						if (!this.STSimTransformer.IsSpatial)
+						{
+								return;
+						}
 
-            if (!this.m_CreateAvgSpatialStockOutput)
-            {
-                return;
-            }
+						if (!this.m_CreateAvgSpatialStockOutput)
+						{
+								return;
+						}
 
-            if (this.m_AvgSpatialStockOutputAcrossTimesteps)
-            {
-                this.RecordAverageStockValuesAcrossTimesteps(timestep);
-            }
-            else
-            {
-                if (this.m_STSimTransformer.IsOutputTimestepAverage(
-                    timestep, 
-                    this.m_AvgSpatialStockOutputTimesteps, 
-                    this.m_CreateAvgSpatialStockOutput))
-                {
-                    this.RecordAverageStockValuesNormalMethod(timestep);
-                }
-            }
-        }
+						if (this.m_AvgSpatialStockOutputAcrossTimesteps)
+						{
+								this.RecordAverageStockValuesAcrossTimesteps(timestep);
+						}
+						else
+						{
+								if (this.m_STSimTransformer.IsOutputTimestepAverage(
+										timestep, 
+										this.m_AvgSpatialStockOutputTimesteps, 
+										this.m_CreateAvgSpatialStockOutput))
+								{
+										this.RecordAverageStockValuesNormalMethod(timestep);
+								}
+						}
+				}
 
-        private void RecordAverageStockValuesTimestepZero()
-        {
-            if (!this.STSimTransformer.IsSpatial)
-            {
-                return;
-            }
+				private void RecordAverageStockValuesTimestepZero()
+				{
+						if (!this.STSimTransformer.IsSpatial)
+						{
+								return;
+						}
 
-            if (!this.m_CreateAvgSpatialStockOutput)
-            {
-                return;
-            }
+						if (!this.m_CreateAvgSpatialStockOutput)
+						{
+								return;
+						}
 
-            this.RecordAverageStockValuesNormalMethod(this.STSimTransformer.TimestepZero);
-        }
+						this.RecordAverageStockValuesNormalMethod(this.STSimTransformer.TimestepZero);
+				}
 
-        private void RecordAverageStockValuesNormalMethod(int timestep)
-        {
-            Debug.Assert(this.STSimTransformer.IsSpatial);
-            Debug.Assert(this.m_CreateAvgSpatialStockOutput);
+				private void RecordAverageStockValuesNormalMethod(int timestep)
+				{
+						Debug.Assert(this.STSimTransformer.IsSpatial);
+						Debug.Assert(this.m_CreateAvgSpatialStockOutput);
 
 #if DEBUG
-            if (timestep != this.STSimTransformer.TimestepZero) { Debug.Assert(!this.m_AvgSpatialStockOutputAcrossTimesteps); }
+						if (timestep != this.STSimTransformer.TimestepZero) { Debug.Assert(!this.m_AvgSpatialStockOutputAcrossTimesteps); }
 #endif
 
-            foreach (StockGroup g in this.m_StockGroups)
-            {
-                if (!g.OutputFilter.HasFlag(Constants.OutputFilter.AvgSpatial))
-                {
-                    continue;
-                }
+						foreach (StockGroup g in this.m_StockGroups)
+						{
+								if (!g.OutputFilter.HasFlag(Constants.OutputFilter.AvgSpatial))
+								{
+										continue;
+								}
 
-                Dictionary<int, float[]> dict = this.m_AvgStockMap[g.Id];
-                float[] Values = dict[timestep];
+								Dictionary<int, float[]> dict = this.m_AvgStockMap[g.Id];
+								float[] Values = dict[timestep];
 
-                foreach (Cell c in this.STSimTransformer.Cells)
-                {
-                    float Amount = 0;
-                    int i = c.CollectionIndex;
-                    Dictionary<int, float> StockAmounts = GetStockAmountDictionary(c);
+								foreach (Cell c in this.STSimTransformer.Cells)
+								{
+										float Amount = 0;
+										int i = c.CollectionIndex;
+										Dictionary<int, float> StockAmounts = GetStockAmountDictionary(c);
 
-                    foreach (StockTypeLinkage l in g.StockTypeLinkages)
-                    {
-                       Amount += Convert.ToSingle(StockAmounts[l.StockType.Id]);
-                    }
+										foreach (StockTypeLinkage l in g.StockTypeLinkages)
+										{
+											 Amount += Convert.ToSingle(StockAmounts[l.StockType.Id]);
+										}
 
-                    Values[i] += Amount / this.m_TotalIterations;
-                }               
-            }
-        }
+										Values[i] += Amount / this.m_TotalIterations;
+								}               
+						}
+				}
 
-        private void RecordAverageStockValuesAcrossTimesteps(int timestep)
-        {
-            Debug.Assert(this.STSimTransformer.IsSpatial);
-            Debug.Assert(this.m_CreateAvgSpatialStockOutput);
-            Debug.Assert(this.m_AvgSpatialStockOutputAcrossTimesteps);
+				private void RecordAverageStockValuesAcrossTimesteps(int timestep)
+				{
+						Debug.Assert(this.STSimTransformer.IsSpatial);
+						Debug.Assert(this.m_CreateAvgSpatialStockOutput);
+						Debug.Assert(this.m_AvgSpatialStockOutputAcrossTimesteps);
 
-            int timestepKey = this.GetTimestepKeyForCumulativeAverage(timestep, this.m_AvgSpatialStockOutputTimesteps);
+						int timestepKey = this.GetTimestepKeyForCumulativeAverage(timestep, this.m_AvgSpatialStockOutputTimesteps);
 
-            foreach (StockGroup g in this.m_StockGroups)
-            {
-                if (!g.OutputFilter.HasFlag(Constants.OutputFilter.AvgSpatial))
-                {
-                    continue;
-                }
+						foreach (StockGroup g in this.m_StockGroups)
+						{
+								if (!g.OutputFilter.HasFlag(Constants.OutputFilter.AvgSpatial))
+								{
+										continue;
+								}
 
-                Dictionary<int, float[]> dict = this.m_AvgStockMap[g.Id];
-                float[] Values = dict[timestepKey];
+								Dictionary<int, float[]> dict = this.m_AvgStockMap[g.Id];
+								float[] Values = dict[timestepKey];
 
-                foreach (Cell c in this.STSimTransformer.Cells)
-                {
-                    float Amount = 0;
-                    int i = c.CollectionIndex;
-                    Dictionary<int, float> StockAmounts = GetStockAmountDictionary(c);
+								foreach (Cell c in this.STSimTransformer.Cells)
+								{
+										float Amount = 0;
+										int i = c.CollectionIndex;
+										Dictionary<int, float> StockAmounts = GetStockAmountDictionary(c);
 
-                    foreach (StockTypeLinkage l in g.StockTypeLinkages)
-                    {
-                        Amount += Convert.ToSingle(StockAmounts[l.StockType.Id]);
-                    }
+										foreach (StockTypeLinkage l in g.StockTypeLinkages)
+										{
+												Amount += Convert.ToSingle(StockAmounts[l.StockType.Id]);
+										}
 
-                    if ((timestepKey == this.STSimTransformer.MaximumTimestep) && (((timestepKey - this.STSimTransformer.TimestepZero) % this.m_AvgSpatialStockOutputTimesteps) != 0))
-                    {
-                        Values[i] += Amount / ((timestepKey - this.STSimTransformer.TimestepZero) % this.m_AvgSpatialStockOutputTimesteps * this.m_TotalIterations);
-                    }
-                    else
-                    {
-                        Values[i] += Amount / (this.m_AvgSpatialStockOutputTimesteps * this.m_TotalIterations);
-                    }
-                }
-            }
-        }
+										if ((timestepKey == this.STSimTransformer.MaximumTimestep) && (((timestepKey - this.STSimTransformer.TimestepZero) % this.m_AvgSpatialStockOutputTimesteps) != 0))
+										{
+												Values[i] += Amount / ((timestepKey - this.STSimTransformer.TimestepZero) % this.m_AvgSpatialStockOutputTimesteps * this.m_TotalIterations);
+										}
+										else
+										{
+												Values[i] += Amount / (this.m_AvgSpatialStockOutputTimesteps * this.m_TotalIterations);
+										}
+								}
+						}
+				}
 
-        private void RecordAverageFlowValues(int timestep)
-        {
-            if (!this.STSimTransformer.IsSpatial)
-            {
-                return;
-            }
+				private void RecordAverageFlowValues(int timestep)
+				{
+						if (!this.STSimTransformer.IsSpatial)
+						{
+								return;
+						}
 
-            if (!this.m_CreateAvgSpatialFlowOutput)
-            {
-                return;
-            }
+						if (!this.m_CreateAvgSpatialFlowOutput)
+						{
+								return;
+						}
 
-            if (this.m_AvgSpatialFlowOutputAcrossTimesteps)
-            {
-                this.RecordAverageFlowValuesAcrossTimesteps(timestep);
-            }
-            else
-            {
-                if (this.m_STSimTransformer.IsOutputTimestepAverage(
-                    timestep, 
-                    this.m_AvgSpatialFlowOutputTimesteps, 
-                    this.m_CreateAvgSpatialFlowOutput))
-                {
-                    this.RecordAverageFlowValuesNormalMethod(timestep);
-                }
-            }
-        }
+						if (this.m_AvgSpatialFlowOutputAcrossTimesteps)
+						{
+								this.RecordAverageFlowValuesAcrossTimesteps(timestep);
+						}
+						else
+						{
+								if (this.m_STSimTransformer.IsOutputTimestepAverage(
+										timestep, 
+										this.m_AvgSpatialFlowOutputTimesteps, 
+										this.m_CreateAvgSpatialFlowOutput))
+								{
+										this.RecordAverageFlowValuesNormalMethod(timestep);
+								}
+						}
+				}
 
-        private void RecordAverageFlowValuesNormalMethod(int timestep)
-        {
-            Debug.Assert(this.STSimTransformer.IsSpatial);
-            Debug.Assert(this.m_CreateAvgSpatialFlowOutput);
-            Debug.Assert(!this.m_AvgSpatialFlowOutputAcrossTimesteps);
+				private void RecordAverageFlowValuesNormalMethod(int timestep)
+				{
+						Debug.Assert(this.STSimTransformer.IsSpatial);
+						Debug.Assert(this.m_CreateAvgSpatialFlowOutput);
+						Debug.Assert(!this.m_AvgSpatialFlowOutputAcrossTimesteps);
 
-            foreach (FlowGroup g in this.m_FlowGroups)
-            {
-                if (!g.OutputFilter.HasFlag(Constants.OutputFilter.AvgSpatial))
-                {
-                    continue;
-                }
+						foreach (FlowGroup g in this.m_FlowGroups)
+						{
+								if (!g.OutputFilter.HasFlag(Constants.OutputFilter.AvgSpatial))
+								{
+										continue;
+								}
 
-                Dictionary<int, float[]> dict = this.m_AvgFlowMap[g.Id];
-                float[] Values = dict[timestep];
+								Dictionary<int, float[]> dict = this.m_AvgFlowMap[g.Id];
+								float[] Values = dict[timestep];
 
-                foreach (Cell c in this.m_STSimTransformer.Cells)
-                {
-                    float Amount = 0;
-                    int i = c.CollectionIndex;
+								foreach (Cell c in this.m_STSimTransformer.Cells)
+								{
+										float Amount = 0;
+										int i = c.CollectionIndex;
 
-                    foreach (FlowTypeLinkage l in g.FlowTypeLinkages)
-                    {
-                        SpatialOutputFlowRecord rec = GetSpatialOutputFlowDictionary()[l.FlowType.Id];
+										foreach (FlowTypeLinkage l in g.FlowTypeLinkages)
+										{
+												SpatialOutputFlowRecord rec = GetSpatialOutputFlowDictionary()[l.FlowType.Id];
 
-                        if (rec.HasOutputData)
-                        {
-                            Amount += rec.Data[i];
-                        }
-                    }
+												if (rec.HasOutputData)
+												{
+														Amount += rec.Data[i];
+												}
+										}
 
-                    Values[i] += Amount / this.m_TotalIterations;
-                }
-            }
-        }
+										Values[i] += Amount / this.m_TotalIterations;
+								}
+						}
+				}
 
-        private void RecordAverageFlowValuesAcrossTimesteps(int timestep)
-        {
-            Debug.Assert(this.STSimTransformer.IsSpatial);
-            Debug.Assert(this.m_CreateAvgSpatialFlowOutput);
-            Debug.Assert(this.m_AvgSpatialFlowOutputAcrossTimesteps);
+				private void RecordAverageFlowValuesAcrossTimesteps(int timestep)
+				{
+						Debug.Assert(this.STSimTransformer.IsSpatial);
+						Debug.Assert(this.m_CreateAvgSpatialFlowOutput);
+						Debug.Assert(this.m_AvgSpatialFlowOutputAcrossTimesteps);
 
-            int timestepKey = this.GetTimestepKeyForCumulativeAverage(timestep, this.m_AvgSpatialFlowOutputTimesteps);
+						int timestepKey = this.GetTimestepKeyForCumulativeAverage(timestep, this.m_AvgSpatialFlowOutputTimesteps);
 
-            foreach (FlowGroup g in this.m_FlowGroups)
-            {
-                if (!g.OutputFilter.HasFlag(Constants.OutputFilter.AvgSpatial))
-                {
-                    continue;
-                }
+						foreach (FlowGroup g in this.m_FlowGroups)
+						{
+								if (!g.OutputFilter.HasFlag(Constants.OutputFilter.AvgSpatial))
+								{
+										continue;
+								}
 
-                Dictionary<int, float[]> dict = this.m_AvgFlowMap[g.Id];
-                float[] Values = dict[timestepKey];
+								Dictionary<int, float[]> dict = this.m_AvgFlowMap[g.Id];
+								float[] Values = dict[timestepKey];
 
-                foreach (Cell c in this.m_STSimTransformer.Cells)
-                {
-                    float Amount = 0;
-                    int i = c.CollectionIndex;
+								foreach (Cell c in this.m_STSimTransformer.Cells)
+								{
+										float Amount = 0;
+										int i = c.CollectionIndex;
 
-                    foreach (FlowTypeLinkage l in g.FlowTypeLinkages)
-                    {
-                        SpatialOutputFlowRecord rec = GetSpatialOutputFlowDictionary()[l.FlowType.Id];
+										foreach (FlowTypeLinkage l in g.FlowTypeLinkages)
+										{
+												SpatialOutputFlowRecord rec = GetSpatialOutputFlowDictionary()[l.FlowType.Id];
 
-                        if (rec.HasOutputData)
-                        {
-                            Amount += rec.Data[i];
-                        }                    
-                    }
+												if (rec.HasOutputData)
+												{
+														Amount += rec.Data[i];
+												}                    
+										}
 
-                    if ((timestepKey == this.STSimTransformer.MaximumTimestep) && (((timestepKey - this.STSimTransformer.TimestepZero) % this.m_AvgSpatialFlowOutputTimesteps) != 0))
-                    {
-                        Values[i] += Amount / ((timestepKey - this.STSimTransformer.TimestepZero) % this.m_AvgSpatialFlowOutputTimesteps * this.m_TotalIterations);
-                    }
-                    else
-                    {
-                        Values[i] += Amount / (this.m_AvgSpatialFlowOutputTimesteps * this.m_TotalIterations);
-                    }
-                }
-            }
-        }
+										if ((timestepKey == this.STSimTransformer.MaximumTimestep) && (((timestepKey - this.STSimTransformer.TimestepZero) % this.m_AvgSpatialFlowOutputTimesteps) != 0))
+										{
+												Values[i] += Amount / ((timestepKey - this.STSimTransformer.TimestepZero) % this.m_AvgSpatialFlowOutputTimesteps * this.m_TotalIterations);
+										}
+										else
+										{
+												Values[i] += Amount / (this.m_AvgSpatialFlowOutputTimesteps * this.m_TotalIterations);
+										}
+								}
+						}
+				}
 
-        private void RecordAverageLateralFlowValues(int timestep)
-        {
-            if (!this.STSimTransformer.IsSpatial)
-            {
-                return;
-            }
+				private void RecordAverageLateralFlowValues(int timestep)
+				{
+						if (!this.STSimTransformer.IsSpatial)
+						{
+								return;
+						}
 
-            if (!this.m_CreateAvgSpatialLateralFlowOutput)
-            {
-                return;
-            }
+						if (!this.m_CreateAvgSpatialLateralFlowOutput)
+						{
+								return;
+						}
 
-            if (this.m_AvgSpatialLateralFlowOutputAcrossTimesteps)
-            {
-                this.RecordAverageLateralFlowValuesAcrossTimesteps(timestep);
-            }
-            else
-            {
-                if (this.m_STSimTransformer.IsOutputTimestepAverage(
-                    timestep,
-                    this.m_AvgSpatialLateralFlowOutputTimesteps,
-                    this.m_CreateAvgSpatialLateralFlowOutput))
-                {
-                    this.RecordAverageLateralFlowValuesNormalMethod(timestep);
-                }
-            }
-        }
+						if (this.m_AvgSpatialLateralFlowOutputAcrossTimesteps)
+						{
+								this.RecordAverageLateralFlowValuesAcrossTimesteps(timestep);
+						}
+						else
+						{
+								if (this.m_STSimTransformer.IsOutputTimestepAverage(
+										timestep,
+										this.m_AvgSpatialLateralFlowOutputTimesteps,
+										this.m_CreateAvgSpatialLateralFlowOutput))
+								{
+										this.RecordAverageLateralFlowValuesNormalMethod(timestep);
+								}
+						}
+				}
 
-        private void RecordAverageLateralFlowValuesNormalMethod(int timestep)
-        {
-            Debug.Assert(this.STSimTransformer.IsSpatial);
-            Debug.Assert(this.m_CreateAvgSpatialLateralFlowOutput);
-            Debug.Assert(!this.m_AvgSpatialLateralFlowOutputAcrossTimesteps);
+				private void RecordAverageLateralFlowValuesNormalMethod(int timestep)
+				{
+						Debug.Assert(this.STSimTransformer.IsSpatial);
+						Debug.Assert(this.m_CreateAvgSpatialLateralFlowOutput);
+						Debug.Assert(!this.m_AvgSpatialLateralFlowOutputAcrossTimesteps);
 
-            foreach (FlowGroup g in this.m_FlowGroups)
-            {
-                if (!g.OutputFilter.HasFlag(Constants.OutputFilter.AvgSpatial))
-                {
-                    continue;
-                }
+						foreach (FlowGroup g in this.m_FlowGroups)
+						{
+								if (!g.OutputFilter.HasFlag(Constants.OutputFilter.AvgSpatial))
+								{
+										continue;
+								}
 
-                Dictionary<int, float[]> dict = this.m_AvgLateralFlowMap[g.Id];
-                float[] Values = dict[timestep];
+								Dictionary<int, float[]> dict = this.m_AvgLateralFlowMap[g.Id];
+								float[] Values = dict[timestep];
 
-                foreach (Cell c in this.m_STSimTransformer.Cells)
-                {
-                    float Amount = 0;
-                    int i = c.CollectionIndex;
+								foreach (Cell c in this.m_STSimTransformer.Cells)
+								{
+										float Amount = 0;
+										int i = c.CollectionIndex;
 
-                    foreach (FlowTypeLinkage l in g.FlowTypeLinkages)
-                    {
-                        SpatialOutputFlowRecord rec = GetLateralOutputFlowDictionary()[l.FlowType.Id];
+										foreach (FlowTypeLinkage l in g.FlowTypeLinkages)
+										{
+												SpatialOutputFlowRecord rec = GetLateralOutputFlowDictionary()[l.FlowType.Id];
 
-                        if (rec.HasOutputData)
-                        {
-                            Amount += rec.Data[i];
-                        }                     
-                    }
+												if (rec.HasOutputData)
+												{
+														Amount += rec.Data[i];
+												}                     
+										}
 
-                    Values[i] += Amount / this.m_TotalIterations;
-                }
-            }
-        }
+										Values[i] += Amount / this.m_TotalIterations;
+								}
+						}
+				}
 
-        private void RecordAverageLateralFlowValuesAcrossTimesteps(int timestep)
-        {
-            Debug.Assert(this.STSimTransformer.IsSpatial);
-            Debug.Assert(this.m_CreateAvgSpatialLateralFlowOutput);
-            Debug.Assert(this.m_AvgSpatialLateralFlowOutputAcrossTimesteps);
+				private void RecordAverageLateralFlowValuesAcrossTimesteps(int timestep)
+				{
+						Debug.Assert(this.STSimTransformer.IsSpatial);
+						Debug.Assert(this.m_CreateAvgSpatialLateralFlowOutput);
+						Debug.Assert(this.m_AvgSpatialLateralFlowOutputAcrossTimesteps);
 
-            int timestepKey = this.GetTimestepKeyForCumulativeAverage(timestep, this.m_AvgSpatialLateralFlowOutputTimesteps);
+						int timestepKey = this.GetTimestepKeyForCumulativeAverage(timestep, this.m_AvgSpatialLateralFlowOutputTimesteps);
 
-            foreach (FlowGroup g in this.m_FlowGroups)
-            {
-                if (!g.OutputFilter.HasFlag(Constants.OutputFilter.AvgSpatial))
-                {
-                    continue;
-                }
+						foreach (FlowGroup g in this.m_FlowGroups)
+						{
+								if (!g.OutputFilter.HasFlag(Constants.OutputFilter.AvgSpatial))
+								{
+										continue;
+								}
 
-                Dictionary<int, float[]> dict = this.m_AvgLateralFlowMap[g.Id];
-                float[] Values = dict[timestepKey];
+								Dictionary<int, float[]> dict = this.m_AvgLateralFlowMap[g.Id];
+								float[] Values = dict[timestepKey];
 
-                foreach (Cell c in this.m_STSimTransformer.Cells)
-                {
-                    float Amount = 0;
-                    int i = c.CollectionIndex;
+								foreach (Cell c in this.m_STSimTransformer.Cells)
+								{
+										float Amount = 0;
+										int i = c.CollectionIndex;
 
-                    foreach (FlowTypeLinkage l in g.FlowTypeLinkages)
-                    {
-                        SpatialOutputFlowRecord rec = GetLateralOutputFlowDictionary()[l.FlowType.Id];
+										foreach (FlowTypeLinkage l in g.FlowTypeLinkages)
+										{
+												SpatialOutputFlowRecord rec = GetLateralOutputFlowDictionary()[l.FlowType.Id];
 
-                        if (rec.HasOutputData)
-                        {
-                            Amount += rec.Data[i];
-                        }                         
-                    }
+												if (rec.HasOutputData)
+												{
+														Amount += rec.Data[i];
+												}                         
+										}
 
-                    if ((timestepKey == this.STSimTransformer.MaximumTimestep) && (((timestepKey - this.STSimTransformer.TimestepZero) % this.m_AvgSpatialLateralFlowOutputTimesteps) != 0))
-                    {
-                        Values[i] += Amount / ((timestepKey - this.STSimTransformer.TimestepZero) % this.m_AvgSpatialLateralFlowOutputTimesteps * this.m_TotalIterations);
-                    }
-                    else
-                    {
-                        Values[i] += Amount / (this.m_AvgSpatialLateralFlowOutputTimesteps * this.m_TotalIterations);
-                    }
-                }
-            }
-        }
+										if ((timestepKey == this.STSimTransformer.MaximumTimestep) && (((timestepKey - this.STSimTransformer.TimestepZero) % this.m_AvgSpatialLateralFlowOutputTimesteps) != 0))
+										{
+												Values[i] += Amount / ((timestepKey - this.STSimTransformer.TimestepZero) % this.m_AvgSpatialLateralFlowOutputTimesteps * this.m_TotalIterations);
+										}
+										else
+										{
+												Values[i] += Amount / (this.m_AvgSpatialLateralFlowOutputTimesteps * this.m_TotalIterations);
+										}
+								}
+						}
+				}
 
-        private int GetTimestepKeyForCumulativeAverage(int timestep, int frequency)
-        {
-            int timestepKey = 0;
+				private int GetTimestepKeyForCumulativeAverage(int timestep, int frequency)
+				{
+						int timestepKey = 0;
 
-            if (timestep == this.STSimTransformer.MaximumTimestep)
-            {
-                timestepKey = this.STSimTransformer.MaximumTimestep;
-            }
-            else
-            {
-                //We're looking for the the timestep which is the first one that is >= to the current timestep
+						if (timestep == this.STSimTransformer.MaximumTimestep)
+						{
+								timestepKey = this.STSimTransformer.MaximumTimestep;
+						}
+						else
+						{
+								//We're looking for the the timestep which is the first one that is >= to the current timestep
 
-                timestepKey = Convert.ToInt32(Math.Ceiling(
-                    Convert.ToDouble(timestep - this.STSimTransformer.TimestepZero) / frequency) * frequency) +
-                        this.STSimTransformer.TimestepZero;
+								timestepKey = Convert.ToInt32(Math.Ceiling(
+										Convert.ToDouble(timestep - this.STSimTransformer.TimestepZero) / frequency) * frequency) +
+												this.STSimTransformer.TimestepZero;
 
-                if (timestepKey > this.STSimTransformer.MaximumTimestep)
-                {
-                    timestepKey = this.STSimTransformer.MaximumTimestep;
-                }
-            }
+								if (timestepKey > this.STSimTransformer.MaximumTimestep)
+								{
+										timestepKey = this.STSimTransformer.MaximumTimestep;
+								}
+						}
 
-            return timestepKey;
-        }
+						return timestepKey;
+				}
 
-        internal int GetSecondaryStratumIdKey(int? value)
+				internal int GetSecondaryStratumIdKey(int? value)
 		{
 			if (this.m_SummaryOmitSecondaryStrata)
 			{

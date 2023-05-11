@@ -5,9 +5,9 @@ namespace SyncroSim.STSimStockFlow
 {
 	internal class InitialStockNonSpatial
 	{
-		private int m_Id;
-		private int m_StockTypeId;
-		private int m_StateAttributeTypeId;
+		private readonly int m_Id;
+		private readonly int m_StockTypeId;
+		private readonly int m_StateAttributeTypeId;
 
 		public InitialStockNonSpatial(int id, int stockTypeId, int stateAttributeTypeId)
 		{
