@@ -94,7 +94,7 @@ namespace SyncroSim.STSimStockFlow
 			PrevMult.Sample(iteration, timestep, this.m_DistributionProvider, DistributionFrequency.Always);
 			ThisMult.Sample(iteration, timestep, this.m_DistributionProvider, DistributionFrequency.Always);
 
-			return MathUtils.Interpolate(PrevKey, PrevMult.CurrentValue.Value, ThisKey, ThisMult.CurrentValue.Value, stockValue);
+			return Statistics.Interpolate(PrevKey, PrevMult.CurrentValue.Value, ThisKey, ThisMult.CurrentValue.Value, stockValue);
 		}
 
 		private void TryAddMultiplier(StockTransitionMultiplier item)

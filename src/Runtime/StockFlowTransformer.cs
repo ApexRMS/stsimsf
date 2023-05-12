@@ -906,7 +906,7 @@ namespace SyncroSim.STSimStockFlow
                     if (fp.FromStockTypeId.HasValue)
                     {
                         d[fp.FromStockTypeId.Value] -= Convert.ToSingle(fa);
-                        if (MathUtils.CompareDoublesEqual(d[fp.FromStockTypeId.Value], 0.0, 0.00000001))
+                        if (MathUtilities.CompareDoublesEqual(d[fp.FromStockTypeId.Value], 0.0, 0.00000001))
                         {
                             d[fp.FromStockTypeId.Value] = 0.0F;
                         }

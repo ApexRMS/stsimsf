@@ -100,7 +100,7 @@ namespace SyncroSim.STSimStockFlow
             StochasticTimeRaster raster = this.m_FlowSpatialMultiplierRasters[m.FileName];
             double v = raster.DblCells[cell.CollectionIndex];
 
-            if (MathUtils.CompareDoublesEqual(v, raster.NoDataValue, double.Epsilon))
+            if (MathUtilities.CompareDoublesEqual(v, raster.NoDataValue, double.Epsilon))
             {
                 return 1.0;
             }
@@ -135,7 +135,7 @@ namespace SyncroSim.STSimStockFlow
             StochasticTimeRaster raster = this.m_FlowLateralMultiplierRasters[m.FileName];
             double v = raster.DblCells[cell.CollectionIndex];
 
-            if ((v < 0.0) || (MathUtils.CompareDoublesEqual(v, raster.NoDataValue, double.Epsilon)))
+            if ((v < 0.0) || (MathUtilities.CompareDoublesEqual(v, raster.NoDataValue, double.Epsilon)))
             {
                 return 1.0;
             }
