@@ -185,6 +185,11 @@ namespace SyncroSim.STSimStockFlow
             {
                 SF0000107(store);
             }
+
+            if (currentSchemaVersion < 108)
+            {
+                SF0000108(store);
+            }
         }
 
         /// <summary>
@@ -1368,6 +1373,21 @@ namespace SyncroSim.STSimStockFlow
                 "stsimsf_FlowVariablesGroup|stsimsf_FlowGroupVariable",
                 "stsimsf_FlowVariablesGroup|stsimsf_FlowGroupDensityVariable"
             });
+        }
+
+        /// <summary>
+        /// SF0000108
+        /// 
+        /// This update changes the variable names in the corstime_Chart "Criteria" column(s)
+        /// to be more concise.
+        /// </summary>
+        /// <param name="store"></param>
+        private static void SF0000108(DataStore store)
+        {
+            UpdateProvider.RenameChartVariable(store, "stsimsf_StockGroupVariable", "stsimsf_StockGroup");
+            UpdateProvider.RenameChartVariable(store, "stsimsf_StockGroupDensityVariable", "stsimsf_StockGroupDensity");
+            UpdateProvider.RenameChartVariable(store, "stsimsf_FlowGroupVariable", "stsimsf_FlowGroup");
+            UpdateProvider.RenameChartVariable(store, "stsimsf_FlowGroupDensityVariable", "stsimsf_FlowGroupDensity");
         }
     }
 }
