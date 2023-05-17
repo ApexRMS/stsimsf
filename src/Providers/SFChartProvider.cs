@@ -38,12 +38,12 @@ namespace SyncroSim.STSimStockFlow
             return null;
         }
 
-        public override void RefreshCriteria(SyncroSimLayout layout, Project project)
+        public override void RefreshCriteria(DataStore store, SyncroSimLayout layout, Project project)
         {
             //Stock Groups
             SyncroSimLayoutItem StockGroupsGroup = new SyncroSimLayoutItem(Constants.STOCK_GROUP_NAME, "Stocks", true);
             StockGroupsGroup.Properties.Add(new MetaDataProperty("dataSheet", Constants.DATASHEET_OUTPUT_STOCK_NAME));
-            AddStockGroupChartVariables(project, StockGroupsGroup.Items);
+            AddStockGroupChartVariables(store, project, StockGroupsGroup.Items);
 
             if (StockGroupsGroup.Items.Count > 0)
             {
@@ -53,7 +53,7 @@ namespace SyncroSim.STSimStockFlow
             //Flow Groups
             SyncroSimLayoutItem FlowGroupsGroup = new SyncroSimLayoutItem(Constants.FLOW_GROUP_NAME, "Flows", true);
             FlowGroupsGroup.Properties.Add(new MetaDataProperty("dataSheet", Constants.DATASHEET_OUTPUT_FLOW_NAME));
-            AddFlowGroupChartVariables(project, FlowGroupsGroup.Items);
+            AddFlowGroupChartVariables(store, project, FlowGroupsGroup.Items);
 
             if (FlowGroupsGroup.Items.Count > 0)
             {
@@ -61,11 +61,11 @@ namespace SyncroSim.STSimStockFlow
             }
         }
 
-        private static void AddStockGroupChartVariables(Project project, SyncroSimLayoutItemCollection items)
+        private static void AddStockGroupChartVariables(DataStore store, Project project, SyncroSimLayoutItemCollection items)
         {
             DataSheet ds = project.GetDataSheet(Constants.DATASHEET_STOCK_GROUP_NAME);
 
-            if (ds.HasData())
+            if (ds.HasData(store))
             {
                 //Normal
                 SyncroSimLayoutItem ItemNormal = new SyncroSimLayoutItem(Constants.STOCK_GROUP_VAR_NAME, "Total", false);
@@ -89,11 +89,11 @@ namespace SyncroSim.STSimStockFlow
             }
         }
 
-        private static void AddFlowGroupChartVariables(Project project, SyncroSimLayoutItemCollection items)
+        private static void AddFlowGroupChartVariables(DataStore store, Project project, SyncroSimLayoutItemCollection items)
         {
             DataSheet ds = project.GetDataSheet(Constants.DATASHEET_FLOW_GROUP_NAME);
 
-            if (ds.HasData())
+            if (ds.HasData(store))
             {
                 SyncroSimLayoutItem ItemNormal = new SyncroSimLayoutItem(Constants.FLOW_GROUP_VAR_NAME, "Total", false);
 
@@ -131,12 +131,12 @@ namespace SyncroSim.STSimStockFlow
                 variableName == Constants.FLOW_GROUP_DENSITY_VAR_NAME);
 
             string query = CreateRawChartDataQueryForGroup(dataSheet, descriptor, variableName);
-            DataTable dt = StochasticTime.ChartCache.GetCachedData(dataSheet.Scenario, query, null);
+            DataTable dt = ChartCache.GetCachedData(dataSheet.Scenario, query, null);
 
             if (dt == null)
             {
                 dt = store.CreateDataTableFromQuery(query, "RawData");
-                StochasticTime.ChartCache.SetCachedData(dataSheet.Scenario, query, dt, null);
+                ChartCache.SetCachedData(dataSheet.Scenario, query, dt, null);
             }
 
             if (variableName.EndsWith("Density", StringComparison.Ordinal))
@@ -220,12 +220,12 @@ namespace SyncroSim.STSimStockFlow
         {
             Dictionary<string, double> dict = new Dictionary<string, double>();
             string query = CreateAmountQuery(scenario, descriptor, variableName);
-            DataTable dt = StochasticTime.ChartCache.GetCachedData(scenario, query, null);
+            DataTable dt = ChartCache.GetCachedData(scenario, query, null);
 
             if (dt == null)
             {
                 dt = store.CreateDataTableFromQuery(query, "AmountData");
-                StochasticTime.ChartCache.SetCachedData(scenario, query, dt, null);
+                ChartCache.SetCachedData(scenario, query, dt, null);
             }
 
             foreach (DataRow dr in dt.Rows)
