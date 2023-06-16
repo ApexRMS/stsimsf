@@ -279,7 +279,6 @@
     <Compile Include="Shared\ExceptionUtils.cs" />
     <Compile Include="Shared\FormsUtilities.cs" />
     <Compile Include="Shared\LookupKeyUtilities.cs" />
-    <Compile Include="Shared\MathUtils.cs" />
     <Compile Include="Shared\RasterMerger.cs" />
     <Compile Include="Shared\TerminologyUtilities.cs" />
     <Compile Include="Updates\SFUpdates.cs" />
