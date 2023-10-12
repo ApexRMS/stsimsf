@@ -554,7 +554,10 @@ namespace SyncroSim.STSimStockFlow
 
 										foreach (Cell c in this.STSimTransformer.Cells)
 										{
-												arr[c.CellId] = Convert.ToSingle(values[c.CollectionIndex]);
+												if (values[c.CollectionIndex] != 0)
+                        {
+														arr[c.CellId] = Convert.ToSingle(values[c.CollectionIndex]);
+												}
 										}
 
 										Spatial.WriteRasterData(
@@ -801,11 +804,11 @@ namespace SyncroSim.STSimStockFlow
 												{
 														if (rec.Data[i] != Spatial.DefaultNoDataValue)
 														{
-																Amount += rec.Data[i];
+																Amount += Convert.ToSingle(rec.Data[i]);
 														}
 												}
 										}
-
+										
 										Values[i] += Amount / this.m_TotalIterations;
 								}
 						}
