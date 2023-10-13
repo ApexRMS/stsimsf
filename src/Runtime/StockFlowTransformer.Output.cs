@@ -383,7 +383,14 @@ namespace SyncroSim.STSimStockFlow
 
 														foreach (Cell c in this.m_STSimTransformer.Cells)
 														{
-																arr[c.CellId] = rec.Data[c.CollectionIndex];
+																if (rec.Data[c.CollectionIndex] == Spatial.DefaultNoDataValue)
+                                {
+																		arr[c.CellId] = 0;
+                                }
+                                else
+                                {
+																		arr[c.CellId] = rec.Data[c.CollectionIndex];
+																}
 														}
 
 														rastFlowType.ScaleFloatCells(l.Value);
@@ -554,10 +561,7 @@ namespace SyncroSim.STSimStockFlow
 
 										foreach (Cell c in this.STSimTransformer.Cells)
 										{
-												if (values[c.CollectionIndex] != 0)
-                        {
-														arr[c.CellId] = Convert.ToSingle(values[c.CollectionIndex]);
-												}
+												arr[c.CellId] = Convert.ToSingle(values[c.CollectionIndex]);
 										}
 
 										Spatial.WriteRasterData(
