@@ -746,7 +746,10 @@ namespace SyncroSim.STSimStockFlow
 
 										foreach (StockTypeLinkage l in g.StockTypeLinkages)
 										{
-												Amount += Convert.ToSingle(StockAmounts[l.StockType.Id] * l.Value);
+												if (!float.IsNaN(StockAmounts[l.StockType.Id]))
+												{
+														Amount += Convert.ToSingle(StockAmounts[l.StockType.Id] * l.Value);
+												}
 										}
 
 										if ((timestepKey == this.STSimTransformer.MaximumTimestep) && (((timestepKey - this.STSimTransformer.TimestepZero) % this.m_AvgSpatialStockOutputTimesteps) != 0))
@@ -857,7 +860,7 @@ namespace SyncroSim.STSimStockFlow
 
 												if (rec.HasOutputData)
 												{
-														if (rec.Data[i] != Spatial.DefaultNoDataValue)
+														if ((rec.Data[i] != Spatial.DefaultNoDataValue) && !float.IsNaN(rec.Data[i]))
 														{
 																Amount += Convert.ToSingle(rec.Data[i] * l.Value);
 														}
@@ -931,7 +934,7 @@ namespace SyncroSim.STSimStockFlow
 
 												if (rec.HasOutputData)
 												{
-														if(rec.Data[i] != Spatial.DefaultNoDataValue)
+														if((rec.Data[i] != Spatial.DefaultNoDataValue) && !float.IsNaN(rec.Data[i]))
 														{
 																Amount += Convert.ToSingle(rec.Data[i] * l.Value);
 														}
@@ -972,7 +975,7 @@ namespace SyncroSim.STSimStockFlow
 
 												if (rec.HasOutputData)
 												{
-														if (rec.Data[i] != Spatial.DefaultNoDataValue)
+														if ((rec.Data[i] != Spatial.DefaultNoDataValue) && !float.IsNaN(rec.Data[i]))
 														{
 																Amount += Convert.ToSingle(rec.Data[i] * l.Value);
 														}
