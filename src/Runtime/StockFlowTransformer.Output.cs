@@ -224,7 +224,7 @@ namespace SyncroSim.STSimStockFlow
 								SpatialOutputFlowRecord rec = GetSpatialOutputFlowDictionary()[flowTypeId];
 								float amt = rec.Data[cell.CollectionIndex];
 
-								if (amt.Equals(Spatial.DefaultNoDataValue))
+								if (amt.Equals(Spatial.DefaultNoDataValue) || float.IsNaN(amt))
 								{
 										amt = 0;
 								}
@@ -383,7 +383,14 @@ namespace SyncroSim.STSimStockFlow
 
 														foreach (Cell c in this.m_STSimTransformer.Cells)
 														{
-																arr[c.CellId] = rec.Data[c.CollectionIndex];
+																if (rec.Data[c.CollectionIndex] == Spatial.DefaultNoDataValue)
+																{
+																		arr[c.CellId] = 0;
+																}
+																else
+																{
+																		arr[c.CellId] = rec.Data[c.CollectionIndex];
+																}
 														}
 
 														rastFlowType.ScaleFloatCells(l.Value);
@@ -437,7 +444,14 @@ namespace SyncroSim.STSimStockFlow
 
 														foreach (Cell c in this.m_STSimTransformer.Cells)
 														{
-																arr[c.CellId] = rec.Data[c.CollectionIndex];
+																if (rec.Data[c.CollectionIndex] == Spatial.DefaultNoDataValue)
+																{
+																		arr[c.CellId] = 0;
+																}
+																else
+																{
+																		arr[c.CellId] = rec.Data[c.CollectionIndex];
+																}
 														}
 
 														rastFlowType.ScaleFloatCells(l.Value);
@@ -554,7 +568,7 @@ namespace SyncroSim.STSimStockFlow
 
 										foreach (Cell c in this.STSimTransformer.Cells)
 										{
-												arr[c.CellId] = Convert.ToSingle(values[c.CollectionIndex] / this.STSimTransformer.AmountPerCell);
+												arr[c.CellId] = Convert.ToSingle(values[c.CollectionIndex]);
 										}
 
 										Spatial.WriteRasterData(
@@ -610,7 +624,7 @@ namespace SyncroSim.STSimStockFlow
 
 										foreach (Cell c in this.STSimTransformer.Cells)
 										{
-												arr[c.CellId] = Convert.ToSingle(values[c.CollectionIndex] / this.STSimTransformer.AmountPerCell);
+												arr[c.CellId] = Convert.ToSingle(values[c.CollectionIndex]);
 										}
 
 										Spatial.WriteRasterData(
@@ -695,7 +709,10 @@ namespace SyncroSim.STSimStockFlow
 
 										foreach (StockTypeLinkage l in g.StockTypeLinkages)
 										{
-											 Amount += Convert.ToSingle(StockAmounts[l.StockType.Id]);
+												if (!float.IsNaN(StockAmounts[l.StockType.Id]))
+												{
+														Amount += Convert.ToSingle(StockAmounts[l.StockType.Id] * l.Value);
+												}
 										}
 
 										Values[i] += Amount / this.m_TotalIterations;
@@ -729,7 +746,10 @@ namespace SyncroSim.STSimStockFlow
 
 										foreach (StockTypeLinkage l in g.StockTypeLinkages)
 										{
-												Amount += Convert.ToSingle(StockAmounts[l.StockType.Id]);
+												if (!float.IsNaN(StockAmounts[l.StockType.Id]))
+												{
+														Amount += Convert.ToSingle(StockAmounts[l.StockType.Id] * l.Value);
+												}
 										}
 
 										if ((timestepKey == this.STSimTransformer.MaximumTimestep) && (((timestepKey - this.STSimTransformer.TimestepZero) % this.m_AvgSpatialStockOutputTimesteps) != 0))
@@ -799,10 +819,13 @@ namespace SyncroSim.STSimStockFlow
 
 												if (rec.HasOutputData)
 												{
-														Amount += rec.Data[i];
+														if ((rec.Data[i] != Spatial.DefaultNoDataValue) && !float.IsNaN(rec.Data[i]))
+														{
+																Amount += Convert.ToSingle(rec.Data[i] * l.Value);
+														}
 												}
 										}
-
+										
 										Values[i] += Amount / this.m_TotalIterations;
 								}
 						}
@@ -837,8 +860,11 @@ namespace SyncroSim.STSimStockFlow
 
 												if (rec.HasOutputData)
 												{
-														Amount += rec.Data[i];
-												}                    
+														if ((rec.Data[i] != Spatial.DefaultNoDataValue) && !float.IsNaN(rec.Data[i]))
+														{
+																Amount += Convert.ToSingle(rec.Data[i] * l.Value);
+														}
+												}
 										}
 
 										if ((timestepKey == this.STSimTransformer.MaximumTimestep) && (((timestepKey - this.STSimTransformer.TimestepZero) % this.m_AvgSpatialFlowOutputTimesteps) != 0))
@@ -908,7 +934,10 @@ namespace SyncroSim.STSimStockFlow
 
 												if (rec.HasOutputData)
 												{
-														Amount += rec.Data[i];
+														if((rec.Data[i] != Spatial.DefaultNoDataValue) && !float.IsNaN(rec.Data[i]))
+														{
+																Amount += Convert.ToSingle(rec.Data[i] * l.Value);
+														}
 												}                     
 										}
 
@@ -946,7 +975,10 @@ namespace SyncroSim.STSimStockFlow
 
 												if (rec.HasOutputData)
 												{
-														Amount += rec.Data[i];
+														if ((rec.Data[i] != Spatial.DefaultNoDataValue) && !float.IsNaN(rec.Data[i]))
+														{
+																Amount += Convert.ToSingle(rec.Data[i] * l.Value);
+														}
 												}                         
 										}
 
