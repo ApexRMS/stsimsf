@@ -634,11 +634,11 @@ namespace SyncroSim.STSimStockFlow
 
                             //If a cell is a no data cell or if there is a -INF value for a cell, initialize the stock value to zero
 
-                            if (Math.Abs(v - this.m_InitialStockSpatialRasters[s.Filename].NoDataValue) < double.Epsilon | double.IsNegativeInfinity(v))
+                            if (Math.Abs(v - this.m_InitialStockSpatialRasters[s.Filename].NoDataValue) < double.Epsilon | double.IsNegativeInfinity(v) | double.IsNaN(v))
                             {
                                 v = 0.0;
                             }
-                            else if (Math.Abs((float)v - (float)this.m_InitialStockSpatialRasters[s.Filename].NoDataValue) < float.Epsilon | float.IsNegativeInfinity((float)v))
+                            else if (Math.Abs((float)v - (float)this.m_InitialStockSpatialRasters[s.Filename].NoDataValue) < float.Epsilon | float.IsNegativeInfinity((float)v) | float.IsNaN((float)v))
                             {
                                 v = 0.0;
                             }

@@ -104,6 +104,10 @@ namespace SyncroSim.STSimStockFlow
             {
                 return 1.0;
             }
+            else if (double.IsNaN(v))
+            {
+                return 1.0;
+            }
             else
             {
                 return v;
