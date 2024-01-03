@@ -13,7 +13,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyDescription("Stocks and Flows Package")]
 [assembly: AssemblyCompany("ApexRMS")]
 [assembly: AssemblyProduct("SyncroSim.STSimStockFlow")]
-[assembly: AssemblyCopyright("Copyright © 2007-2021 Apex Resource Management Solutions Ltd. (ApexRMS). All rights reserved.")]
+[assembly: AssemblyCopyright("Copyright © 2007-2024 Apex Resource Management Solutions Ltd. (ApexRMS). All rights reserved.")]
 [assembly: AssemblyTrademark("")]
 
 [assembly: ComVisible(false)]
