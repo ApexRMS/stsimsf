@@ -388,5 +388,28 @@ namespace SyncroSim.STSimStockFlow
 
 						return false;
 				}
+
+				private int ReturnMinimumNonZeroValue(int value1, int value2)
+				{
+						int minValue = value1 == 0 && value2 == 0 ? 0
+								: value1 == 0 ? value2
+								: value2 == 0 ? value1
+								: Math.Min(value2, value1);
+
+						return minValue;
+				}
+
+				private bool IsValueMultipleOf(int smallValue, int largeValue)
+				{
+						if (smallValue != 0)
+						{
+								if (largeValue % smallValue != 0)
+								{
+										return false;
+								}
+						}
+
+						return true;
+				}
 		}
 }
