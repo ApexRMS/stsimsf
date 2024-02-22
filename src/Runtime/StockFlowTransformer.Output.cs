@@ -71,6 +71,8 @@ namespace SyncroSim.STSimStockFlow
 														continue;
 												}
 
+												Debug.Assert(!double.IsNaN(l.Value));
+
 												FiveIntegerLookupKey k = new FiveIntegerLookupKey(
 												c.StratumId, GetSecondaryStratumIdKey(c),
 												GetTertiaryStratumIdKey(c), c.StateClassId, l.StockGroup.Id);
@@ -165,6 +167,8 @@ namespace SyncroSim.STSimStockFlow
 												LookupKeyUtilities.GetOutputCollectionKey(flowPathway.TransferToTertiaryStratumId),
 												LookupKeyUtilities.GetOutputCollectionKey(flowPathway.TransferToStateClassId),
 												LookupKeyUtilities.GetOutputCollectionKey(flowPathway.TransferToMinimumAge));
+
+										Debug.Assert(!double.IsNaN(l.Value));
 
 										if (this.m_SummaryOutputFlowRecords.Contains(k))
 										{

@@ -8,7 +8,7 @@ namespace SyncroSim.STSimStockFlow
 	internal class FlowSpatialMultiplier
 	{
 		private readonly int m_FlowGroupId;
-        private readonly int? m_FlowMultiplierTypeId;
+    private readonly int? m_FlowMultiplierTypeId;
 		private readonly int? m_Iteration;
 		private readonly int? m_Timestep;
 		private readonly string m_Filename;
