@@ -17,6 +17,8 @@ permalink: /
 <a href="http://doi.org/10.1111/2041-210X.12597" target="_blank">State-and-transition simulation models</a> (STSMs) are used to forecast landscape dynamics. Using the base SyncroSim package, <a href="https://docs.stsim.net/" target="_blank">*ST-Sim*</a>, you can design models to forecast the change of discrete variables, such as the expansion/contraction of agricultural lands or harvest of tree plantations (see <a href="http://doi.org/10.1111/2041-210X.12597" target="_blank">Daniel, Frid, Sleeter, and Fortin (2016)</a>). Using the ST-Sim Add-On package, *stsimsf*, you can design models to forecast the change of continuous variables as well, such as biomass and carbon fluctuations. For more information on integrating STSMs with stock-flow models, see the paper by <a href="http://doi.org/10.1111/2041-210X.12952" target="_blank">Daniel, Sleeter, Frid, and Fortin (2018)</a>.
 <br>
 
+**The *stsimsf* package is now deprecated, and the stocks and flows functionality is fully integrated with <a href="https://docs.stsim.net/" target="_blank">ST-Sim</a> for <a href="https://syncrosim.com/download/" target="_blank">SyncroSim 3</a>.**
+
 ## Requirements
 
 This package requires:
